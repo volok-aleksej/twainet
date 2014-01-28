@@ -19,6 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "connector_lib", "lib\connec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ipc_lib", "lib\ipc_lib\ipc_lib.vcproj", "{0656AFC0-A5FB-407F-87AF-1D5A74BB817F}"
 	ProjectSection(ProjectDependencies) = postProject
+		{1F5FD41D-D68E-4830-91C7-EDA03898328D} = {1F5FD41D-D68E-4830-91C7-EDA03898328D}
 		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30} = {3E283F37-A4ED-41B7-A3E6-A2D89D131A30}
 	EndProjectSection
 EndProject
