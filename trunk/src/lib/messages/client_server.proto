@@ -1,0 +1,49 @@
+package client_server;
+
+enum ResultCode {
+	LOGIN_FAILURE							= 1;
+	LOGIN_SUCCESS							= 2;
+}
+
+enum TunnelType {
+	TUNNEL_LOCAL							= 1;
+	TUNNEL_EXTERNAL							= 2;
+	TUNNEL_RELAY							= 3;
+}
+
+message Login {
+	required string name					= 1;
+	required string pasword					= 2;
+}
+
+message LoginResult {
+	required ResultCode login_result		= 1;
+	optional string own_session_id			= 2;
+}
+
+message TunnelConnectAddress {
+	optional string ip						= 1;
+	optional int32 port						= 2;
+}
+
+message InitTunnel {
+	required string ext_session_id			= 1;
+	required string own_session_id			= 2;
+	optional TunnelType type				= 3;
+	optional TunnelConnectAddress address	= 4;
+}
+
+message TryConnectTo {
+	required string ext_session_id			= 1;
+	required string own_session_id			= 2;
+	required TunnelType type				= 3;
+	repeated TunnelConnectAddress adresses	= 4;
+}
+
+message InitTunnelStarted {
+	required string ext_session_id			= 1;
+	required string own_session_id			= 2;
+}
+
+message Test {
+}
