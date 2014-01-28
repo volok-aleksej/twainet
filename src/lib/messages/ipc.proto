@@ -1,0 +1,63 @@
+package ipc;
+
+message IPCName
+{
+	required string module_name = 1;
+	optional string host_name = 2;
+	optional string suffix = 3;
+}
+
+message AddIPCObject
+{
+	required IPCName ipc_name = 1;
+	required string ip = 2;
+	required int32 port	= 3;
+}
+
+message UpdateIPCObject
+{
+	required IPCName ipc_old_name	= 1;
+	required IPCName ipc_new_name	= 2;
+}
+
+message ChangeIPCName
+{
+	required IPCName ipc_name = 1;
+}
+
+message IPCObjectList
+{
+	repeated AddIPCObject ipc_object = 1;
+}
+
+message ModuleName
+{
+	required IPCName ipc_name = 1;
+	optional string ip = 2;
+	optional int32 port	= 3;
+	optional bool is_exist = 4;
+	optional string conn_id = 5;
+}
+
+message ModuleState
+{
+	required bool exist = 1;
+	required string rndVal = 2;
+	optional string id = 3;
+}
+
+message RemoveIPCObject
+{
+	required string ipc_name = 1;
+}
+
+message IPCMessage
+{
+	required string message_name = 1;
+	repeated IPCName ipc_path = 2;
+	optional bytes message = 3;
+}
+
+message Ping
+{
+}
