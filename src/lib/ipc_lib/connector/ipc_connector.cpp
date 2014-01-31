@@ -108,6 +108,7 @@ void IPCConnector::onMessage(const ModuleName& msg)
 
 	m_isExist = mnMsg.is_exist();
 	ModuleStateMessage msMsg(this);
+	msMsg.set_rndval("");
 	msMsg.set_exist(m_isExist);
 	msMsg.set_rndval(m_rand);
 	toMessage(msMsg);
@@ -342,6 +343,10 @@ void IPCConnector::onModuleStateMessage(const ModuleStateMessage& msg)
 	if(msg.id() == m_id)
 	{
 		const_cast<ModuleStateMessage&>(msg).set_exist(true);
+		if(m_rand < msg.rndval())
+		{
+			const_cast<ModuleStateMessage&>(msg).set_rndval(m_rand);
+		}
 	}
 }
 
