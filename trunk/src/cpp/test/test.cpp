@@ -45,6 +45,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	TunnelModule module2(IPCObjectName("Client Module1"), new IPCConnectorFactory<IPCConnector>(IPCObjectName("Client Module1")));
 	module2.Start();
+	module2.SetUserName("test");
 	module2.Connect("127.0.0.1", 8124);
 	system("pause");
 	printf("\n");
