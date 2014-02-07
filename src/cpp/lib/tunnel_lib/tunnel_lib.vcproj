@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="thread_lib"
-	ProjectGUID="{B3C8E858-F756-45AF-A957-1AA8C4FA1A9A}"
-	RootNamespace="thread_lib"
+	Name="tunnel_lib"
+	ProjectGUID="{FA5C42D5-3735-46CA-8740-F2547CAF8972}"
+	RootNamespace="tunnel_lib"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\output\thread_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\thread_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\tunnel_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\tunnel_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -41,14 +41,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -81,8 +80,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\output\thread_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\thread_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\tunnel_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\tunnel_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -104,12 +103,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -145,30 +146,42 @@
 	</References>
 	<Files>
 		<Filter
-			Name="thread"
+			Name="module"
 			>
 			<File
-				RelativePath=".\thread\thread.cpp"
+				RelativePath=".\module\tunnel_containers.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\thread.h"
+				RelativePath=".\module\tunnel_containers.h"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\thread_impl.cpp"
+				RelativePath=".\module\tunnel_module.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\thread_impl.h"
+				RelativePath=".\module\tunnel_module.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="connector"
+			>
+			<File
+				RelativePath=".\connector\tunnel_connector.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\thread_manager.cpp"
+				RelativePath=".\connector\tunnel_connector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\thread_manager.h"
+				RelativePath=".\connector\tunnel_server_connector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\connector\tunnel_server_connector.h"
 				>
 			</File>
 		</Filter>
@@ -176,41 +189,67 @@
 			Name="common"
 			>
 			<File
-				RelativePath=".\common\critical_section.cpp"
+				RelativePath="..\..\common\network.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
 			</File>
+		</Filter>
+		<Filter
+			Name="thread"
+			>
 			<File
-				RelativePath=".\common\critical_section.h"
+				RelativePath=".\thread\external_connect_thread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\common\object_manager.h"
+				RelativePath=".\thread\external_connect_thread.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\ref.h"
+				RelativePath=".\thread\external_listen_thread.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\singleton.h"
+				RelativePath=".\thread\external_listen_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\external_recv_thread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\external_recv_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\relay_listen_thread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\relay_listen_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\tunnel_checker_thread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\tunnel_checker_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\thread\tunnel_server_listen_address.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="message"
+			>
+			<File
+				RelativePath=".\message\tunnel_messages.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\message\tunnel_messages.h"
 				>
 			</File>
 		</Filter>

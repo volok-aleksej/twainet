@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\output\connector_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\connector_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\connector_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\connector_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -81,8 +81,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\output\connector_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\connector_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\connector_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\connector_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"

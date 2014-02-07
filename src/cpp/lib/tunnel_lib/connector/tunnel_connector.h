@@ -5,7 +5,7 @@
 #include "ipc_lib\thread\ping_thread.h"
 
 #pragma warning(disable:4244 4267)
-#include "messages/client_server.pb.h"
+#include "../messages/client_server.pb.h"
 using namespace client_server;
 #pragma warning(default:4244 4267)
 

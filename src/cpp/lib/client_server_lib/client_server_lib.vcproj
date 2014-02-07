@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\output\client_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\client_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -80,8 +80,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\output\client_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\client_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -173,31 +173,15 @@
 			Name="messages"
 			>
 			<File
-				RelativePath="..\messages\client_server.pb.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						DisableSpecificWarnings="4244;4267;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						DisableSpecificWarnings="4244;4267;4996"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\messages\client_server.pb.h"
+				RelativePath="..\..\..\messages\client_server.pb.cc"
 				>
 			</File>
 			<File
-				RelativePath="..\messages\client_server.proto"
+				RelativePath="..\..\..\messages\client_server.pb.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\messages\client_server.proto"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -205,8 +189,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)lib\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)lib\messages&quot; --cpp_out=&quot;$(SolutionDir)lib\messages&quot; &quot;$(SolutionDir)lib\messages\client_server.proto&quot;"
-						Outputs="$(SolutionDir)lib\messages\client_server.pb.cc;$(SolutionDir)lib\messages\client_server.pb.h"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\client_server.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\client_server.pb.cc;$(SolutionDir)..\messages\client_server.pb.h"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -215,8 +199,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)lib\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)lib\messages&quot; --cpp_out=&quot;$(SolutionDir)lib\messages&quot; &quot;$(SolutionDir)lib\messages\client_server.proto&quot;"
-						Outputs="$(SolutionDir)lib\messages\client_server.pb.cc;$(SolutionDir)lib\messages\client_server.pb.h"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\client_server.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\client_server.pb.cc;$(SolutionDir)..\messages\client_server.pb.h"
 					/>
 				</FileConfiguration>
 			</File>
