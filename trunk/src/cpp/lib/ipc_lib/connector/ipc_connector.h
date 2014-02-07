@@ -13,7 +13,7 @@
 #include "proto_message.h"
 
 #pragma warning(disable:4244 4267)
-#include "messages/ipc.pb.h"
+#include "../messages/ipc.pb.h"
 using namespace ipc;
 #pragma warning(default:4244 4267)
 

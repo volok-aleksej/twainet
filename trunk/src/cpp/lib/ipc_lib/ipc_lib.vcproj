@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="tunnel_lib"
-	ProjectGUID="{FA5C42D5-3735-46CA-8740-F2547CAF8972}"
-	RootNamespace="tunnel_lib"
+	Name="ipc_lib"
+	ProjectGUID="{0656AFC0-A5FB-407F-87AF-1D5A74BB817F}"
+	RootNamespace="ipc_lib"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -18,13 +18,14 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\output\tunnel_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\tunnel_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\ipc_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\ipc_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -48,6 +49,7 @@
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -80,14 +82,15 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\output\tunnel_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\output\tunnel_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\ipc_lib\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\ipc_lib\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -103,14 +106,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -146,50 +147,78 @@
 	</References>
 	<Files>
 		<Filter
-			Name="module"
+			Name="messages"
 			>
 			<File
-				RelativePath=".\module\tunnel_containers.cpp"
+				RelativePath="..\..\..\messages\ipc.pb.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\module\tunnel_containers.h"
+				RelativePath="..\..\..\messages\ipc.pb.h"
 				>
 			</File>
 			<File
-				RelativePath=".\module\tunnel_module.cpp"
+				RelativePath="..\..\..\messages\ipc.proto"
 				>
-			</File>
-			<File
-				RelativePath=".\module\tunnel_module.h"
-				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="connector"
 			>
 			<File
-				RelativePath=".\connector\tunnel_connector.cpp"
+				RelativePath=".\connector\ipc_connector.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\connector\tunnel_connector.h"
+				RelativePath=".\connector\ipc_connector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\connector\tunnel_server_connector.cpp"
+				RelativePath=".\connector\ipc_connector_factory.h"
 				>
 			</File>
 			<File
-				RelativePath=".\connector\tunnel_server_connector.h"
+				RelativePath=".\connector\proto_message.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="common"
+			Name="module"
 			>
 			<File
-				RelativePath="..\..\common\network.cpp"
+				RelativePath=".\module\ipc_module.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\ipc_module.h"
+				>
+			</File>
+			<File
+				RelativePath=".\module\ipc_object_name.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\ipc_object_name.h"
 				>
 			</File>
 		</Filter>
@@ -197,59 +226,51 @@
 			Name="thread"
 			>
 			<File
-				RelativePath=".\thread\external_connect_thread.cpp"
+				RelativePath=".\thread\ipc_checker_thread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\external_connect_thread.h"
+				RelativePath=".\thread\ipc_checker_thread.h"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\external_listen_thread.cpp"
+				RelativePath=".\thread\ping_thread.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\thread\external_listen_thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\external_recv_thread.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\external_recv_thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\relay_listen_thread.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\relay_listen_thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\tunnel_checker_thread.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\tunnel_checker_thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\thread\tunnel_server_listen_address.h"
+				RelativePath=".\thread\ping_thread.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="message"
+			Name="utils"
 			>
 			<File
-				RelativePath=".\message\tunnel_messages.cpp"
+				RelativePath="..\..\utils\utils.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\message\tunnel_messages.h"
+				RelativePath="..\..\utils\utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="common"
+			>
+			<File
+				RelativePath="..\..\common\guid_generator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\guid_generator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\tstring.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\tstring.h"
 				>
 			</File>
 		</Filter>
