@@ -2,7 +2,7 @@ var net = require('net');
 var conn = require('clientServerConnector');
 
 var server = net.createServer(function(c) {
-	var connector = new conn.ServerConnector(c);
+	var connector = new conn.ServerConnector(c, "client");
 });
 
 server.listen(8124, function() { //'listening' listener
