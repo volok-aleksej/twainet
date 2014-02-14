@@ -1,10 +1,4 @@
-var net = require('net');
-var conn = require('clientServerConnector');
+var module = require('clientServerModule');
 
-var server = net.createServer(function(c) {
-	var connector = new conn.ServerConnector(c, "client");
-});
-
-server.listen(8124, function() { //'listening' listener
-	console.log('server bound');
-});
+var server = new module.ClientServerModule("MainServer");
+server.StartServer(8124);
