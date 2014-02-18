@@ -47,6 +47,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	module2.Start();
 	module2.SetUserName("test");
 	module2.Connect("127.0.0.1", 8124);
+//	module2.Connect("192.168.70.174", 8124);
+	system("pause");
+	printf("\n");
+
+	module2.InitNewTunnel("{8014eb04-2128-a250-98f7-3bdeeedc3575}");
+	
 	system("pause");
 	printf("\n");
 	return 0;
