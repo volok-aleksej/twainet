@@ -170,6 +170,11 @@ void IPCConnector::onMessage(const RemoveIPCObject& msg)
 
 void IPCConnector::onMessage(const IPCMessage& msg)
 {
+	if(msg.ipc_path_size() == 0)
+	{
+		return;
+	}
+
 	IPCMessage newMsg(msg);
 	newMsg.clear_ipc_path();
 	IPCObjectName newPath(msg.ipc_path(0));
@@ -190,10 +195,6 @@ void IPCConnector::onMessage(const IPCMessage& msg)
 		data.append(msg.message_name());
 		data.append(msg.message().c_str(), msg.message().size());
 		onData((char*)data.c_str(), (int)data.size());
-
-		IPCMessageSignal imSig(msg);
-		onSignal(imSig);
-		onIPCSignal(imSig);
 	}
 	else if(newMsg.ipc_path_size())
 	{
@@ -275,6 +276,11 @@ IPCObjectName IPCConnector::GetModuleName() const
 
 void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
+	if(msg.ipc_path_size() == 0)
+	{
+		return;
+	}
+
 	IPCObjectName path(msg.ipc_path(0));
 	if(path.GetModuleNameString() == m_id)
 	{
