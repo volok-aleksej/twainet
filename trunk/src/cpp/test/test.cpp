@@ -44,14 +44,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	//module4.SendMsg(msg, 3, &ipcName1, &ipcName2, &ipcName3);
 
 	TunnelModule module2(IPCObjectName("Client Module1"), new IPCConnectorFactory<IPCConnector>(IPCObjectName("Client Module1")));
-	module2.Start();
+	module2.StartAsCoordinator();
 	module2.SetUserName("test");
 	module2.Connect("127.0.0.1", 8124);
 //	module2.Connect("192.168.70.174", 8124);
 	system("pause");
 	printf("\n");
 
-	module2.InitNewTunnel("{8014eb04-2128-a250-98f7-3bdeeedc3575}");
+//	module2.InitNewTunnel("{5c40c867-6eb0-d097-96a3-1af0cb41c363}");
 	
 	system("pause");
 	printf("\n");

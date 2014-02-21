@@ -1,8 +1,12 @@
-var module = require('clientServerModule');
+var servermodule = require('clientServerModule');
+var ipcmodule = require('ipcModule');
 
-var server = new module.ClientServerModule("MainServer");
+
+var server = new servermodule.ClientServerModule("MainServer");
+var app = new ipcmodule.IPCModule("App1");
 server.StartServer(8124);
-server.StartAsCoordinator();
+//server.StartAsCoordinator();
+app.Start();
 
 process.on('uncaughtException', function (err) {
   console.error(err.stack);
