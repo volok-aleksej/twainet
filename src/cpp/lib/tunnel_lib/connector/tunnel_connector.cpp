@@ -39,6 +39,10 @@ void TunnelConnector::OnStop()
 	IPCConnector::OnStop();
 }
 
+void TunnelConnector::SetModuleName(const IPCObjectName& moduleName)
+{
+}
+
 void TunnelConnector::onMessage(const Test& msg)
 {
 	if(!m_isServer)
