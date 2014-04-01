@@ -24,7 +24,7 @@ public:
 protected:
 	virtual void OnStart();
 	virtual void OnStop();
-	virtual void SetModuleName(const IPCObjectName& moduleName);
+	virtual bool SetModuleName(const IPCObjectName& moduleName);
 
 protected:
 	template<typename THandler, typename TMessage> friend class HandlerProtoMessage;
