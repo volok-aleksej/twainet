@@ -89,8 +89,9 @@ void ClientServerConnector::OnStart()
 	}
 }
 
-void ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
+bool ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
 {
+	return false;
 }
 
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)

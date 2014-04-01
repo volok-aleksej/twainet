@@ -229,6 +229,8 @@ void IPCConnector::onMessage(const ChangeIPCName& msg)
 
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
+
+	printf("change connector id - %s\n", m_id.c_str());
 }
 
 void IPCConnector::onMessage(const UpdateIPCObject& msg)
@@ -305,8 +307,10 @@ void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)
 
 void IPCConnector::onChangeIPCNameMessage(const ChangeIPCNameMessage& msg)
 {
-	SetModuleName(msg.ipc_name());
-	toMessage(msg);
+	if(SetModuleName(msg.ipc_name()))
+	{
+		toMessage(msg);
+	}
 }
 
 void IPCConnector::onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg)
@@ -371,9 +375,10 @@ void IPCConnector::onIPCSignal(const DataMessage& msg)
 	m_ipcSignal->onSignal(msg);
 }
 
-void IPCConnector::SetModuleName(const IPCObjectName& moduleName)
+bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 {
 	m_moduleName = moduleName;
+	return true;
 }
 
 void IPCConnector::OnConnected()

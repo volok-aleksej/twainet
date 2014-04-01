@@ -39,8 +39,9 @@ void TunnelConnector::OnStop()
 	IPCConnector::OnStop();
 }
 
-void TunnelConnector::SetModuleName(const IPCObjectName& moduleName)
+bool TunnelConnector::SetModuleName(const IPCObjectName& moduleName)
 {
+	return false;
 }
 
 void TunnelConnector::onMessage(const Test& msg)
