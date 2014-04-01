@@ -65,6 +65,7 @@ void ClientServerConnector::Subscribe(::SignalOwner* owner)
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelSignal, onInitTunnelSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelStartedSignal, onInitTunnelStartedSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
+	IPCConnector::Subscribe(owner);
 }
 
 void ClientServerConnector::SetUserName(const std::string& userName)
