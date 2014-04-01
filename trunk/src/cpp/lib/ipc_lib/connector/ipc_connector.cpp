@@ -305,7 +305,7 @@ void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)
 
 void IPCConnector::onChangeIPCNameMessage(const ChangeIPCNameMessage& msg)
 {
-	m_moduleName = msg.ipc_name();
+	SetModuleName(msg.ipc_name());
 	toMessage(msg);
 }
 
