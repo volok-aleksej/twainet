@@ -88,6 +88,10 @@ void ClientServerConnector::OnStart()
 	}
 }
 
+void ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
+{
+}
+
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	IPCObjectName path(msg.ipc_path(0));

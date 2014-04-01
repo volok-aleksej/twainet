@@ -32,6 +32,7 @@ public:
 	void SetPassword(const std::string& password);
 protected:
 	virtual void OnStart();
+	virtual void SetModuleName(const IPCObjectName& moduleName);
 protected:
 	friend class Signal;
 	void onIPCMessage(const IPCProtoMessage& msg);

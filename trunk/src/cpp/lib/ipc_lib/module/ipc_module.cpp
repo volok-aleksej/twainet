@@ -239,12 +239,14 @@ void IPCModule::onErrorListener(const ListenErrorMessage& msg)
 
 void IPCModule::onAddConnector(const ConnectorMessage& msg)
 {
-	OnNewConnector(msg.m_conn);
-
 	IPCConnector* connector = dynamic_cast<IPCConnector*>(msg.m_conn);
 	if(connector && !m_isExit)
 	{
+		connector->SetModuleName(m_moduleName);
 		connector->SetConnectorId(CreateGUID());
+	
+		OnNewConnector(msg.m_conn);
+
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, AddIPCObjectMessage, onAddIPCObject));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, UpdateIPCObjectMessage, onUpdateIPCObject));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ModuleNameMessage, onModuleName));

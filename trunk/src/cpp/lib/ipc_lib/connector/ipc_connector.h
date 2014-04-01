@@ -70,6 +70,7 @@ protected:
 	virtual void OnStop();
 	virtual bool SendData(char* data, int len);
 
+	virtual void SetModuleName(const IPCObjectName& moduleName);
 	virtual void OnConnected();
 	virtual void OnAddIPCObject(const std::string& moduleName);
 	virtual void OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName);

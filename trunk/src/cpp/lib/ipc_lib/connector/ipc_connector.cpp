@@ -94,6 +94,7 @@ void IPCConnector::onMessage(const ModuleName& msg)
 
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
+	printf("ModuleName: %s\n", m_id.c_str());
 
 	AddIPCObjectMessage aoMsg(this);
 	aoMsg.set_ip(msg.ip());
@@ -118,7 +119,6 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		return;
 	}
 
-	printf("ModuleName: %s\n", m_id.c_str());
 
 	IPCObjectListMessage ipcolMsg(this);
 	onSignal(ipcolMsg);
@@ -369,6 +369,11 @@ void IPCConnector::ipcSubscribe(IPCConnector* connector, IReceiverFunc* func)
 void IPCConnector::onIPCSignal(const DataMessage& msg)
 {
 	m_ipcSignal->onSignal(msg);
+}
+
+void IPCConnector::SetModuleName(const IPCObjectName& moduleName)
+{
+	m_moduleName = moduleName;
 }
 
 void IPCConnector::OnConnected()
