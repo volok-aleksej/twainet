@@ -1,1 +1,0 @@
-npm install https://github.com/dcodeIO/ProtoBuf.js/tarball/master
