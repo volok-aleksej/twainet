@@ -89,7 +89,7 @@ void RelayListenThread::ThreadFunc()
 	address.m_localIP = m_address.m_localIP;
 	address.m_localPort = m_address.m_localPort;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_address.m_sessionIdTwo);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_acceptCount = 1;
 	m_listenThreadOne = new IPCListenThread(address);
 	m_listenThreadOne->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ListenErrorMessage, onListenErrorMessage));
@@ -99,7 +99,7 @@ void RelayListenThread::ThreadFunc()
 
 	address.m_id = m_address.m_sessionIdTwo;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_address.m_sessionIdOne);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	m_listenThreadTwo = new IPCListenThread(address);
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ListenErrorMessage, onListenErrorMessage));
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, CreatedListenerMessage, onCreatedListenerMessage));

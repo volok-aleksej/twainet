@@ -1,8 +1,7 @@
 #ifndef SECURE_SOCKET_H
 #define SECURE_SOCKET_H
 
-#include "openssl/ssl.h"
-#include "openssl/err.h"
+#include <openssl/rsa.h>
 
 class AnySocket;
 
@@ -20,8 +19,11 @@ protected:
 	bool initSSL();
 private:
 	AnySocket* m_socket;
-	SSL_CTX* m_sslctx;
-	SSL* m_ssl;
+	RSA* m_rsaOwn;
+	RSA* m_rsaOther;
+	bool m_bInit;
+	unsigned char* m_buffer;
+	int m_sizeBuffer;
 };
 
 #endif/*SECURE_SOCKET_H*/

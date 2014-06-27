@@ -292,12 +292,8 @@ void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 
 bool IPCConnector::SendData(char* data, int len)
 {
-	std::string newData;
-	newData.resize(len + sizeof(int));
-	char* pdata = (char*)newData.c_str();
-	memcpy(pdata, &len, sizeof(int));
-	memcpy(pdata + sizeof(int), data, len);
-	return Connector::SendData(pdata, len + sizeof(int));
+	return	Connector::SendData((char*)&len, sizeof(int)) &&
+			Connector::SendData(data, len);
 }
 
 void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)

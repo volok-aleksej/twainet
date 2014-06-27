@@ -72,7 +72,7 @@ void ExternalConnectThread::ThreadFunc()
 		sleep(100);
 	}
 
-	UDTSocketFactory* udtSocketFactory = dynamic_cast<UDTSocketFactory*>(m_address.m_socketFactory);
+	UDTSecureSocketFactory* udtSocketFactory = dynamic_cast<UDTSecureSocketFactory*>(m_address.m_socketFactory);
 	if(!udtSocketFactory)
 	{
 		SignalError();

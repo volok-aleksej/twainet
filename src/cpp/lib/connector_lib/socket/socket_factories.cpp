@@ -3,6 +3,9 @@
 #include "udp_socket.h"
 #include "udt_socket.h"
 
+/*******************************************************************************************************/
+/*                                          TCPSocketFactory                                           */
+/*******************************************************************************************************/
 AnySocket* TCPSocketFactory::CreateSocket()
 {
 	return new TCPSocket(AnySocket::COMMON_SOCKET);
@@ -13,6 +16,9 @@ AnySocket* TCPSocketFactory::CreateSocket(int socket)
 	return new TCPSocket(AnySocket::COMMON_SOCKET, socket);
 }
 
+/*******************************************************************************************************/
+/*                                      TCPSecureSocketFactory                                         */
+/*******************************************************************************************************/
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
 	return new TCPSocket(AnySocket::SECURE_SOCKET);
@@ -23,6 +29,9 @@ AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 	return new TCPSocket(AnySocket::SECURE_SOCKET, socket);
 }
 
+/*******************************************************************************************************/
+/*                                         UDPSocketFactory                                            */
+/*******************************************************************************************************/
 AnySocket* UDPSocketFactory::CreateSocket()
 {
 	return new UDPSocket;
@@ -33,6 +42,9 @@ AnySocket* UDPSocketFactory::CreateSocket(int socket)
 	return new UDPSocket(socket);
 }
 
+/*******************************************************************************************************/
+/*                                      UDTSecureSocketFactory                                         */
+/*******************************************************************************************************/
 AnySocket* UDTSocketFactory::CreateSocket()
 {
 	if(!m_udpSocket)
@@ -58,6 +70,38 @@ AnySocket* UDTSocketFactory::CreateSocket(int socket)
 }
 
 void UDTSocketFactory::SetUdpSocket(int udpSocket)
+{
+	m_udpSocket = udpSocket;
+}
+
+/*******************************************************************************************************/
+/*                                      UDTSecureSocketFactory                                         */
+/*******************************************************************************************************/
+AnySocket* UDTSecureSocketFactory::CreateSocket()
+{
+	if(!m_udpSocket)
+	{
+		return new UDTSocket(AnySocket::SECURE_SOCKET);
+	}
+	else
+	{
+		return new UDTSocket(m_udpSocket, true, AnySocket::SECURE_SOCKET);
+	}
+}
+
+AnySocket* UDTSecureSocketFactory::CreateSocket(int socket)
+{
+	if(!m_udpSocket)
+	{
+		return new UDTSocket(socket, false, AnySocket::SECURE_SOCKET);
+	}
+	else
+	{
+		return new UDTSocket(m_udpSocket, socket, AnySocket::SECURE_SOCKET);
+	}
+}
+
+void UDTSecureSocketFactory::SetUdpSocket(int udpSocket)
 {
 	m_udpSocket = udpSocket;
 }
