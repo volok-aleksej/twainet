@@ -11,22 +11,28 @@
 #endif/*WIN32*/
 
 TCPSocket::TCPSocket(Type typeSocket)
-: m_typeSocket(typeSocket), m_ssl(0), m_sslctx(0)
+	: AnySocket(typeSocket)
 {
-	initSSL();
 	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
 TCPSocket::TCPSocket(Type typeSocket, int socket)
-: m_typeSocket(typeSocket)
+: AnySocket(typeSocket)
 , m_socket(socket)
 {
-	initSSL();
+	if (SECURE_SOCKET == m_typeSocket)
+	{
+	   m_secure->PerformSslVerify();
+	}
 }
 
 TCPSocket::~TCPSocket()
 {
-	shutdownSSL();
+	if(m_typeSocket == AnySocket::SECURE_SOCKET)
+	{
+		m_secure->Shutdown();
+		delete m_secure;
+	}
 	Close();
 }
 
@@ -86,73 +92,6 @@ int TCPSocket::Accept(std::string& ip, int& port)
 	return sock;
 }
 
-bool TCPSocket::initSSL()
-{
-	if(m_typeSocket == SECURE_SOCKET)
-	{
-		m_sslctx = SSL_CTX_new(SSLv3_method());
-		if (!m_sslctx)
-		{
-			return false;
-		}
-
-		m_ssl = SSL_new(m_sslctx);
-		if (!m_ssl)
-		{
-			return false;
-		}
-	}
-	else
-	{
-		m_sslctx = 0;
-		m_ssl = 0;
-	}
-	
-	return true;
-}
-
-void TCPSocket::shutdownSSL()
-{
-   if(m_socket > 0 && m_ssl)
-   {
-      SSL_shutdown(m_ssl);
-   }
-   
-   if (m_sslctx)
-   {
-      SSL_CTX_free(m_sslctx);
-      m_sslctx = NULL;
-   }
-
-   if (m_ssl) 
-   {
-      SSL_free(m_ssl);
-      m_ssl = NULL;
-   }
-}
-
-bool TCPSocket::performSslVerify()
-{
-	m_typeSocket = SECURE_SOCKET;
-
-	if(!m_ssl)
-	{
-		initSSL();
-	}
-
-	SSL_set_fd(m_ssl, m_socket);
-	SSL_set_verify(m_ssl, SSL_VERIFY_NONE, NULL);
-
-	int sslConnectResult = SSL_connect(m_ssl);
-	if (1 != sslConnectResult)
-	{
-		int sslError = SSL_get_error(m_ssl, sslConnectResult);
-		return false;
-	}
-
-	return true;
-}
-
 bool TCPSocket::Connect(const std::string& host, int port)
 {
 	if(!m_socket || host.empty())
@@ -182,7 +121,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 	bool sslVerifyRes = true;
 	if (SECURE_SOCKET == m_typeSocket)
 	{
-	   sslVerifyRes = performSslVerify();
+	   sslVerifyRes = m_secure->PerformSslVerify();
 	}
 
 	return sslVerifyRes;
@@ -202,7 +141,7 @@ bool TCPSocket::Send(char* data, int len)
 		int res;
 		if(m_typeSocket == SECURE_SOCKET)
 		{
-			res = SSL_write(m_ssl, data + len - sendlen, sendlen);
+			res = m_secure->Send(data + len - sendlen, sendlen);
 		}
 		else
 		{
@@ -232,7 +171,7 @@ bool TCPSocket::Recv(char* data, int len)
 		int res;
 		if(m_typeSocket == SECURE_SOCKET)
 		{
-			res = SSL_read(m_ssl, data + len - recvlen, recvlen);
+			res = m_secure->Recv(data + len - recvlen, recvlen);
 		}
 		else
 		{
