@@ -135,24 +135,26 @@ bool TCPSocket::Send(char* data, int len)
 	}
 
 	CSLocker locker(&m_cs);
-	int sendlen = len;
-	while (sendlen > 0)
+	if(m_typeSocket == SECURE_SOCKET)
 	{
-		int res;
-		if(m_typeSocket == SECURE_SOCKET)
-		{
-			res = m_secure->Send(data + len - sendlen, sendlen);
-		}
-		else
-		{
-			res = send(m_socket, data + len - sendlen, sendlen, 0);
-		}
-		if(res <= 0)
+		if(!m_secure->Send(data, len))
 		{
 			return false;
 		}
+	}
+	else
+	{
+		int sendlen = len;
+		while (sendlen > 0)
+		{
+			int res = send(m_socket, data + len - sendlen, sendlen, 0);
+			if(res <= 0)
+			{
+				return false;
+			}
 
-		sendlen -= res;
+			sendlen -= res;
+		}
 	}
 
 	return true;
@@ -165,25 +167,25 @@ bool TCPSocket::Recv(char* data, int len)
 		return false;
 	}
 
-	int recvlen = len;
-	while (recvlen > 0)
+	if(m_typeSocket == SECURE_SOCKET)
 	{
-		int res;
-		if(m_typeSocket == SECURE_SOCKET)
-		{
-			res = m_secure->Recv(data + len - recvlen, recvlen);
-		}
-		else
-		{
-			res = recv(m_socket, data + len - recvlen, recvlen, 0);
-		}
-		if(res <= 0)
-		{
-			return false;
-		}
-
-		recvlen -= res;
+		m_secure->Recv(data, len);
 	}
+	else
+	{
+		int recvlen = len;
+		while (recvlen > 0)
+		{
+			int res = recv(m_socket, data + len - recvlen, recvlen, 0);
+			if(res <= 0)
+			{
+				return false;
+			}
+
+			recvlen -= res;
+		}
+	}
+
 
 	return true;
 }

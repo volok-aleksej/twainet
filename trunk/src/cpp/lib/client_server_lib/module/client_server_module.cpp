@@ -38,8 +38,8 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = m_serverIPCName;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(address.m_moduleName);
-//	address.m_socketFactory = new TCPSecureSocketFactory;
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
+//	address.m_socketFactory = new TCPSocketFactory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
@@ -87,7 +87,8 @@ void ClientServerModule::StartServer(int port)
 	address.m_localIP = "";
 	address.m_localPort = port;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_clientIPCName);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
+//	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;
 	m_serverThread = new IPCListenThread(address);
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, CreatedListenerMessage, onCreatedListener));

@@ -397,7 +397,7 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_acceptCount = 1;
 	ListenThread* thread = new IPCListenThread(address);
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalListener));
@@ -431,7 +431,7 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
@@ -492,7 +492,7 @@ void TunnelModule::CreateExternalConnectThread(const std::string& extSessionId, 
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new UDTSocketFactory;
+	address.m_socketFactory = new UDTSecureSocketFactory;
 	address.m_ip = ip;
 	address.m_port = port;
 	tunnel->m_externalConnectThread->ChangeConnectAddress(address);
@@ -515,7 +515,7 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);

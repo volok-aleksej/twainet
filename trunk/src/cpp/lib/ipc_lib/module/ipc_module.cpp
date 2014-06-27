@@ -114,7 +114,7 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 		address.m_localPort = 0;
 		address.m_moduleName = address.m_id = object.m_ipcName.GetModuleNameString();
 		address.m_connectorFactory = m_factory->Clone();
-		address.m_socketFactory = new TCPSocketFactory;
+		address.m_socketFactory = new TCPSecureSocketFactory;
 		address.m_ip = "127.0.0.1";
 		address.m_port = object.m_port;
 		ConnectThread* thread = new ConnectThread(address);
@@ -139,7 +139,7 @@ void IPCModule::Start(const std::string& ip, int port)
 	address.m_localIP = ip;
 	address.m_localPort = port;
 	address.m_connectorFactory = m_factory->Clone();
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_acceptCount = -1;
 	m_listenThread = new IPCListenThread(address);
 	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, CreatedListenerMessage, onCreatedListener));
@@ -172,7 +172,7 @@ void IPCModule::ConnectToCoordinator()
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = m_coordinatorIPCName;
 	address.m_connectorFactory = m_factory->Clone();
-	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_ip = "127.0.0.1";
 	address.m_port = g_ipcCoordinatorPorts[m_count—onnect];
 	ConnectThread* thread = new ConnectThread(address);

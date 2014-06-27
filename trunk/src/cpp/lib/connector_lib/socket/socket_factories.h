@@ -34,4 +34,15 @@ public:
 private:
 	int m_udpSocket;
 };
+
+class UDTSecureSocketFactory : public SocketFactory
+{
+public:
+	AnySocket* CreateSocket();
+	AnySocket* CreateSocket(int socket);
+
+	void SetUdpSocket(int udpSocket);
+private:
+	int m_udpSocket;
+};
 #endif/*SOCKET_FACTORIES_H*/
