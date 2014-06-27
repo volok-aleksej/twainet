@@ -4,14 +4,16 @@
 #include "udt.h"
 #pragma warning(default:4251)
 
-UDTSocket::UDTSocket()
-: m_udpSocket(0)
+UDTSocket::UDTSocket(Type typeSocket)
+: AnySocket(typeSocket)
+, m_udpSocket(0)
 {
 	m_socket = UDT::socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
 }
 
-UDTSocket::UDTSocket(int socket, bool isUdp)
-: m_udpSocket(0)
+UDTSocket::UDTSocket(int socket, bool isUdp, Type typeSocket)
+: AnySocket(typeSocket)
+, m_udpSocket(0)
 {
 	if(isUdp)
 	{
@@ -24,7 +26,8 @@ UDTSocket::UDTSocket(int socket, bool isUdp)
 	}
 }
 
-UDTSocket::UDTSocket(int udpSocket, int socket)
+UDTSocket::UDTSocket(int udpSocket, int socket, Type typeSocket)
+: AnySocket(typeSocket)
 {
 	m_udpSocket = udpSocket;
 	m_socket = socket;

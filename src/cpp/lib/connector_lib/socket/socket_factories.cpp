@@ -5,22 +5,22 @@
 
 AnySocket* TCPSocketFactory::CreateSocket()
 {
-	return new TCPSocket(TCPSocket::COMMON_SOCKET);
+	return new TCPSocket(AnySocket::COMMON_SOCKET);
 }
 
 AnySocket* TCPSocketFactory::CreateSocket(int socket)
 {
-	return new TCPSocket(TCPSocket::COMMON_SOCKET, socket);
+	return new TCPSocket(AnySocket::COMMON_SOCKET, socket);
 }
 
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
-	return new TCPSocket(TCPSocket::SECURE_SOCKET);
+	return new TCPSocket(AnySocket::SECURE_SOCKET);
 }
 
 AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 {
-	return new TCPSocket(TCPSocket::SECURE_SOCKET, socket);
+	return new TCPSocket(AnySocket::SECURE_SOCKET, socket);
 }
 
 AnySocket* UDPSocketFactory::CreateSocket()
@@ -37,11 +37,11 @@ AnySocket* UDTSocketFactory::CreateSocket()
 {
 	if(!m_udpSocket)
 	{
-		return new UDTSocket;
+		return new UDTSocket(AnySocket::COMMON_SOCKET);
 	}
 	else
 	{
-		return new UDTSocket(m_udpSocket, true);
+		return new UDTSocket(m_udpSocket, true, AnySocket::COMMON_SOCKET);
 	}
 }
 
@@ -49,11 +49,11 @@ AnySocket* UDTSocketFactory::CreateSocket(int socket)
 {
 	if(!m_udpSocket)
 	{
-		return new UDTSocket(socket, false);
+		return new UDTSocket(socket, false, AnySocket::COMMON_SOCKET);
 	}
 	else
 	{
-		return new UDTSocket(m_udpSocket, socket);
+		return new UDTSocket(m_udpSocket, socket, AnySocket::COMMON_SOCKET);
 	}
 }
 
