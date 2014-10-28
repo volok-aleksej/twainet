@@ -24,7 +24,6 @@ protected:
 private:
 	TunnelConnector* m_connectorOne;
 	TunnelConnector* m_connectorTwo;
-	CriticalSection m_cs;
 };
 
 #endif/*TUNNEL__SERVER_CONNECTOR_H*/

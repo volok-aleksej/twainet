@@ -6,7 +6,7 @@
 class DataHandler
 {
 public:
-	virtual void onData(char* data, int len) = 0;
+	virtual bool onData(char* data, int len) = 0;
 	virtual bool toMessage(const DataMessage& msg) = 0;
 protected:
 	DataHandler(void){}

@@ -9,25 +9,14 @@ TunnelServerConnector::TunnelServerConnector(TunnelConnector* connectorOne, Tunn
 
 TunnelServerConnector::~TunnelServerConnector()
 {
+	ThreadManager::GetInstance().AddThread(m_connectorOne);
+	ThreadManager::GetInstance().AddThread(m_connectorTwo);
 }
 
 void TunnelServerConnector::Stop()
 {
 	StopThread();
-
-	CSLocker lock(&m_cs);
-	if(m_connectorOne)
-	{
-		m_connectorOne->Stop();
-		ThreadManager::GetInstance().AddThread(m_connectorOne);
-		m_connectorOne = 0;
-	}
-	if(m_connectorTwo)
-	{
-		m_connectorTwo->Stop();
-		ThreadManager::GetInstance().AddThread(m_connectorTwo);
-		m_connectorTwo = 0;
-	}
+	OnStop();
 }
 
 void TunnelServerConnector::OnStart()
@@ -46,19 +35,8 @@ void TunnelServerConnector::OnStart()
 
 void TunnelServerConnector::OnStop()
 {
-	CSLocker lock(&m_cs);
-	if(m_connectorOne)
-	{
-		m_connectorOne->Stop();
-		ThreadManager::GetInstance().AddThread(m_connectorOne);
-		m_connectorOne = 0;
-	}
-	if(m_connectorTwo)
-	{
-		m_connectorTwo->Stop();
-		ThreadManager::GetInstance().AddThread(m_connectorTwo);
-		m_connectorTwo = 0;
-	}
+	m_connectorOne->Stop();
+	m_connectorTwo->Stop();
 }
 
 void TunnelServerConnector::ThreadFunc()

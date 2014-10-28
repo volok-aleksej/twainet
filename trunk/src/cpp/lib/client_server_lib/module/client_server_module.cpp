@@ -37,7 +37,7 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = m_serverIPCName;
-	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(address.m_moduleName);
+	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_clientIPCName);
 	address.m_socketFactory = new TCPSecureSocketFactory;
 //	address.m_socketFactory = new TCPSocketFactory;
 	address.m_ip = ip;
@@ -86,7 +86,7 @@ void ClientServerModule::StartServer(int port)
 	address.m_id = m_clientIPCName;
 	address.m_localIP = "";
 	address.m_localPort = port;
-	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_clientIPCName);
+	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_serverIPCName);
 	address.m_socketFactory = new TCPSecureSocketFactory;
 //	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;

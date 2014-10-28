@@ -24,6 +24,7 @@ public:
 private:
 	int m_udpSocket;
 	int m_socket;
+
 	CriticalSection m_cs;
 };
 

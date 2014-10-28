@@ -12,7 +12,7 @@ class MessageHandler
 	, virtual public Sender
 {
 protected:
-	virtual void onData(char* data, int len);
+	virtual bool onData(char* data, int len);
 	virtual bool toMessage(const DataMessage& msg);
 	
 protected:
