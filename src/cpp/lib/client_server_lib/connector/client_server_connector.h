@@ -36,7 +36,6 @@ protected:
 protected:
 	friend class Signal;
 	void onIPCMessage(const IPCProtoMessage& msg);
-	void onIPCMessage(const IPCMessageSignal& msg);
 	void onInitTunnelSignal(const InitTunnelSignal& msg);
 	void onInitTunnelStartedSignal(const InitTunnelStartedSignal& msg);
 	void onTryConnectToMessage(const TryConnectToMessage& msg);

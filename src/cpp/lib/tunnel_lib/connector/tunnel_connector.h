@@ -11,8 +11,6 @@ using namespace client_server;
 
 class TunnelConnector;
 
-typedef HandlerProtoMessage<TunnelConnector, Test> TestMessage;
-
 class TunnelConnector : public IPCConnector
 {
 	friend class TunnelServerConnector;
@@ -27,9 +25,7 @@ protected:
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
 
 protected:
-	template<typename THandler, typename TMessage> friend class HandlerProtoMessage;
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
-	void onMessage(const Test& msg);
 	void onMessage(const ModuleName& msg);
 	void onMessage(const ModuleState& msg);
 private:

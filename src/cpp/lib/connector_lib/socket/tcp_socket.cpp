@@ -137,10 +137,7 @@ bool TCPSocket::Send(char* data, int len)
 	CSLocker locker(&m_cs);
 	if(m_typeSocket == SECURE_SOCKET)
 	{
-		if(!m_secure->Send(data, len))
-		{
-			return false;
-		}
+		return m_secure->Send(data, len);
 	}
 	else
 	{
@@ -169,7 +166,7 @@ bool TCPSocket::Recv(char* data, int len)
 
 	if(m_typeSocket == SECURE_SOCKET)
 	{
-		m_secure->Recv(data, len);
+		return m_secure->Recv(data, len);
 	}
 	else
 	{
@@ -196,7 +193,7 @@ bool TCPSocket::Close()
 	{
 		return false;
 	}
-
+	
 	shutdown(m_socket, SD_BOTH);
 	return closesocket(m_socket) == 0;
 }

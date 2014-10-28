@@ -16,13 +16,13 @@ void MessageHandler::addMessage(DataMessage* msg)
 	m_messages[msg->GetName()] = msg;
 }
 
-void MessageHandler::onData(char* data, int len)
+bool MessageHandler::onData(char* data, int len)
 {
 	int typeLen = 0;
 	memcpy(&typeLen, data, sizeof(int));
 	int headerLen = sizeof(int) + typeLen;
 	if (typeLen
-		&& len >= headerLen)
+		&& len >= (unsigned int)headerLen)
 	{
 		std::string type("", typeLen);
 		memcpy((char*)type.c_str(), data + sizeof(size_t), typeLen);
@@ -34,9 +34,11 @@ void MessageHandler::onData(char* data, int len)
 			{
 				it->second->serialize(data + headerLen, dataLen);
 				it->second->onMessage();
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 bool MessageHandler::toMessage(const DataMessage& msg)

@@ -3,7 +3,6 @@
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false), m_pingThread(this)
 {
-	addMessage(new TestMessage(this));
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));
 }
@@ -42,14 +41,6 @@ void TunnelConnector::OnStop()
 bool TunnelConnector::SetModuleName(const IPCObjectName& moduleName)
 {
 	return false;
-}
-
-void TunnelConnector::onMessage(const Test& msg)
-{
-	if(!m_isServer)
-	{
-		printf("get test message\n");
-	}
 }
 
 void TunnelConnector::onMessage(const ModuleName& msg)

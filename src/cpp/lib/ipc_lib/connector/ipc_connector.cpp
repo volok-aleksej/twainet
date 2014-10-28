@@ -194,7 +194,11 @@ void IPCConnector::onMessage(const IPCMessage& msg)
 		memcpy((char*)data.c_str(), &sizeName, sizeof(int));
 		data.append(msg.message_name());
 		data.append(msg.message().c_str(), msg.message().size());
-		onData((char*)data.c_str(), (int)data.size());
+		if(!onData((char*)data.c_str(), (int)data.size()))
+		{
+			IPCProtoMessage protoMsg(this, newMsg);
+			onSignal(protoMsg);
+		}
 	}
 	else if(newMsg.ipc_path_size())
 	{

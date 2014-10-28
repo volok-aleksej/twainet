@@ -56,12 +56,12 @@ void ClientServerConnector::onNewConnector(const Connector* connector)
 	{
 		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
 		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
+		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, IPCProtoMessage, onIPCMessage));
 	}
 }
 
 void ClientServerConnector::Subscribe(::SignalOwner* owner)
 {
-	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, IPCMessageSignal, onIPCMessage));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelSignal, onInitTunnelSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelStartedSignal, onInitTunnelStartedSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
@@ -97,26 +97,23 @@ bool ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	IPCObjectName path(msg.ipc_path(0));
-	if(path.GetModuleNameString() == m_id)
+	if (path.GetModuleNameString() == m_id)
 	{
 		ClientSendMessage sendMsg(msg);
 		toMessage(sendMsg);
 	}
-}
-
-void ClientServerConnector::onIPCMessage(const IPCMessageSignal& msg)
-{
-	IPCObjectName ipcName("");
-	if(msg.ipc_path_size() != 0)
+	if (m_ownSessionId == path.GetModuleNameString() &&
+		GetModuleName().GetModuleNameString() == ClientServerModule::m_serverIPCName)
 	{
-		ipcName = const_cast<IPCMessageSignal&>(msg).ipc_path(0);
-	}
-
-	if (msg.ipc_path_size() == 0 ||
-		ipcName == IPCObjectName::GetIPCName(GetId()))
-	{
-		ClientSendMessage sendMsg(msg);
-		toMessage(sendMsg);
+		IPCProtoMessage newMsg(msg);
+		newMsg.clear_ipc_path();
+		IPCObjectName server(ClientServerModule::m_clientIPCName);
+		*newMsg.add_ipc_path() = server;
+		for(int i = 1; i < msg.ipc_path_size(); i++)
+		{
+			*newMsg.add_ipc_path() = msg.ipc_path(i);
+		}
+		toMessage(newMsg);
 	}
 }
 
