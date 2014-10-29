@@ -68,6 +68,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -141,6 +142,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(ProjectName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

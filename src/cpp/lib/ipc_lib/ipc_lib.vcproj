@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -51,6 +51,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -63,6 +64,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="connector_lib.lib libprotobuf.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -106,13 +110,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -125,6 +130,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="connector_lib.lib libprotobuf.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -166,7 +174,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
 						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
 					/>
 				</FileConfiguration>
@@ -176,7 +184,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
 						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
 					/>
 				</FileConfiguration>

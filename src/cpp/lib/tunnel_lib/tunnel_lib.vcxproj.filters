@@ -2,19 +2,19 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="module">
-      <UniqueIdentifier>{35618438-b073-424c-b938-1e568423f5e5}</UniqueIdentifier>
+      <UniqueIdentifier>{31830b26-4dd9-4db8-8a02-ea2e93591447}</UniqueIdentifier>
     </Filter>
     <Filter Include="connector">
-      <UniqueIdentifier>{73b07648-ac89-46d8-b122-b9aa8787b207}</UniqueIdentifier>
+      <UniqueIdentifier>{64f4f951-6ccc-4f39-a14f-e183a02f8768}</UniqueIdentifier>
     </Filter>
     <Filter Include="common">
-      <UniqueIdentifier>{62aedae7-5a77-4dd7-9a15-d26b54dd7afc}</UniqueIdentifier>
+      <UniqueIdentifier>{1953064b-8fb3-4b13-a8c3-4e92c077ea12}</UniqueIdentifier>
     </Filter>
     <Filter Include="thread">
-      <UniqueIdentifier>{c94ac738-f430-4ae6-bdfc-29e5bbe7bca7}</UniqueIdentifier>
+      <UniqueIdentifier>{03825873-960f-48c6-a29d-9e83f08b5c24}</UniqueIdentifier>
     </Filter>
     <Filter Include="message">
-      <UniqueIdentifier>{f9de7dd7-50cc-45c9-b6a3-7edcac5181e8}</UniqueIdentifier>
+      <UniqueIdentifier>{22388639-2e44-41fd-8c63-45841fdc0232}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

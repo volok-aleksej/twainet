@@ -2,25 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="connector">
-      <UniqueIdentifier>{d5889603-945f-4fcb-be25-926a2d374e12}</UniqueIdentifier>
+      <UniqueIdentifier>{d4739b98-a9f8-4f24-97ca-99d49da58c76}</UniqueIdentifier>
     </Filter>
     <Filter Include="common">
-      <UniqueIdentifier>{65e14954-a207-4d4a-a1be-206a1e731248}</UniqueIdentifier>
+      <UniqueIdentifier>{abfcbe21-4a50-4bbd-b5e5-c237705bc337}</UniqueIdentifier>
     </Filter>
     <Filter Include="socket">
-      <UniqueIdentifier>{e26b85bd-78e8-4ee1-9c66-4c0693724ea8}</UniqueIdentifier>
+      <UniqueIdentifier>{6a2cebdf-b169-4310-a64a-4097d9b81a5e}</UniqueIdentifier>
     </Filter>
     <Filter Include="message">
-      <UniqueIdentifier>{b918cffc-5286-4eb8-b769-77e6a90627a1}</UniqueIdentifier>
+      <UniqueIdentifier>{e3c80417-c047-43a0-9474-c7b0b189adb8}</UniqueIdentifier>
     </Filter>
     <Filter Include="thread">
-      <UniqueIdentifier>{7643505e-058d-4e3d-b49f-aa0f68fc7a53}</UniqueIdentifier>
+      <UniqueIdentifier>{c3aab6be-7fcc-4350-acfd-44eb763a7ac9}</UniqueIdentifier>
     </Filter>
     <Filter Include="handler">
-      <UniqueIdentifier>{0ba3287f-a00b-49f5-a986-aead49f80937}</UniqueIdentifier>
+      <UniqueIdentifier>{d55f3a4d-603a-4786-b2e6-e89ced0d2eab}</UniqueIdentifier>
     </Filter>
     <Filter Include="signal">
-      <UniqueIdentifier>{24ad0a5a-7daf-4faf-b25e-495d13dc7232}</UniqueIdentifier>
+      <UniqueIdentifier>{77546135-f7d2-412d-b66d-d1de97ce3a13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="signal\signal_receiver.cpp">
       <Filter>signal</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\secure_socket.cpp">
+      <Filter>socket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="signal\signal_receiver.h">
       <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\secure_socket.h">
+      <Filter>socket</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

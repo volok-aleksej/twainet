@@ -62,6 +62,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies=" udt.lib thread_lib.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -123,6 +126,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies=" udt.lib thread_lib.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -189,6 +195,14 @@
 			>
 			<File
 				RelativePath=".\socket\any_socket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\socket\secure_socket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\socket\secure_socket.h"
 				>
 			</File>
 			<File

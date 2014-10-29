@@ -137,6 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""

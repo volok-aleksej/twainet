@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,6 +61,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="client_server_lib.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -105,7 +108,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -124,6 +127,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="client_server_lib.lib"
+				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
