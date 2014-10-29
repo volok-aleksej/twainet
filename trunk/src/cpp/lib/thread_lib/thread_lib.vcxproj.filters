@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="thread">
-      <UniqueIdentifier>{3d527bb3-9ad7-4fdd-b76b-90c0446dec3b}</UniqueIdentifier>
+      <UniqueIdentifier>{72667719-d3ca-4770-a9e8-5deeb76b836a}</UniqueIdentifier>
     </Filter>
     <Filter Include="common">
-      <UniqueIdentifier>{ac06fe53-8fb5-4e32-a0c4-7ff5db21ac5e}</UniqueIdentifier>
+      <UniqueIdentifier>{ec06c155-9da9-4204-9153-cacc6fce29f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
