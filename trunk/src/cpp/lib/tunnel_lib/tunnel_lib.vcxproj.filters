@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="module">
+      <UniqueIdentifier>{35618438-b073-424c-b938-1e568423f5e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="connector">
+      <UniqueIdentifier>{73b07648-ac89-46d8-b122-b9aa8787b207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{62aedae7-5a77-4dd7-9a15-d26b54dd7afc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{c94ac738-f430-4ae6-bdfc-29e5bbe7bca7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{f9de7dd7-50cc-45c9-b6a3-7edcac5181e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="module\tunnel_containers.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="module\tunnel_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\tunnel_connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\tunnel_server_connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\network.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\external_connect_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\external_listen_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\external_recv_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\relay_listen_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\tunnel_checker_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="message\tunnel_messages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="module\tunnel_containers.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\tunnel_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\tunnel_connector.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\tunnel_server_connector.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\external_connect_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\external_listen_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\external_recv_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\relay_listen_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\tunnel_checker_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\tunnel_server_listen_address.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="message\tunnel_messages.h">
+      <Filter>message</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

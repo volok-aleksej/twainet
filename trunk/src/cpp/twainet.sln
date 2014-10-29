@@ -12,14 +12,31 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "thread_lib", "lib\thread_lib\thread_lib.vcxproj", "{B3C8E858-F756-45AF-A957-1AA8C4FA1A9A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "connector_lib", "lib\connector_lib\connector_lib.vcxproj", "{1F5FD41D-D68E-4830-91C7-EDA03898328D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D84D100A-7C21-4CCB-B16E-0FB37137C16C} = {D84D100A-7C21-4CCB-B16E-0FB37137C16C}
+		{B3C8E858-F756-45AF-A957-1AA8C4FA1A9A} = {B3C8E858-F756-45AF-A957-1AA8C4FA1A9A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ipc_lib", "lib\ipc_lib\ipc_lib.vcxproj", "{0656AFC0-A5FB-407F-87AF-1D5A74BB817F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1F5FD41D-D68E-4830-91C7-EDA03898328D} = {1F5FD41D-D68E-4830-91C7-EDA03898328D}
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30} = {3E283F37-A4ED-41B7-A3E6-A2D89D131A30}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client_server_lib", "lib\client_server_lib\client_server_lib.vcxproj", "{358366FD-07F6-49E6-83C1-94F38323F88B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0656AFC0-A5FB-407F-87AF-1D5A74BB817F} = {0656AFC0-A5FB-407F-87AF-1D5A74BB817F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tunnel_lib", "lib\tunnel_lib\tunnel_lib.vcxproj", "{FA5C42D5-3735-46CA-8740-F2547CAF8972}"
+	ProjectSection(ProjectDependencies) = postProject
+		{358366FD-07F6-49E6-83C1-94F38323F88B} = {358366FD-07F6-49E6-83C1-94F38323F88B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{86FD5170-B6ED-4728-8429-2092F2D90B34}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

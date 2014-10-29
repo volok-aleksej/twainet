@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="thread">
+      <UniqueIdentifier>{3d527bb3-9ad7-4fdd-b76b-90c0446dec3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{ac06fe53-8fb5-4e32-a0c4-7ff5db21ac5e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="thread\thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\thread_impl.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\thread_manager.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="common\critical_section.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="thread\thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\thread_impl.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\thread_manager.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="common\critical_section.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\object_manager.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ref.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\singleton.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
