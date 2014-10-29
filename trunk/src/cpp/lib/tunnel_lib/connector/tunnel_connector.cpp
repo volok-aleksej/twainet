@@ -9,6 +9,7 @@ TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleN
 
 TunnelConnector::~TunnelConnector()
 {
+	removeReceiver();
 }
 
 void TunnelConnector::SetServerFlag()

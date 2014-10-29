@@ -42,6 +42,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 
 ClientServerConnector::~ClientServerConnector()
 {
+	removeReceiver();
 }
 
 void ClientServerConnector::onNewConnector(const Connector* connector)
@@ -80,6 +81,7 @@ void ClientServerConnector::SetPassword(const std::string& password)
 
 void ClientServerConnector::OnStart()
 {
+	m_checker.Start();
 	if(m_id == ClientServerModule::m_serverIPCName)
 	{
 		ProtoMessage<Login, ClientServerConnector> loginMsg(this);
@@ -162,15 +164,18 @@ void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 
 void ClientServerConnector::onMessage(const LoginResult& msg)
 {
+	m_checker.Stop();
 	printf("LoginResult: %s\n", msg.own_session_id().c_str());
 	m_ownSessionId = msg.own_session_id();
 
 	LoginResultMessage lrMsg(this, msg);
 	onSignal(lrMsg);
+	OnConnected();
 }
 
 void ClientServerConnector::onMessage(const Login& msg)
 {
+	m_checker.Stop();
 	printf("Login: %s\n", msg.name().c_str());
 
 	ProtoMessage<LoginResult, ClientServerConnector> loginResultMsg(this);
@@ -181,6 +186,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 	m_ownSessionId = loginResultMsg.own_session_id();
 
 	printf("sessionId: %s\n", m_ownSessionId.c_str());
+	OnConnected();
 }
 
 void ClientServerConnector::onMessage(const InitTunnel& msg)

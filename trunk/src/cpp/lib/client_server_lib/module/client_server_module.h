@@ -34,6 +34,7 @@ protected:
 	void onErrorListener(const ListenErrorMessage& msg);
 
 	void onLoginResult(const LoginResultMessage& msg);
+	void onIPCMessage(const IPCProtoMessage& msg);
 
 	//for client
 	std::string m_ownSessionId;

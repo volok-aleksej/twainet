@@ -185,6 +185,7 @@ void IPCConnector::onMessage(const IPCMessage& msg)
 			*newMsg.add_ipc_path() = msg.ipc_path(i);
 		}
 	}
+	*newMsg.mutable_ipc_sender() = IPCObjectName::GetIPCName(GetId());
 
 	if(newPath == m_moduleName && !newMsg.ipc_path_size())
 	{

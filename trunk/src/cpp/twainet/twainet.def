@@ -1,0 +1,10 @@
+LIBRARY "Twainet"
+
+EXPORTS
+    InitLibrary		PRIVATE
+    CreateServer	PRIVATE
+    ConnectToServer	PRIVATE
+    CreateModule	PRIVATE
+	ConnectToModule PRIVATE
+	CreateTunnel	PRIVATE
+	SendMessage		PRIVATE
