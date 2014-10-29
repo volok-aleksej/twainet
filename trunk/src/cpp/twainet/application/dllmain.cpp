@@ -19,10 +19,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		UDT::startup();
+		Application::GetInstance();
 		break;
 
 	case DLL_PROCESS_DETACH:
 		UDT::cleanup();
+		Application::GetInstance().Stop();
 		break;
 
 	case DLL_THREAD_ATTACH:

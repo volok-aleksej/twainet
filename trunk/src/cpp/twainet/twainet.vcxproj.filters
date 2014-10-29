@@ -4,6 +4,9 @@
     <Filter Include="application">
       <UniqueIdentifier>{a27d2864-f59c-490a-ad8c-c22cd600dd8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="module">
+      <UniqueIdentifier>{40c9ca57-7cb9-4325-bca9-16f660cd67f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -12,6 +15,9 @@
     <ClCompile Include="application\application.cpp">
       <Filter>application</Filter>
     </ClCompile>
+    <ClCompile Include="module\twainet_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">
@@ -19,6 +25,9 @@
     </ClInclude>
     <ClInclude Include="application\twainet.h">
       <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="module\twainet_module.h">
+      <Filter>module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

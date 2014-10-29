@@ -13,6 +13,7 @@ public:
 	virtual ~TunnelModule();
 public:
 	void InitNewTunnel(const std::string& extSessionId);
+	void DestroyTunnel(const std::string& extSessionId);
 protected:
 	virtual void OnNewConnector(Connector* connector);
 	virtual void TunnelConnectFailed(const std::string& sessionId);

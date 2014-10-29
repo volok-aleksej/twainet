@@ -26,6 +26,8 @@ public:
 	std::string GetSessionId();
 protected:
 	virtual void OnFireConnector(const std::string& moduleName);
+	virtual bool CheckFireConnector(const std::string& moduleName);
+	virtual void OnServerConnected();
 protected:
 	friend class Signal;
 	void onAddConnector(const ConnectorMessage& msg);

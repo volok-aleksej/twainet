@@ -125,6 +125,11 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 	}
 }
 
+void IPCModule::DisconnectModule(const IPCObjectName& moduleName)
+{
+	m_manager.StopConnection(moduleName.GetModuleNameString());
+}
+
 void IPCModule::Start(const std::string& ip, int port)
 {
 	if(m_listenThread)
@@ -154,10 +159,16 @@ void IPCModule::OnNewConnector(Connector* connector)
 
 void IPCModule::OnFireConnector(const std::string& moduleName)
 {
+	printf("Disconnect: %s\n", moduleName.c_str());
 }
 
 void IPCModule::OnConnectFailed(const std::string& moduleName)
 {
+}
+
+bool IPCModule::CheckFireConnector(const std::string& moduleName)
+{
+	return false;
 }
 
 void IPCModule::ConnectToCoordinator()
@@ -385,7 +396,7 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 	}
 	m_csConnectors.Leave();
 
-	if(!isModuleDelete)
+	if(!isModuleDelete && !CheckFireConnector(msg.m_id))
 	{
 		return;
 	}

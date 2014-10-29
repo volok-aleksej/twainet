@@ -54,7 +54,18 @@ void ClientServerModule::OnFireConnector(const std::string& moduleName)
 	{
 		m_ownSessionId.clear();
 		Connect(m_ip, m_port);
+		return;
 	}
+	IPCModule::OnFireConnector(moduleName);
+}
+
+bool ClientServerModule::CheckFireConnector(const std::string& moduleName)
+{
+	return moduleName == m_serverIPCName || moduleName == m_clientIPCName;
+}
+
+void ClientServerModule::OnServerConnected()
+{
 }
 
 void ClientServerModule::Disconnect()
@@ -159,6 +170,7 @@ void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
 void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 {
 	m_ownSessionId = msg.own_session_id();
+	OnServerConnected();
 }
 
 void ClientServerModule::onIPCMessage(const IPCProtoMessage& msg)

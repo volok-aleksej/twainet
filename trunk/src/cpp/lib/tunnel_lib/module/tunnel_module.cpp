@@ -49,6 +49,11 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId)
 	onSignal(itSig);
 }
 
+void TunnelModule::DestroyTunnel(const std::string& extSessionId)
+{
+	m_manager.StopConnection(extSessionId);
+}
+
 void TunnelModule::OnNewConnector(Connector* connector)
 {
 	ClientServerConnector* clientServerConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
@@ -212,7 +217,7 @@ void TunnelModule::onErrorLocalConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddLocalConnector(const ConnectorMessage& msg)
 {
-	printf("new local connector - tunnel\n");
+//	printf("new local connector - tunnel\n");
 	IPCModule::onAddConnector(msg);
 	//TODO: check another connections
 }
@@ -231,7 +236,7 @@ void TunnelModule::onErrorExternalConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddExternalConnector(const ConnectorMessage& msg)
 {
-	printf("new external connector - tunnel\n");
+//	printf("new external connector - tunnel\n");
 	IPCModule::onAddConnector(msg);
 	//TODO: check another connections
 }
@@ -363,7 +368,7 @@ void TunnelModule::onErrorRelayConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddRelayConnector(const ConnectorMessage& msg)
 {
-	printf("new relay connector - tunnel\n");
+//	printf("new relay connector - tunnel\n");
 	IPCModule::onAddConnector(msg);
 	//TODO: check another connections
 }
