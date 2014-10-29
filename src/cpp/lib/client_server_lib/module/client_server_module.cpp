@@ -126,6 +126,7 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 		conn->SetUserName(m_userName);
 		conn->SetPassword(m_password);
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, IPCProtoMessage, onIPCMessage));
 	}
 
 	IPCModule::onAddConnector(msg);
@@ -158,4 +159,9 @@ void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
 void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 {
 	m_ownSessionId = msg.own_session_id();
+}
+
+void ClientServerModule::onIPCMessage(const IPCProtoMessage& msg)
+{
+	printf("getting message %s\n", msg.message_name().c_str());
 }

@@ -58,6 +58,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <OutputFile>$(SolutionDir)..\..\output\lib\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>
@@ -80,6 +81,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Lib>
       <OutputFile>$(SolutionDir)..\..\output\lib\$(Configuration)\$(TargetName)$(TargetExt)</OutputFile>

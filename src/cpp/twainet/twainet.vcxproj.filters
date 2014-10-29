@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="application">
+      <UniqueIdentifier>{a27d2864-f59c-490a-ad8c-c22cd600dd8d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="application\dllmain.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="application\application.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="application\application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="application\twainet.h">
+      <Filter>application</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="twainet.def">
+      <Filter>application</Filter>
+    </None>
+  </ItemGroup>
+</Project>

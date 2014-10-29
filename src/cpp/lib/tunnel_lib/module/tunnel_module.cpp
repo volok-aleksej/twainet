@@ -64,6 +64,7 @@ void TunnelModule::OnNewConnector(Connector* connector)
 	if(tunnelConnector)
 	{
 		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, ModuleNameMessage, onModuleName));
+		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, IPCProtoMessage, onIPCMessage));
 	}
 }
 
@@ -378,6 +379,11 @@ void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 		m_tunnels.erase(it);
 		TunnelConnected(sessionId.GetModuleNameString());
 	}
+}
+
+void TunnelModule::onIPCMessage(const IPCProtoMessage& msg)
+{
+	printf("getting message %s\n", msg.message_name().c_str());
 }
 
 void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)

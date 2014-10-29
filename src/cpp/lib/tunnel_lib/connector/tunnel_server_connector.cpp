@@ -11,6 +11,7 @@ TunnelServerConnector::~TunnelServerConnector()
 {
 	ThreadManager::GetInstance().AddThread(m_connectorOne);
 	ThreadManager::GetInstance().AddThread(m_connectorTwo);
+	removeReceiver();
 }
 
 void TunnelServerConnector::Stop()

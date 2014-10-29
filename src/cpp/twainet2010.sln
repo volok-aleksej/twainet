@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj",
 		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "twainet\twainet.vcxproj", "{CB7762A6-892C-405A-A155-E83F5AFDEC56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -76,6 +78,10 @@ Global
 		{86FD5170-B6ED-4728-8429-2092F2D90B34}.Debug|Win32.Build.0 = Debug|Win32
 		{86FD5170-B6ED-4728-8429-2092F2D90B34}.Release|Win32.ActiveCfg = Release|Win32
 		{86FD5170-B6ED-4728-8429-2092F2D90B34}.Release|Win32.Build.0 = Release|Win32
+		{CB7762A6-892C-405A-A155-E83F5AFDEC56}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CB7762A6-892C-405A-A155-E83F5AFDEC56}.Debug|Win32.Build.0 = Debug|Win32
+		{CB7762A6-892C-405A-A155-E83F5AFDEC56}.Release|Win32.ActiveCfg = Release|Win32
+		{CB7762A6-892C-405A-A155-E83F5AFDEC56}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
