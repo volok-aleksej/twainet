@@ -72,6 +72,7 @@ protected:
 
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
 	virtual void OnConnected();
+	virtual void OnDisconnected();
 	virtual void OnAddIPCObject(const std::string& moduleName);
 	virtual void OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName);
 protected:
@@ -82,6 +83,7 @@ private:
 	bool m_isCoordinator;
 	bool m_isExist;
 	std::string m_rand;
+	bool m_bConnected;
 };
 
 #endif/*IPC_CONNECTOR_H*/

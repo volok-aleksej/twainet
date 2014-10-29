@@ -9,7 +9,7 @@
 #pragma warning(disable: 4355)
 
 IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
-: Connector(socket), m_moduleName(moduleName)
+: Connector(socket), m_moduleName(moduleName), m_bConnected(false)
 , m_checker(this), m_isExist(false), m_rand(CreateGUID())
 {
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
@@ -75,8 +75,11 @@ void IPCConnector::OnStart()
 
 void IPCConnector::OnStop()
 {
-	printf("Disconnect: %s\n", m_id.c_str());
-
+	if(m_bConnected)
+	{
+		OnDisconnected();
+	}
+	
 	if(m_isCoordinator)
 	{
 		RemoveIPCObjectMessage msg(this);
@@ -94,7 +97,6 @@ void IPCConnector::onMessage(const ModuleName& msg)
 
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
-	printf("ModuleName: %s\n", m_id.c_str());
 
 	AddIPCObjectMessage aoMsg(this);
 	aoMsg.set_ip(msg.ip());
@@ -119,6 +121,7 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		return;
 	}
 
+	printf("ModuleName: %s\n", m_id.c_str());
 
 	IPCObjectListMessage ipcolMsg(this);
 	onSignal(ipcolMsg);
@@ -384,6 +387,12 @@ bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 
 void IPCConnector::OnConnected()
 {
+	m_bConnected = true;
+}
+
+void IPCConnector::OnDisconnected()
+{
+	m_bConnected = false;
 }
 
 void IPCConnector::OnAddIPCObject(const std::string& moduleName)

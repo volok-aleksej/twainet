@@ -35,6 +35,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	module2.SendMsg(msg, 1, &ipcName2);
 	
 	system("pause");
+	module2.Disconnect();
+	module2.DestroyTunnel(module1.GetSessionId());
+	
+	system("pause");
 	printf("\n");
 	UDT::cleanup();
 	return 0;

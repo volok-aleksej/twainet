@@ -66,6 +66,7 @@ public:
 	void Start();
 	void StartAsCoordinator();
 	void ConnectTo(const IPCObjectName& moduleName);
+	void DisconnectModule(const IPCObjectName& moduleName);
 	bool IsExit();
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
@@ -88,6 +89,7 @@ protected:
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual void OnConnectFailed(const std::string& moduleName);
+	virtual bool CheckFireConnector(const std::string& moduleName);
 
 protected:
 	void Start(const std::string& ip, int port);
