@@ -173,7 +173,7 @@ void IPCConnector::onMessage(const RemoveIPCObject& msg)
 
 void IPCConnector::onMessage(const IPCMessage& msg)
 {
-	if(msg.ipc_path_size() == 0)
+	if(msg.ipc_path_size() == 0 || !m_bConnected)
 	{
 		return;
 	}

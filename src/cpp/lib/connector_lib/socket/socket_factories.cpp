@@ -22,11 +22,13 @@ AnySocket* TCPSocketFactory::CreateSocket(int socket)
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
 	return new TCPSocket(AnySocket::SECURE_SOCKET);
+//	return new TCPSocket(AnySocket::COMMON_SOCKET);
 }
 
 AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 {
 	return new TCPSocket(AnySocket::SECURE_SOCKET, socket);
+//	return new TCPSocket(AnySocket::COMMON_SOCKET, socket);
 }
 
 /*******************************************************************************************************/
