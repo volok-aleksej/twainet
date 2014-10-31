@@ -157,9 +157,14 @@ void IPCModule::OnNewConnector(Connector* connector)
 {
 }
 
+void IPCModule::OnConnected(const std::string& moduleName)
+{
+	printf("\nConnect: %s\n", moduleName.c_str());
+}
+
 void IPCModule::OnFireConnector(const std::string& moduleName)
 {
-	printf("Disconnect: %s\n", moduleName.c_str());
+	printf("\nDisconnect: %s\n", moduleName.c_str());
 }
 
 void IPCModule::OnConnectFailed(const std::string& moduleName)
@@ -264,6 +269,7 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, RemoveIPCObjectMessage, onRemoveIPCObject));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCObjectListMessage, onIPCObjectList));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenerParamMessage, getListenPort));
+		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectedMessage, onConnected));
 		connector->Subscribe(dynamic_cast<SignalOwner*>(this));
 		m_manager.AddConnection(msg.m_conn);
 	}
@@ -308,6 +314,11 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 			m_tryConnectCounters.RemoveObject(counter);
 		}
 	}
+}
+
+void IPCModule::onConnected(const ConnectedMessage& msg)
+{
+	OnConnected(msg.m_id);
 }
 
 void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)

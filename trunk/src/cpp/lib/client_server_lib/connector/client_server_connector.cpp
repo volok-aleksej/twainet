@@ -165,7 +165,6 @@ void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 void ClientServerConnector::onMessage(const LoginResult& msg)
 {
 	m_checker.Stop();
-	printf("LoginResult: %s\n", msg.own_session_id().c_str());
 	m_ownSessionId = msg.own_session_id();
 
 	LoginResultMessage lrMsg(this, msg);
@@ -176,7 +175,6 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 void ClientServerConnector::onMessage(const Login& msg)
 {
 	m_checker.Stop();
-	printf("Login: %s\n", msg.name().c_str());
 
 	ProtoMessage<LoginResult, ClientServerConnector> loginResultMsg(this);
 	loginResultMsg.set_login_result(LOGIN_SUCCESS);
@@ -185,7 +183,10 @@ void ClientServerConnector::onMessage(const Login& msg)
 
 	m_ownSessionId = loginResultMsg.own_session_id();
 
-	printf("sessionId: %s\n", m_ownSessionId.c_str());
+	LoginMessage lMsg(this, msg);
+	lMsg.set_generated_session_id(m_ownSessionId);
+	onSignal(lMsg);
+
 	OnConnected();
 }
 

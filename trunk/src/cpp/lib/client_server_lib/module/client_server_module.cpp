@@ -66,6 +66,12 @@ bool ClientServerModule::CheckFireConnector(const std::string& moduleName)
 
 void ClientServerModule::OnServerConnected()
 {
+	printf("\nClient connected to server. sessionId: %s\n", m_ownSessionId.c_str());
+}
+
+void ClientServerModule::OnClientConnector(const std::string& sessionId)
+{
+	printf("\nServer incoming client connection. sessionId: %s\n", sessionId.c_str());
 }
 
 void ClientServerModule::Disconnect()
@@ -137,6 +143,7 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 		conn->SetUserName(m_userName);
 		conn->SetPassword(m_password);
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginMessage, onLogin));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, IPCProtoMessage, onIPCMessage));
 	}
 
@@ -173,7 +180,12 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 	OnServerConnected();
 }
 
+void ClientServerModule::onLogin(const LoginMessage& msg)
+{
+	OnClientConnector(msg.generated_session_id());
+}
+
 void ClientServerModule::onIPCMessage(const IPCProtoMessage& msg)
 {
-	printf("getting message %s\n", msg.message_name().c_str());
+	printf("\ngetting message %s\n", msg.message_name().c_str());
 }

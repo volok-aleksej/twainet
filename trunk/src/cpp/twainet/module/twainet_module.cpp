@@ -22,10 +22,19 @@ void TwainetModule::OnServerConnected()
 {
 }
 
+void TwainetModule::OnClientConnector(const std::string& sessionId)
+{
+}
+
 void TwainetModule::OnFireConnector(const std::string& moduleName)
 {
 }
 
 void TwainetModule::OnConnectFailed(const std::string& moduleName)
 {
+}
+
+void TwainetModule::OnConnected(const std::string& moduleName)
+{
+
 }

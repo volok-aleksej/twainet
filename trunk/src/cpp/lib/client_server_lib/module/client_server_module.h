@@ -28,6 +28,7 @@ protected:
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual bool CheckFireConnector(const std::string& moduleName);
 	virtual void OnServerConnected();
+	virtual void OnClientConnector(const std::string& sessionId);
 protected:
 	friend class Signal;
 	void onAddConnector(const ConnectorMessage& msg);
@@ -35,6 +36,7 @@ protected:
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);
 
+	void onLogin(const LoginMessage& msg);
 	void onLoginResult(const LoginResultMessage& msg);
 	void onIPCMessage(const IPCProtoMessage& msg);
 
