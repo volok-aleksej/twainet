@@ -121,8 +121,6 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		return;
 	}
 
-	printf("ModuleName: %s\n", m_id.c_str());
-
 	IPCObjectListMessage ipcolMsg(this);
 	onSignal(ipcolMsg);
 	toMessage(ipcolMsg);
@@ -388,6 +386,8 @@ bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 void IPCConnector::OnConnected()
 {
 	m_bConnected = true;
+	ConnectedMessage msg(GetId());
+	onSignal(msg);
 }
 
 void IPCConnector::OnDisconnected()

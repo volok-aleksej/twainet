@@ -66,6 +66,20 @@ std::string DisconnectedMessage::GetMessageName()
 }
 
 /************************************************************************/
+/*                         ConnectedMessage                             */
+/************************************************************************/
+ConnectedMessage::ConnectedMessage(const std::string& id)
+: m_id(id)
+{
+
+}
+
+std::string ConnectedMessage::GetMessageName()
+{
+	return typeid(ConnectedMessage).name();
+}
+
+/************************************************************************/
 /*                       ConnectErrorMessage                            */
 /************************************************************************/
 ConnectErrorMessage::ConnectErrorMessage(const std::string& moduleName, const std::string& error, int errorCode)
