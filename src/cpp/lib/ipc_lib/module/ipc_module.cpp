@@ -171,6 +171,10 @@ void IPCModule::OnConnectFailed(const std::string& moduleName)
 {
 }
 
+void IPCModule::OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
+{
+}
+
 bool IPCModule::CheckFireConnector(const std::string& moduleName)
 {
 	return false;
@@ -270,6 +274,7 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCObjectListMessage, onIPCObjectList));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenerParamMessage, getListenPort));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectedMessage, onConnected));
+		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCProtoMessage, onIPCMessage));
 		connector->Subscribe(dynamic_cast<SignalOwner*>(this));
 		m_manager.AddConnection(msg.m_conn);
 	}
@@ -319,6 +324,31 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 void IPCModule::onConnected(const ConnectedMessage& msg)
 {
 	OnConnected(msg.m_id);
+}
+
+void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
+{
+	std::vector<std::string> path;
+	for(int i = 0; i < msg.ipc_sender_size(); i++)
+	{
+		IPCObjectName sender(msg.ipc_sender(i));
+		path.push_back(sender.GetModuleNameString());
+	}
+	OnMessage(msg.message_name(), path, msg.message());
+
+	static CriticalSection cs;
+	CSLocker locker(&cs);
+	printf("\ngetting message %s\nsender path:", msg.message_name().c_str());
+	for(int i = 0; i < msg.ipc_sender_size(); i++)
+	{
+		if(i != 0)
+		{
+			printf("->");
+		}
+		IPCObjectName sender(msg.ipc_sender(i));
+		printf("%s", sender.GetModuleNameString().c_str());
+	}
+	printf("\n");
 }
 
 void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)

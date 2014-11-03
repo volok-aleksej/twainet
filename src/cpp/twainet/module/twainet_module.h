@@ -38,6 +38,9 @@ protected:
 	// therefore this function will called also
 	virtual void OnFireConnector(const std::string& moduleName);
 
+	// It has got message
+	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
+
 };
 
 #endif/*TWAINET_MODULE_H*/

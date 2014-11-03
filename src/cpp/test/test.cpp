@@ -28,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	system("pause");
 
 	Test msg;
-	IPCObjectName ipcName3(ClientServerModule::m_serverIPCName);
+	IPCObjectName ipcName3(ClientServerModule::m_serverIPCName, module2.GetSessionId());
 	IPCObjectName ipcName2(module1.GetSessionId());
 	module2.SendMsg(msg, 2, &ipcName3, &ipcName2);
 	module2.SendMsg(msg, 1, &ipcName3);

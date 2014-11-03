@@ -55,7 +55,7 @@ message IPCMessage
 {
 	required string message_name = 1;
 	repeated IPCName ipc_path = 2;
-	optional IPCName ipc_sender = 3;
+	repeated IPCName ipc_sender = 3;
 	optional bytes message = 4;
 }
 

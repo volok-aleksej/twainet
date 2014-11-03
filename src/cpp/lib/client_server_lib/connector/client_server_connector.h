@@ -33,6 +33,7 @@ public:
 protected:
 	virtual void OnStart();
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
+	virtual IPCObjectName GetIPCName();
 protected:
 	friend class Signal;
 	void onIPCMessage(const IPCProtoMessage& msg);

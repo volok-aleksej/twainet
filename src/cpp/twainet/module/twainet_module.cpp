@@ -38,3 +38,7 @@ void TwainetModule::OnConnected(const std::string& moduleName)
 {
 
 }
+
+void TwainetModule::OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
+{
+}

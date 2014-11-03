@@ -50,7 +50,8 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 
 void ClientServerModule::OnFireConnector(const std::string& moduleName)
 {
-	if(moduleName == m_serverIPCName && !m_isStopConnect)
+	IPCObjectName ipcModuleName = IPCObjectName::GetIPCName(moduleName);
+	if(ipcModuleName.module_name() == m_serverIPCName && !m_isStopConnect)
 	{
 		m_ownSessionId.clear();
 		Connect(m_ip, m_port);
@@ -61,7 +62,8 @@ void ClientServerModule::OnFireConnector(const std::string& moduleName)
 
 bool ClientServerModule::CheckFireConnector(const std::string& moduleName)
 {
-	return moduleName == m_serverIPCName || moduleName == m_clientIPCName;
+	IPCObjectName ipcModuleName = IPCObjectName::GetIPCName(moduleName);
+	return ipcModuleName.module_name() == m_serverIPCName || ipcModuleName.module_name() == m_clientIPCName;
 }
 
 void ClientServerModule::OnServerConnected()
@@ -76,7 +78,8 @@ void ClientServerModule::OnClientConnector(const std::string& sessionId)
 
 void ClientServerModule::Disconnect()
 {
-	m_manager.StopConnection(m_serverIPCName);
+	IPCObjectName ipcName(m_serverIPCName, m_ownSessionId);
+	m_manager.StopConnection(ipcName.GetModuleNameString());
 	m_isStopConnect = true;
 }
 
@@ -144,7 +147,6 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 		conn->SetPassword(m_password);
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginMessage, onLogin));
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, IPCProtoMessage, onIPCMessage));
 	}
 
 	IPCModule::onAddConnector(msg);
@@ -183,9 +185,4 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 void ClientServerModule::onLogin(const LoginMessage& msg)
 {
 	OnClientConnector(msg.generated_session_id());
-}
-
-void ClientServerModule::onIPCMessage(const IPCProtoMessage& msg)
-{
-	printf("\ngetting message %s\n", msg.message_name().c_str());
 }

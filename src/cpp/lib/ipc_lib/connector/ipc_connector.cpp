@@ -186,7 +186,7 @@ void IPCConnector::onMessage(const IPCMessage& msg)
 			*newMsg.add_ipc_path() = msg.ipc_path(i);
 		}
 	}
-	*newMsg.mutable_ipc_sender() = IPCObjectName::GetIPCName(GetId());
+	*newMsg.add_ipc_sender() = GetIPCName();
 
 	if(newPath == m_moduleName && !newMsg.ipc_path_size())
 	{
@@ -401,4 +401,9 @@ void IPCConnector::OnAddIPCObject(const std::string& moduleName)
 
 void IPCConnector::OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName)
 {
+}
+
+IPCObjectName IPCConnector::GetIPCName()
+{
+	return IPCObjectName::GetIPCName(GetId());
 }
