@@ -216,9 +216,12 @@ void TunnelModule::onErrorLocalConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddLocalConnector(const ConnectorMessage& msg)
 {
-//	printf("new local connector - tunnel\n");
+	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
+	if(connector)
+	{
+		connector->SetTypeConnection(TunnelConnector::LOCAL);
+	}
 	IPCModule::onAddConnector(msg);
-	//TODO: check another connections
 }
 
 void TunnelModule::onErrorExternalConnect(const ConnectErrorMessage& msg)
@@ -235,9 +238,12 @@ void TunnelModule::onErrorExternalConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddExternalConnector(const ConnectorMessage& msg)
 {
-//	printf("new external connector - tunnel\n");
+	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
+	if(connector)
+	{
+		connector->SetTypeConnection(TunnelConnector::EXTERNAL);
+	}
 	IPCModule::onAddConnector(msg);
-	//TODO: check another connections
 }
 
 void TunnelModule::onCreatedExternalListener(const CreatedServerListenerMessage& msg)
@@ -367,9 +373,13 @@ void TunnelModule::onErrorRelayConnect(const ConnectErrorMessage& msg)
 
 void TunnelModule::onAddRelayConnector(const ConnectorMessage& msg)
 {
-//	printf("new relay connector - tunnel\n");
+	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
+	if(connector)
+	{
+		connector->SetTypeConnection(TunnelConnector::RELAY);
+	}
+
 	IPCModule::onAddConnector(msg);
-	//TODO: check another connections
 }
 
 void TunnelModule::onModuleName(const ModuleNameMessage& msg)
