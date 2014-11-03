@@ -33,6 +33,7 @@ protected:
 	virtual void OnStart();
 	virtual void OnStop();
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
+	virtual void OnConnected();
 
 protected:
 	template<typename TMessage, typename THandler> friend class ProtoMessage;

@@ -81,3 +81,9 @@ TunnelConnector::TypeConnection TunnelConnector::GetTypeConnection()
 {
 	return m_type;
 }
+
+void TunnelConnector::OnConnected()
+{
+	printf("tunnel type %d\n", m_type);
+	IPCConnector::OnConnected();
+}
