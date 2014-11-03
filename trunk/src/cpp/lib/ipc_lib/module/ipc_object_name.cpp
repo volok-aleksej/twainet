@@ -29,12 +29,12 @@ std::string IPCObjectName::GetModuleNameString() const
 	std::string name = module_name();
 	if(!host_name().empty())
 	{
-		name.append("->");
+		name.append(".");
 		name.append(host_name());
 	}
 	if(!suffix().empty())
 	{
-		name.append("->");
+		name.append(".");
 		name.append(suffix());
 	}
 
@@ -44,7 +44,7 @@ std::string IPCObjectName::GetModuleNameString() const
 IPCObjectName IPCObjectName::GetIPCName(const std::string& ipcName)
 {
 	IPCObjectName name("");
-	std::vector<std::string> strings = CommonUtils::DelimitString(ipcName, "->");
+	std::vector<std::string> strings = CommonUtils::DelimitString(ipcName, ".");
 	if(!strings.empty())
 	{
 		name.set_module_name(strings[0]);

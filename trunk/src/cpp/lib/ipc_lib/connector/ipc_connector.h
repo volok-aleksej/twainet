@@ -75,6 +75,7 @@ protected:
 	virtual void OnDisconnected();
 	virtual void OnAddIPCObject(const std::string& moduleName);
 	virtual void OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName);
+	virtual IPCObjectName GetIPCName();
 protected:
 	IPCCheckerThread m_checker;
 private:

@@ -34,7 +34,6 @@ protected:
 	void onAddRelayConnector(const ConnectorMessage& msg);
 
 	void onModuleName(const ModuleNameMessage& msg);
-	void onIPCMessage(const IPCProtoMessage& msg);
 
 	//for server
 	void onInitTunnel(const InitTunnelSignal& msg);

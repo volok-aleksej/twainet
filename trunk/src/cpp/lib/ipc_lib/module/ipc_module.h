@@ -85,12 +85,14 @@ protected:
 	void onDisconnected(const DisconnectedMessage& msg);
 	void onIPCObjectList(const IPCObjectListMessage& msg);
 	void onUpdateIPCObject(const UpdateIPCObjectMessage& msg);
+	void onIPCMessage(const IPCProtoMessage& msg);
 	void onConnected(const ConnectedMessage& msg);
 
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual void OnConnected(const std::string& moduleName);
 	virtual void OnConnectFailed(const std::string& moduleName);
+	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 	virtual bool CheckFireConnector(const std::string& moduleName);
 
 protected:

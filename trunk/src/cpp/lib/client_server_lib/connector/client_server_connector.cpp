@@ -96,20 +96,22 @@ bool ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
 	return false;
 }
 
+IPCObjectName ClientServerConnector::GetIPCName()
+{
+	IPCObjectName name = IPCObjectName::GetIPCName(GetId());
+	name.set_host_name(m_ownSessionId);
+	return name;
+}
+
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	IPCObjectName path(msg.ipc_path(0));
-	if (path.GetModuleNameString() == m_id)
-	{
-		ClientSendMessage sendMsg(msg);
-		toMessage(sendMsg);
-	}
 	if (m_ownSessionId == path.GetModuleNameString() &&
-		GetModuleName().GetModuleNameString() == ClientServerModule::m_serverIPCName)
+		GetModuleName().module_name() == ClientServerModule::m_serverIPCName)
 	{
 		IPCProtoMessage newMsg(msg);
 		newMsg.clear_ipc_path();
-		IPCObjectName server(ClientServerModule::m_clientIPCName);
+		IPCObjectName server(ClientServerModule::m_clientIPCName, m_ownSessionId);
 		*newMsg.add_ipc_path() = server;
 		for(int i = 1; i < msg.ipc_path_size(); i++)
 		{
@@ -121,7 +123,8 @@ void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 
 void ClientServerConnector::onInitTunnelSignal(const InitTunnelSignal& msg)
 {
-	if((m_id == ClientServerModule::m_clientIPCName || !msg.has_type())
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if((idName.module_name() == ClientServerModule::m_clientIPCName || !msg.has_type())
 		&& msg.own_session_id() == m_ownSessionId)
 	{
 		InitTunnelMessage itMsg(this, msg);
@@ -132,7 +135,8 @@ void ClientServerConnector::onInitTunnelSignal(const InitTunnelSignal& msg)
 
 void ClientServerConnector::onInitTunnelStartedSignal(const InitTunnelStartedSignal& msg)
 {
-	if(m_id == ClientServerModule::m_clientIPCName
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName
 		&& msg.own_session_id() == m_ownSessionId)
 	{
 		InitTunnelStartedMessage itrMsg(this, msg);
@@ -142,7 +146,8 @@ void ClientServerConnector::onInitTunnelStartedSignal(const InitTunnelStartedSig
 
 void ClientServerConnector::onTryConnectToMessage(const TryConnectToMessage& msg)
 {
-	if(m_id == ClientServerModule::m_clientIPCName
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName
 		&& msg.own_session_id() == m_ownSessionId)
 	{
 		toMessage(msg);
@@ -151,9 +156,10 @@ void ClientServerConnector::onTryConnectToMessage(const TryConnectToMessage& msg
 
 void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 {
-	if(((m_id == ClientServerModule::m_serverIPCName
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(((idName.module_name() == ClientServerModule::m_serverIPCName
 		&& msg.type() == TUNNEL_LOCAL)
-		|| (m_id == ClientServerModule::m_clientIPCName
+		|| (idName.module_name() == ClientServerModule::m_clientIPCName
 		&& msg.type() == TUNNEL_EXTERNAL))
 		&& msg.own_session_id() == m_ownSessionId)
 	{
@@ -169,6 +175,11 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 
 	LoginResultMessage lrMsg(this, msg);
 	onSignal(lrMsg);
+	
+	IPCObjectName name(GetId(), m_ownSessionId);
+	SetId(name.GetModuleNameString());
+	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
+
 	OnConnected();
 }
 
@@ -187,17 +198,22 @@ void ClientServerConnector::onMessage(const Login& msg)
 	lMsg.set_generated_session_id(m_ownSessionId);
 	onSignal(lMsg);
 
+	IPCObjectName name(GetId(), m_ownSessionId);
+	SetId(name.GetModuleNameString());
+	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
+
 	OnConnected();
 }
 
 void ClientServerConnector::onMessage(const InitTunnel& msg)
 {
-	if(m_id == ClientServerModule::m_clientIPCName)
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
 		InitTunnelSignal itMsg(msg);
 		onSignal(itMsg);
 	}
-	else if(m_id == ClientServerModule::m_serverIPCName)
+	else if(idName.module_name() == ClientServerModule::m_serverIPCName)
 	{
 		InitTunnelMessage itMsg(this, msg);
 		onSignal(itMsg);
@@ -207,13 +223,14 @@ void ClientServerConnector::onMessage(const InitTunnel& msg)
 void ClientServerConnector::onMessage(const TryConnectTo& msg)
 {
 	TryConnectToMessage tctMsg(this, msg);
-	if(m_id == ClientServerModule::m_clientIPCName)
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
 		tctMsg.set_own_session_id(msg.ext_session_id());
 		tctMsg.set_ext_session_id(msg.own_session_id());
 		onIPCSignal(tctMsg);
 	}
-	else if(m_id == ClientServerModule::m_serverIPCName)
+	else if(idName.module_name() == ClientServerModule::m_serverIPCName)
 	{
 		onSignal(tctMsg);
 	}

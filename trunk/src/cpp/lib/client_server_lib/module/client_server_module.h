@@ -38,7 +38,6 @@ protected:
 
 	void onLogin(const LoginMessage& msg);
 	void onLoginResult(const LoginResultMessage& msg);
-	void onIPCMessage(const IPCProtoMessage& msg);
 
 	//for client
 	std::string m_ownSessionId;

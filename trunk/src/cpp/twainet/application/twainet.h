@@ -11,8 +11,7 @@ extern "C"
 	{
 		struct Message
 		{
-			const wchar_t* m_senderId;
-			const wchar_t* m_receiverId;
+			const wchar_t** m_path;
 			const wchar_t* m_typeMessage;
 			const wchar_t* m_data;
 			int m_dataLen;
