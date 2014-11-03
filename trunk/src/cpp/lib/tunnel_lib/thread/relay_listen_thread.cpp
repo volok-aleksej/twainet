@@ -19,6 +19,7 @@ RelayListenThread::~RelayListenThread()
 {
 	removeReceiver();
 
+	CSLocker lock(&m_cs);
 	if(m_listenThreadOne)
 	{
 		m_listenThreadOne->Stop();
@@ -171,6 +172,7 @@ void RelayListenThread::onCreatedListenerMessage(const CreatedListenerMessage& m
 
 void RelayListenThread::onAddConnector(const ConnectorMessage& msg)
 {
+	CSLocker lock(&m_cs);
 	if(msg.m_conn->GetId() == m_address.m_sessionIdOne)
 	{
 		m_connectorOne = msg.m_conn;
@@ -188,6 +190,7 @@ bool RelayListenThread::CheckGetAddresses()
 
 bool RelayListenThread::CheckConnect()
 {
+	CSLocker lock(&m_cs);
 	return m_connectorOne && m_connectorTwo;
 }
 
