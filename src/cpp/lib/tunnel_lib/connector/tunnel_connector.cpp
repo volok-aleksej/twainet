@@ -1,7 +1,8 @@
 #include "tunnel_connector.h"
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
-: IPCConnector(socket, moduleName), m_isServer(false), m_pingThread(this)
+: IPCConnector(socket, moduleName), m_isServer(false)
+, m_pingThread(this), m_type(UNKNOWN)
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));
@@ -69,4 +70,14 @@ void TunnelConnector::onMessage(const ModuleState& msg)
 	{
 		IPCConnector::onMessage(msg);
 	}
+}
+
+void TunnelConnector::SetTypeConnection(TypeConnection type)
+{
+	m_type = type;
+}
+
+TunnelConnector::TypeConnection TunnelConnector::GetTypeConnection()
+{
+	return m_type;
 }

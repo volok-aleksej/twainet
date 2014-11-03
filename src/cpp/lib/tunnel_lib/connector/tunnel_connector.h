@@ -15,10 +15,20 @@ class TunnelConnector : public IPCConnector
 {
 	friend class TunnelServerConnector;
 public:
+	enum TypeConnection
+	{
+		UNKNOWN,
+		LOCAL,
+		EXTERNAL,
+		RELAY
+	};
+
 	TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName);
 	virtual ~TunnelConnector();
 
 	void SetServerFlag();
+	void SetTypeConnection(TypeConnection type);
+	TypeConnection GetTypeConnection();
 protected:
 	virtual void OnStart();
 	virtual void OnStop();
@@ -31,6 +41,7 @@ protected:
 private:
 	bool m_isServer;
 	PingThread m_pingThread;
+	TypeConnection m_type;
 };
 
 #endif/*TUNNEL_CONNECTOR_H*/

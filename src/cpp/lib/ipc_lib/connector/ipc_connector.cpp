@@ -147,9 +147,13 @@ void IPCConnector::onMessage(const ModuleState& msg)
 		{
 			Stop();
 		}
-		if(msMsg.exist() && m_rand == msMsg.rndval())
+		else if(msMsg.exist() && m_rand == msMsg.rndval())
 		{
 			printf("random values is equal\n");
+		}
+		else
+		{
+			OnConnected();
 		}
 	}
 }
@@ -385,7 +389,7 @@ bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 
 void IPCConnector::OnConnected()
 {
-	m_bConnected = true;
+ 	m_bConnected = true;
 	ConnectedMessage msg(GetId());
 	onSignal(msg);
 }

@@ -58,8 +58,8 @@ void ConnectorManager::ThreadFunc()
 void ConnectorManager::AddConnection(Connector* conn)
 {
 	m_connectors.ProcessingObjects(Ref(this, &ConnectorManager::SubscribeConnector, conn));
-	m_connectors.AddObject(conn);
 	conn->Start();
+	m_connectors.AddObject(conn);
 }
 
 void ConnectorManager::StopConnection(const std::string& moduleName)
