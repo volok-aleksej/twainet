@@ -192,5 +192,4 @@ void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)
 	{
 		OnClientConnector(idName.host_name());
 	}
-	OnConnected(msg.m_id);
 }
