@@ -10,41 +10,44 @@ extern "C"
 	namespace Twainet
 	{
 		struct Message
-		{
-			const wchar_t** m_path;
-			const wchar_t* m_typeMessage;
-			const wchar_t* m_data;
+		{	
+			const char* m_path;
+			const char* m_typeMessage;
+			const char* m_data;
 			int m_dataLen;
 		};
 
-		typedef void (_stdcall *OnServerConnectedFunction)(const wchar_t* sessionId);
-		typedef void (_stdcall *OnClientConnectedFunction)(const wchar_t* sessionId);
-		typedef void (_stdcall *OnClientDisconnectedFunction)(const wchar_t* sessionId);
-		typedef void (_stdcall *OnModuleConnectedFunction)(const wchar_t* moduleId);
-		typedef void (_stdcall *OnModuleDisconnectedFunction)(const wchar_t* moduleId);
-		typedef void (_stdcall *OnTunnelConnectedFunction)(const wchar_t* sessionId);
-		typedef void (_stdcall *OnTunnelDisconnectedFunction)(const wchar_t* sessionId);
-		typedef void (_stdcall *OnMessageRecvFunction)(const Message& msg);
 
 		struct TwainetCallback
 		{
-			OnServerConnectedFunction*		OnServerConnected;
-			OnClientConnectedFunction*		OnClientConnected;
-			OnClientDisconnectedFunction*	OnClientDisconnected; 
-			OnModuleConnectedFunction*		OnModuleConnected;
-			OnModuleDisconnectedFunction*	OnModuleDisconnected;
-			OnTunnelConnectedFunction*		OnTunnelConnected;
-			OnTunnelDisconnectedFunction*	OnTunnelDisconnected;
-			OnMessageRecvFunction*			OnMessageRecv;
+			void (_stdcall *OnServerConnected)(const char* sessionId);
+			void (_stdcall *OnClientConnected)(const char* sessionId);
+			void (_stdcall *OnClientDisconnected)(const char* sessionId);
+			void (_stdcall *OnModuleConnected)(const char* moduleId);
+			void (_stdcall *OnModuleDisconnected)(const char* moduleId);
+			void (_stdcall *OnTunnelConnected)(const char* sessionId);
+			void (_stdcall *OnTunnelDisconnected)(const char* sessionId);
+			void (_stdcall *OnMessageRecv)(const Message& msg);
+		};
+
+		struct Module
+		{
+			void* m_pModule;
+			bool m_bIsCoordinator;
+			int m_serverPort;
+			char m_serverHost[256];
+			char m_moduleName[256];
 		};
 
 		void InitLibrary(const TwainetCallback& twainet);
-		void CreateServer();
-		void ConnectToServer(const wchar_t* host);
-		void CreateModule(const wchar_t* moduleName, bool isCoordinator);
-		void ConnectToModule(const wchar_t* moduleName);
-		void CreateTunnel(const wchar_t* sessionId);
-		void SendMessage(const Message& msg);
+		Module CreateModule(const char* moduleName, bool isCoordinator);
+		void DeleteModule(const Module& module);
+
+		void CreateServer(const Module& module);
+		void ConnectToServer(const Module& module);
+		void ConnectToModule(const Module& module, const char* moduleName);
+		void CreateTunnel(const Module& module, const char* sessionId);
+		void SendMessage(const Module& module, const Message& msg);
 	}
 };
 

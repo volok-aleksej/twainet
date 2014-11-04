@@ -39,6 +39,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj",
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "twainet\twainet.vcxproj", "{CB7762A6-892C-405A-A155-E83F5AFDEC56}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8A25851-01FD-4755-A805-66736C4A3E93}"
 EndProject

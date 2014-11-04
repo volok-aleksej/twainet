@@ -222,6 +222,11 @@ void IPCModule::UpdateModuleName(const IPCObjectName& moduleName)
 	printf("Update ipc name: %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
+void IPCModule::SendMsg(const IPCMessageSignal& msg)
+{
+	onSignal(msg);
+}
+
 bool IPCModule::IsExit()
 {
 	return m_isExit;
