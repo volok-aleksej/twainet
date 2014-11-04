@@ -70,6 +70,7 @@ public:
 	bool IsExit();
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
+	void SendMsg(const IPCMessageSignal& msg);
 
 	template<class Msg> void SendMsg(const Msg& msg, int countPath, ...);
 protected:
@@ -132,7 +133,7 @@ void IPCModule::SendMsg(const Msg& msg, int countPath, ...)
 
 	protoMsg.createMessage();
 	IPCMessageSignal ipcMsg(static_cast<IPCMessage&>(protoMsg));
-	onSignal(ipcMsg);
+	SendMsg(ipcMsg);
 }
 
 #endif/*IPC_MODULE_H*/
