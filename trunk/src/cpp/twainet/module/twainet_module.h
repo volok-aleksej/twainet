@@ -10,10 +10,10 @@ public:
 	~TwainetModule();
 protected:
 	// Tunnel with other computer was not created
-	virtual void TunnelConnectFailed(const std::string& sessionId);
+	virtual void OnTunnelConnectFailed(const std::string& sessionId);
 
 	// Tunnel with other computer was created
-	virtual void TunnelConnected(const std::string& sessionId);
+	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
 
 	// Client was connected to server
 	virtual void OnServerConnected();

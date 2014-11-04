@@ -10,11 +10,11 @@ TwainetModule::~TwainetModule()
 {
 }
 
-void TwainetModule::TunnelConnectFailed(const std::string& sessionId)
+void TwainetModule::OnTunnelConnectFailed(const std::string& sessionId)
 {
 }
 
-void TwainetModule::TunnelConnected(const std::string& sessionId)
+void TwainetModule::OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
 {
 }
 

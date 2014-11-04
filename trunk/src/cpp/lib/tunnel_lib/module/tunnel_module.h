@@ -16,8 +16,8 @@ public:
 	void DestroyTunnel(const std::string& extSessionId);
 protected:
 	virtual void OnNewConnector(Connector* connector);
-	virtual void TunnelConnectFailed(const std::string& sessionId);
-	virtual void TunnelConnected(const std::string& sessionId);
+	virtual void OnTunnelConnectFailed(const std::string& sessionId);
+	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
 protected:
 	//for client
 	void onInitTunnel(const InitTunnelMessage& msg);
@@ -34,6 +34,7 @@ protected:
 	void onAddRelayConnector(const ConnectorMessage& msg);
 
 	void onModuleName(const ModuleNameMessage& msg);
+	void onConnected(const TunnelConnectedMessage& msg);
 
 	//for server
 	void onInitTunnel(const InitTunnelSignal& msg);

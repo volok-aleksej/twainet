@@ -25,3 +25,16 @@ std::string GotExternalAddressMessage::GetMessageName()
 {
 	return typeid(GotExternalAddressMessage).name();
 }
+
+/************************************************************************/
+/*                      TunnelConnectedMessage                          */
+/************************************************************************/
+TunnelConnectedMessage::TunnelConnectedMessage(const std::string& id, TunnelConnector::TypeConnection type)
+: ConnectedMessage(id), m_type(type)
+{
+}
+
+std::string TunnelConnectedMessage::GetMessageName()
+{
+	return typeid(TunnelConnectedMessage).name();
+}
