@@ -69,17 +69,18 @@ void TunnelModule::OnNewConnector(Connector* connector)
 	if(tunnelConnector)
 	{
 		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, ModuleNameMessage, onModuleName));
+		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, TunnelConnectedMessage, onConnected));
 	}
 }
 
-void TunnelModule::TunnelConnectFailed(const std::string& sessionId)
+void TunnelModule::OnTunnelConnectFailed(const std::string& sessionId)
 {
-	printf("Creation of tunnel failed - sessionId: %s\n", sessionId.c_str());
+	printf("\nCreation of tunnel failed - sessionId: %s", sessionId.c_str());
 }
 
-void TunnelModule::TunnelConnected(const std::string& sessionId)
+void TunnelModule::OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
 {
-	printf("Creation of tunnel successful - sessionId: %s\n", sessionId.c_str());
+	printf("\nCreation of tunnel successful - sessionId: %s, type: %d", sessionId.c_str(), type);
 }
 
 void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)
@@ -230,8 +231,11 @@ void TunnelModule::onErrorExternalConnect(const ConnectErrorMessage& msg)
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(msg.m_moduleName);
 	if(it != m_tunnels.end())
 	{
-		it->second->m_externalConnectThread->Stop();
-		ThreadManager::GetInstance().AddThread(it->second->m_externalConnectThread);
+		if(it->second->m_externalConnectThread)
+		{
+			it->second->m_externalConnectThread->Stop();
+			ThreadManager::GetInstance().AddThread(it->second->m_externalConnectThread);
+		}
 		it->second->m_externalConnectThread = 0;
 	}
 }
@@ -391,8 +395,13 @@ void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 	{
 		delete it->second;
 		m_tunnels.erase(it);
-		TunnelConnected(sessionId.GetModuleNameString());
 	}
+}
+
+void TunnelModule::onConnected(const TunnelConnectedMessage& msg)
+{
+	OnTunnelConnected(msg.m_id, msg.m_type);
+	OnConnected(msg.m_id);
 }
 
 void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
@@ -552,7 +561,7 @@ void TunnelModule::CheckTunnels()
 			std::string sessionId = it->first;
 			delete it->second;
 			it = m_tunnels.erase(it); 
-			TunnelConnectFailed(sessionId);
+			OnTunnelConnectFailed(sessionId);
 		}
 		else
 		{

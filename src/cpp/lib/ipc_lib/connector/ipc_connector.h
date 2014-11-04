@@ -78,13 +78,13 @@ protected:
 	virtual IPCObjectName GetIPCName();
 protected:
 	IPCCheckerThread m_checker;
+	bool m_bConnected;
 private:
 	IPCObjectName m_moduleName;
 	Signal* m_ipcSignal;
 	bool m_isCoordinator;
 	bool m_isExist;
 	std::string m_rand;
-	bool m_bConnected;
 };
 
 #endif/*IPC_CONNECTOR_H*/

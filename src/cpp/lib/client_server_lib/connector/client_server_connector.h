@@ -26,6 +26,7 @@ public:
 	virtual ~ClientServerConnector();
 
 	virtual void onNewConnector(const Connector* connector);
+	virtual void OnConnected();
 	virtual void Subscribe(::SignalOwner* owner);
 
 	void SetUserName(const std::string& userName);

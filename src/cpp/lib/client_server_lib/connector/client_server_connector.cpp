@@ -1,4 +1,5 @@
 #include "client_server_connector.h"
+#include "message/client_server_messages.h"
 #include "module/client_server_module.h"
 #include "common/guid_generator.h"
 
@@ -94,6 +95,13 @@ void ClientServerConnector::OnStart()
 bool ClientServerConnector::SetModuleName(const IPCObjectName& moduleName)
 {
 	return false;
+}
+
+void ClientServerConnector::OnConnected()
+{
+ 	m_bConnected = true;
+	ClientServerConnectedMessage msg(GetId());
+	onSignal(msg);
 }
 
 IPCObjectName ClientServerConnector::GetIPCName()
@@ -193,11 +201,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 	toMessage(loginResultMsg);
 
 	m_ownSessionId = loginResultMsg.own_session_id();
-
-	LoginMessage lMsg(this, msg);
-	lMsg.set_generated_session_id(m_ownSessionId);
-	onSignal(lMsg);
-
+	
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));

@@ -1,4 +1,5 @@
 #include "tunnel_connector.h"
+#include "message\tunnel_messages.h"
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false)
@@ -84,6 +85,7 @@ TunnelConnector::TypeConnection TunnelConnector::GetTypeConnection()
 
 void TunnelConnector::OnConnected()
 {
-	printf("tunnel type %d\n", m_type);
-	IPCConnector::OnConnected();
+ 	m_bConnected = true;
+	TunnelConnectedMessage msg(GetId(), m_type);
+	onSignal(msg);
 }

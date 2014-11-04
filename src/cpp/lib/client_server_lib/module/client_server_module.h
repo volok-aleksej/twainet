@@ -4,6 +4,7 @@
 #include "client_server_lib/connector/client_server_connector.h"
 #include "ipc_lib/module/ipc_module.h"
 #include "connector_lib/message/connector_messages.h"
+#include "client_server_lib/message/client_server_messages.h"
 
 class ClientServerModule : public IPCModule
 {
@@ -35,6 +36,7 @@ protected:
 	void onErrorConnect(const ConnectErrorMessage& msg);
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);
+	void onConnected(const ClientServerConnectedMessage& msg);
 
 	void onLogin(const LoginMessage& msg);
 	void onLoginResult(const LoginResultMessage& msg);

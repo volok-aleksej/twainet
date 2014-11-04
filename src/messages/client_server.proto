@@ -14,7 +14,6 @@ enum TunnelType {
 message Login {
 	required string name					= 1;
 	required string pasword					= 2;
-	optional string generated_session_id	= 3;
 }
 
 message LoginResult {

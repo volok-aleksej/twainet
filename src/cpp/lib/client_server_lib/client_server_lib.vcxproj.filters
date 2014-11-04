@@ -10,6 +10,9 @@
     <Filter Include="messages">
       <UniqueIdentifier>{64ef5015-470e-4354-8ba7-13fe90faa8e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{4a805f07-6882-4250-9a2b-6176038b43a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="module\client_server_module.cpp">
@@ -21,6 +24,9 @@
     <ClCompile Include="..\..\..\messages\client_server.pb.cc">
       <Filter>messages</Filter>
     </ClCompile>
+    <ClCompile Include="message\client_server_messages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="module\client_server_module.h">
@@ -31,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\messages\client_server.pb.h">
       <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="message\client_server_messages.h">
+      <Filter>message</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

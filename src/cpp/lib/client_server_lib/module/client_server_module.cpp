@@ -68,12 +68,12 @@ bool ClientServerModule::CheckFireConnector(const std::string& moduleName)
 
 void ClientServerModule::OnServerConnected()
 {
-	printf("\nClient connected to server. sessionId: %s\n", m_ownSessionId.c_str());
+	printf("\nClient connected to server. sessionId: %s", m_ownSessionId.c_str());
 }
 
 void ClientServerModule::OnClientConnector(const std::string& sessionId)
 {
-	printf("\nServer incoming client connection. sessionId: %s\n", sessionId.c_str());
+	printf("\nServer incoming client connection. sessionId: %s", sessionId.c_str());
 }
 
 void ClientServerModule::Disconnect()
@@ -146,7 +146,7 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 		conn->SetUserName(m_userName);
 		conn->SetPassword(m_password);
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginMessage, onLogin));
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, ClientServerConnectedMessage, onConnected));
 	}
 
 	IPCModule::onAddConnector(msg);
@@ -179,10 +179,18 @@ void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
 void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 {
 	m_ownSessionId = msg.own_session_id();
-	OnServerConnected();
 }
 
-void ClientServerModule::onLogin(const LoginMessage& msg)
+void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)
 {
-	OnClientConnector(msg.generated_session_id());
+	IPCObjectName idName = IPCObjectName::GetIPCName(msg.m_id);
+	if(idName.module_name() == m_serverIPCName)
+	{
+		OnServerConnected();
+	}
+	else if(idName.module_name() == m_clientIPCName)
+	{
+		OnClientConnector(idName.host_name());
+	}
+	OnConnected(msg.m_id);
 }
