@@ -18,18 +18,41 @@ void Application::ThreadFunc()
 {
 	while(!m_isExit)
 	{
+		std::vector<NotificationMessage*> messages;
+		{
+			CSLocker locker(&m_csMessages);
+			messages = m_messages;
+			m_messages.clear();
+		}
+		for(std::vector<NotificationMessage*>::iterator it = messages.begin();
+			it != messages.end(); it++)
+		{
+			(*it)->HandleMessage(m_callbacks);
+			delete *it;
+		}
+		
 		sleep(100);
 	}
 }
 
 void Application::OnStop()
 {
-	CSLocker locker(&m_cs);
-	for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end();)
 	{
-		(*it)->Exit();
-		delete *it;
-		it = m_modules.erase(it);
+		CSLocker locker(&m_csModules);
+		for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end();)
+		{
+			(*it)->Exit();
+			delete *it;
+			it = m_modules.erase(it);
+		}
+	}
+	{
+		CSLocker locker(&m_csMessages);
+		for(std::vector<NotificationMessage*>::iterator it = m_messages.begin(); it != m_messages.end();)
+		{
+			delete *it;
+			it = m_messages.erase(it);
+		}
 	}
 }
 
@@ -49,7 +72,7 @@ void Application::Init(const Twainet::TwainetCallback& callback)
 
 TwainetModule* Application::CreateModule(const char* moduleName)
 {
-	CSLocker locker(&m_cs);
+	CSLocker locker(&m_csModules);
 	TwainetModule* module = new TwainetModule(IPCObjectName::GetIPCName(moduleName));
 	m_modules.push_back(module);
 	return module;
@@ -57,7 +80,7 @@ TwainetModule* Application::CreateModule(const char* moduleName)
 
 void Application::DeleteModule(TwainetModule* module)
 {
-	CSLocker locker(&m_cs);
+	CSLocker locker(&m_csModules);
 	for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end(); it++)
 	{
 		if(*it == module)
@@ -69,3 +92,10 @@ void Application::DeleteModule(TwainetModule* module)
 		}
 	}
 }
+
+void Application::AddNotifycationMessage(NotificationMessage* message)
+{
+	CSLocker locker(&m_csMessages);
+	m_messages.push_back(message);
+}
+

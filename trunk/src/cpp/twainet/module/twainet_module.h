@@ -25,10 +25,6 @@ protected:
 	virtual void OnConnectFailed(const std::string& moduleName);
 
 	// Connection with module was created.
-	// Tunnel connection this is the module's connection also,
-	// therefore this function will called also
-	// Client or server connection this is the module's connection also,
-	// therefore this function will called also
 	virtual void OnConnected(const std::string& moduleName);
 
 	// Connection with module was destroyed.

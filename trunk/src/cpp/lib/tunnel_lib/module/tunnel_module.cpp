@@ -401,7 +401,6 @@ void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 void TunnelModule::onConnected(const TunnelConnectedMessage& msg)
 {
 	OnTunnelConnected(msg.m_id, msg.m_type);
-	OnConnected(msg.m_id);
 }
 
 void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)

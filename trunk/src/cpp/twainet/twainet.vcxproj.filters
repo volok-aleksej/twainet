@@ -7,6 +7,9 @@
     <Filter Include="module">
       <UniqueIdentifier>{40c9ca57-7cb9-4325-bca9-16f660cd67f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{707e8ba7-92eb-475c-b6fa-ee45b8b0440a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -18,6 +21,9 @@
     <ClCompile Include="module\twainet_module.cpp">
       <Filter>module</Filter>
     </ClCompile>
+    <ClCompile Include="message\NotificationMessages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">
@@ -28,6 +34,9 @@
     </ClInclude>
     <ClInclude Include="module\twainet_module.h">
       <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="message\NotificationMessages.h">
+      <Filter>message</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
