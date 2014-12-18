@@ -4,8 +4,8 @@
 /*******************************************************************************************/
 /*                                 NotificationMessage                                     */
 /*******************************************************************************************/
-NotificationMessage::NotificationMessage(NotificationType type)
-	: m_type(type)
+NotificationMessage::NotificationMessage(Twainet::Module module, NotificationType type)
+	: m_type(type), m_module(module)
 {
 }
 
@@ -16,8 +16,8 @@ NotificationMessage::~NotificationMessage()
 /*******************************************************************************************/
 /*                               ClientServerConnected                                     */
 /*******************************************************************************************/
-ClientServerConnected::ClientServerConnected(const std::string& sessionId, bool bClient)
-	: NotificationMessage(bClient ? CLIENT_CONNECTED : SERVER_CONNECTED), m_sessionId(sessionId)
+ClientServerConnected::ClientServerConnected(Twainet::Module module, const std::string& sessionId, bool bClient)
+	: NotificationMessage(module, bClient ? CLIENT_CONNECTED : SERVER_CONNECTED), m_sessionId(sessionId)
 {
 }
 
@@ -29,19 +29,19 @@ void ClientServerConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	if(m_type == SERVER_CONNECTED)
 	{
-		callbacks.OnServerConnected(m_sessionId.c_str());
+		callbacks.OnServerConnected(m_module, m_sessionId.c_str());
 	}
 	else
 	{
-		callbacks.OnClientConnected(m_sessionId.c_str());
+		callbacks.OnClientConnected(m_module, m_sessionId.c_str());
 	}
 }
 
 /*******************************************************************************************/
 /*                                   ModuleConnected                                       */
 /*******************************************************************************************/
-ModuleConnected::ModuleConnected(const std::string& moduleName)
-	: NotificationMessage(MODULE_CONNECTED), m_moduleName(moduleName)
+ModuleConnected::ModuleConnected(Twainet::Module module, const std::string& moduleName)
+	: NotificationMessage(module, MODULE_CONNECTED), m_moduleName(moduleName)
 {
 }
 
@@ -51,14 +51,14 @@ ModuleConnected::~ModuleConnected()
 
 void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnModuleConnected(m_moduleName.c_str());
+	callbacks.OnModuleConnected(m_module, m_moduleName.c_str());
 }
 
 /*******************************************************************************************/
 /*                                ModuleDisconnected                                       */
 /*******************************************************************************************/
-ModuleDisconnected::ModuleDisconnected(const std::string& id)
-	: NotificationMessage(MODULE_DISCONNECTED), m_id(id)
+ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id)
+	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id)
 {
 }
 
@@ -71,22 +71,23 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
-		callbacks.OnClientDisconnected(idName.host_name().c_str());
+		callbacks.OnClientDisconnected(m_module, idName.host_name().c_str());
 	}
 	else if(idName.module_name() == ClientServerModule::m_serverIPCName)
 	{
+		callbacks.OnServerDisconnected(m_module);
 	}
 	else
 	{
-		callbacks.OnModuleDisconnected(m_id.c_str());
+		callbacks.OnModuleDisconnected(m_module, m_id.c_str());
 	}
 }
 
 /*******************************************************************************************/
 /*                                   TunnelConnected                                       */
 /*******************************************************************************************/
-TunnelConnected::TunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
-	: NotificationMessage(TUNNEL_CONNECTED), m_sessionId(sessionId), m_typeConnection(type)
+TunnelConnected::TunnelConnected(Twainet::Module module, const std::string& sessionId, TunnelConnector::TypeConnection type)
+	: NotificationMessage(module, TUNNEL_CONNECTED), m_sessionId(sessionId), m_typeConnection(type)
 {
 }
 
@@ -96,14 +97,14 @@ TunnelConnected::~TunnelConnected()
 
 void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnTunnelConnected(m_sessionId.c_str());
+	callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
 }
 
 /*******************************************************************************************/
 /*                                  ConnectionFailed                                       */
 /*******************************************************************************************/
-ConnectionFailed::ConnectionFailed(const std::string& id, bool bTunnel)
-	: NotificationMessage(bTunnel ? TUNNEL_FAILED : MODULE_FAILED), m_id(id)
+ConnectionFailed::ConnectionFailed(Twainet::Module module, const std::string& id, bool bTunnel)
+	: NotificationMessage(module, bTunnel ? TUNNEL_FAILED : MODULE_FAILED), m_id(id)
 {
 }
 
@@ -118,8 +119,8 @@ void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 /*******************************************************************************************/
 /*                                      GetMessage                                         */
 /*******************************************************************************************/
-GettingMessage::GettingMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
-	: NotificationMessage(GET_MESSAGE), m_messageName(messageName), m_path(path)
+GettingMessage::GettingMessage(Twainet::Module module, const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
+	: NotificationMessage(module, GET_MESSAGE), m_messageName(messageName), m_path(path)
 {
 	m_data.resize(data.size());
 	memcpy((void*)m_data.c_str(), data.c_str(), data.size());
@@ -147,5 +148,5 @@ void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 		path.append(*it);
 	}
 	msg.m_path = path.c_str();
-	callbacks.OnMessageRecv(msg);
+	callbacks.OnMessageRecv(m_module, msg);
 }

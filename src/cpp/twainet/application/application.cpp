@@ -5,7 +5,6 @@ Application::Application()
 	: m_isExit(false)
 {
 	memset(&m_callbacks, 0, sizeof(m_callbacks));
-	Start();
 }
 
 Application::~Application()
@@ -31,7 +30,7 @@ void Application::ThreadFunc()
 			delete *it;
 		}
 		
-		sleep(100);
+		sleep(200);
 	}
 }
 

@@ -21,6 +21,6 @@ void PingThread::ThreadFunc()
 	{
 		PingMessage msg(m_connector);
 		m_connector->toMessage(msg);
-		sleep(500);
+		sleep(1000);
 	}
 }

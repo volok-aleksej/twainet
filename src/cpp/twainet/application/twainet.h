@@ -5,6 +5,12 @@
 #undef SendMessage
 #endif/*SendMessage*/
 
+#ifdef TWAINET_EXPORT
+#define EXPORT_FUNC __declspec(dllexport) 
+#else
+#define EXPORT_FUNC __declspec(dllimport) 
+#endif // TWAINET_EXPORT
+
 extern "C"
 {
 	namespace Twainet
@@ -17,37 +23,40 @@ extern "C"
 			int m_dataLen;
 		};
 
+		enum TypeConnection
+		{
+			LOCAL = 1,
+			EXTERNAL = 2,
+			RELAY = 3
+		};
+
+		typedef void* Module;
 
 		struct TwainetCallback
 		{
-			void (_stdcall *OnServerConnected)(const char* sessionId);
-			void (_stdcall *OnClientConnected)(const char* sessionId);
-			void (_stdcall *OnClientDisconnected)(const char* sessionId);
-			void (_stdcall *OnModuleConnected)(const char* moduleId);
-			void (_stdcall *OnModuleDisconnected)(const char* moduleId);
-			void (_stdcall *OnTunnelConnected)(const char* sessionId);
-			void (_stdcall *OnTunnelDisconnected)(const char* sessionId);
-			void (_stdcall *OnMessageRecv)(const Message& msg);
+			void (_stdcall *OnServerConnected)(Module module, const char* sessionId);
+			void (_stdcall *OnServerDisconnected)(Module module);
+			void (_stdcall *OnClientConnected)(Module module, const char* sessionId);
+			void (_stdcall *OnClientDisconnected)(Module module, const char* sessionId);
+			void (_stdcall *OnModuleConnected)(Module module, const char* moduleId);
+			void (_stdcall *OnModuleDisconnected)(Module module, const char* moduleId);
+			void (_stdcall *OnTunnelConnected)(Module module, const char* sessionId, TypeConnection type);
+			void (_stdcall *OnTunnelDisconnected)(Module module, const char* sessionId);
+			void (_stdcall *OnMessageRecv)(Module module, const Message& msg);
 		};
 
-		struct Module
-		{
-			void* m_pModule;
-			bool m_bIsCoordinator;
-			int m_serverPort;
-			char m_serverHost[256];
-			char m_moduleName[256];
-		};
+		EXPORT_FUNC void InitLibrary(const Twainet::TwainetCallback& twainet);
+		EXPORT_FUNC Twainet::Module CreateModule(const char* moduleName, bool isCoordinator);
+		EXPORT_FUNC void DeleteModule(const Twainet::Module module);
+		EXPORT_FUNC void CreateServer(const Twainet::Module module, int port);
+		EXPORT_FUNC void ConnectToServer(const Twainet::Module module, const char* host, int port);
+		EXPORT_FUNC void DisconnectFromServer(const Twainet::Module module);
+		EXPORT_FUNC void DisconnectFromClient(const Twainet::Module module, const char* sessionId);
+		EXPORT_FUNC void ConnectToModule(const Twainet::Module module, const char* moduleName);
+		EXPORT_FUNC void DisconnectFromModule(const Twainet::Module module, const char* moduleName);
+		EXPORT_FUNC void CreateTunnel(const Twainet::Module module, const char* sessionId);
+		EXPORT_FUNC void SendMessage(const Twainet::Module module, const Twainet::Message& msg);
 	}
-
-	void _stdcall InitLibrary(const Twainet::TwainetCallback& twainet);
-	Twainet::Module _stdcall CreateModule(const char* moduleName, bool isCoordinator);
-	void _stdcall DeleteModule(const Twainet::Module& module);
-	void _stdcall CreateServer(const Twainet::Module& module);
-	void _stdcall ConnectToServer(const Twainet::Module& module);
-	void _stdcall ConnectToModule(const Twainet::Module& module, const char* moduleName);
-	void _stdcall CreateTunnel(const Twainet::Module& module, const char* sessionId);
-	void _stdcall SendMessage(const Twainet::Module& module, const Twainet::Message& msg);
 };
 
 #endif/*TWAINET_H*/

@@ -22,9 +22,6 @@
     <ClInclude Include="message\NotificationMessages.h" />
     <ClInclude Include="module\twainet_module.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="twainet.def" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CB7762A6-892C-405A-A155-E83F5AFDEC56}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -81,9 +78,11 @@
       <OutputFile>$(SolutionDir)..\..\output\work\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
       <AdditionalDependencies>Ws2_32.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>twainet.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>$(SolutionDir)..\..\output\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,7 +108,9 @@
       <OutputFile>$(SolutionDir)..\..\output\work\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
       <AdditionalDependencies>Ws2_32.lib;ssleay32.lib;libeay32.lib; tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>twainet.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <ImportLibrary>$(SolutionDir)..\..\output\lib\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

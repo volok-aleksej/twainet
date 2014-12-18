@@ -340,20 +340,6 @@ void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
 		path.push_back(sender.GetModuleNameString());
 	}
 	OnMessage(msg.message_name(), path, msg.message());
-
-	static CriticalSection cs;
-	CSLocker locker(&cs);
-	printf("\ngetting message %s\nsender path:", msg.message_name().c_str());
-	for(int i = 0; i < msg.ipc_sender_size(); i++)
-	{
-		if(i != 0)
-		{
-			printf("->");
-		}
-		IPCObjectName sender(msg.ipc_sender(i));
-		printf("%s", sender.GetModuleNameString().c_str());
-	}
-	printf("\n");
 }
 
 void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)

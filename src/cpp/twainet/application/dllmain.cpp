@@ -11,6 +11,8 @@
 #include "application.h"
 #include "utils/utils.h"
 
+#pragma warning(disable: 4273)
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -37,57 +39,69 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
-extern "C" void _stdcall InitLibrary(const Twainet::TwainetCallback& twainet)
+extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	Application::GetInstance().Init(twainet);
+	Application::GetInstance().Start();
 }
 
-extern "C" Twainet::Module _stdcall CreateModule(const char* moduleName, bool isCoordinator)
+extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, bool isCoordinator)
 {
 	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
-	Twainet::Module twainetModule = {0};
-	if(strlen(moduleName) > sizeof(twainetModule.m_moduleName))
-		return twainetModule;
-	strcpy(twainetModule.m_moduleName, moduleName);
-	twainetModule.m_bIsCoordinator = isCoordinator;
-	twainetModule.m_serverPort = 8124;
-	twainetModule.m_pModule = module;
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
-	return twainetModule;
+	return (Twainet::Module*)module;
 }
 
-extern "C" void _stdcall DeleteModule(const Twainet::Module& module)
+extern "C" void Twainet::DeleteModule(const Twainet::Module module)
 {
-	Application::GetInstance().DeleteModule((TwainetModule*)module.m_pModule);
+	Application::GetInstance().DeleteModule((TwainetModule*)module);
 }
 
-extern "C" void _stdcall CreateServer(const Twainet::Module& module)
+extern "C" void Twainet::CreateServer(const Twainet::Module module, int port)
 {
-	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
-	twainetModule->StartServer(module.m_serverPort);
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->StartServer(port);
 }
 
-extern "C" void _stdcall ConnectToServer(const Twainet::Module& module)
+extern "C" void Twainet::ConnectToServer(const Twainet::Module module, const char* host, int port)
 {
-	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
-	twainetModule->Connect(module.m_serverHost, module.m_serverPort);
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->Connect(host, port);
 }
 
-extern "C" void _stdcall ConnectToModule(const Twainet::Module& module, const char* moduleName)
+extern "C" void Twainet::DisconnectFromServer(const Twainet::Module module)
 {
-	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->Disconnect();
+}
+
+extern "C" void Twainet::DisconnectFromClient(const Twainet::Module module, const char* sessionId)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->DisconnectModule(IPCObjectName(ClientServerModule::m_clientIPCName, sessionId));
+}
+
+extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const char* moduleName)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->ConnectTo(IPCObjectName::GetIPCName(moduleName));
 }
 
-extern "C" void _stdcall CreateTunnel(const Twainet::Module& module, const char* sessionId)
+extern "C" void DisconnectFromModule(const Twainet::Module module, const char* moduleName)
 {
-	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->DisconnectModule(IPCObjectName(moduleName));
+}
+
+extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->InitNewTunnel(sessionId);
 }
 
-extern "C" void _stdcall SendMessage(const Twainet::Module& module, const Twainet::Message& msg)
+extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet::Message& msg)
 {
-	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
+	TwainetModule* twainetModule = (TwainetModule*)module;
 	IPCMessage message;
 	message.set_message_name(msg.m_typeMessage);
 	message.set_message(msg.m_data, msg.m_dataLen);

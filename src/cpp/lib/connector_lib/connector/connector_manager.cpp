@@ -51,7 +51,7 @@ void ConnectorManager::ThreadFunc()
 			onSignal(msg);
 		}
 
-		sleep(100);
+		sleep(200);
 	}
 }
 
