@@ -38,17 +38,16 @@ extern "C"
 			char m_serverHost[256];
 			char m_moduleName[256];
 		};
-
-		void InitLibrary(const TwainetCallback& twainet);
-		Module CreateModule(const char* moduleName, bool isCoordinator);
-		void DeleteModule(const Module& module);
-
-		void CreateServer(const Module& module);
-		void ConnectToServer(const Module& module);
-		void ConnectToModule(const Module& module, const char* moduleName);
-		void CreateTunnel(const Module& module, const char* sessionId);
-		void SendMessage(const Module& module, const Message& msg);
 	}
+
+	void _stdcall InitLibrary(const Twainet::TwainetCallback& twainet);
+	Twainet::Module _stdcall CreateModule(const char* moduleName, bool isCoordinator);
+	void _stdcall DeleteModule(const Twainet::Module& module);
+	void _stdcall CreateServer(const Twainet::Module& module);
+	void _stdcall ConnectToServer(const Twainet::Module& module);
+	void _stdcall ConnectToModule(const Twainet::Module& module, const char* moduleName);
+	void _stdcall CreateTunnel(const Twainet::Module& module, const char* sessionId);
+	void _stdcall SendMessage(const Twainet::Module& module, const Twainet::Message& msg);
 };
 
 #endif/*TWAINET_H*/
