@@ -213,6 +213,18 @@
 				</FileConfiguration>
 			</File>
 		</Filter>
+		<Filter
+			Name="message"
+			>
+			<File
+				RelativePath=".\message\client_server_messages.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\message\client_server_messages.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
