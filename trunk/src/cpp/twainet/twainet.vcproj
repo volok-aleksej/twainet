@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(Configuration)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(Configuration)\"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -61,9 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
 				ModuleDefinitionFile="twainet.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -93,8 +94,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(Configuration)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(Configuration)\"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -137,9 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
 				ModuleDefinitionFile="twainet.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -186,6 +188,10 @@
 			</File>
 			<File
 				RelativePath=".\application\dllmain.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\twainet.def"
 				>
 			</File>
 			<File
