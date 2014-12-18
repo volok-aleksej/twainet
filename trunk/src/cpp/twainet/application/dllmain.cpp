@@ -37,12 +37,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
-extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
+extern "C" void _stdcall InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	Application::GetInstance().Init(twainet);
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, bool isCoordinator)
+extern "C" Twainet::Module _stdcall CreateModule(const char* moduleName, bool isCoordinator)
 {
 	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
 	Twainet::Module twainetModule = {0};
@@ -56,36 +56,36 @@ extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, bool is
 	return twainetModule;
 }
 
-extern "C" void Twainet::DeleteModule(const Module& module)
+extern "C" void _stdcall DeleteModule(const Twainet::Module& module)
 {
 	Application::GetInstance().DeleteModule((TwainetModule*)module.m_pModule);
 }
 
-extern "C" void Twainet::CreateServer(const Module& module)
+extern "C" void _stdcall CreateServer(const Twainet::Module& module)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
 	twainetModule->StartServer(module.m_serverPort);
 }
 
-extern "C" void Twainet::ConnectToServer(const Module& module)
+extern "C" void _stdcall ConnectToServer(const Twainet::Module& module)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
 	twainetModule->Connect(module.m_serverHost, module.m_serverPort);
 }
 
-extern "C" void Twainet::ConnectToModule(const Module& module, const char* moduleName)
+extern "C" void _stdcall ConnectToModule(const Twainet::Module& module, const char* moduleName)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
 	twainetModule->ConnectTo(IPCObjectName::GetIPCName(moduleName));
 }
 
-extern "C" void Twainet::CreateTunnel(const Module& module, const char* sessionId)
+extern "C" void _stdcall CreateTunnel(const Twainet::Module& module, const char* sessionId)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
 	twainetModule->InitNewTunnel(sessionId);
 }
 
-extern "C" void Twainet::SendMessage(const Module& module, const Message& msg)
+extern "C" void _stdcall SendMessage(const Twainet::Module& module, const Twainet::Message& msg)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module.m_pModule;
 	IPCMessage message;
