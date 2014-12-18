@@ -19,19 +19,20 @@ enum NotificationType
 class NotificationMessage
 {
 public:
-	NotificationMessage(NotificationType type);
+	NotificationMessage(Twainet::Module module, NotificationType type);
 	virtual ~NotificationMessage();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks) = 0;
 
 public:
+	Twainet::Module m_module;
 	NotificationType m_type;
 };
 
 class ClientServerConnected : public NotificationMessage
 {
 public:
-	ClientServerConnected(const std::string& sessionId, bool bClient);
+	ClientServerConnected(Twainet::Module module, const std::string& sessionId, bool bClient);
 	virtual ~ClientServerConnected();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -42,7 +43,7 @@ public:
 class ModuleConnected : public NotificationMessage
 {
 public:
-	ModuleConnected(const std::string& moduleName);
+	ModuleConnected(Twainet::Module module, const std::string& moduleName);
 	virtual ~ModuleConnected();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -53,7 +54,7 @@ public:
 class TunnelConnected : public NotificationMessage
 {
 public:
-	TunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
+	TunnelConnected(Twainet::Module module, const std::string& sessionId, TunnelConnector::TypeConnection type);
 	virtual ~TunnelConnected();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -65,7 +66,7 @@ public:
 class ConnectionFailed : public NotificationMessage
 {
 public:
-	ConnectionFailed(const std::string& id, bool bTunnel);
+	ConnectionFailed(Twainet::Module module, const std::string& id, bool bTunnel);
 	virtual ~ConnectionFailed();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -76,7 +77,7 @@ public:
 class ModuleDisconnected : public NotificationMessage
 {
 public:
-	ModuleDisconnected(const std::string& id);
+	ModuleDisconnected(Twainet::Module module, const std::string& id);
 	virtual ~ModuleDisconnected();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -87,7 +88,7 @@ public:
 class GettingMessage : public NotificationMessage
 {
 public:
-	GettingMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
+	GettingMessage(Twainet::Module module, const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 	virtual ~GettingMessage();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);

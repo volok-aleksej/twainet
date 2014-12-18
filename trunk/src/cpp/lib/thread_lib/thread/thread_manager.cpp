@@ -56,7 +56,7 @@ void ThreadManager::ThreadFunc()
 			delete *it;
 		}
 
-		sleep(100);
+		sleep(200);
 	}
 }
 

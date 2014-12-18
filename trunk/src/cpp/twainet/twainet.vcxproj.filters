@@ -39,9 +39,4 @@
       <Filter>message</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="twainet.def">
-      <Filter>application</Filter>
-    </None>
-  </ItemGroup>
 </Project>
