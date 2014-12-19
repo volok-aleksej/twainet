@@ -65,9 +65,10 @@
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
-				ModuleDefinitionFile="twainet.def"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -142,11 +143,12 @@
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
-				ModuleDefinitionFile="twainet.def"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -188,10 +190,6 @@
 			</File>
 			<File
 				RelativePath=".\application\dllmain.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\twainet.def"
 				>
 			</File>
 			<File

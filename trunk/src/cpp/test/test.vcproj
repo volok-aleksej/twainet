@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)external/openssl/lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -137,10 +137,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
