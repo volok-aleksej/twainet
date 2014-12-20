@@ -132,7 +132,8 @@ void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 void ClientServerConnector::onInitTunnelSignal(const InitTunnelSignal& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
-	if((idName.module_name() == ClientServerModule::m_clientIPCName || !msg.has_type())
+	if((idName.module_name() == ClientServerModule::m_clientIPCName ||
+		!msg.has_type() && idName.module_name() == ClientServerModule::m_serverIPCName)
 		&& msg.own_session_id() == m_ownSessionId)
 	{
 		InitTunnelMessage itMsg(this, msg);
