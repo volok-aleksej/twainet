@@ -71,6 +71,7 @@ public:
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
 	void SendMsg(const IPCMessageSignal& msg);
+	std::string GetModuleName();
 
 	template<class Msg> void SendMsg(const Msg& msg, int countPath, ...);
 protected:
@@ -95,6 +96,7 @@ protected:
 	virtual void OnConnectFailed(const std::string& moduleName);
 	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 	virtual bool CheckFireConnector(const std::string& moduleName);
+	virtual void ModuleCreationFialed();
 
 protected:
 	void Start(const std::string& ip, int port);

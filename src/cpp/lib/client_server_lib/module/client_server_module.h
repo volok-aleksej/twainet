@@ -30,6 +30,7 @@ protected:
 	virtual bool CheckFireConnector(const std::string& moduleName);
 	virtual void OnServerConnected();
 	virtual void OnClientConnector(const std::string& sessionId);
+	virtual void ServerCreationFailed();
 protected:
 	friend class Signal;
 	void onAddConnector(const ConnectorMessage& msg);

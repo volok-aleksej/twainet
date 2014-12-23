@@ -36,12 +36,15 @@ extern "C"
 		{
 			void (_stdcall *OnServerConnected)(Module module, const char* sessionId);
 			void (_stdcall *OnServerDisconnected)(Module module);
+			void (_stdcall *OnServerCreationFailed)(Module module);
 			void (_stdcall *OnClientConnected)(Module module, const char* sessionId);
 			void (_stdcall *OnClientDisconnected)(Module module, const char* sessionId);
 			void (_stdcall *OnModuleConnected)(Module module, const char* moduleId);
 			void (_stdcall *OnModuleDisconnected)(Module module, const char* moduleId);
+			void (_stdcall *OnModuleCreationFailed)(Module module);
 			void (_stdcall *OnTunnelConnected)(Module module, const char* sessionId, TypeConnection type);
 			void (_stdcall *OnTunnelDisconnected)(Module module, const char* sessionId);
+			void (_stdcall *OnTunnelCreationFailed)(Module module, const char* sessionId);
 			void (_stdcall *OnMessageRecv)(Module module, const Message& msg);
 		};
 
@@ -56,6 +59,8 @@ extern "C"
 		EXPORT_FUNC void DisconnectFromModule(const Twainet::Module module, const char* moduleName);
 		EXPORT_FUNC void CreateTunnel(const Twainet::Module module, const char* sessionId);
 		EXPORT_FUNC void SendMessage(const Twainet::Module module, const Twainet::Message& msg);
+		EXPORT_FUNC const char* GetModuleName(const Twainet::Module module);
+		EXPORT_FUNC const char* GetSessionId(const Twainet::Module module);
 	}
 };
 

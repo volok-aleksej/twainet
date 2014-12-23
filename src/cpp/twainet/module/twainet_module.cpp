@@ -13,7 +13,7 @@ TwainetModule::~TwainetModule()
 
 void TwainetModule::OnTunnelConnectFailed(const std::string& sessionId)
 {
-	Application::GetInstance().AddNotifycationMessage(new ConnectionFailed(this, sessionId, true));
+	Application::GetInstance().AddNotifycationMessage(new TunnelCreationFailed(this, sessionId));
 }
 
 void TwainetModule::OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
@@ -38,7 +38,7 @@ void TwainetModule::OnFireConnector(const std::string& moduleName)
 
 void TwainetModule::OnConnectFailed(const std::string& moduleName)
 {
-	Application::GetInstance().AddNotifycationMessage(new ConnectionFailed(this, moduleName, false));
+	Application::GetInstance().AddNotifycationMessage(new ConnectionFailed(this, moduleName));
 }
 
 void TwainetModule::OnConnected(const std::string& moduleName)
@@ -49,4 +49,14 @@ void TwainetModule::OnConnected(const std::string& moduleName)
 void TwainetModule::OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
 {
 	Application::GetInstance().AddNotifycationMessage(new GettingMessage(this, messageName, path, data));
+}
+
+void TwainetModule::ModuleCreationFialed()
+{
+	Application::GetInstance().AddNotifycationMessage(new CreationFailed(this, CreationFailed::MODULE));
+}
+
+void TwainetModule::ServerCreationFialed()
+{
+	Application::GetInstance().AddNotifycationMessage(new CreationFailed(this, CreationFailed::SERVER));
 }

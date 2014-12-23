@@ -180,6 +180,10 @@ bool IPCModule::CheckFireConnector(const std::string& moduleName)
 	return false;
 }
 
+void IPCModule::ModuleCreationFialed()
+{
+}
+
 void IPCModule::ConnectToCoordinator()
 {
 	if(m_isExit)
@@ -227,6 +231,11 @@ void IPCModule::SendMsg(const IPCMessageSignal& msg)
 	onSignal(msg);
 }
 
+std::string IPCModule::GetModuleName()
+{
+	return m_moduleName.GetModuleNameString();
+}
+
 bool IPCModule::IsExit()
 {
 	return m_isExit;
@@ -259,6 +268,7 @@ void IPCModule::onErrorListener(const ListenErrorMessage& msg)
 		ThreadManager::GetInstance().AddThread(m_listenThread);
 		m_listenThread = 0;
 		m_isExit = true;
+		ModuleCreationFialed();
 	}
 }
 
