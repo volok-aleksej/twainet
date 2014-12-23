@@ -14,7 +14,7 @@ protected:
 
 	// Tunnel with other computer was created
 	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
-
+	
 	// Client was connected to server
 	virtual void OnServerConnected();
 
@@ -37,6 +37,11 @@ protected:
 	// It has got message
 	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 
+	// Module has not created
+	virtual void ModuleCreationFialed();
+	
+	// Server has not created
+	virtual void ServerCreationFialed();
 };
 
 #endif/*TWAINET_MODULE_H*/

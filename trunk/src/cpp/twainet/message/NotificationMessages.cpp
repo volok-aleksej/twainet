@@ -103,8 +103,8 @@ void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 /*******************************************************************************************/
 /*                                  ConnectionFailed                                       */
 /*******************************************************************************************/
-ConnectionFailed::ConnectionFailed(Twainet::Module module, const std::string& id, bool bTunnel)
-	: NotificationMessage(module, bTunnel ? TUNNEL_FAILED : MODULE_FAILED), m_id(id)
+ConnectionFailed::ConnectionFailed(Twainet::Module module, const std::string& id)
+	: NotificationMessage(module, MODULE_CONNECT_FAILED), m_id(id)
 {
 }
 
@@ -149,4 +149,42 @@ void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 	}
 	msg.m_path = path.c_str();
 	callbacks.OnMessageRecv(m_module, msg);
+}
+
+/*******************************************************************************************/
+/*                                  CreationFailed                                         */
+/*******************************************************************************************/
+CreationFailed::CreationFailed(Twainet::Module module, CreationFailed::CreationType type)
+	: NotificationMessage(module, NotificationType(MODULE_CREATION_FAILED + type))
+	, m_type(type)
+{
+}
+
+CreationFailed::~CreationFailed()
+{
+}
+
+void CreationFailed::HandleMessage(Twainet::TwainetCallback callbacks)
+{
+	if(m_type == MODULE)
+		callbacks.OnModuleCreationFailed(m_module);
+	if(m_type == SERVER)
+		callbacks.OnServerCreationFailed(m_module);
+}
+
+/*******************************************************************************************/
+/*                                TunnelCreationFailed                                     */
+/*******************************************************************************************/
+TunnelCreationFailed::TunnelCreationFailed(Twainet::Module module, const std::string& sessionId)
+	: CreationFailed(module, TUNNEL), m_sessionId(sessionId)
+{
+}
+
+TunnelCreationFailed::~TunnelCreationFailed()
+{
+}
+
+void TunnelCreationFailed::HandleMessage(Twainet::TwainetCallback callbacks)
+{
+	callbacks.OnTunnelCreationFailed(m_module, m_sessionId.c_str());
 }

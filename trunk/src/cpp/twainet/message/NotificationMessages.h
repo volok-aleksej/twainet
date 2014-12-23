@@ -9,11 +9,14 @@ enum NotificationType
 	SERVER_CONNECTED,
 	CLIENT_CONNECTED,
 	TUNNEL_CONNECTED,
-	TUNNEL_FAILED,
+	TUNNEL_DISCONNECT,
 	MODULE_CONNECTED,
-	MODULE_FAILED,
+	MODULE_CONNECT_FAILED,
 	MODULE_DISCONNECTED,
-	GET_MESSAGE
+	GET_MESSAGE,
+	MODULE_CREATION_FAILED,
+	SERVER_CREATION_FAILED,
+	TUNNEL_CREATION_FAILED
 };
 
 class NotificationMessage
@@ -66,7 +69,7 @@ public:
 class ConnectionFailed : public NotificationMessage
 {
 public:
-	ConnectionFailed(Twainet::Module module, const std::string& id, bool bTunnel);
+	ConnectionFailed(Twainet::Module module, const std::string& id);
 	virtual ~ConnectionFailed();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
@@ -96,6 +99,35 @@ public:
 	std::string m_messageName;
 	std::vector<std::string> m_path;
 	std::string m_data;
+};
+
+class CreationFailed : public NotificationMessage
+{
+public:
+	enum CreationType
+	{
+		MODULE = 0,
+		SERVER,
+		TUNNEL
+	};
+
+	CreationFailed(Twainet::Module module, CreationType type);
+	virtual ~CreationFailed();
+
+	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
+private:
+	CreationType m_type;
+};
+
+class TunnelCreationFailed : public CreationFailed
+{
+public:
+	TunnelCreationFailed(Twainet::Module module, const std::string& sessionId);
+	virtual ~TunnelCreationFailed();
+
+	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
+private:
+	std::string m_sessionId;
 };
 
 #endif/*NOTIFICATION_MESSAGES_H*/

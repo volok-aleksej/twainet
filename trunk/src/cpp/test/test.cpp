@@ -6,6 +6,21 @@
 #include <iostream>
 #include "twainet\application\twainet.h"
 
+void _stdcall OnModuleCreationFailed(Twainet::Module module)
+{
+	printf("Module creation failed - %s\n", Twainet::GetModuleName(module));
+}
+
+void _stdcall OnServerCreationFailed(Twainet::Module module)
+{
+	printf("Server creation failed, module - %s\n", Twainet::GetModuleName(module));
+}
+
+void _stdcall OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+{
+	printf("Tunnel creation failed, from %s to %s\n", Twainet::GetSessionId(module), sessionId);
+}
+
 void __stdcall OnServerConnected(Twainet::Module module, const char* sessionId)
 {
 	static std::string moduleName;
@@ -72,10 +87,10 @@ int _tmain(int argc, _TCHAR* argv[])
 //	module2.SendMsg(msg, 1, &ipcName3);
 //	module2.SendMsg(msg, 1, &ipcName2);
 
-	Twainet::TwainetCallback tc = { &OnServerConnected, &OnServerDisconnected,
+	Twainet::TwainetCallback tc = {	&OnServerConnected, &OnServerDisconnected, &OnServerCreationFailed,
 									&OnClientConnected, &OnClientDisconnected,
-									&OnModuleConnected,	&OnModuleDisconnected,
-									&OnTunnelConnected,	&OnTunnelDisconnected,
+									&OnModuleConnected,	&OnModuleDisconnected, &OnModuleCreationFailed,
+									&OnTunnelConnected,	&OnTunnelDisconnected, &OnTunnelCreationFailed,
 									&OnMessageRecv};
 	Twainet::InitLibrary(tc);
 	Twainet::Module module1 = Twainet::CreateModule("Server Module1", true);

@@ -76,6 +76,10 @@ void ClientServerModule::OnClientConnector(const std::string& sessionId)
 	printf("\nServer incoming client connection. sessionId: %s", sessionId.c_str());
 }
 
+void ClientServerModule::ServerCreationFailed()
+{
+}
+
 void ClientServerModule::Disconnect()
 {
 	IPCObjectName ipcName(m_serverIPCName, m_ownSessionId);

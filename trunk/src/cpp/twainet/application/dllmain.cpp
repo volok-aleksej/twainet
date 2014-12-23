@@ -114,3 +114,15 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 	IPCMessageSignal msgSignal(message);
 	twainetModule->SendMsg(msgSignal);
 }
+
+extern "C" const char* Twainet::GetModuleName(const Twainet::Module module)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	return twainetModule->GetModuleName().c_str();
+}
+
+extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	return twainetModule->GetSessionId().c_str();
+}
