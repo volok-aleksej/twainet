@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <string.h>
 #include <iostream>
+#include <windows.h>
 #include "twainet\application\twainet.h"
 
 void _stdcall OnModuleCreationFailed(Twainet::Module module)
@@ -72,11 +73,20 @@ void __stdcall OnTunnelDisconnected(Twainet::Module module, const char* sessionI
 	printf("tunnel disconnected - %s\n", sessionId);
 }
 
+bool bFinish;
+
 void __stdcall OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
+	static int i = 0;
+	if(++i == 2)
+	{
+		bFinish = true;
+	}
+
 	std::string data(msg.m_data, msg.m_dataLen);
 	printf("message receive from %s - %s\n", msg.m_path, data.c_str());
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -87,6 +97,7 @@ int _tmain(int argc, _TCHAR* argv[])
 //	module2.SendMsg(msg, 1, &ipcName3);
 //	module2.SendMsg(msg, 1, &ipcName2);
 
+	bFinish = false;
 	Twainet::TwainetCallback tc = {	&OnServerConnected, &OnServerDisconnected, &OnServerCreationFailed,
 									&OnClientConnected, &OnClientDisconnected,
 									&OnModuleConnected,	&OnModuleDisconnected, &OnModuleCreationFailed,
@@ -98,6 +109,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	Twainet::CreateServer(module1, 8124);
 	Twainet::ConnectToServer(module2, "127.0.0.1", 8124);
 	Twainet::ConnectToServer(module1, "127.0.0.1", 8124);
+
+	while(!bFinish){Sleep(200);}
+
+	std::string sessionId = Twainet::GetSessionId(module2);
+	Twainet::DisconnectTunnel(module1, sessionId.c_str());
+	Twainet::DisconnectFromServer(module1);
+
 	system("pause");
 	return 0;
 }				

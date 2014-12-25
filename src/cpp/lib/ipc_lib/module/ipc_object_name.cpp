@@ -24,21 +24,21 @@ bool IPCObjectName::operator == (const IPCName& ipcName)
 		suffix() == ipcName.suffix();
 }
 
-std::string IPCObjectName::GetModuleNameString() const
+const std::string& IPCObjectName::GetModuleNameString()
 {
-	std::string name = module_name();
+	m_moduleNameString = module_name();
 	if(!host_name().empty())
 	{
-		name.append(".");
-		name.append(host_name());
+		m_moduleNameString.append(".");
+		m_moduleNameString.append(host_name());
 	}
 	if(!suffix().empty())
 	{
-		name.append(".");
-		name.append(suffix());
+		m_moduleNameString.append(".");
+		m_moduleNameString.append(suffix());
 	}
 
-	return name;
+	return m_moduleNameString;
 }
 
 IPCObjectName IPCObjectName::GetIPCName(const std::string& ipcName)

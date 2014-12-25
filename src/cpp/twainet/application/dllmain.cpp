@@ -99,6 +99,12 @@ extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* 
 	twainetModule->InitNewTunnel(sessionId);
 }
 
+extern "C" void Twainet::DisconnectTunnel(const Twainet::Module module, const char* sessionId)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->DestroyTunnel(sessionId);
+}
+
 extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet::Message& msg)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
@@ -126,3 +132,4 @@ extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	return twainetModule->GetSessionId().c_str();
 }
+

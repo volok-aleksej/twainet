@@ -137,7 +137,7 @@ void ClientServerModule::StopServer()
 	}
 }
 
-std::string ClientServerModule::GetSessionId()
+const std::string& ClientServerModule::GetSessionId()
 {
 	return m_ownSessionId;
 }

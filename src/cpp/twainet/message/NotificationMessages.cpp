@@ -57,8 +57,8 @@ void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 /*******************************************************************************************/
 /*                                ModuleDisconnected                                       */
 /*******************************************************************************************/
-ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id)
-	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id)
+ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id, bool bTunnel/* = false*/)
+	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id), m_bTunnel(bTunnel)
 {
 }
 
@@ -76,6 +76,10 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	else if(idName.module_name() == ClientServerModule::m_serverIPCName)
 	{
 		callbacks.OnServerDisconnected(m_module);
+	}
+	else if(m_bTunnel)
+	{
+		callbacks.OnTunnelDisconnected(m_module, m_id.c_str());
 	}
 	else
 	{

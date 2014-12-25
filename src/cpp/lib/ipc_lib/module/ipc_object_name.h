@@ -15,9 +15,11 @@ public:
 
 	bool operator == (const IPCName& object);
 
-	std::string GetModuleNameString() const;
+	const std::string& GetModuleNameString();
 
 	static IPCObjectName GetIPCName(const std::string& ipcName);
+private:
+	std::string m_moduleNameString;
 };
 
 #endif/*IPC_OBJECT_NAME_H*/

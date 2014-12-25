@@ -19,6 +19,7 @@ void TwainetModule::OnTunnelConnectFailed(const std::string& sessionId)
 void TwainetModule::OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
 {
 	Application::GetInstance().AddNotifycationMessage(new TunnelConnected(this, sessionId, type));
+	m_createdTunnels.AddObject(sessionId);
 }
 
 void TwainetModule::OnServerConnected()
@@ -33,7 +34,16 @@ void TwainetModule::OnClientConnector(const std::string& sessionId)
 
 void TwainetModule::OnFireConnector(const std::string& moduleName)
 {
-	Application::GetInstance().AddNotifycationMessage(new ModuleDisconnected(this, moduleName));
+	std::string sessionId;
+	if(m_createdTunnels.GetObject(moduleName, &sessionId))
+	{	
+		Application::GetInstance().AddNotifycationMessage(new ModuleDisconnected(this, moduleName, true));
+		m_createdTunnels.RemoveObject(moduleName);
+	}
+	else
+	{
+		Application::GetInstance().AddNotifycationMessage(new ModuleDisconnected(this, moduleName));
+	}
 }
 
 void TwainetModule::OnConnectFailed(const std::string& moduleName)
