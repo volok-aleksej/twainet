@@ -58,6 +58,7 @@ extern "C"
 		EXPORT_FUNC void ConnectToModule(const Twainet::Module module, const char* moduleName);
 		EXPORT_FUNC void DisconnectFromModule(const Twainet::Module module, const char* moduleName);
 		EXPORT_FUNC void CreateTunnel(const Twainet::Module module, const char* sessionId);
+		EXPORT_FUNC void DisconnectTunnel(const Twainet::Module module, const char* sessionId);
 		EXPORT_FUNC void SendMessage(const Twainet::Module module, const Twainet::Message& msg);
 		EXPORT_FUNC const char* GetModuleName(const Twainet::Module module);
 		EXPORT_FUNC const char* GetSessionId(const Twainet::Module module);

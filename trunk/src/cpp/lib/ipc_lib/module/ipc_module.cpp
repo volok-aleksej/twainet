@@ -100,7 +100,8 @@ void IPCModule::StartAsCoordinator()
 
 void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 {
-	TryConnectCounter counter(moduleName.GetModuleNameString());
+	IPCObjectName module(moduleName);
+	TryConnectCounter counter(module.GetModuleNameString());
 	if(m_isExit || m_tryConnectCounters.GetObject(counter, &counter))
 	{
 		return;
@@ -127,7 +128,8 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 
 void IPCModule::DisconnectModule(const IPCObjectName& moduleName)
 {
-	m_manager.StopConnection(moduleName.GetModuleNameString());
+	IPCObjectName module(moduleName);
+	m_manager.StopConnection(module.GetModuleNameString());
 }
 
 void IPCModule::Start(const std::string& ip, int port)
@@ -231,7 +233,7 @@ void IPCModule::SendMsg(const IPCMessageSignal& msg)
 	onSignal(msg);
 }
 
-std::string IPCModule::GetModuleName()
+const std::string& IPCModule::GetModuleName()
 {
 	return m_moduleName.GetModuleNameString();
 }

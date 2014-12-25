@@ -42,6 +42,9 @@ protected:
 	
 	// Server has not created
 	virtual void ServerCreationFialed();
+
+private:
+	ObjectManager<std::string> m_createdTunnels;
 };
 
 #endif/*TWAINET_MODULE_H*/

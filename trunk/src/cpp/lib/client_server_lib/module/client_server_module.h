@@ -24,7 +24,7 @@ public:
 	bool IsStopServer();
 	void StopServer();
 
-	std::string GetSessionId();
+	const std::string& GetSessionId();
 protected:
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual bool CheckFireConnector(const std::string& moduleName);

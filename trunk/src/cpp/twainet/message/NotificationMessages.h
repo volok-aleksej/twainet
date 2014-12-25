@@ -80,12 +80,13 @@ public:
 class ModuleDisconnected : public NotificationMessage
 {
 public:
-	ModuleDisconnected(Twainet::Module module, const std::string& id);
+	ModuleDisconnected(Twainet::Module module, const std::string& id, bool bTunnel = false);
 	virtual ~ModuleDisconnected();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
 public:
 	std::string m_id;
+	bool m_bTunnel;
 };
 
 class GettingMessage : public NotificationMessage
