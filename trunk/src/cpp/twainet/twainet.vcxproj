@@ -21,6 +21,10 @@
     <ClInclude Include="application\twainet.h" />
     <ClInclude Include="message\NotificationMessages.h" />
     <ClInclude Include="module\twainet_module.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="twainet.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CB7762A6-892C-405A-A155-E83F5AFDEC56}</ProjectGuid>
