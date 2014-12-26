@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="messages">
+      <UniqueIdentifier>{3b40e0e5-7feb-4134-a827-0fee4119c7b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="connector">
+      <UniqueIdentifier>{34fc7965-a8da-4b1d-8e1b-109b9f9c296b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="module">
+      <UniqueIdentifier>{e4cae5f7-8480-4c19-ac93-30320f86a866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{2bb07b85-3df4-49d0-aba4-2039782b6560}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{0e990842-a77a-4332-a8f4-9ee47c22891a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{9cbc433f-a638-4df4-827a-c27c0f06e4f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\messages\ipc.pb.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\ipc_connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="module\ipc_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="module\ipc_object_name.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\ipc_checker_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\ping_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\guid_generator.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\tstring.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\messages\ipc.pb.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\ipc_connector.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\ipc_connector_factory.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\proto_message.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="module\ipc_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\ipc_object_name.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\ipc_checker_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\ping_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\guid_generator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\tstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\messages\ipc.proto">
+      <Filter>messages</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="connector">
+      <UniqueIdentifier>{d4739b98-a9f8-4f24-97ca-99d49da58c76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{abfcbe21-4a50-4bbd-b5e5-c237705bc337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="socket">
+      <UniqueIdentifier>{6a2cebdf-b169-4310-a64a-4097d9b81a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{e3c80417-c047-43a0-9474-c7b0b189adb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{c3aab6be-7fcc-4350-acfd-44eb763a7ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="handler">
+      <UniqueIdentifier>{d55f3a4d-603a-4786-b2e6-e89ced0d2eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="signal">
+      <UniqueIdentifier>{77546135-f7d2-412d-b66d-d1de97ce3a13}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="connector\connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\connector_manager.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\socket_factories.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\tcp_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\udp_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\udt_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="message\connector_messages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\connect_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread\listen_thread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="handler\message_handler.cpp">
+      <Filter>handler</Filter>
+    </ClCompile>
+    <ClCompile Include="signal\signal.cpp">
+      <Filter>signal</Filter>
+    </ClCompile>
+    <ClCompile Include="signal\signal_manager.cpp">
+      <Filter>signal</Filter>
+    </ClCompile>
+    <ClCompile Include="signal\signal_owner.cpp">
+      <Filter>signal</Filter>
+    </ClCompile>
+    <ClCompile Include="signal\signal_receiver.cpp">
+      <Filter>signal</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\secure_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="connector\connector.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\connector_factory.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\connector_manager.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\common.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\thread_lib\common\object_manager.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ref.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\any_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\socket_factories.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\socket_factory.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\tcp_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\udp_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\udt_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="message\connector_messages.h">
+      <Filter>message</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\address.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\connect_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread\listen_thread.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\data_handler.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\data_message.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\deserializer.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\message_handler.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\sender.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="handler\serializer.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\receiver_func.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\signal.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\signal_manager.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\signal_message.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\signal_owner.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="signal\signal_receiver.h">
+      <Filter>signal</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\secure_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

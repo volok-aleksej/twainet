@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="application">
+      <UniqueIdentifier>{a27d2864-f59c-490a-ad8c-c22cd600dd8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="module">
+      <UniqueIdentifier>{40c9ca57-7cb9-4325-bca9-16f660cd67f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{707e8ba7-92eb-475c-b6fa-ee45b8b0440a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="application\dllmain.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="application\application.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="module\twainet_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="message\NotificationMessages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="application\application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="application\twainet.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="module\twainet_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="message\NotificationMessages.h">
+      <Filter>message</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>application</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="twainet.rc">
+      <Filter>application</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
