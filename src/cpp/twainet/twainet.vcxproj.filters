@@ -38,5 +38,13 @@
     <ClInclude Include="message\NotificationMessages.h">
       <Filter>message</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>application</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="twainet.rc">
+      <Filter>application</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
