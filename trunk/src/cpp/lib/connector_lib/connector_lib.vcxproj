@@ -82,6 +82,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="common\aes.cpp" />
     <ClCompile Include="connector\connector.cpp" />
     <ClCompile Include="connector\connector_manager.cpp" />
     <ClCompile Include="socket\secure_socket.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="signal\signal_receiver.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="common\aes.h" />
     <ClInclude Include="connector\connector.h" />
     <ClInclude Include="connector\connector_factory.h" />
     <ClInclude Include="connector\connector_manager.h" />

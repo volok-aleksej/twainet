@@ -69,6 +69,9 @@
     <ClCompile Include="socket\secure_socket.cpp">
       <Filter>socket</Filter>
     </ClCompile>
+    <ClCompile Include="common\aes.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connector\connector.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="socket\secure_socket.h">
       <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="common\aes.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

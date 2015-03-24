@@ -10,8 +10,11 @@
 
 #include "secure_socket.h"
 #include "any_socket.h"
+#include "common\aes.h"
 
 #define RSA_DATA_SIZE 2048
+#define SSL_HEADER_SIZE	8
+#define SSL_HEADER	"STARTTLS"
 
 SecureSocket::SecureSocket(AnySocket* socket)
 	: m_socket(socket), m_rsaOwn(0), m_rsaOther(0), m_bInit(false)
@@ -39,7 +42,17 @@ bool SecureSocket::initSSL()
 }
 
 bool SecureSocket::PerformSslVerify()
-{	
+{
+	//send STARTTLS to and receive it from other side
+	unsigned char sslHeader[SSL_HEADER_SIZE] = {0};
+	if (!Send(SSL_HEADER, SSL_HEADER_SIZE) ||
+		!Recv((char*)sslHeader, SSL_HEADER_SIZE) ||
+		memcmp(sslHeader, SSL_HEADER, SSL_HEADER_SIZE) != 0)
+	{
+		return false;
+	}
+
+	//send RSA public key
  	int len = i2d_RSAPublicKey(m_rsaOwn, 0);
 	unsigned char* data = 0;
 	len = i2d_RSAPublicKey(m_rsaOwn, (unsigned char**)&data);
@@ -50,8 +63,8 @@ bool SecureSocket::PerformSslVerify()
 	}
 	delete data;
 
-	if(!Recv((char*)&len, sizeof(int)) ||
-		len > RSA_DATA_SIZE)
+	//receive RSA public key
+	if(!Recv((char*)&len, sizeof(int)))
 	{
 		return false;
 	}
@@ -61,6 +74,29 @@ bool SecureSocket::PerformSslVerify()
 	{
 		return false;
 	}
+
+	//Send session aes key
+	if(AESGenerateKey(m_keyOwn, sizeof(m_keyOwn)) <= 0)
+	{
+		return false;
+	}
+	len = RSA_size(m_rsaOther);
+	data = new unsigned char[len];
+	len = RSA_public_encrypt(sizeof(m_keyOwn), m_keyOwn, data, m_rsaOther, RSA_PKCS1_PADDING);
+	if(!Send((char*)data, len))
+	{
+		return false;
+	}
+	delete data;
+
+	len = RSA_size(m_rsaOwn);
+	data = new unsigned char[len];
+	if (!Recv((char*)data, len) ||
+		RSA_private_decrypt(len, data, m_keyOther, m_rsaOwn, RSA_PKCS1_PADDING) <= 0)
+	{
+		return false;
+	}
+	delete data;
 
 	m_bInit = true;
 	return true;
@@ -72,9 +108,18 @@ bool SecureSocket::Send(char* data, int len)
 	unsigned char* senddata = 0;
 	if(m_bInit)
 	{
-		sendLen = RSA_size(m_rsaOther);
-		senddata = new unsigned char[sendLen];
-		RSA_public_encrypt(len, (const unsigned char*)data, senddata, m_rsaOther, RSA_PKCS1_PADDING);
+		unsigned char* encriptedData = new unsigned char[MAX_DATA_LEN];
+		sendLen = AESEncrypt(m_keyOther, sizeof(m_keyOther), (byte*)data, len, encriptedData, MAX_DATA_LEN);
+		if(sendLen <= 0)
+		{
+			return false;
+		}
+
+		senddata = new unsigned char[sendLen + sizeof(int)];
+		memcpy(senddata + sizeof(int), encriptedData, sendLen);
+		memcpy(senddata, &sendLen, sizeof(int));
+		sendLen += sizeof(int);
+		delete encriptedData;
 	}
 	else
 	{
@@ -103,7 +148,7 @@ bool SecureSocket::Send(char* data, int len)
 
 bool SecureSocket::Recv(char* data, int len)
 {
-	int recvLen = m_bInit ? RSA_size(m_rsaOwn) : len;
+	int recvLen = m_bInit ? sizeof(int) : len;
 	unsigned char* recvdata = new unsigned char[recvLen];
 	
 	int recvlen = recvLen;
@@ -117,11 +162,22 @@ bool SecureSocket::Recv(char* data, int len)
 		}
 		
 		recvlen -= res;
+		if(m_bInit && recvLen == sizeof(int) && recvlen == 0)
+		{
+			recvLen = *(int*)recvdata;
+			recvlen = recvLen;
+			delete recvdata;
+			recvdata = new unsigned char[recvLen];
+		}
 	}
 
 	if(m_bInit)
 	{
-		RSA_private_decrypt(RSA_size(m_rsaOwn), recvdata, (unsigned char*)data, m_rsaOwn, RSA_PKCS1_PADDING);
+		int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, recvLen, (byte*)data, len);
+		if(decriptedLen != len)
+		{
+			return false;
+		}
 	}
 	else
 	{

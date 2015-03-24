@@ -19,6 +19,8 @@ protected:
 	bool initSSL();
 private:
 	AnySocket* m_socket;
+	unsigned char m_keyOwn[32];
+	unsigned char m_keyOther[32];
 	RSA* m_rsaOwn;
 	RSA* m_rsaOther;
 	bool m_bInit;
