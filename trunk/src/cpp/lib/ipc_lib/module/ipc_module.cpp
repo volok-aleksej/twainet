@@ -104,6 +104,7 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 	TryConnectCounter counter(module.GetModuleNameString());
 	if(m_isExit || m_tryConnectCounters.GetObject(counter, &counter))
 	{
+		OnConnectFailed(const_cast<IPCObjectName&>(moduleName).GetModuleNameString());
 		return;
 	}
 
@@ -123,6 +124,10 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 		thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectErrorMessage, onErrorConnect));
 		m_tryConnectCounters.AddObject(counter);
 		thread->Start();
+	}
+	else
+	{
+		OnConnectFailed(const_cast<IPCObjectName&>(moduleName).GetModuleNameString());
 	}
 }
 

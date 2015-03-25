@@ -42,6 +42,11 @@ void __stdcall OnClientDisconnected(Twainet::Module module, const char* sessionI
 	printf("client disconnected - %s\n", sessionId);
 }
 
+void _stdcall OnClientConnectionFailed(Twainet::Module module)
+{
+	printf("client connection failed - %s\n", Twainet::GetModuleName(module));
+}
+
 void _stdcall OnServerDisconnected(Twainet::Module module)
 {
 	printf("server disconnected\n");
@@ -55,6 +60,11 @@ void __stdcall OnModuleConnected(Twainet::Module module, const char* moduleId)
 void __stdcall OnModuleDisconnected(Twainet::Module module, const char* moduleId)
 {
 	printf("module disconnected - %s\n", moduleId);
+}
+
+void _stdcall OnModuleConnectionFailed(Twainet::Module module, const char* moduleId)
+{
+	printf("module connection failed - %s\n", moduleId);
 }
 
 void __stdcall OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
@@ -99,13 +109,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	bFinish = false;
 	Twainet::TwainetCallback tc = {	&OnServerConnected, &OnServerDisconnected, &OnServerCreationFailed,
-									&OnClientConnected, &OnClientDisconnected,
-									&OnModuleConnected,	&OnModuleDisconnected, &OnModuleCreationFailed,
+									&OnClientConnected, &OnClientDisconnected, &OnClientConnectionFailed,
+									&OnModuleConnected,	&OnModuleDisconnected, &OnModuleConnectionFailed, &OnModuleCreationFailed,
 									&OnTunnelConnected,	&OnTunnelDisconnected, &OnTunnelCreationFailed,
 									&OnMessageRecv};
 	Twainet::InitLibrary(tc);
 	Twainet::Module module1 = Twainet::CreateModule("Server Module1", true);
 	Twainet::Module module2 = Twainet::CreateModule("Client Module1", false);
+	Twainet::ConnectToModule(module1, "Client Module");
 	Twainet::CreateServer(module1, 8124);
 	Twainet::ConnectToServer(module2, "127.0.0.1", 8124);
 	Twainet::ConnectToServer(module1, "127.0.0.1", 8124);

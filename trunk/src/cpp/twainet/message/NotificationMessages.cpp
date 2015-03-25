@@ -118,6 +118,14 @@ ConnectionFailed::~ConnectionFailed()
 
 void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
+	if(m_id == ClientServerModule::m_serverIPCName)
+	{
+		callbacks.OnClientConnectionFailed(m_module);
+	}
+	else
+	{
+		callbacks.OnModuleConnectionFailed(m_module, m_id.c_str());
+	}
 }
 
 /*******************************************************************************************/

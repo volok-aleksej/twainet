@@ -39,8 +39,10 @@ extern "C"
 			void (_stdcall *OnServerCreationFailed)(Module module);
 			void (_stdcall *OnClientConnected)(Module module, const char* sessionId);
 			void (_stdcall *OnClientDisconnected)(Module module, const char* sessionId);
+			void (_stdcall *OnClientConnectionFailed)(Module module);
 			void (_stdcall *OnModuleConnected)(Module module, const char* moduleId);
 			void (_stdcall *OnModuleDisconnected)(Module module, const char* moduleId);
+			void (_stdcall *OnModuleConnectionFailed)(Module module, const char* moduleName);
 			void (_stdcall *OnModuleCreationFailed)(Module module);
 			void (_stdcall *OnTunnelConnected)(Module module, const char* sessionId, TypeConnection type);
 			void (_stdcall *OnTunnelDisconnected)(Module module, const char* sessionId);

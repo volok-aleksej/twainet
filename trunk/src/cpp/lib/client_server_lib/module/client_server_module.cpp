@@ -164,7 +164,7 @@ void ClientServerModule::onErrorConnect(const ConnectErrorMessage& msg)
 	}
 	else
 	{
-		//TODO: Inform about error connect
+		OnConnectFailed(msg.m_moduleName);
 	}
 }
 
@@ -176,8 +176,8 @@ void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
 {
 	ThreadManager::GetInstance().AddThread(m_serverThread);
 	m_serverThread = 0;
-
-	//TODO: Inform about error listener
+	m_isExit = true;
+	ServerCreationFailed();
 }
 
 void ClientServerModule::onLoginResult(const LoginResultMessage& msg)

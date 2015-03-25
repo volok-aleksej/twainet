@@ -410,7 +410,6 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		//TODO: inform about it;
 		return;
 	}
 	tunnel = it->second;
@@ -444,7 +443,6 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		//TODO: inform about it;
 		return;
 	}
 	tunnel = it->second;
@@ -470,7 +468,6 @@ void TunnelModule::InitExternalConnectThread(const std::string& extSessionId, co
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		//TODO: inform about it;
 		return;
 	}
 	tunnel = it->second;
@@ -505,7 +502,6 @@ void TunnelModule::CreateExternalConnectThread(const std::string& extSessionId, 
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		//TODO: inform about it;
 		return;
 	}
 	tunnel = it->second;
@@ -528,7 +524,6 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		//TODO: inform about it;
 		return;
 	}
 	tunnel = it->second;
