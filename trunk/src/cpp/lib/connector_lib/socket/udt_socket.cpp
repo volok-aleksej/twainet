@@ -28,9 +28,13 @@ UDTSocket::UDTSocket(int socket, bool isUdp, Type typeSocket)
 
 UDTSocket::UDTSocket(int udpSocket, int socket, Type typeSocket)
 : AnySocket(typeSocket)
+, m_socket(socket)
+, m_udpSocket(udpSocket)
 {
-	m_udpSocket = udpSocket;
-	m_socket = socket;
+	if (SECURE_SOCKET == m_typeSocket)
+	{
+	   m_secure->PerformSslVerify();
+	}
 }
 
 UDTSocket::~UDTSocket()
@@ -132,7 +136,17 @@ bool UDTSocket::Connect(const std::string& host, int port)
 	si.sin_port = htons(port);
 	si.sin_family = AF_INET;
 
-	return UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+	if(UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) != 0)
+	{
+		return false;
+	}
+
+	bool sslVerifyRes = true;
+	if (SECURE_SOCKET == m_typeSocket)
+	{
+	   sslVerifyRes = m_secure->PerformSslVerify();
+	}
+	return sslVerifyRes;
 }
 
 bool UDTSocket::Send(char* data, int len)
@@ -143,16 +157,23 @@ bool UDTSocket::Send(char* data, int len)
 	}
 
 	CSLocker locker(&m_cs);
-	int sendlen = len;
-	while (sendlen > 0)
+	if(m_typeSocket == SECURE_SOCKET)
 	{
-		int res = UDT::send(m_socket, data + len - sendlen, sendlen, 0);
-		if(res <= 0)
+		return m_secure->Send(data, len);
+	}
+	else
+	{
+		int sendlen = len;
+		while (sendlen > 0)
 		{
-			return false;
-		}
+			int res = UDT::send(m_socket, data + len - sendlen, sendlen, 0);
+			if(res <= 0)
+			{
+				return false;
+			}
 
-		sendlen -= res;
+			sendlen -= res;
+		}
 	}
 
 	return true;
@@ -165,16 +186,23 @@ bool UDTSocket::Recv(char* data, int len)
 		return false;
 	}
 
-	int recvlen = len;
-	while (recvlen > 0)
+	if(m_typeSocket == SECURE_SOCKET)
 	{
-		int res = UDT::recv(m_socket, data + len - recvlen, recvlen, 0);
-		if(res <= 0)
+		return m_secure->Recv(data, len);
+	}
+	else
+	{
+		int recvlen = len;
+		while (recvlen > 0)
 		{
-			return false;
-		}
+			int res = UDT::recv(m_socket, data + len - recvlen, recvlen, 0);
+			if(res <= 0)
+			{
+				return false;
+			}
 
-		recvlen -= res;
+			recvlen -= res;
+		}
 	}
 
 	return true;

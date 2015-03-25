@@ -45,7 +45,7 @@ AnySocket* UDPSocketFactory::CreateSocket(int socket)
 }
 
 /*******************************************************************************************************/
-/*                                      UDTSecureSocketFactory                                         */
+/*                                         UDTSocketFactory                                            */
 /*******************************************************************************************************/
 AnySocket* UDTSocketFactory::CreateSocket()
 {

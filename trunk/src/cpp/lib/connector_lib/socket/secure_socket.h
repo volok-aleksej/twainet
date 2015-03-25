@@ -26,6 +26,7 @@ private:
 	bool m_bInit;
 	unsigned char* m_buffer;
 	int m_sizeBuffer;
+	bool m_isUDT;
 };
 
 #endif/*SECURE_SOCKET_H*/

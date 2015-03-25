@@ -9,8 +9,12 @@
 #endif/*WIN32*/
 
 #include "secure_socket.h"
-#include "any_socket.h"
+#include "udt_socket.h"
 #include "common\aes.h"
+
+#pragma warning(disable:4251)
+#include "udt.h"
+#pragma warning(default:4251)
 
 #define RSA_DATA_SIZE 2048
 #define SSL_HEADER_SIZE	8
@@ -43,6 +47,11 @@ bool SecureSocket::initSSL()
 
 bool SecureSocket::PerformSslVerify()
 {
+	if(dynamic_cast<UDTSocket*>(m_socket) != 0)
+		m_isUDT = true;
+	else
+		m_isUDT = false;
+
 	//send STARTTLS to and receive it from other side
 	unsigned char sslHeader[SSL_HEADER_SIZE] = {0};
 	if (!Send(SSL_HEADER, SSL_HEADER_SIZE) ||
@@ -131,7 +140,11 @@ bool SecureSocket::Send(char* data, int len)
 	int sendlen = sendLen;
 	while (sendlen > 0)
 	{
-		int res = send(m_socket->GetSocket(), (const char*)(senddata + sendLen - sendlen), sendlen, 0);
+		int res = 0;
+		if(m_isUDT)
+			res = UDT::send(m_socket->GetSocket(), (const char*)(senddata + sendLen - sendlen), sendlen, 0);
+		else
+			res = send(m_socket->GetSocket(), (const char*)(senddata + sendLen - sendlen), sendlen, 0);
 		if(res <= 0)
 		{
 			delete senddata;
@@ -154,7 +167,11 @@ bool SecureSocket::Recv(char* data, int len)
 	int recvlen = recvLen;
 	while (recvlen > 0)
 	{
-		int res = recv(m_socket->GetSocket(), (char*)(recvdata + recvLen - recvlen), recvlen, 0);
+		int res = 0;
+		if(m_isUDT)
+			res = UDT::recv(m_socket->GetSocket(), (char*)(recvdata + recvLen - recvlen), recvlen, 0);
+		else
+			res = recv(m_socket->GetSocket(), (char*)(recvdata + recvLen - recvlen), recvlen, 0);
 		if(res <= 0)
 		{
 			delete recvdata;

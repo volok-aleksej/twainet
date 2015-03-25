@@ -178,6 +178,14 @@
 			Name="common"
 			>
 			<File
+				RelativePath=".\common\aes.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\aes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\common.h"
 				>
 			</File>

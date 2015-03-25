@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{86FD5170-B6ED-4728-8429-2092F2D90B34}"
 	ProjectSection(ProjectDependencies) = postProject
-		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
+		{F613D49A-D0EE-4F3C-B860-B6A76260519E} = {F613D49A-D0EE-4F3C-B860-B6A76260519E}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "external", "external", "{FFDE88D0-202C-4AE9-8A41-C65A7CAF1114}"
@@ -39,6 +39,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client_server_lib", "lib\cl
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "twainet\twainet.vcproj", "{F613D49A-D0EE-4F3C-B860-B6A76260519E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
