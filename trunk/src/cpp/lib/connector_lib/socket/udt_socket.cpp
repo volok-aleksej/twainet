@@ -4,16 +4,14 @@
 #include "udt.h"
 #pragma warning(default:4251)
 
-UDTSocket::UDTSocket(Type typeSocket)
-: AnySocket(typeSocket)
-, m_udpSocket(0)
+UDTSocket::UDTSocket()
+: m_udpSocket(0)
 {
 	m_socket = UDT::socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
 }
 
-UDTSocket::UDTSocket(int socket, bool isUdp, Type typeSocket)
-: AnySocket(typeSocket)
-, m_udpSocket(0)
+UDTSocket::UDTSocket(int socket, bool isUdp)
+: m_udpSocket(0)
 {
 	if(isUdp)
 	{
@@ -26,15 +24,10 @@ UDTSocket::UDTSocket(int socket, bool isUdp, Type typeSocket)
 	}
 }
 
-UDTSocket::UDTSocket(int udpSocket, int socket, Type typeSocket)
-: AnySocket(typeSocket)
-, m_socket(socket)
+UDTSocket::UDTSocket(int udpSocket, int socket)
+: m_socket(socket)
 , m_udpSocket(udpSocket)
 {
-	if (SECURE_SOCKET == m_typeSocket)
-	{
-	   m_secure->PerformSslVerify();
-	}
 }
 
 UDTSocket::~UDTSocket()
@@ -136,17 +129,7 @@ bool UDTSocket::Connect(const std::string& host, int port)
 	si.sin_port = htons(port);
 	si.sin_family = AF_INET;
 
-	if(UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) != 0)
-	{
-		return false;
-	}
-
-	bool sslVerifyRes = true;
-	if (SECURE_SOCKET == m_typeSocket)
-	{
-	   sslVerifyRes = m_secure->PerformSslVerify();
-	}
-	return sslVerifyRes;
+	return UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
 }
 
 bool UDTSocket::Send(char* data, int len)
@@ -157,23 +140,16 @@ bool UDTSocket::Send(char* data, int len)
 	}
 
 	CSLocker locker(&m_cs);
-	if(m_typeSocket == SECURE_SOCKET)
+	int sendlen = len;
+	while (sendlen > 0)
 	{
-		return m_secure->Send(data, len);
-	}
-	else
-	{
-		int sendlen = len;
-		while (sendlen > 0)
+		int res = UDT::send(m_socket, data + len - sendlen, sendlen, 0);
+		if(res <= 0)
 		{
-			int res = UDT::send(m_socket, data + len - sendlen, sendlen, 0);
-			if(res <= 0)
-			{
-				return false;
-			}
-
-			sendlen -= res;
+			return false;
 		}
+
+		sendlen -= res;
 	}
 
 	return true;
@@ -186,23 +162,16 @@ bool UDTSocket::Recv(char* data, int len)
 		return false;
 	}
 
-	if(m_typeSocket == SECURE_SOCKET)
+	int recvlen = len;
+	while (recvlen > 0)
 	{
-		return m_secure->Recv(data, len);
-	}
-	else
-	{
-		int recvlen = len;
-		while (recvlen > 0)
+		int res = UDT::recv(m_socket, data + len - recvlen, recvlen, 0);
+		if(res <= 0)
 		{
-			int res = UDT::recv(m_socket, data + len - recvlen, recvlen, 0);
-			if(res <= 0)
-			{
-				return false;
-			}
-
-			recvlen -= res;
+			return false;
 		}
+
+		recvlen -= res;
 	}
 
 	return true;

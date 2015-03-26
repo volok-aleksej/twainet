@@ -11,8 +11,8 @@
 class TCPSocket : public AnySocket
 {
 public:
-	TCPSocket(Type typeSocket);
-	explicit TCPSocket(Type typeSocket, int socket);
+	TCPSocket();
+	explicit TCPSocket(int socket);
 	virtual ~TCPSocket();
 
 	virtual bool Bind(const std::string& host, int port);

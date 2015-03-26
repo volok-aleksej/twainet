@@ -10,29 +10,18 @@
 #include <netdb.h>
 #endif/*WIN32*/
 
-TCPSocket::TCPSocket(Type typeSocket)
-	: AnySocket(typeSocket)
+TCPSocket::TCPSocket()
 {
 	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
-TCPSocket::TCPSocket(Type typeSocket, int socket)
-: AnySocket(typeSocket)
-, m_socket(socket)
+TCPSocket::TCPSocket(int socket)
+: m_socket(socket)
 {
-	if (SECURE_SOCKET == m_typeSocket)
-	{
-	   m_secure->PerformSslVerify();
-	}
 }
 
 TCPSocket::~TCPSocket()
 {
-	if(m_typeSocket == AnySocket::SECURE_SOCKET)
-	{
-		m_secure->Shutdown();
-		delete m_secure;
-	}
 	Close();
 }
 
@@ -113,18 +102,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 	si.sin_port = htons(port);
 	si.sin_family = AF_INET;
 
-	if(connect(m_socket, (sockaddr*)&si, sizeof(si)) != 0)
-	{
-		return false;
-	}
-	
-	bool sslVerifyRes = true;
-	if (SECURE_SOCKET == m_typeSocket)
-	{
-	   sslVerifyRes = m_secure->PerformSslVerify();
-	}
-
-	return sslVerifyRes;
+	return connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
 }
 
 bool TCPSocket::Send(char* data, int len)
@@ -135,23 +113,16 @@ bool TCPSocket::Send(char* data, int len)
 	}
 
 	CSLocker locker(&m_cs);
-	if(m_typeSocket == SECURE_SOCKET)
+	int sendlen = len;
+	while (sendlen > 0)
 	{
-		return m_secure->Send(data, len);
-	}
-	else
-	{
-		int sendlen = len;
-		while (sendlen > 0)
+		int res = send(m_socket, data + len - sendlen, sendlen, 0);
+		if(res <= 0)
 		{
-			int res = send(m_socket, data + len - sendlen, sendlen, 0);
-			if(res <= 0)
-			{
-				return false;
-			}
-
-			sendlen -= res;
+			return false;
 		}
+
+		sendlen -= res;
 	}
 
 	return true;
@@ -164,26 +135,18 @@ bool TCPSocket::Recv(char* data, int len)
 		return false;
 	}
 
-	if(m_typeSocket == SECURE_SOCKET)
+	int recvlen = len;
+	while (recvlen > 0)
 	{
-		return m_secure->Recv(data, len);
-	}
-	else
-	{
-		int recvlen = len;
-		while (recvlen > 0)
+		int res = recv(m_socket, data + len - recvlen, recvlen, 0);
+		if(res <= 0)
 		{
-			int res = recv(m_socket, data + len - recvlen, recvlen, 0);
-			if(res <= 0)
-			{
-				return false;
-			}
-
-			recvlen -= res;
+			return false;
 		}
+
+		recvlen -= res;
 	}
-
-
+	
 	return true;
 }
 

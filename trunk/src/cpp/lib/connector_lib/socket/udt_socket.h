@@ -7,9 +7,9 @@
 class UDTSocket : public AnySocket
 {
 public:
-	UDTSocket(Type typeSocket);
-	explicit UDTSocket(int socket, bool isUdp, Type typeSocket);
-	explicit UDTSocket(int udpSocket, int socket, Type typeSocket);
+	UDTSocket();
+	explicit UDTSocket(int socket, bool isUdp);
+	explicit UDTSocket(int udpSocket, int socket);
 	virtual ~UDTSocket();
 	
 	virtual bool Bind(const std::string& host, int port);
