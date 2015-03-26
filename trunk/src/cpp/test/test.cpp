@@ -116,16 +116,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	Twainet::InitLibrary(tc);
 	Twainet::Module module1 = Twainet::CreateModule("Server Module1", true);
 	Twainet::Module module2 = Twainet::CreateModule("Client Module1", false);
-	Twainet::ConnectToModule(module1, "Client Module");
 	Twainet::CreateServer(module1, 8124);
 	Twainet::ConnectToServer(module2, "127.0.0.1", 8124);
 	Twainet::ConnectToServer(module1, "127.0.0.1", 8124);
 
 	while(!bFinish){Sleep(200);}
 
-	std::string sessionId = Twainet::GetSessionId(module2);
-	Twainet::DisconnectTunnel(module1, sessionId.c_str());
-	Twainet::DisconnectFromServer(module1);
+	Twainet::ConnectToModule(module1, "Client Module");
+	Twainet::CreateTunnel(module1, "Tunnel Module");
 
 	system("pause");
 	return 0;
