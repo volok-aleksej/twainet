@@ -19,7 +19,7 @@ public:
 	virtual void Stop();
 
 	void Init(const Twainet::TwainetCallback& callback);
-	TwainetModule* CreateModule(const char* moduleName);
+	TwainetModule* CreateModule(const Twainet::ModuleName& moduleName);
 	void DeleteModule(TwainetModule* module);
 protected:
 	friend class TwainetModule;

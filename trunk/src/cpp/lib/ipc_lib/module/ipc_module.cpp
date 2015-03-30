@@ -238,9 +238,9 @@ void IPCModule::SendMsg(const IPCMessageSignal& msg)
 	onSignal(msg);
 }
 
-const std::string& IPCModule::GetModuleName()
+const IPCObjectName& IPCModule::GetModuleName()
 {
-	return m_moduleName.GetModuleNameString();
+	return m_moduleName;
 }
 
 bool IPCModule::IsExit()
@@ -499,4 +499,17 @@ void IPCModule::onIPCObjectList(const IPCObjectListMessage& msg)
 		ipcObject->set_port(it->m_port);
 		*ipcObject->mutable_ipc_name() = it->m_ipcName;
 	}
+}
+
+std::vector<IPCObjectName> IPCModule::GetIPCObjects()
+{
+	std::vector<IPCObjectName> retList;
+	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
+	std::vector<IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		retList.push_back(IPCObjectName(it->m_ipcName));
+	}
+
+	return retList;
 }

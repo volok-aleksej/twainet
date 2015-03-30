@@ -45,7 +45,7 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 	Application::GetInstance().Start();
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, bool isCoordinator)
+extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator)
 {
 	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
@@ -81,16 +81,16 @@ extern "C" void Twainet::DisconnectFromClient(const Twainet::Module module, cons
 	twainetModule->DisconnectModule(IPCObjectName(ClientServerModule::m_clientIPCName, sessionId));
 }
 
-extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const char* moduleName)
+extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->ConnectTo(IPCObjectName::GetIPCName(moduleName));
+	twainetModule->ConnectTo(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
 }
 
-extern "C" void DisconnectFromModule(const Twainet::Module module, const char* moduleName)
+extern "C" void DisconnectFromModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->DisconnectModule(IPCObjectName(moduleName));
+	twainetModule->DisconnectModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
 }
 
 extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId)
@@ -111,20 +111,24 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 	IPCMessage message;
 	message.set_message_name(msg.m_typeMessage);
 	message.set_message(msg.m_data, msg.m_dataLen);
-	std::vector<std::string> strings = CommonUtils::DelimitString(msg.m_path, "->");
-	for(std::vector<std::string>::iterator it = strings.begin(); it != strings.end(); it++)
+	for(int i = 0; i < msg.m_pathLen; i++)
 	{
-		*message.add_ipc_path() = IPCObjectName::GetIPCName(*it);
+		*message.add_ipc_path() = IPCObjectName(msg.m_path[i].m_name, msg.m_path[i].m_host, msg.m_path[i].m_suffix);
 	}
 
 	IPCMessageSignal msgSignal(message);
 	twainetModule->SendMsg(msgSignal);
 }
 
-extern "C" const char* Twainet::GetModuleName(const Twainet::Module module)
+extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module module)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	return twainetModule->GetModuleName().c_str();
+	const IPCObjectName& name = twainetModule->GetModuleName();
+	Twainet::ModuleName retName = {0};
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.module_name().c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, name.host_name().c_str());
+	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, name.suffix().c_str());
+	return retName;
 }
 
 extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
@@ -133,3 +137,23 @@ extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
 	return twainetModule->GetSessionId().c_str();
 }
 
+extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet::ModuleName* modules, int& sizeModules)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	std::vector<IPCObjectName> objects = twainetModule->GetIPCObjects();
+	if(sizeModules < objects.size())
+	{
+		sizeModules = objects.size();
+		return 0;
+	}
+
+	int i = 0;
+	for(std::vector<IPCObjectName>::iterator it = objects.begin();
+		it != objects.end(); it++)
+	{
+		strcpy_s(modules[i].m_name, MAX_NAME_LENGTH, it->module_name().c_str());
+		strcpy_s(modules[i].m_host, MAX_NAME_LENGTH, it->host_name().c_str());
+		strcpy_s(modules[i].m_suffix, MAX_NAME_LENGTH, it->suffix().c_str());
+	}
+	return objects.size();
+}

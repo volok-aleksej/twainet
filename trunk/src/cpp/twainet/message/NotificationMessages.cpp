@@ -51,7 +51,12 @@ ModuleConnected::~ModuleConnected()
 
 void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnModuleConnected(m_module, m_moduleName.c_str());
+	IPCObjectName name = IPCObjectName::GetIPCName(m_moduleName);
+	Twainet::ModuleName retName = {0};
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.module_name().c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, name.host_name().c_str());
+	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, name.suffix().c_str());
+	callbacks.OnModuleConnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -83,7 +88,11 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	}
 	else
 	{
-		callbacks.OnModuleDisconnected(m_module, m_id.c_str());
+		Twainet::ModuleName retName = {0};
+		strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+		strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+		strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+		callbacks.OnModuleDisconnected(m_module, retName);
 	}
 }
 
@@ -124,7 +133,12 @@ void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 	}
 	else
 	{
-		callbacks.OnModuleConnectionFailed(m_module, m_id.c_str());
+		IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+		Twainet::ModuleName retName = {0};
+		strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+		strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+		strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+		callbacks.OnModuleConnectionFailed(m_module, retName);
 	}
 }
 
@@ -148,19 +162,19 @@ void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 	msg.m_data = m_data.c_str();
 	msg.m_dataLen = m_data.size();
 	msg.m_typeMessage = m_messageName.c_str();
+	msg.m_pathLen = m_path.size();
+	msg.m_path = new Twainet::ModuleName[msg.m_pathLen];
 	std::string path;
 	for(std::vector<std::string>::iterator it = m_path.begin();
 		it != m_path.end(); it++)
 	{
-		if(it != m_path.begin())
-		{
-			path.append("->");
-		}
-
-		path.append(*it);
+		IPCObjectName idName = IPCObjectName::GetIPCName(*it);
+		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
 	}
-	msg.m_path = path.c_str();
 	callbacks.OnMessageRecv(m_module, msg);
+	delete msg.m_path;
 }
 
 /*******************************************************************************************/

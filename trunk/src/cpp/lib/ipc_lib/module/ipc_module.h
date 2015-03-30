@@ -71,7 +71,8 @@ public:
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
 	void SendMsg(const IPCMessageSignal& msg);
-	const std::string& GetModuleName();
+	const IPCObjectName& GetModuleName();
+	std::vector<IPCObjectName> GetIPCObjects();
 
 	template<class Msg> void SendMsg(const Msg& msg, int countPath, ...);
 protected:
