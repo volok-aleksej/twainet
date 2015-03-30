@@ -27,14 +27,22 @@ ClientServerConnected::~ClientServerConnected()
 
 void ClientServerConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
+	std::string name;
 	if(m_type == SERVER_CONNECTED)
 	{
 		callbacks.OnServerConnected(m_module, m_sessionId.c_str());
+		name = ClientServerModule::m_serverIPCName;
 	}
 	else
 	{
 		callbacks.OnClientConnected(m_module, m_sessionId.c_str());
+		name = ClientServerModule::m_clientIPCName;
 	}
+	
+	Twainet::ModuleName retName = {0};
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, m_sessionId.c_str());
+	callbacks.OnModuleConnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -86,14 +94,12 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	{
 		callbacks.OnTunnelDisconnected(m_module, m_id.c_str());
 	}
-	else
-	{
-		Twainet::ModuleName retName = {0};
-		strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
-		strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
-		strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
-		callbacks.OnModuleDisconnected(m_module, retName);
-	}
+
+	Twainet::ModuleName retName = {0};
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+	callbacks.OnModuleDisconnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -111,6 +117,9 @@ TunnelConnected::~TunnelConnected()
 void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
+	Twainet::ModuleName retName = {0};
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, m_sessionId.c_str());
+	callbacks.OnModuleConnected(m_module, retName);
 }
 
 /*******************************************************************************************/
