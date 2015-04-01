@@ -1,0 +1,1 @@
+start /b node server.js

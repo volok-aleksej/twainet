@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="module">
+      <UniqueIdentifier>{ce96900e-9b3c-4106-90f7-a24a4825f9a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="connector">
+      <UniqueIdentifier>{4ad67137-3070-457e-bddf-f4d5109314b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="messages">
+      <UniqueIdentifier>{64ef5015-470e-4354-8ba7-13fe90faa8e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="message">
+      <UniqueIdentifier>{4a805f07-6882-4250-9a2b-6176038b43a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="module\client_server_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\client_server_connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\messages\client_server.pb.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="message\client_server_messages.cpp">
+      <Filter>message</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="module\client_server_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\client_server_connector.h">
+      <Filter>connector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\messages\client_server.pb.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="message\client_server_messages.h">
+      <Filter>message</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\messages\client_server.proto">
+      <Filter>messages</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
