@@ -1,0 +1,3 @@
+Library for connection between computers without to use server. Computers are connecting each other directly, are using 3 type of connections: local - if computers are located in own network, external - if computers are not located in own network, relay - using server, server redirects all data with one computer to second.
+
+version 1.0.0.0 - https://twainet.googlecode.com/svn/tags/1.0.0.0/bin/twainet.dll
