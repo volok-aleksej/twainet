@@ -149,7 +149,7 @@ extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet
 
 	int i = 0;
 	for(std::vector<IPCObjectName>::iterator it = objects.begin();
-		it != objects.end(); it++)
+		it != objects.end(); it++, i++)
 	{
 		strcpy_s(modules[i].m_name, MAX_NAME_LENGTH, it->module_name().c_str());
 		strcpy_s(modules[i].m_host, MAX_NAME_LENGTH, it->host_name().c_str());

@@ -125,6 +125,7 @@ bool SecureSocket::Recv(char* data, int len)
 	}
 
 	int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, recvlen, (byte*)data, len);
+	delete recvdata;
 	return decriptedLen == len;
 }
 
