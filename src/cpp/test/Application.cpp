@@ -107,9 +107,9 @@ void Application::ThreadFunc()
 	m_module = Twainet::CreateModule(m_moduleName, false);
 #ifdef DEBUG_1
 	Twainet::CreateServer(m_module, 1054);
-	Twainet::ConnectToServer(m_module, "192.168.71.156", 1054);
+	Twainet::ConnectToServer(m_module, "192.168.0.100", 1054);
 #else
-	Twainet::ConnectToServer(m_module, "192.168.71.156", 1054);
+	Twainet::ConnectToServer(m_module, "192.168.0.100", 1054);
 #endif
 	while(!m_isStop){Sleep(200);}
 }
@@ -125,6 +125,7 @@ void Application::onModuleCreationFailed(Twainet::Module module)
 
 void Application::onServerCreationFailed(Twainet::Module module)
 {
+	m_isStop = false;
 }
 
 void Application::onTunnelCreationFailed(Twainet::Module module, const char* sessionId)
@@ -192,6 +193,7 @@ void Application::onModuleConnectionFailed(Twainet::Module module, const Twainet
 
 void Application::onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
+	printf("tunnel connection - %s type - %d\n", sessionId, type);
 #ifdef DEBUG_1
 			time_t t;
 			time(&t);
@@ -199,12 +201,12 @@ void Application::onTunnelConnected(Twainet::Module module, const char* sessionI
 			char data[50] = {0};
 			strftime(data, 50, "%H::%M::%S", Tm);
 			printf("begin time: %s\n", data);
-			Twainet::ModuleName moduleName = {0};
-			strcpy(moduleName.m_name, sessionId);
 			for(int i = 0; i < 263400; i++)
 			{
 				char* data = new char[8192];
 				Twainet::Message msg = {0};
+				Twainet::ModuleName moduleName = {0};
+				strcpy(moduleName.m_name, sessionId);
 				msg.m_path = &moduleName;
 				msg.m_pathLen = 1;
 				msg.m_typeMessage = "Data";
@@ -224,6 +226,7 @@ void Application::onTunnelConnected(Twainet::Module module, const char* sessionI
 
 void Application::onTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
+	printf("tunnel disconnected - %s\n", sessionId);
 }
 
 void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& msg)
@@ -238,5 +241,5 @@ void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& 
     GetConsoleScreenBufferInfo(hStdOut, &csbi);
 	csbi.dwCursorPosition.X = 0;
     SetConsoleCursorPosition(hStdOut, csbi.dwCursorPosition);
-	printf("datalen: %llu", dataLen);
+	printf("datalen: %d", dataLen);
 }

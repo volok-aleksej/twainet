@@ -407,7 +407,7 @@ void IPCModule::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 
 void IPCModule::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
 {
-	IPCObject object(msg.ipc_name());
+	IPCObject object(IPCObjectName::GetIPCName(msg.ipc_name()));
 	m_ipcObject.RemoveObject(object);
 }
 

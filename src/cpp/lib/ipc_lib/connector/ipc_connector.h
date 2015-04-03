@@ -79,6 +79,7 @@ protected:
 protected:
 	IPCCheckerThread m_checker;
 	bool m_bConnected;
+	bool m_isNotifyRemove;
 private:
 	IPCObjectName m_moduleName;
 	Signal* m_ipcSignal;

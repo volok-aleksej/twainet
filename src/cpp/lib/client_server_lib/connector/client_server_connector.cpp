@@ -39,6 +39,8 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelMessage(this));
 	addMessage(new TryConnectToMessage(this));
 	addMessage(new InitTunnelStartedMessage(this));
+
+	m_isNotifyRemove = true;
 }
 
 ClientServerConnector::~ClientServerConnector()

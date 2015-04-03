@@ -23,7 +23,7 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 	addMessage(new ProtoMessage<ModuleState>(this));
 	addMessage(new ProtoMessage<Ping>(this));
 
-	m_isCoordinator = (m_moduleName.module_name() == IPCModule::m_coordinatorIPCName);
+	m_isNotifyRemove = m_isCoordinator = (m_moduleName.module_name() == IPCModule::m_coordinatorIPCName);
 }
 
 IPCConnector::~IPCConnector()
@@ -80,7 +80,7 @@ void IPCConnector::OnStop()
 		OnDisconnected();
 	}
 	
-	if(m_isCoordinator)
+	if(m_isNotifyRemove)
 	{
 		RemoveIPCObjectMessage msg(this);
 		msg.set_ipc_name(m_id);
