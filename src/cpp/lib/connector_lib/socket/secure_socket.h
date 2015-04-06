@@ -20,10 +20,13 @@ protected:
 
 	virtual bool SendData(char* data, int len) = 0;
 	virtual bool RecvData(char* data, int len) = 0;
+
+	bool GetData(char* data, int len);
 protected:
 	bool m_bInit;
 	unsigned char m_keyOwn[32];
 	unsigned char m_keyOther[32];
+	std::string m_recvdata;
 };
 
 

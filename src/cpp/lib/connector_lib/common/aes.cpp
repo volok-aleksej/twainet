@@ -22,17 +22,23 @@ int AESGenerateKey(byte* key, int keylen)
 	return keylen;
 }
 
+int GetEncriptedDataLen(int datalen)
+{
+	int rest = 0;
+	if(datalen%AES_BLOCK_SIZE != 0)
+	{
+		rest = (datalen/AES_BLOCK_SIZE + 1)*AES_BLOCK_SIZE - datalen;
+	}
+
+	return datalen + rest;
+}
+
 int AESEncrypt(byte* key, int keylength,
 			   byte* data, int datalen,
 			   byte* encryptedData, int encryptedDataLen)
 {
 	
-	int rest = 0, realDataLen = 0;
-	if(datalen%AES_BLOCK_SIZE != 0)
-	{
-		rest = (datalen/AES_BLOCK_SIZE + 1)*AES_BLOCK_SIZE - datalen;
-	}
-	realDataLen = datalen + rest;
+	int realDataLen = GetEncriptedDataLen(datalen);
 
 	if(encryptedDataLen < realDataLen || !encryptedData)
 	{

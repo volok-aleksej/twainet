@@ -29,3 +29,5 @@ int AESEncrypt(byte* key, int keylength,
 int AESDecrypt(byte* key, int keylength,
 			   byte* data, int datalen,
 			   byte* decryptedData, int decryptedDataLen);
+
+int GetEncriptedDataLen(int datalen);

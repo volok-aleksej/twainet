@@ -107,9 +107,9 @@ void Application::ThreadFunc()
 	m_module = Twainet::CreateModule(m_moduleName, false);
 #ifdef DEBUG_1
 	Twainet::CreateServer(m_module, 1054);
-	Twainet::ConnectToServer(m_module, "192.168.0.100", 1054);
+	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
 #else
-	Twainet::ConnectToServer(m_module, "192.168.0.100", 1054);
+	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
 #endif
 	while(!m_isStop){Sleep(200);}
 }
@@ -134,14 +134,17 @@ void Application::onTunnelCreationFailed(Twainet::Module module, const char* ses
 
 void Application::onServerConnected(Twainet::Module module, const char* sessionId)
 {
+	printf("server connected - %s\n", sessionId);
 }
 
 void Application::onClientConnected(Twainet::Module module, const char* sessionId)
 {
+	printf("client connected - %s\n", sessionId);
 }
 
 void Application::onClientDisconnected(Twainet::Module module, const char* sessionId)
 {
+	printf("client disconnected - %s\n", sessionId);
 }
 
 void Application::onClientConnectionFailed(Twainet::Module module)
@@ -150,6 +153,7 @@ void Application::onClientConnectionFailed(Twainet::Module module)
 
 void Application::onServerDisconnected(Twainet::Module module)
 {
+	printf("server disconnected\n");
 }
 
 void Application::onModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
@@ -194,6 +198,7 @@ void Application::onModuleConnectionFailed(Twainet::Module module, const Twainet
 void Application::onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	printf("tunnel connection - %s type - %d\n", sessionId, type);
+	Sleep(10000);
 #ifdef DEBUG_1
 			time_t t;
 			time(&t);

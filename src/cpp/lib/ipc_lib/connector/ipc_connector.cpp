@@ -304,8 +304,10 @@ void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 
 bool IPCConnector::SendData(char* data, int len)
 {
-	return	Connector::SendData((char*)&len, sizeof(int)) &&
-			Connector::SendData(data, len);
+	std::string senddata(len + sizeof(int), 0);
+	memcpy((char*)senddata.c_str() + sizeof(int), data, len);
+	memcpy((char*)senddata.c_str(), &len, sizeof(int));
+	return	Connector::SendData((char*)senddata.c_str(), len + sizeof(int));
 }
 
 void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)

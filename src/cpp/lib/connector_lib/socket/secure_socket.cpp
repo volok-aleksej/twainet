@@ -113,20 +113,49 @@ bool SecureSocket::PerformSslVerify()
 bool SecureSocket::Recv(char* data, int len)
 {
 	int recvlen = 0;
+	if(GetData(data, len))
+	{
+		return true;
+	}
+
 	if(!RecvData((char*)&recvlen, sizeof(int)))
 	{
 		return false;
 	}
 
-	unsigned char* recvdata = new unsigned char[recvlen];
-	if(!RecvData((char*)recvdata, recvlen))
+	int realDataLen = GetEncriptedDataLen(recvlen);
+	unsigned char* recvdata = new unsigned char[realDataLen];
+	if(!RecvData((char*)recvdata, realDataLen))
+	{
+		return false;
+	}
+	
+	unsigned char* decriptedData = new unsigned char[recvlen];
+	int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, realDataLen, (byte*)decriptedData, recvlen);
+	if(decriptedLen == -1)
 	{
 		return false;
 	}
 
-	int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, recvlen, (byte*)data, len);
 	delete recvdata;
-	return decriptedLen == len;
+	int newsize = m_recvdata.size() + decriptedLen;
+	m_recvdata.resize(newsize, 0);
+	memcpy((char*)m_recvdata.c_str() + newsize - decriptedLen, decriptedData, decriptedLen);
+	delete decriptedData;
+	return GetData(data, len);
+}
+
+bool SecureSocket::GetData(char* data, int len)
+{
+	if(m_recvdata.size() < len)
+	{
+		return false;
+	}
+	
+	memcpy(data, m_recvdata.c_str(), len);
+	memcpy((char*)m_recvdata.c_str(), m_recvdata.c_str() + len, m_recvdata.size() - len);
+	m_recvdata.resize(m_recvdata.size() - len, 0);
+	return true;
 }
 
 bool SecureSocket::Send(char* data, int len)
@@ -140,7 +169,7 @@ bool SecureSocket::Send(char* data, int len)
 
 	unsigned char* senddata = new unsigned char[sendLen + sizeof(int)];
 	memcpy(senddata + sizeof(int), encriptedData, sendLen);
-	memcpy(senddata, &sendLen, sizeof(int));
+	memcpy(senddata, &len, sizeof(int));
 	sendLen += sizeof(int);
 	delete encriptedData;
 	bool bRet = SendData((char*)senddata, sendLen);
