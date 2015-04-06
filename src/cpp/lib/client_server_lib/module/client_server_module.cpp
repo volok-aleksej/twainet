@@ -188,8 +188,6 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(msg.m_id);
-	IPCObject object(idName);
-	m_ipcObject.AddObject(object);
 	if(idName.module_name() == m_serverIPCName)
 	{
 		OnServerConnected();

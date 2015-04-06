@@ -190,8 +190,12 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
-
-	OnConnected();
+	
+	ProtoMessage<ModuleName> mnMsg(this);
+	*mnMsg.mutable_ipc_name() = GetModuleName();
+	mnMsg.set_ip("");
+	mnMsg.set_port(0);
+	toMessage(mnMsg);
 }
 
 void ClientServerConnector::onMessage(const Login& msg)
@@ -208,8 +212,12 @@ void ClientServerConnector::onMessage(const Login& msg)
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
-
-	OnConnected();
+	
+	ProtoMessage<ModuleName> mnMsg(this);
+	*mnMsg.mutable_ipc_name() = GetModuleName();
+	mnMsg.set_ip("");
+	mnMsg.set_port(0);
+	toMessage(mnMsg);
 }
 
 void ClientServerConnector::onMessage(const InitTunnel& msg)
