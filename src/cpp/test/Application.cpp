@@ -161,7 +161,7 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 	if(module == m_module)
 	{
 		printf("module connected - %s.%s\n", moduleId.m_name, moduleId.m_host);
-		if (strcmp(moduleId.m_name, "ClientName") == 0)
+		if (strcmp(moduleId.m_name, "Client") == 0)
 		{
 			Twainet::ModuleName modules[10] = {0};
 			int size = 10;
@@ -171,7 +171,8 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 			{
 				if (!ownSessionId.empty() &&
 					strlen(modules[i].m_host) != 0 &&
-					strcmp(modules[i].m_host, ownSessionId.c_str()) != 0)
+					strcmp(modules[i].m_host, ownSessionId.c_str()) != 0 &&
+					strcmp(modules[i].m_name, "Client") == 0)
 				{
 					Twainet::CreateTunnel(m_module, modules[i].m_host);
 				}
@@ -185,8 +186,7 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 
 void Application::onModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
-	if(module == m_module)
-		printf("module disconnected - %s\n", moduleId.m_name);
+	printf("module disconnected - %s\n", moduleId.m_name);
 }
 
 void Application::onModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
@@ -198,35 +198,34 @@ void Application::onModuleConnectionFailed(Twainet::Module module, const Twainet
 void Application::onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	printf("tunnel connection - %s type - %d\n", sessionId, type);
-	Sleep(10000);
-#ifdef DEBUG_1
-			time_t t;
-			time(&t);
-			tm* Tm = localtime(&t);
-			char data[50] = {0};
-			strftime(data, 50, "%H::%M::%S", Tm);
-			printf("begin time: %s\n", data);
-			for(int i = 0; i < 263400; i++)
-			{
-				char* data = new char[8192];
-				Twainet::Message msg = {0};
-				Twainet::ModuleName moduleName = {0};
-				strcpy(moduleName.m_name, sessionId);
-				msg.m_path = &moduleName;
-				msg.m_pathLen = 1;
-				msg.m_typeMessage = "Data";
-				msg.m_data = data;
-				msg.m_dataLen = 8192;
-				Twainet::SendMessage(m_module, msg);
-				delete data;
-			}
-			t;
-			time(&t);
-			Tm = localtime(&t);
-			memset(data, 0, 50);
-			strftime(data, 50, "%H::%M::%S", Tm);
-			printf("end time: %s\n", data);
-#endif/*DEBUG_1*/
+//#ifdef DEBUG_1
+//			time_t t;
+//			time(&t);
+//			tm* Tm = localtime(&t);
+//			char data[50] = {0};
+//			strftime(data, 50, "%H::%M::%S", Tm);
+//			printf("begin time: %s\n", data);
+//			for(int i = 0; i < 263400; i++)
+//			{
+//				char* data = new char[8192];
+//				Twainet::Message msg = {0};
+//				Twainet::ModuleName moduleName = {"Tunnel", "", ""};
+//				strcpy(moduleName.m_host, sessionId);
+//				msg.m_path = &moduleName;
+//				msg.m_pathLen = 1;
+//				msg.m_typeMessage = "Data";
+//				msg.m_data = data;
+//				msg.m_dataLen = 8192;
+//				Twainet::SendMessage(m_module, msg);
+//				delete data;
+//			}
+//			t;
+//			time(&t);
+//			Tm = localtime(&t);
+//			memset(data, 0, 50);
+//			strftime(data, 50, "%H::%M::%S", Tm);
+//			printf("end time: %s\n", data);
+//#endif/*DEBUG_1*/
 }
 
 void Application::onTunnelDisconnected(Twainet::Module module, const char* sessionId)
@@ -246,5 +245,5 @@ void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& 
     GetConsoleScreenBufferInfo(hStdOut, &csbi);
 	csbi.dwCursorPosition.X = 0;
     SetConsoleCursorPosition(hStdOut, csbi.dwCursorPosition);
-	printf("datalen: %d", dataLen);
+	printf("datalen: %u", dataLen);
 }

@@ -4,8 +4,8 @@
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "thread_lib/thread/thread_manager.h"
 
-const std::string ClientServerModule::m_serverIPCName = "ServerName";
-const std::string ClientServerModule::m_clientIPCName = "ClientName";
+const std::string ClientServerModule::m_serverIPCName = "Server";
+const std::string ClientServerModule::m_clientIPCName = "Client";
 
 ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 : IPCModule(ipcName, factory)

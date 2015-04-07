@@ -1,4 +1,5 @@
 #include "tunnel_connector.h"
+#include "module\tunnel_module.h"
 #include "message\tunnel_messages.h"
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
@@ -24,6 +25,9 @@ void TunnelConnector::OnStart()
 	if(!m_isServer)
 	{
 		m_checker.Start();
+
+		IPCConnector::SetModuleName(IPCObjectName(TunnelModule::m_tunnelIPCName, GetModuleName().module_name()));
+		SetId(TunnelModule::m_tunnelIPCName + "." + GetId());
 
 		ProtoMessage<ModuleName> mnMsg(this);
 		*mnMsg.mutable_ipc_name() = GetModuleName();
@@ -86,6 +90,6 @@ TunnelConnector::TypeConnection TunnelConnector::GetTypeConnection()
 void TunnelConnector::OnConnected()
 {
  	m_bConnected = true;
-	TunnelConnectedMessage msg(GetId(), m_type);
+	TunnelConnectedMessage msg(IPCObjectName::GetIPCName(GetId()).host_name(), m_type);
 	onSignal(msg);
 }

@@ -1,5 +1,6 @@
 #include "NotificationMessages.h"
 #include "client_server_lib\module\client_server_module.h"
+#include "tunnel_lib\module\tunnel_module.h"
 
 /*******************************************************************************************/
 /*                                 NotificationMessage                                     */
@@ -70,8 +71,8 @@ void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 /*******************************************************************************************/
 /*                                ModuleDisconnected                                       */
 /*******************************************************************************************/
-ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id, bool bTunnel/* = false*/)
-	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id), m_bTunnel(bTunnel)
+ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id)
+	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id)
 {
 }
 
@@ -90,9 +91,9 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	{
 		callbacks.OnServerDisconnected(m_module);
 	}
-	else if(m_bTunnel)
+	else if(idName.module_name() == TunnelModule::m_tunnelIPCName)
 	{
-		callbacks.OnTunnelDisconnected(m_module, m_id.c_str());
+		callbacks.OnTunnelDisconnected(m_module, idName.host_name().c_str());
 	}
 
 	Twainet::ModuleName retName = {0};
@@ -118,7 +119,8 @@ void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
 	Twainet::ModuleName retName = {0};
-	strcpy_s(retName.m_name, MAX_NAME_LENGTH, m_sessionId.c_str());
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, TunnelModule::m_tunnelIPCName.c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, m_sessionId.c_str());
 	callbacks.OnModuleConnected(m_module, retName);
 }
 

@@ -67,7 +67,7 @@ void TunnelServerConnector::onIPCMessageTwo(const IPCMessageSignal& msg)
 
 void TunnelServerConnector::onModuleState(const ModuleStateMessage& msg)
 {
-	if(msg.id() == m_connectorOne->GetId())
+	if(IPCObjectName::GetIPCName(msg.id()).host_name() == m_connectorOne->GetId())
 	{
 		m_connectorTwo->toMessage(msg);
 	}
@@ -79,7 +79,7 @@ void TunnelServerConnector::onModuleState(const ModuleStateMessage& msg)
 
 void TunnelServerConnector::onModuleName(const ModuleNameMessage& msg)
 {
-	if(IPCObjectName(msg.ipc_name()) == IPCObjectName::GetIPCName(m_connectorOne->GetId()))
+	if(msg.ipc_name().host_name() == m_connectorOne->GetId())
 	{
 		m_connectorTwo->toMessage(msg);
 	}

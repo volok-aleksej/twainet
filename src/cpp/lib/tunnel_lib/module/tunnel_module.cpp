@@ -11,6 +11,8 @@
 
 extern std::vector<std::string> GetLocalIps();
 
+const std::string TunnelModule::m_tunnelIPCName = "Tunnel";
+
 TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 : ClientServerModule(ipcName, factory), m_tunnelChecker(0)
 {
