@@ -30,7 +30,7 @@ std::string GotExternalAddressMessage::GetMessageName()
 /*                      TunnelConnectedMessage                          */
 /************************************************************************/
 TunnelConnectedMessage::TunnelConnectedMessage(const std::string& id, TunnelConnector::TypeConnection type)
-: ConnectedMessage(id), m_type(type)
+: ConnectedMessage(id, false), m_type(type)
 {
 }
 

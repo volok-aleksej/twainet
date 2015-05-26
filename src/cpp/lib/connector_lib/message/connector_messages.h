@@ -59,10 +59,11 @@ public:
 class ConnectedMessage : public DataMessage
 {
 public:
-	ConnectedMessage(const std::string& id);
+	ConnectedMessage(const std::string& id, bool m_bWithCoordinator);
 	static std::string GetMessageName();
 public:
 	std::string m_id;
+	bool m_bWithCoordinator;
 };
 
 /******************************************************************/

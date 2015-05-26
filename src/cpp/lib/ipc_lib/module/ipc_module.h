@@ -111,6 +111,7 @@ protected:
 	ObjectManager<IPCObject> m_modules;
 	ConnectorManager m_manager;
 	bool m_isCoordinator;
+	std::string m_coordinatorName;
 	bool m_isExit;
 	int m_countListener;
 	int m_count—onnect;

@@ -34,6 +34,7 @@ void TwainetModule::OnClientConnector(const std::string& sessionId)
 void TwainetModule::OnFireConnector(const std::string& moduleName)
 {
 	Application::GetInstance().AddNotifycationMessage(new ModuleDisconnected(this, moduleName));
+	TunnelModule::OnFireConnector(moduleName);
 }
 
 void TwainetModule::OnConnectFailed(const std::string& moduleName)

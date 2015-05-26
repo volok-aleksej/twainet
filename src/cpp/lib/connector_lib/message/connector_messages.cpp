@@ -68,8 +68,8 @@ std::string DisconnectedMessage::GetMessageName()
 /************************************************************************/
 /*                         ConnectedMessage                             */
 /************************************************************************/
-ConnectedMessage::ConnectedMessage(const std::string& id)
-: m_id(id)
+ConnectedMessage::ConnectedMessage(const std::string& id, bool bWithCoordinator)
+: m_id(id), m_bWithCoordinator(bWithCoordinator)
 {
 
 }

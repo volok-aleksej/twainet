@@ -394,7 +394,7 @@ bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 void IPCConnector::OnConnected()
 {
  	m_bConnected = true;
-	ConnectedMessage msg(GetId());
+	ConnectedMessage msg(GetId(), !m_isCoordinator);
 	onSignal(msg);
 }
 

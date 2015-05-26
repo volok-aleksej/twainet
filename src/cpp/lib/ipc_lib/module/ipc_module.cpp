@@ -166,12 +166,10 @@ void IPCModule::OnNewConnector(Connector* connector)
 
 void IPCModule::OnConnected(const std::string& moduleName)
 {
-	printf("\nConnect: %s\n", moduleName.c_str());
 }
 
 void IPCModule::OnFireConnector(const std::string& moduleName)
 {
-	printf("\nDisconnect: %s\n", moduleName.c_str());
 }
 
 void IPCModule::OnConnectFailed(const std::string& moduleName)
@@ -346,6 +344,10 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 void IPCModule::onConnected(const ConnectedMessage& msg)
 {
 	OnConnected(msg.m_id);
+	if(msg.m_bWithCoordinator)
+	{
+		m_coordinatorName = msg.m_id;
+	}
 }
 
 void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
@@ -453,7 +455,8 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 	IPCObject module = IPCObjectName::GetIPCName(msg.m_id);
 	m_modules.RemoveObject(module);
 
-	if(msg.m_id == m_coordinatorIPCName)
+	if (msg.m_id == m_coordinatorIPCName ||
+		!m_isCoordinator && !m_coordinatorName.empty() && msg.m_id == m_coordinatorName)
 	{
 		m_ipcObject.Clear();
 		if(m_count—onnect + 1 == g_ipcCoordinatorPortCount)
@@ -468,7 +471,8 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 		Thread::sleep(1000);
 		ConnectToCoordinator();
 	}
-	else
+	
+	if(msg.m_id != m_coordinatorIPCName)
 	{
 		OnFireConnector(msg.m_id);
 	}
