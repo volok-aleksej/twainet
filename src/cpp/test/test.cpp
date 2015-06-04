@@ -18,6 +18,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Twainet::Module module = Twainet::CreateModule(moduleName, true);
 #endif/*DEBUG_1*/
 	
-	Application::GetInstance().Join();
+	Application::GetInstance();
+	system("pause");//.Join();
 	return 0;
 }				

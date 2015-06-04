@@ -3,15 +3,11 @@
 #include "common/ref.h"
 
 ThreadManager::ThreadManager()
-: m_isExit(false)
 {
-	Start();
 }
 
 ThreadManager::~ThreadManager()
 {
-	Stop();
-	Join();
 }
 
 void ThreadManager::AddThread(Thread* thread)
@@ -44,23 +40,18 @@ bool ThreadManager::StopThread(const std::vector<Thread*>& threads, const Thread
 	return true;
 }
 
-void ThreadManager::ThreadFunc()
+void ThreadManager::ManagerFunc()
 {
-	while(!m_isExit)
+	std::vector<Thread*> threads;
+	m_threads.CheckObjects(Ref(this, &ThreadManager::CheckThread, threads));
+
+	for(std::vector<Thread*>::iterator it = threads.begin(); it != threads.end(); it++)
 	{
-		std::vector<Thread*> threads;
-		m_threads.CheckObjects(Ref(this, &ThreadManager::CheckThread, threads));
-
-		for(std::vector<Thread*>::iterator it = threads.begin(); it != threads.end(); it++)
-		{
-			delete *it;
-		}
-
-		sleep(200);
+		delete *it;
 	}
 }
 
-void ThreadManager::OnStop()
+void ThreadManager::ManagerStop()
 {
 	std::vector<Thread*> threads;
 	m_threads.CheckObjects(Ref(this, &ThreadManager::StopThread, threads));
@@ -69,13 +60,4 @@ void ThreadManager::OnStop()
 	{
 		delete *it;
 	}
-}
-
-void ThreadManager::OnStart()
-{
-}
-
-void ThreadManager::Stop()
-{
-	m_isExit = true;
 }

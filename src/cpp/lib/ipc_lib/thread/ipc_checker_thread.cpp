@@ -4,37 +4,23 @@
 IPCCheckerThread::IPCCheckerThread(IPCConnector* connector)
 : m_connector(connector)
 {
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
 
 IPCCheckerThread::~IPCCheckerThread()
 {
+	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
-void IPCCheckerThread::ThreadFunc()
+void IPCCheckerThread::ManagerFunc()
 {
 	int count = 50;
-	while(!IsStop() && --count > 0)
+	if(--count > 0)
 	{
-		sleep(100);
 	}
 
 	if(!count)
 	{
 		m_connector->Stop();
 	}
-}
-
-void IPCCheckerThread::Stop()
-{
-	StopThread();
-}
-
-void IPCCheckerThread::OnStart()
-{
-
-}
-
-void IPCCheckerThread::OnStop()
-{
-
 }

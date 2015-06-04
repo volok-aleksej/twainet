@@ -1,8 +1,8 @@
 #include "ipc_module.h"
+#include "common/common.h"
 #include "connector_lib/thread/connect_thread.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "thread_lib/thread/thread_manager.h"
-#include "common/common.h"
 
 const std::string IPCModule::m_coordinatorIPCName = "IPCCoordinator";
 const int IPCModule::m_maxTryConnectCount = 10;
@@ -68,7 +68,6 @@ IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory)
 , m_countListener(0), m_count—onnect(0)
 {
 	m_manager.addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
-	m_manager.Start();
 }
 
 IPCModule::~IPCModule()
@@ -83,7 +82,6 @@ IPCModule::~IPCModule()
 		m_listenThread = 0;
 	}
 	delete m_factory;
-	m_manager.Join();
 }
 
 void IPCModule::Start()

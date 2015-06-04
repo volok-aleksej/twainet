@@ -22,12 +22,10 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		UDT::startup();
-		Application::GetInstance();
 		break;
 
 	case DLL_PROCESS_DETACH:
 		UDT::cleanup();
-		Application::GetInstance().Stop();
 		break;
 
 	case DLL_THREAD_ATTACH:
@@ -42,7 +40,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	Application::GetInstance().Init(twainet);
-	Application::GetInstance().Start();
 }
 
 extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator)
@@ -141,7 +138,7 @@ extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	std::vector<IPCObjectName> objects = twainetModule->GetIPCObjects();
-	if(sizeModules < objects.size())
+	if(sizeModules < (int)objects.size())
 	{
 		sizeModules = objects.size();
 		return 0;

@@ -17,14 +17,12 @@ TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* facto
 : ClientServerModule(ipcName, factory), m_tunnelChecker(0)
 {
 	m_tunnelChecker = new TunnelCheckerThread(this);
-	m_tunnelChecker->Start();
 }
 
 TunnelModule::~TunnelModule()
 {
 	removeReceiver();
 
-	m_tunnelChecker->Join();
 	delete m_tunnelChecker;
 
 	CSLocker lock(&m_cs);

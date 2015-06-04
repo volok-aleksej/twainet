@@ -84,7 +84,7 @@ void ClientServerConnector::SetPassword(const std::string& password)
 
 void ClientServerConnector::OnStart()
 {
-	m_checker.Start();
+	m_checker = new IPCCheckerThread(this);
 	if(m_id == ClientServerModule::m_serverIPCName)
 	{
 		ProtoMessage<Login, ClientServerConnector> loginMsg(this);
@@ -181,7 +181,11 @@ void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 
 void ClientServerConnector::onMessage(const LoginResult& msg)
 {
-	m_checker.Stop();
+	if(m_checker)
+	{
+		delete m_checker;
+		m_checker = 0;
+	}
 	m_ownSessionId = msg.own_session_id();
 
 	LoginResultMessage lrMsg(this, msg);
@@ -200,7 +204,11 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 
 void ClientServerConnector::onMessage(const Login& msg)
 {
-	m_checker.Stop();
+	if(m_checker)
+	{
+		delete m_checker;
+		m_checker = 0;
+	}
 
 	ProtoMessage<LoginResult, ClientServerConnector> loginResultMsg(this);
 	loginResultMsg.set_login_result(LOGIN_SUCCESS);

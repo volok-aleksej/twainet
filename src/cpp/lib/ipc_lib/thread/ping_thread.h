@@ -1,21 +1,20 @@
 #ifndef PING_THREAD_H
 #define PING_THREAD_H
 
-#include "thread_lib/thread/thread_impl.h"
+#include "thread_lib/common/managers_container.h"
 
 class IPCConnector;
 
-class PingThread: public ThreadImpl
+class PingThread: public IManager
 {
 public:
 	PingThread(IPCConnector* connector);
 	virtual ~PingThread();
 
-	virtual void Stop();
 protected:
-	virtual void OnStart(){}
-	virtual void OnStop(){}
-	virtual void ThreadFunc();
+	virtual void ManagerStart(){}
+	virtual void ManagerStop(){}
+	virtual void ManagerFunc();
 
 private:
 	IPCConnector* m_connector;

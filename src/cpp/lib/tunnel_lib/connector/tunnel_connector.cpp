@@ -24,7 +24,7 @@ void TunnelConnector::OnStart()
 {
 	if(!m_isServer)
 	{
-		m_checker.Start();
+		m_checker = new IPCCheckerThread(this);
 
 		IPCConnector::SetModuleName(IPCObjectName(TunnelModule::m_tunnelIPCName, GetModuleName().module_name()));
 		SetId(TunnelModule::m_tunnelIPCName + "." + GetId());
@@ -35,13 +35,10 @@ void TunnelConnector::OnStart()
 		mnMsg.set_port(0);
 		toMessage(mnMsg);
 	}
-
-	m_pingThread.Start();
 }
 
 void TunnelConnector::OnStop()
 {
-	m_pingThread.Join();
 	IPCConnector::OnStop();
 }
 

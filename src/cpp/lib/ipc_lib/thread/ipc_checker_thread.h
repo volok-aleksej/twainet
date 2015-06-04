@@ -1,22 +1,20 @@
 #ifndef IPC_CHECKER_THREAD_H
 #define IPC_CHECKER_THREAD_H
 
-#include "thread_lib/thread/thread_impl.h"
+#include "thread_lib/common/managers_container.h"
 
 class IPCConnector;
 
-class IPCCheckerThread : public ThreadImpl
+class IPCCheckerThread : public IManager
 {
 public:
 	IPCCheckerThread(IPCConnector* connector);
 	virtual ~IPCCheckerThread();
-
-	void Stop();
-
+	
 protected:
-	void ThreadFunc();
-	void OnStart();
-	void OnStop();
+	void ManagerFunc();
+	void ManagerStart(){};
+	void ManagerStop(){};
 private:
 	IPCConnector* m_connector;
 };

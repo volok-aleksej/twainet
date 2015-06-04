@@ -2,39 +2,31 @@
 #include "memory.h"
 
 Application::Application()
-	: m_isExit(false)
 {
 	memset(&m_callbacks, 0, sizeof(m_callbacks));
 }
 
 Application::~Application()
 {
-	Stop();
-	Join();
 }
 
-void Application::ThreadFunc()
+void Application::ManagerFunc()
 {
-	while(!m_isExit)
+	std::vector<NotificationMessage*> messages;
 	{
-		std::vector<NotificationMessage*> messages;
-		{
-			CSLocker locker(&m_csMessages);
-			messages = m_messages;
-			m_messages.clear();
-		}
-		for(std::vector<NotificationMessage*>::iterator it = messages.begin();
-			it != messages.end(); it++)
-		{
-			(*it)->HandleMessage(m_callbacks);
-			delete *it;
-		}
-		
-		sleep(200);
+		CSLocker locker(&m_csMessages);
+		messages = m_messages;
+		m_messages.clear();
+	}
+	for(std::vector<NotificationMessage*>::iterator it = messages.begin();
+		it != messages.end(); it++)
+	{
+		(*it)->HandleMessage(m_callbacks);
+		delete *it;
 	}
 }
 
-void Application::OnStop()
+void Application::ManagerStop()
 {
 	{
 		CSLocker locker(&m_csModules);
@@ -53,15 +45,6 @@ void Application::OnStop()
 			it = m_messages.erase(it);
 		}
 	}
-}
-
-void Application::OnStart()
-{
-}
-
-void Application::Stop()
-{
-	m_isExit = true;
 }
 
 void Application::Init(const Twainet::TwainetCallback& callback)

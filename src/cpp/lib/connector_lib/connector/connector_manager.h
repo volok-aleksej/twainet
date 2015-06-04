@@ -3,12 +3,12 @@
 
 #include "connector.h"
 
-#include "thread_lib/thread/thread_impl.h"
+#include "thread_lib/common/managers_container.h"
 #include "thread_lib/common/object_manager.h"
 #include "../signal/signal.h"
 #include "../signal/signal_owner.h"
 
-class ConnectorManager : public SignalOwner, public ThreadImpl
+class ConnectorManager : public SignalOwner, public IManager
 {
 public:
 	ConnectorManager();
@@ -17,7 +17,6 @@ public:
 	void AddConnection(Connector* conn);
 	void StopConnection(const std::string& moduleName);
 	void StopAllConnection();
-	virtual void Stop();
 
 protected:
 	template<typename TClass, typename TFunc> friend class Reference;
@@ -28,9 +27,9 @@ protected:
 	void SubscribeConnector(const Connector* newConnector, const Connector* connector);
 	void StopConnectionByName(const std::string& moduleName, const Connector* connector);
 protected:
-	virtual void ThreadFunc();
-	virtual void OnStart();
-	virtual void OnStop();
+	virtual void ManagerFunc();
+	virtual void ManagerStart();
+	virtual void ManagerStop();
 private:
 	ObjectManager<Connector*> m_connectors;
 };

@@ -4,24 +4,16 @@
 TunnelCheckerThread::TunnelCheckerThread(TunnelModule* module)
 : m_module(module)
 {
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
 
 TunnelCheckerThread::~TunnelCheckerThread()
 {
-
+	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
-void TunnelCheckerThread::Stop()
+void TunnelCheckerThread::ManagerFunc()
 {
-	StopThread();
-}
-
-void TunnelCheckerThread::ThreadFunc()
-{
-	while (!IsStop())
-	{
-		m_module->CheckTunnels();
-		sleep(1000);
-	}
+	m_module->CheckTunnels();
 }
 

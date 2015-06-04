@@ -1,21 +1,20 @@
 #ifndef TUNNEL_CHECKER_THREAD_H
 #define TUNNEL_CHECKER_THREAD_H
 
-#include "thread_lib\thread\thread_impl.h"
+#include "thread_lib\common\managers_container.h"
 
 class TunnelModule;
 
-class TunnelCheckerThread : public ThreadImpl
+class TunnelCheckerThread : public IManager
 {
 public:
 	TunnelCheckerThread(TunnelModule* module);
 	virtual ~TunnelCheckerThread();
 
-	virtual void Stop();
 protected:
-	virtual void OnStart(){}
-	virtual void OnStop(){}
-	virtual void ThreadFunc();
+	virtual void ManagerStart(){}
+	virtual void ManagerStop(){}
+	virtual void ManagerFunc();
 private:
 	TunnelModule* m_module;
 };

@@ -10,7 +10,7 @@
 
 IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : Connector(socket), m_moduleName(moduleName), m_bConnected(false)
-, m_checker(this), m_isExist(false), m_rand(CreateGUID())
+, m_checker(0), m_isExist(false), m_rand(CreateGUID())
 {
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
 	addMessage(new ProtoMessage<ModuleName>(this));
@@ -60,7 +60,7 @@ void IPCConnector::ThreadFunc()
 
 void IPCConnector::OnStart()
 {
-	m_checker.Start();
+	m_checker = new IPCCheckerThread(this);
 
 	ListenerParamMessage msg(m_moduleName.GetModuleNameString());
 	onSignal(msg);
@@ -88,12 +88,20 @@ void IPCConnector::OnStop()
 		onIPCSignal(msg);
 	}
 
-	m_checker.Join();
+	if(m_checker)
+	{
+		delete m_checker;
+		m_checker = 0;
+	}
 }
 
 void IPCConnector::onMessage(const ModuleName& msg)
 {
-	m_checker.Stop();
+	if(m_checker)
+	{
+		delete m_checker;
+		m_checker = 0;
+	}
 
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();

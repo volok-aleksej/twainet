@@ -7,24 +7,19 @@
 
 ConnectorManager::ConnectorManager()
 {
-	
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
 
 ConnectorManager::~ConnectorManager()
 {
-	OnStop();
+	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
-void ConnectorManager::Stop()
-{
-	StopThread();
-}
-
-void ConnectorManager::OnStart()
+void ConnectorManager::ManagerStart()
 {
 }
 
-void ConnectorManager::OnStop()
+void ConnectorManager::ManagerStop()
 {
 	std::map<std::string, std::string> disconnectedModules;
 	m_connectors.CheckObjects(Ref(this, &ConnectorManager::StopConnector, disconnectedModules));
@@ -37,21 +32,16 @@ void ConnectorManager::OnStop()
 	}
 }
 
-void ConnectorManager::ThreadFunc()
+void ConnectorManager::ManagerFunc()
 {
-	while(!IsStop())
+	std::map<std::string, std::string> disconnectedModules;
+	m_connectors.CheckObjects(Ref(this, &ConnectorManager::CheckConnection, disconnectedModules));
+
+	for(std::map<std::string, std::string>::iterator it = disconnectedModules.begin();
+		it != disconnectedModules.end(); it++)
 	{
-		std::map<std::string, std::string> disconnectedModules;
-		m_connectors.CheckObjects(Ref(this, &ConnectorManager::CheckConnection, disconnectedModules));
-
-		for(std::map<std::string, std::string>::iterator it = disconnectedModules.begin();
-			it != disconnectedModules.end(); it++)
-		{
-			DisconnectedMessage msg(it->second, it->first);
-			onSignal(msg);
-		}
-
-		sleep(200);
+		DisconnectedMessage msg(it->second, it->first);
+		onSignal(msg);
 	}
 }
 

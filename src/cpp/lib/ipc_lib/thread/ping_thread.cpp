@@ -4,23 +4,16 @@
 PingThread::PingThread(IPCConnector* connector)
 : m_connector(connector)
 {
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
 
 PingThread::~PingThread()
 {
+	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
-void PingThread::Stop()
+void PingThread::ManagerFunc()
 {
-	StopThread();
-}
-
-void PingThread::ThreadFunc()
-{
-	while(!IsStop())
-	{
-		PingMessage msg(m_connector);
-		m_connector->toMessage(msg);
-		sleep(1000);
-	}
+	PingMessage msg(m_connector);
+	m_connector->toMessage(msg);
 }

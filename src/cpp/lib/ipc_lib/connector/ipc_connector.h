@@ -77,7 +77,7 @@ protected:
 	virtual void OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName);
 	virtual IPCObjectName GetIPCName();
 protected:
-	IPCCheckerThread m_checker;
+	IPCCheckerThread *m_checker;
 	bool m_bConnected;
 	bool m_isNotifyRemove;
 private:
