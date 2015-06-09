@@ -40,6 +40,7 @@ public:
 	std::string m_moduleName;
 	std::string m_ip;
 	int m_port;
+	bool m_isCoordinator;
 };
 
 /******************************************************************/

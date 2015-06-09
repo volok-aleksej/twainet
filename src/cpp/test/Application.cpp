@@ -163,8 +163,8 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 		printf("module connected - %s.%s\n", moduleId.m_name, moduleId.m_host);
 		if (strcmp(moduleId.m_name, "Client") == 0)
 		{
-			Twainet::ModuleName modules[10] = {0};
-			int size = 10;
+			Twainet::ModuleName modules[50] = {0};
+			int size = 50;
 			size = Twainet::GetExistingModules(m_module, modules, size);
 			std::string ownSessionId = Twainet::GetSessionId(m_module);
 			for(int i = 0; i < size; i++)
@@ -174,6 +174,7 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 					strcmp(modules[i].m_host, ownSessionId.c_str()) != 0 &&
 					strcmp(modules[i].m_name, "Client") == 0)
 				{
+					Twainet::SetTunnelType(m_module, ownSessionId.c_str(), modules[i].m_host, Twainet::RELAY);
 					Twainet::CreateTunnel(m_module, modules[i].m_host);
 				}
 			}

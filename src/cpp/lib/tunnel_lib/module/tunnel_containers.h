@@ -3,6 +3,11 @@
 
 #include <string>
 
+#pragma warning(disable:4244 4267)
+#include "../messages/client_server.pb.h"
+using namespace client_server;
+#pragma warning(default:4244 4267)
+
 class ExternalConnectThread;
 class ListenThread;
 class Thread;
@@ -29,6 +34,16 @@ public:
 	std::string m_sessionIdOne;
 	std::string m_sessionIdTwo;
 	time_t m_creationTime;
+};
+
+class PeerType : public PeerData
+{
+public:
+	PeerType();
+	PeerType(const PeerData& data);
+	virtual ~PeerType();
+
+	bool operator == (const PeerType& peerType);
 };
 
 #endif/*TUNNEL_CONTAINERS_H*/

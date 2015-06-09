@@ -8,6 +8,9 @@ TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleN
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));
+	
+	m_isNotifyRemove = true;
+	m_isCoordinator = false;
 }
 
 TunnelConnector::~TunnelConnector()

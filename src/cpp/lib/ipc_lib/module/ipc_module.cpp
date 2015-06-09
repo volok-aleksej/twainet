@@ -93,6 +93,7 @@ void IPCModule::Start()
 void IPCModule::StartAsCoordinator()
 {
 	m_isCoordinator = true;
+	m_coordinatorName = m_moduleName.GetModuleNameString();
 	Start("127.0.0.1", g_ipcCoordinatorPorts[m_countListener]);
 }
 
@@ -454,7 +455,7 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 	m_modules.RemoveObject(module);
 
 	if (msg.m_id == m_coordinatorIPCName ||
-		!m_isCoordinator && !m_coordinatorName.empty() && msg.m_id == m_coordinatorName)
+		!m_coordinatorName.empty() && msg.m_id == m_coordinatorName)
 	{
 		m_ipcObject.Clear();
 		if(m_count—onnect + 1 == g_ipcCoordinatorPortCount)
@@ -488,6 +489,7 @@ void IPCModule::getListenPort(const ListenerParamMessage& msg)
 	const_cast<ListenerParamMessage&>(msg).m_moduleName = object.m_ipcName.GetModuleNameString();
 	const_cast<ListenerParamMessage&>(msg).m_port = object.m_port;
 	const_cast<ListenerParamMessage&>(msg).m_ip = object.m_ip;
+	const_cast<ListenerParamMessage&>(msg).m_isCoordinator = (object.m_ipcName.GetModuleNameString() == m_coordinatorName);
 }
 
 void IPCModule::onIPCObjectList(const IPCObjectListMessage& msg)

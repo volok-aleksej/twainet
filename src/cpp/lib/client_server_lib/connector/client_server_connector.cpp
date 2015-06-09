@@ -41,6 +41,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelStartedMessage(this));
 
 	m_isNotifyRemove = true;
+	m_isCoordinator = false;
 }
 
 ClientServerConnector::~ClientServerConnector()

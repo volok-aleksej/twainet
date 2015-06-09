@@ -54,6 +54,34 @@ void TunnelModule::DestroyTunnel(const std::string& extSessionId)
 	m_manager.StopConnection(extSessionId);
 }
 
+void TunnelModule::SetTypeTunnel(const std::string& oneSessionId, const std::string& twoSessionId, TunnelConnector::TypeConnection type)
+{
+	PeerType peerData;
+	peerData.set_one_session_id(oneSessionId);
+	peerData.set_two_session_id(twoSessionId);
+	bool bUpdate = false;
+	if(m_typePeers.GetObject(peerData, &peerData))
+		bUpdate = true;
+
+	switch(type)
+	{
+	case TunnelConnector::LOCAL:
+		peerData.set_type(TUNNEL_LOCAL);
+		break;
+	case TunnelConnector::EXTERNAL:
+		peerData.set_type(TUNNEL_EXTERNAL);
+		break;
+	case TunnelConnector::RELAY:
+		peerData.set_type(TUNNEL_RELAY);
+		break;
+	default:
+		peerData.set_type(TUNNEL_ALL);
+		break;
+	}
+
+	bUpdate ? m_typePeers.UpdateObject(peerData) : m_typePeers.AddObject(peerData);
+};
+
 void TunnelModule::OnNewConnector(Connector* connector)
 {
 	ClientServerConnector* clientServerConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
@@ -115,40 +143,65 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 	itrSig.set_ext_session_id(msg.own_session_id());
 	onSignal(itrSig);
 
-	InitTunnelSignal itMsg(msg);
-	itMsg.set_type(TUNNEL_LOCAL);
-	onSignal(itMsg);
-	itMsg.set_own_session_id(msg.ext_session_id());
-	itMsg.set_ext_session_id(msg.own_session_id());
-	onSignal(itMsg);
+	TunnelType type;
+	PeerType peerType;
+	peerType.set_one_session_id(msg.own_session_id());
+	peerType.set_two_session_id(msg.ext_session_id());
+	if(m_typePeers.GetObject(peerType, &peerType) && peerType.has_type())
+		type = peerType.type();
+	else
+		type = TUNNEL_ALL;
 
-	SignalOwner* threadOwner = 0;
-	TunnelServerListenAddress address;
-	address.m_localIP = "";
-	address.m_localPort = 0;
-	address.m_sessionIdOne = msg.own_session_id();
-	address.m_sessionIdTwo = msg.ext_session_id();
-	address.m_id = CreateGUID();
-	address.m_socketFactory = new UDPSocketFactory;
-	TunnelServer* external = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
-	external->m_thread = new ExternalListenThread(address);
-	m_servers.insert(std::make_pair(address.m_id, external));
-	threadOwner = dynamic_cast<SignalOwner*>(external->m_thread);
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedExternalListener));
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, GotExternalAddressMessage, onGotExternalAddress));
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorExternalListener));
-	external->m_thread->Start();
+	//--------local connection---------------------
+	if(type == TUNNEL_LOCAL || type == TUNNEL_ALL)
+	{
+		InitTunnelSignal itMsg(msg);
+		itMsg.set_type(TUNNEL_LOCAL);
+		onSignal(itMsg);
+		itMsg.set_own_session_id(msg.ext_session_id());
+		itMsg.set_ext_session_id(msg.own_session_id());
+		onSignal(itMsg);
+	}
 	
-	address.m_id = CreateGUID();
-	address.m_socketFactory = 0;
-	TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
-	relay->m_thread = new RelayListenThread(address);
-	m_servers.insert(std::make_pair(address.m_id, relay));
-	threadOwner = dynamic_cast<SignalOwner*>(relay->m_thread);
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedRelayListener));
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorRelayListener));
-	threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayServerConnector));
-	relay->m_thread->Start();
+	//----------------external connection-----------
+	if(type == TUNNEL_EXTERNAL || type == TUNNEL_ALL)
+	{
+		TunnelServerListenAddress address;
+		address.m_localIP = "";
+		address.m_localPort = 0;
+		address.m_sessionIdOne = msg.own_session_id();
+		address.m_sessionIdTwo = msg.ext_session_id();
+		address.m_id = CreateGUID();
+		address.m_socketFactory = new UDPSocketFactory;
+		TunnelServer* external = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
+		external->m_thread = new ExternalListenThread(address);
+		m_servers.insert(std::make_pair(address.m_id, external));
+		SignalOwner* threadOwner = dynamic_cast<SignalOwner*>(external->m_thread);
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedExternalListener));
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, GotExternalAddressMessage, onGotExternalAddress));
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorExternalListener));
+		external->m_thread->Start();
+	}
+	
+	//-----------relay connection-------------------
+	if(type == TUNNEL_RELAY || type == TUNNEL_ALL)
+	{
+		TunnelServerListenAddress address;
+		address.m_localIP = "";
+		address.m_localPort = 0;
+		address.m_sessionIdOne = msg.own_session_id();
+		address.m_sessionIdTwo = msg.ext_session_id();
+		address.m_id = CreateGUID();
+		address.m_socketFactory = 0;
+		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
+		relay->m_thread = new RelayListenThread(address);
+		m_servers.insert(std::make_pair(address.m_id, relay));
+		SignalOwner* threadOwner = dynamic_cast<SignalOwner*>(relay->m_thread);
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedRelayListener));
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorRelayListener));
+		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayServerConnector));
+		relay->m_thread->Start();
+	}
 }
 
 void TunnelModule::onTryConnectTo(const TryConnectToMessage& msg)

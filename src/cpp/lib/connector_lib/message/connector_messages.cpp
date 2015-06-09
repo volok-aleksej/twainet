@@ -30,7 +30,7 @@ std::string CreatedListenerMessage::GetMessageName()
 /*                       ListenerParamsMessage                          */
 /************************************************************************/
 ListenerParamMessage::ListenerParamMessage(const std::string& moduleName, const std::string& ip, int port)
-: m_ip(ip), m_port(port), m_moduleName(moduleName)
+: m_ip(ip), m_port(port), m_moduleName(moduleName), m_isCoordinator(false)
 {
 }
 

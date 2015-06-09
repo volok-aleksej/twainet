@@ -45,3 +45,15 @@ TunnelServer::~TunnelServer()
 		m_thread = 0;
 	}
 }
+
+PeerType::PeerType(){}
+PeerType::PeerType(const PeerData& data)
+{
+	PeerData::operator = (data);
+}
+PeerType::~PeerType(){}
+bool PeerType::operator == (const PeerType& peerType)
+{
+	return	one_session_id() == peerType.one_session_id() && two_session_id() == peerType.two_session_id() ||
+			one_session_id() == peerType.two_session_id() && two_session_id() == peerType.one_session_id();
+}

@@ -6,6 +6,7 @@ enum ResultCode {
 }
 
 enum TunnelType {
+	TUNNEL_ALL								= 0;
 	TUNNEL_LOCAL							= 1;
 	TUNNEL_EXTERNAL							= 2;
 	TUNNEL_RELAY							= 3;
@@ -45,5 +46,8 @@ message InitTunnelStarted {
 	required string own_session_id			= 2;
 }
 
-message Test {
+message PeerData {
+	required string one_session_id			= 1;
+	required string two_session_id			= 2;
+	optional TunnelType type				= 3;
 }

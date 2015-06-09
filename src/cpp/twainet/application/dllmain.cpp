@@ -154,3 +154,9 @@ extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet
 	}
 	return objects.size();
 }
+
+extern "C" void Twainet::SetTunnelType(const Twainet::Module module, const char* oneSessionId, const char* twoSessionId, Twainet::TypeConnection type)
+{
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->SetTypeTunnel(oneSessionId, twoSessionId, (TunnelConnector::TypeConnection)type);
+}

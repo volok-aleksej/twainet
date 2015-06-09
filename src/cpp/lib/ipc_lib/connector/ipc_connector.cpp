@@ -22,8 +22,6 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 	addMessage(new ProtoMessage<UpdateIPCObject>(this));
 	addMessage(new ProtoMessage<ModuleState>(this));
 	addMessage(new ProtoMessage<Ping>(this));
-
-	m_isNotifyRemove = m_isCoordinator = (m_moduleName.module_name() == IPCModule::m_coordinatorIPCName);
 }
 
 IPCConnector::~IPCConnector()
@@ -65,6 +63,7 @@ void IPCConnector::OnStart()
 	ListenerParamMessage msg(m_moduleName.GetModuleNameString());
 	onSignal(msg);
 	m_moduleName = IPCObjectName::GetIPCName(msg.m_moduleName);
+	m_isNotifyRemove = m_isCoordinator = msg.m_isCoordinator;
 
 	ProtoMessage<ModuleName> mnMsg(this);
 	*mnMsg.mutable_ipc_name() = m_moduleName;
@@ -129,11 +128,14 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		return;
 	}
 
-	IPCObjectListMessage ipcolMsg(this);
-	onSignal(ipcolMsg);
-	toMessage(ipcolMsg);
+	if(m_isCoordinator)
+	{
+		IPCObjectListMessage ipcolMsg(this);
+		onSignal(ipcolMsg);
+		toMessage(ipcolMsg);
 
-	onIPCSignal(mnMsg);
+		onIPCSignal(mnMsg);
+	}
 	OnConnected();
 }
 

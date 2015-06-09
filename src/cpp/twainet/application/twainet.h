@@ -119,6 +119,9 @@ extern "C"
 		
 		// Get list of existing module names that is available in current module
 		EXPORT_FUNC int GetExistingModules(const Module module, ModuleName* modules, int& sizeModules);
+
+		//Set tunnel's type that have to create between two clients
+		EXPORT_FUNC void SetTunnelType(const Module module, const char* oneSessionId, const char* twoSessionId, TypeConnection type);
 	}
 };
 

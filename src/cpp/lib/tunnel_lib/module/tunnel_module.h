@@ -16,6 +16,7 @@ public:
 public:
 	void InitNewTunnel(const std::string& extSessionId);
 	void DestroyTunnel(const std::string& extSessionId);
+	void SetTypeTunnel(const std::string& oneSessionId, const std::string& twoSessionId, TunnelConnector::TypeConnection type);
 protected:
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnTunnelConnectFailed(const std::string& sessionId);
@@ -61,6 +62,7 @@ private:
 	std::map<std::string, TunnelConnect*> m_tunnels;
 	std::map<std::string, TunnelServer*> m_servers;
 	CriticalSection m_cs;
+	ObjectManager<PeerType> m_typePeers;
 	TunnelCheckerThread* m_tunnelChecker;
 };
 
