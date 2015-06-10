@@ -41,6 +41,7 @@ extern "C"
 
 		enum TypeConnection
 		{
+			UNKNOWN = 0,
 			LOCAL = 1,
 			EXTERNAL = 2,
 			RELAY = 3
@@ -99,7 +100,7 @@ extern "C"
 		// Create tunnel between client modules
 		// sessionId - module name of other client(ClientName.<sessionId>.)
 		// If connection is successful will be created tunnel module
-		EXPORT_FUNC void CreateTunnel(const Module module, const char* sessionId);
+		EXPORT_FUNC void CreateTunnel(const Module module, const char* sessionId, Twainet::TypeConnection type = Twainet::UNKNOWN);
 		
 		// Destroy tunnel between client modules
 		// sessionId - module name of other client(ClientName.<sessionId>.)

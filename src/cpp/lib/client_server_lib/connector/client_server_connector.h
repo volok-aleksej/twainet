@@ -15,9 +15,11 @@ typedef ProtoMessage<LoginResult, ClientServerConnector> LoginResultMessage;
 typedef ProtoMessage<InitTunnel, ClientServerConnector> InitTunnelMessage;
 typedef ProtoMessage<TryConnectTo, ClientServerConnector> TryConnectToMessage;
 typedef ProtoMessage<InitTunnelStarted, ClientServerConnector> InitTunnelStartedMessage;
+typedef ProtoMessage<PeerData, ClientServerConnector> PeerDataMessage;
 typedef SignalMessage<InitTunnel> InitTunnelSignal;
 typedef SignalMessage<TryConnectTo> TryConnectToSignal;
 typedef SignalMessage<InitTunnelStarted> InitTunnelStartedSignal;
+typedef SignalMessage<PeerData> PeerDataSignal;
 
 class ClientServerConnector : public IPCConnector
 {
@@ -42,6 +44,7 @@ protected:
 	void onInitTunnelStartedSignal(const InitTunnelStartedSignal& msg);
 	void onTryConnectToMessage(const TryConnectToMessage& msg);
 	void onTryConnectToSignal(const TryConnectToSignal& msg);
+	void onPeerDataSignal(const PeerDataSignal& msg);
 
 protected:
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
@@ -51,6 +54,7 @@ protected:
 
 	//Server Messages
 	void onMessage(const Login& msg);
+	void onMessage(const PeerData& msg);
 
 	//Client and Server Messages
 	void onMessage(const InitTunnel& msg);

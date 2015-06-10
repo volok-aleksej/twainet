@@ -39,6 +39,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelMessage(this));
 	addMessage(new TryConnectToMessage(this));
 	addMessage(new InitTunnelStartedMessage(this));
+	addMessage(new PeerDataMessage(this));
 
 	m_isNotifyRemove = true;
 	m_isCoordinator = false;
@@ -70,6 +71,7 @@ void ClientServerConnector::Subscribe(::SignalOwner* owner)
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelSignal, onInitTunnelSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelStartedSignal, onInitTunnelStartedSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
+	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, PeerDataSignal, onPeerDataSignal));
 	IPCConnector::Subscribe(owner);
 }
 
@@ -180,6 +182,17 @@ void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 	}	
 }
 
+void ClientServerConnector::onPeerDataSignal(const PeerDataSignal& msg)
+{
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_serverIPCName
+		&& msg.one_session_id() == m_ownSessionId)
+	{
+		PeerDataMessage pdMsg(this, msg);
+		toMessage(pdMsg);
+	}
+}
+
 void ClientServerConnector::onMessage(const LoginResult& msg)
 {
 	if(m_checker)
@@ -227,6 +240,12 @@ void ClientServerConnector::onMessage(const Login& msg)
 	mnMsg.set_ip("");
 	mnMsg.set_port(0);
 	toMessage(mnMsg);
+}
+
+void ClientServerConnector::onMessage(const PeerData& msg)
+{
+	PeerDataSignal pdSig(msg);
+	onSignal(pdSig);
 }
 
 void ClientServerConnector::onMessage(const InitTunnel& msg)

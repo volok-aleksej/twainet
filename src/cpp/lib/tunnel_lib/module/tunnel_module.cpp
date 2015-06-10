@@ -39,9 +39,24 @@ TunnelModule::~TunnelModule()
 	}
 }
 
-void TunnelModule::InitNewTunnel(const std::string& extSessionId)
+void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type)
 {
 	printf("init new tunnel - sessionId: %s\n", extSessionId.c_str());
+	PeerData peerData;
+	peerData.set_one_session_id(m_ownSessionId);
+	peerData.set_two_session_id(extSessionId);
+	if(type == TunnelConnector::LOCAL)		
+		peerData.set_type(TUNNEL_LOCAL);
+	if(type == TunnelConnector::EXTERNAL)
+		peerData.set_type(TUNNEL_EXTERNAL);
+	if(type == TunnelConnector::RELAY)
+		peerData.set_type(TUNNEL_RELAY);
+	if(type != TunnelConnector::UNKNOWN)
+	{
+		PeerDataSignal pdSig(peerData);
+		onSignal(pdSig);
+	}
+	
 	InitTunnel itMsg;
 	itMsg.set_own_session_id(m_ownSessionId);
 	itMsg.set_ext_session_id(extSessionId);
@@ -89,6 +104,7 @@ void TunnelModule::OnNewConnector(Connector* connector)
 	{
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelMessage, onInitTunnel)); //for client
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelSignal, onInitTunnel)); //for server
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, PeerDataSignal, onPeerData)); //for server
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, TryConnectToMessage, onTryConnectTo)); //for client
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
 	}
@@ -109,6 +125,15 @@ void TunnelModule::OnTunnelConnectFailed(const std::string& sessionId)
 void TunnelModule::OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type)
 {
 	printf("\nCreation of tunnel successful - sessionId: %s, type: %d", sessionId.c_str(), type);
+}
+
+void TunnelModule::onPeerData(const PeerDataSignal& msg)
+{
+	PeerType peerData(msg);
+	if(!m_typePeers.AddObject(peerData))
+	{
+		m_typePeers.UpdateObject(peerData);
+	}
 }
 
 void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)

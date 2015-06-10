@@ -14,7 +14,7 @@ public:
 	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
 	virtual ~TunnelModule();
 public:
-	void InitNewTunnel(const std::string& extSessionId);
+	void InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type);
 	void DestroyTunnel(const std::string& extSessionId);
 	void SetTypeTunnel(const std::string& oneSessionId, const std::string& twoSessionId, TunnelConnector::TypeConnection type);
 protected:
@@ -41,6 +41,7 @@ protected:
 
 	//for server
 	void onInitTunnel(const InitTunnelSignal& msg);
+	void onPeerData(const PeerDataSignal& msg);
 
 	void onCreatedExternalListener(const CreatedServerListenerMessage& msg);
 	void onGotExternalAddress(const GotExternalAddressMessage& msg);

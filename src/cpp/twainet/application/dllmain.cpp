@@ -90,10 +90,10 @@ extern "C" void DisconnectFromModule(const Twainet::Module module, const Twainet
 	twainetModule->DisconnectModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
 }
 
-extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId)
+extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->InitNewTunnel(sessionId);
+	twainetModule->InitNewTunnel(sessionId, (TunnelConnector::TypeConnection)type);
 }
 
 extern "C" void Twainet::DisconnectTunnel(const Twainet::Module module, const char* sessionId)
