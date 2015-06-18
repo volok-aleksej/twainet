@@ -175,7 +175,7 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 					strcmp(modules[i].m_name, "Client") == 0)
 				{
 					//Twainet::SetTunnelType(m_module, ownSessionId.c_str(), modules[i].m_host, Twainet::RELAY);
-					Twainet::CreateTunnel(m_module, modules[i].m_host, Twainet::RELAY);
+					Twainet::CreateTunnel(m_module, modules[i].m_host);
 				}
 			}
 		}

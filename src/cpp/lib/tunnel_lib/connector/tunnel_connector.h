@@ -20,7 +20,8 @@ public:
 		UNKNOWN,
 		LOCAL,
 		EXTERNAL,
-		RELAY
+		RELAY,
+		PPP
 	};
 
 	TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName);

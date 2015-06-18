@@ -56,6 +56,7 @@ private:
 	void InitExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateRelayConnectThread(const std::string& extSessionId, const std::string& ip, int port);
+	void CreatePPPConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 
 	friend class TunnelCheckerThread;
 	void CheckTunnels();

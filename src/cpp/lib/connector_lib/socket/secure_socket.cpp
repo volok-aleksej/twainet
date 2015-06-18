@@ -296,3 +296,56 @@ bool SecureTCPSocket::RecvData(char* data, int len)
 {
 	return TCPSocket::Recv(data, len);
 }
+
+/*********************************************************************************/
+/*                              SecurePPPSocket                                  */
+/*********************************************************************************/
+SecurePPPSocket::SecurePPPSocket(int socket)
+: PPPSocket(socket)
+{
+	PerformSslVerify();
+}
+
+bool SecurePPPSocket::Connect(const std::string& host, int port)
+{
+	if(!PPPSocket::Connect(host, port))
+	{
+		return false;
+	}
+	
+	return PerformSslVerify();
+}
+
+bool SecurePPPSocket::Send(char* data, int len)
+{
+	if(m_bInit)
+	{
+		return SecureSocket::Send(data, len);
+	}
+	else
+	{
+		return SendData(data, len);
+	}
+}
+
+bool SecurePPPSocket::Recv(char* data, int len)
+{
+	if(m_bInit)
+	{
+		return SecureSocket::Recv(data, len);
+	}
+	else
+	{
+		return RecvData(data, len);
+	}
+}
+
+bool SecurePPPSocket::SendData(char* data, int len)
+{
+	return PPPSocket::Send(data, len);
+}
+
+bool SecurePPPSocket::RecvData(char* data, int len)
+{
+	return PPPSocket::Recv(data, len);
+}

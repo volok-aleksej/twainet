@@ -42,6 +42,12 @@ TunnelModule::~TunnelModule()
 void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type)
 {
 	printf("init new tunnel - sessionId: %s\n", extSessionId.c_str());
+	if (type == TunnelConnector::PPP ||
+		type == TunnelConnector::UNKNOWN)
+	{
+		CreatePPPConnectThread(extSessionId, "", 0);
+	}
+
 	PeerData peerData;
 	peerData.set_one_session_id(m_ownSessionId);
 	peerData.set_two_session_id(extSessionId);
@@ -51,17 +57,21 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 		peerData.set_type(TUNNEL_EXTERNAL);
 	if(type == TunnelConnector::RELAY)
 		peerData.set_type(TUNNEL_RELAY);
-	if(type != TunnelConnector::UNKNOWN)
+	if (type != TunnelConnector::UNKNOWN &&
+		type != TunnelConnector::PPP)
 	{
 		PeerDataSignal pdSig(peerData);
 		onSignal(pdSig);
 	}
 	
-	InitTunnel itMsg;
-	itMsg.set_own_session_id(m_ownSessionId);
-	itMsg.set_ext_session_id(extSessionId);
-	InitTunnelSignal itSig(itMsg);
-	onSignal(itSig);
+	if(type == TunnelConnector::UNKNOWN)
+	{
+		InitTunnel itMsg;
+		itMsg.set_own_session_id(m_ownSessionId);
+		itMsg.set_ext_session_id(extSessionId);
+		InitTunnelSignal itSig(itMsg);
+		onSignal(itSig);
+	}
 }
 
 void TunnelModule::DestroyTunnel(const std::string& extSessionId)
@@ -612,6 +622,31 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
 	address.m_socketFactory = new TCPSecureSocketFactory;
+	address.m_ip = ip;
+	address.m_port = port;
+	ConnectThread* thread = new ConnectThread(address);
+	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayConnector));
+	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorRelayConnect));
+	thread->Start();
+}
+
+void TunnelModule::CreatePPPConnectThread(const std::string& extSessionId, const std::string& ip, int port)
+{
+	CSLocker lock(&m_cs);
+	TunnelConnect* tunnel;
+	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
+	if(it == m_tunnels.end())
+	{
+		return;
+	}
+	tunnel = it->second;
+	
+	ConnectAddress address;
+	address.m_localIP = "";
+	address.m_localPort = 0;
+	address.m_moduleName = address.m_id = extSessionId;
+	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
+	address.m_socketFactory = new PPPSocketFactory(extSessionId);
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);

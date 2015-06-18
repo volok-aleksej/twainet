@@ -1,6 +1,8 @@
 #include "socket_factories.h"
 #include "secure_socket.h"
 #include "udp_socket.h"
+#include "ppp_socket.h"
+#include "ppp/ppp_library.h"
 
 /*******************************************************************************************************/
 /*                                          TCPSocketFactory                                           */
@@ -105,4 +107,38 @@ AnySocket* UDTSecureSocketFactory::CreateSocket(int socket)
 void UDTSecureSocketFactory::SetUdpSocket(int udpSocket)
 {
 	m_udpSocket = udpSocket;
+}
+
+/*******************************************************************************************************/
+/*                                          PPPSocketFactory                                           */
+/*******************************************************************************************************/
+PPPSocketFactory::PPPSocketFactory(const std::string& sessionId)
+	: m_sessionId(sessionId){}
+
+AnySocket* PPPSocketFactory::CreateSocket()
+{
+	int socket = PPPLibrary::GetInstance().CreateSocket(m_sessionId);
+	return new PPPSocket(socket);
+}
+
+AnySocket* PPPSocketFactory::CreateSocket(int socket)
+{
+	return new PPPSocket(socket);
+}
+
+/*******************************************************************************************************/
+/*                                     PPPSecureSocketFactory                                          */
+/*******************************************************************************************************/
+PPPSecureSocketFactory::PPPSecureSocketFactory(const std::string& sessionId)
+	: m_sessionId(sessionId){}
+
+AnySocket* PPPSecureSocketFactory::CreateSocket()
+{
+	int socket = PPPLibrary::GetInstance().CreateSocket(m_sessionId);
+	return new SecurePPPSocket(socket);
+}
+
+AnySocket* PPPSecureSocketFactory::CreateSocket(int socket)
+{
+	return new SecurePPPSocket(socket);
 }

@@ -85,6 +85,8 @@
     <ClCompile Include="common\aes.cpp" />
     <ClCompile Include="connector\connector.cpp" />
     <ClCompile Include="connector\connector_manager.cpp" />
+    <ClCompile Include="ppp\ppp_library.cpp" />
+    <ClCompile Include="socket\ppp_socket.cpp" />
     <ClCompile Include="socket\secure_socket.cpp" />
     <ClCompile Include="socket\socket_factories.cpp" />
     <ClCompile Include="socket\tcp_socket.cpp" />
@@ -107,7 +109,9 @@
     <ClInclude Include="..\..\common\common.h" />
     <ClInclude Include="..\thread_lib\common\object_manager.h" />
     <ClInclude Include="..\..\common\ref.h" />
+    <ClInclude Include="ppp\ppp_library.h" />
     <ClInclude Include="socket\any_socket.h" />
+    <ClInclude Include="socket\ppp_socket.h" />
     <ClInclude Include="socket\secure_socket.h" />
     <ClInclude Include="socket\socket_factories.h" />
     <ClInclude Include="socket\socket_factory.h" />

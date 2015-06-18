@@ -81,7 +81,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(SolutionDir)..\..\output\work\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <IgnoreSpecificDefaultLibraries>
@@ -111,7 +111,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(SolutionDir)..\..\output\work\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;ssleay32.lib;libeay32.lib; tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;tunnel_lib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)..\..\output\lib\$(Configuration)\$(ProjectName).lib</ImportLibrary>

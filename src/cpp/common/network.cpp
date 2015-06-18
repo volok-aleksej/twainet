@@ -81,3 +81,84 @@ std::vector<std::string> GetLocalIps()
 #endif
 	return ips;
 }
+
+std::string getMAC(sockaddr_in* addr)
+{
+	char mac_addr[18] = {0};
+#ifdef WIN32
+	PIP_ADAPTER_INFO AdapterInfo = (IP_ADAPTER_INFO *)malloc(sizeof(IP_ADAPTER_INFO));
+	DWORD dwBufLen = sizeof(AdapterInfo);
+
+	if (AdapterInfo && GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_BUFFER_OVERFLOW)
+		AdapterInfo = (IP_ADAPTER_INFO *)malloc(dwBufLen);
+
+	if (AdapterInfo && GetAdaptersInfo(AdapterInfo, &dwBufLen) == NO_ERROR)
+	{
+		PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
+		do
+		{
+			IP_ADDRESS_STRING* ipaddrstr = 0;
+			for(IP_ADDR_STRING* ipaddr = &pAdapterInfo->IpAddressList;
+				ipaddr != 0;
+				ipaddr = ipaddr->Next)
+			{
+				std::string ip = inet_ntoa(addr->sin_addr);
+				if(ip == ipaddr->IpAddress.String)
+				{
+					ipaddrstr = &ipaddr->IpAddress;
+					break;
+				}
+			}
+
+			if(!ipaddrstr)
+			{
+				pAdapterInfo = pAdapterInfo->Next;  
+				continue;
+			}
+
+			sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+				pAdapterInfo->Address[0], pAdapterInfo->Address[1],
+				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
+				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
+			printf("Address: %s, mac: %s\n", pAdapterInfo->IpAddressList.IpAddress.String, mac_addr);
+			break;
+		}while(pAdapterInfo);                        
+	}
+	free(AdapterInfo);
+#endif
+	return mac_addr;
+}
+
+std::string getMAC(const std::string& name)
+{
+	char mac_addr[17];
+#ifdef WIN32
+	PIP_ADAPTER_INFO AdapterInfo = (IP_ADAPTER_INFO *)malloc(sizeof(IP_ADAPTER_INFO));
+	DWORD dwBufLen = sizeof(AdapterInfo);
+
+	if (AdapterInfo && GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_BUFFER_OVERFLOW)
+		AdapterInfo = (IP_ADAPTER_INFO *)malloc(dwBufLen);
+
+	if (AdapterInfo && GetAdaptersInfo(AdapterInfo, &dwBufLen) == NO_ERROR)
+	{
+		PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
+		do
+		{
+			if(name.find(pAdapterInfo->AdapterName) != -1)
+			{
+				pAdapterInfo = pAdapterInfo->Next;  
+				continue;
+			}
+
+			sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+				pAdapterInfo->Address[0], pAdapterInfo->Address[1],
+				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
+				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
+			printf("Address: %s, mac: %s\n", pAdapterInfo->IpAddressList.IpAddress.String, mac_addr);
+			break;
+		}while(pAdapterInfo);                        
+	}
+	free(AdapterInfo);
+#endif
+	return mac_addr;
+}

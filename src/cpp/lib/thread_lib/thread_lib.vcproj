@@ -204,6 +204,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\common\managers_container.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\managers_container.h"
+				>
+			</File>
+			<File
 				RelativePath=".\common\object_manager.h"
 				>
 			</File>

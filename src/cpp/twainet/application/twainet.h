@@ -44,7 +44,8 @@ extern "C"
 			UNKNOWN = 0,
 			LOCAL = 1,
 			EXTERNAL = 2,
-			RELAY = 3
+			RELAY = 3,
+			PPP = 4
 		};
 
 		typedef void* Module;
