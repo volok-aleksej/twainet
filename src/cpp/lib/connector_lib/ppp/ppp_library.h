@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <string>
 #include "common\singleton.h"
-#include "libppp\libppp.h"
+#include "libppp\application\libppp.h"
 
 class PPPLibrary : public Singleton<PPPLibrary>
 {
