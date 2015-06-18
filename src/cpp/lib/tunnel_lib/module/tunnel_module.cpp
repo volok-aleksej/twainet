@@ -474,6 +474,21 @@ void TunnelModule::onAddRelayConnector(const ConnectorMessage& msg)
 	IPCModule::onAddConnector(msg);
 }
 
+void TunnelModule::onErrorPPPConnect(const ConnectErrorMessage& msg)
+{
+}
+
+void TunnelModule::onAddPPPConnector(const ConnectorMessage& msg)
+{
+	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
+	if(connector)
+	{
+		connector->SetTypeConnection(TunnelConnector::PPP);
+	}
+
+	IPCModule::onAddConnector(msg);
+}
+
 void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 {
 	CSLocker lock(&m_cs);
@@ -637,21 +652,21 @@ void TunnelModule::CreatePPPConnectThread(const std::string& extSessionId, const
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
 	if(it == m_tunnels.end())
 	{
-		return;
+		tunnel = new TunnelConnect(extSessionId);
+		m_tunnels.insert(std::make_pair(extSessionId, tunnel));
 	}
-	tunnel = it->second;
 	
 	ConnectAddress address;
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new PPPSocketFactory(extSessionId);
+	address.m_socketFactory = new PPPSecureSocketFactory(extSessionId);
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayConnector));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorRelayConnect));
+	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddPPPConnector));
+	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorPPPConnect));
 	thread->Start();
 }
 

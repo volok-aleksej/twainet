@@ -35,6 +35,8 @@ protected:
 	void onAddExternalConnector(const ConnectorMessage& msg);
 	void onErrorRelayConnect(const ConnectErrorMessage& msg);
 	void onAddRelayConnector(const ConnectorMessage& msg);
+	void onErrorPPPConnect(const ConnectErrorMessage& msg);
+	void onAddPPPConnector(const ConnectorMessage& msg);
 
 	void onModuleName(const ModuleNameMessage& msg);
 	void onConnected(const TunnelConnectedMessage& msg);
