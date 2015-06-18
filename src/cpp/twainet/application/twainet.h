@@ -75,7 +75,7 @@ extern "C"
 		// Coordinator - the main module to which all must be connected.
 		//               Only the coordinator knows what modules are available on the local machine
 		// All modules, when they was created, are only available on the local machine
-		EXPORT_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, bool isCoordinator);
+		EXPORT_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, bool isCoordinator, bool isPPPListener);
 
 		//Delete module
 		EXPORT_FUNC void DeleteModule(const Module module);

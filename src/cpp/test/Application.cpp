@@ -104,7 +104,7 @@ void Application::ThreadFunc()
 	std::string guid = CreateGUID();
 	memset(&m_moduleName, 0, sizeof(m_moduleName));
 	strcpy_s(m_moduleName.m_name, MAX_NAME_LENGTH, guid.c_str());
-	m_module = Twainet::CreateModule(m_moduleName, false);
+	m_module = Twainet::CreateModule(m_moduleName, false, true);
 #ifdef DEBUG_1
 	Twainet::CreateServer(m_module, 1054);
 	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);

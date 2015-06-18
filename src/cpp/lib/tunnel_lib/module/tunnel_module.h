@@ -11,7 +11,7 @@ class TunnelModule : public ClientServerModule
 public:
 	static const std::string m_tunnelIPCName;
 public:
-	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
+	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory, bool isPPPListener);
 	virtual ~TunnelModule();
 public:
 	void InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type);
@@ -35,6 +35,8 @@ protected:
 	void onAddExternalConnector(const ConnectorMessage& msg);
 	void onErrorRelayConnect(const ConnectErrorMessage& msg);
 	void onAddRelayConnector(const ConnectorMessage& msg);
+	void onCreatedPPPListener(const CreatedListenerMessage& msg);
+	void onErrorPPPListener(const ListenErrorMessage& msg);
 	void onErrorPPPConnect(const ConnectErrorMessage& msg);
 	void onAddPPPConnector(const ConnectorMessage& msg);
 
@@ -58,7 +60,8 @@ private:
 	void InitExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateRelayConnectThread(const std::string& extSessionId, const std::string& ip, int port);
-	void CreatePPPConnectThread(const std::string& extSessionId, const std::string& ip, int port);
+	void CreatePPPConnectThread(const std::string& extSessionId);
+	void CreatePPPListenThread();
 
 	friend class TunnelCheckerThread;
 	void CheckTunnels();
@@ -68,6 +71,7 @@ private:
 	CriticalSection m_cs;
 	ObjectManager<PeerType> m_typePeers;
 	TunnelCheckerThread* m_tunnelChecker;
+	IPCListenThread* m_pppListenThread;
 };
 
 #endif/*TUNNEL_MODULE_H*/

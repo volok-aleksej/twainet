@@ -17,7 +17,7 @@ protected:
 public:
 
 	void Init(const Twainet::TwainetCallback& callback);
-	TwainetModule* CreateModule(const Twainet::ModuleName& moduleName);
+	TwainetModule* CreateModule(const Twainet::ModuleName& moduleName, bool isPPPListener);
 	void DeleteModule(TwainetModule* module);
 protected:
 	friend class TwainetModule;

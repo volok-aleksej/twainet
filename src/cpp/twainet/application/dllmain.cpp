@@ -42,9 +42,9 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 	Application::GetInstance().Init(twainet);
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator)
+extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator, bool isPPPListener)
 {
-	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
+	TwainetModule* module = Application::GetInstance().CreateModule(moduleName, isPPPListener);
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
 	return (Twainet::Module*)module;
 }

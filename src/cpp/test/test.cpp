@@ -15,7 +15,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef DEBUG_1
 	std::string guid = CreateGUID();
 	Twainet::ModuleName moduleName = {"Coordinator", "", ""};
-	Twainet::Module module = Twainet::CreateModule(moduleName, true);
+	Twainet::Module module = Twainet::CreateModule(moduleName, true, false);
 #endif/*DEBUG_1*/
 	
 	Application::GetInstance();

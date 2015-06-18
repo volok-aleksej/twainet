@@ -17,13 +17,25 @@ public:
 	bool Disconnect(int socket);
 	int Send(int socket, const char* data, int len);
 	int Recv(int socket, char* data, int len);
+	bool Listen(int socket);
+	int Accept(int socket);
+	std::string GetSocketId(int socket);
+	std::string GetOwnId();
+	int GetAvailableIdCount();
+	std::string GetAvailableId(int number);
 private:
 	HMODULE m_hLibPPP;
-	CreatePPPSocket createPPPSocket;
-	CreatePPPTunnel createPPPTunnel;
-	DestroyPPPTunnel destroyPPPTunnel;
-	SendPPPData sendPPPData;
-	RecvPPPData recvPPPData;
+	::PPPListen pppListen;
+	::PPPAccept pppAccept;
+	::CreatePPPSocket createPPPSocket;
+	::CreatePPPTunnel createPPPTunnel;
+	::DestroyPPPTunnel destroyPPPTunnel;
+	::SendPPPData sendPPPData;
+	::RecvPPPData recvPPPData;
+	::GetPPPSocketId getSocketId;
+	::GetOwnId getOwnId;
+	::GetAvailableIdCount getAvailableIdCount;
+	::GetAvailableId getAvailableId;
 };
 
 #endif/*PPP_LIBRARY_H*/

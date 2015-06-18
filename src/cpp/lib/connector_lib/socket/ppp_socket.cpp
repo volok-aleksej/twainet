@@ -23,12 +23,24 @@ bool PPPSocket::Bind(const std::string& host, int port)
 
 bool PPPSocket::Listen(int limit)
 {
-	return false;
+	if(!m_socket)
+	{
+		return false;
+	}
+
+	return PPPLibrary::GetInstance().Listen(m_socket);
 }
 
 int PPPSocket::Accept(std::string& ip, int& port)
 {
-	return 0;
+	if(!m_socket)
+	{
+		return 0;
+	}
+	
+	ip = "";
+	port = 0;
+	return PPPLibrary::GetInstance().Accept(m_socket);
 }
 
 bool PPPSocket::Connect(const std::string& host, int port)

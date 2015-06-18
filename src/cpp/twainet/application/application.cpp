@@ -52,10 +52,10 @@ void Application::Init(const Twainet::TwainetCallback& callback)
 	memcpy(&m_callbacks, &callback, sizeof(m_callbacks));
 }
 
-TwainetModule* Application::CreateModule(const Twainet::ModuleName& moduleName)
+TwainetModule* Application::CreateModule(const Twainet::ModuleName& moduleName, bool isPPPListener)
 {
 	CSLocker locker(&m_csModules);
-	TwainetModule* module = new TwainetModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
+	TwainetModule* module = new TwainetModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix), isPPPListener);
 	m_modules.push_back(module);
 	return module;
 }
