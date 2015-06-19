@@ -4,14 +4,44 @@
     <Filter Include="application">
       <UniqueIdentifier>{a59a3037-079c-4c03-957b-65f98f48f00a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{b5e99b5b-809e-4764-86d3-5283eba04b8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="socket">
+      <UniqueIdentifier>{a82b3913-e7a8-40d4-aea8-0b7d1c203a83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
       <Filter>application</Filter>
     </ClCompile>
+    <ClCompile Include="application\application.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\ppp_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\network.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ethernet_monitor.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\libppp.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="common\net_structs.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="application\application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\ppp_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ethernet_monitor.h">
       <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>

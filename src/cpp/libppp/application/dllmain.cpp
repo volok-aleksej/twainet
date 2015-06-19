@@ -6,6 +6,8 @@
 
 #include <windows.h>
 #include "libppp.h"
+#include "common\net_structs.h"
+#include "application.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -65,7 +67,7 @@ extern "C" char* (DLLCALL GetPPPSocketId)(int socket)
 
 extern "C" char* (DLLCALL GetOwnId)()
 {
-	return "";
+	return Application::GetInstance().GetOwnId();
 }
 
 extern "C" int (DLLCALL GetAvailableIdCount)()
