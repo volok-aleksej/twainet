@@ -10,6 +10,9 @@
     <Filter Include="socket">
       <UniqueIdentifier>{a82b3913-e7a8-40d4-aea8-0b7d1c203a83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{be4c6024-aecd-4e83-89c7-467ad099eaa7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -27,6 +30,9 @@
     <ClCompile Include="application\ethernet_monitor.cpp">
       <Filter>application</Filter>
     </ClCompile>
+    <ClCompile Include="net\inet_headers.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\libppp.h">
@@ -43,6 +49,9 @@
     </ClInclude>
     <ClInclude Include="application\ethernet_monitor.h">
       <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="net\inet_headers.h">
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

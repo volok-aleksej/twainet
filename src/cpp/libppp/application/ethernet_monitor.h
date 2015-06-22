@@ -12,7 +12,7 @@ public:
 protected:
 	void ManagerFunc();
 	void ManagerStart();
-	void ManagerStop(){};
+	void ManagerStop();
 private:
 	pcap_t *m_fp;
 	std::string m_mac;

@@ -56,6 +56,19 @@ typedef struct _ether_header
 #define PPPOED_ACSE		0x202	//AC System Error
 #define PPPOED_GE		0x203	//Generic Error
 
+//PPPOE code
+#define PPPOE_SESSION	0x00
+#define PPPOE_PADO		0x07
+#define PPPOE_PADI		0x09
+#define PPPOE_PADG		0x0a
+#define PPPOE_PADC		0x0b
+#define PPPOE_PADQ		0x0c
+#define PPPOE_PADR		0x19
+#define PPPOE_PADS		0x65
+#define PPPOE_PADT		0xa7
+#define PPPOE_PADM		0xd3
+#define PPPOE_PADN		0xd4
+
 #define PPPOED_VENDOR	"TwainetPPP"
 
 #define PPPOE_VERTYPE	0x11
@@ -69,7 +82,7 @@ typedef struct _pppoe_tag_header
 typedef struct _pppoe_header
 {
 	unsigned char version_type;	// version(HIWORD), type(LOWORD), version_type = PPPOE_VERTYPE
-	unsigned char code;			//PPPOED code
+	unsigned char code;			//PPPOE code
 	unsigned short sessionId;
 	unsigned short payload;		//length of pppoe tag headers
 } pppoe_header;

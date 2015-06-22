@@ -15,6 +15,7 @@
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\dllmain.cpp" />
     <ClCompile Include="application\ethernet_monitor.cpp" />
+    <ClCompile Include="net\inet_headers.cpp" />
     <ClCompile Include="socket\ppp_socket.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -22,6 +23,7 @@
     <ClInclude Include="application\ethernet_monitor.h" />
     <ClInclude Include="application\libppp.h" />
     <ClInclude Include="common\net_structs.h" />
+    <ClInclude Include="net\inet_headers.h" />
     <ClInclude Include="socket\ppp_socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -75,7 +77,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(SolutionDir)..\..\output\work\libppp.dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\winpcap\library</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;thread_lib.lib;packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;connector_lib.lib;packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,7 +98,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <OutputFile>$(SolutionDir)..\..\output\work\libppp.dll</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\winpcap\library</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;thread_lib.lib;packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;connector_lib.lib;packet.lib;wpcap.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
