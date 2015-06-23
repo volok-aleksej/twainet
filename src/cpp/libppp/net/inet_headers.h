@@ -19,7 +19,6 @@ protected:
 	virtual int DeserializeData(std::string& data);
 public:
 	ether_header m_ethHeader;
-	EtherNetContainer* m_child;
 };
 
 class PPPoEContainer : public EtherNetContainer

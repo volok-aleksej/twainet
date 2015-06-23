@@ -4,10 +4,8 @@
 /***********************************************************************************************/
 /*                                 EtherNetContainer                                           */
 /***********************************************************************************************/
-EtherNetContainer::EtherNetContainer()
-	: m_child(0){}
+EtherNetContainer::EtherNetContainer(){}
 EtherNetContainer::EtherNetContainer(const std::string& srcmac, const std::string& dstmac)
-	: m_child(0)
 {
 	for(int i = 0, pos = 0; i < 6; srcmac.size() >= 17 && dstmac.size() >= 17 && i++, pos += 3)
 	{
@@ -21,10 +19,6 @@ EtherNetContainer::EtherNetContainer(const std::string& srcmac, const std::strin
 
 EtherNetContainer::~EtherNetContainer()
 {
-	if(m_child)
-	{
-		delete m_child;
-	}
 }
 
 
@@ -89,7 +83,7 @@ PPPoEContainer::~PPPoEContainer(){}
 int PPPoEContainer::SerializeData(const std::string& data)
 {
 	int serialLen = EtherNetContainer::SerializeData(data);
-	if(serialLen != 0 ||
+	if(serialLen == 0 ||
 		data.size() < serialLen + sizeof(m_pppoeHeader))
 	{
 		return 0;
@@ -134,8 +128,8 @@ PPPoEDContainer::~PPPoEDContainer()
 
 int PPPoEDContainer::SerializeData(const std::string& data)
 {
-	int serialLen = EtherNetContainer::SerializeData(data);
-	if(serialLen != 0||
+	int serialLen = PPPoEContainer::SerializeData(data);
+	if(serialLen == 0||
 		data.size() < serialLen + m_pppoeHeader.payload)
 	{
 		return false;
@@ -166,6 +160,7 @@ int PPPoEDContainer::SerializeData(const std::string& data)
 		std::string value(len + 1, 0);
 		memcpy((char*)value.c_str(), sdata + pos, len);
 		m_tags.insert(std::make_pair(type, value));
+		pos += len;
 	}
 
 	return serialLen + m_pppoeHeader.payload;

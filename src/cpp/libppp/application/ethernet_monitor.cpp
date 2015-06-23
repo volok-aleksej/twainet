@@ -28,6 +28,10 @@ void EthernetMonitor::ThreadFunc()
 	delete data;
 	data = 0;
 
+	bpf_program fcode;
+	int res = pcap_compile(m_fp, &fcode, "pppoed or pppoes", 1, 0xffffff);
+    res = pcap_setfilter(m_fp, &fcode);
+
 	while(!IsStop())
 	{
 		pcap_pkthdr* header;
@@ -38,8 +42,7 @@ void EthernetMonitor::ThreadFunc()
 			break;
 		}
 
-		EtherNetContainer ether;
-		ether.serialize((char*)data, header->len);
+		//TODO(): parser
 	}
 }
 
