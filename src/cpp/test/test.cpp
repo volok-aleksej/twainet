@@ -8,6 +8,7 @@
 #include "twainet\application\twainet.h"
 #include "application.h"
 #include "common\guid_generator.h"
+#include "thread_lib\thread\thread_manager.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -19,6 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif/*DEBUG_1*/
 	
 	Application::GetInstance();
-	system("pause");//.Join();
+	system("pause");
+	Twainet::FreeLibrary();
 	return 0;
 }				

@@ -15,8 +15,8 @@ public:
 	virtual bool serialize(char* data, int len);
 	virtual bool deserialize(char* data, int& len);
 protected:
-	virtual bool SerializeData(const std::string& data);
-	virtual bool DeserializeData(std::string& data);
+	virtual int SerializeData(const std::string& data);
+	virtual int DeserializeData(std::string& data);
 public:
 	ether_header m_ethHeader;
 	EtherNetContainer* m_child;
@@ -29,8 +29,8 @@ public:
 	PPPoEContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code);
 	virtual ~PPPoEContainer();
 protected:
-	virtual bool SerializeData(const std::string& data);
-	virtual bool DeserializeData(std::string& data);
+	virtual int SerializeData(const std::string& data);
+	virtual int DeserializeData(std::string& data);
 public:
 	pppoe_header m_pppoeHeader;
 };
@@ -42,8 +42,8 @@ public:
 	PPPoEDContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code);
 	virtual ~PPPoEDContainer();
 protected:
-	virtual bool SerializeData(const std::string& data);
-	virtual bool DeserializeData(std::string& data);
+	virtual int SerializeData(const std::string& data);
+	virtual int DeserializeData(std::string& data);
 public:
 	std::map<int, std::string> m_tags;
 };

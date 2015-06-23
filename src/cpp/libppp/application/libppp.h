@@ -12,6 +12,8 @@ extern "C"
 	#define DLLCALL		__cdecl *
 #endif // LIBPPP_EXPORT
 
+	EXPORT_FUNC void (DLLCALL InitPPPLibrary)();
+	EXPORT_FUNC void (DLLCALL FreePPPLibrary)();
 	EXPORT_FUNC int (DLLCALL CreatePPPSocket)(const char* id);
 	EXPORT_FUNC bool (DLLCALL PPPListen)(int socket);
 	EXPORT_FUNC int (DLLCALL PPPAccept)(int socket);

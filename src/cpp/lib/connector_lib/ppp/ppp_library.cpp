@@ -5,6 +5,8 @@ PPPLibrary::PPPLibrary()
 	m_hLibPPP = LoadLibrary(L"libppp.dll");
 	if(m_hLibPPP)
 	{
+		initLibrary = (::InitPPPLibrary)GetProcAddress(m_hLibPPP, "InitPPPLibrary");
+		freeLibrary = (::FreePPPLibrary)GetProcAddress(m_hLibPPP, "FreePPPLibrary");
 		createPPPSocket = (::CreatePPPSocket)GetProcAddress(m_hLibPPP, "CreatePPPSocket");
 		pppListen = (::PPPListen)GetProcAddress(m_hLibPPP, "PPPListen");
 		pppAccept = (::PPPAccept)GetProcAddress(m_hLibPPP, "PPPAccept");
@@ -21,6 +23,24 @@ PPPLibrary::PPPLibrary()
 
 PPPLibrary::~PPPLibrary()
 {
+	if(m_hLibPPP)
+		::FreeLibrary(m_hLibPPP);
+}
+
+void PPPLibrary::InitLibrary()
+{
+	if(m_hLibPPP && initLibrary)
+	{
+		initLibrary();
+	}
+}
+
+void PPPLibrary::FreeLibrary()
+{
+	if(m_hLibPPP && freeLibrary)
+	{
+		freeLibrary();
+	}
 }
 
 int PPPLibrary::CreateSocket(const std::string& sessionId)

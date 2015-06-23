@@ -8,6 +8,7 @@
 #include "libppp.h"
 #include "common\net_structs.h"
 #include "application.h"
+#include "thread_lib\thread\thread_manager.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -17,12 +18,30 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
+		{int i = 0;}
+		break;
 	case DLL_THREAD_ATTACH:
+		{int i = 0;}		
+		break;
 	case DLL_THREAD_DETACH:
+		{int i = 0;}
+		break;
 	case DLL_PROCESS_DETACH:
+		{int i = 0;}
 		break;
 	}
 	return TRUE;
+}
+
+extern "C" void (DLLCALL InitPPPLibrary)()
+{
+	ThreadManager::GetInstance();
+	Application::GetInstance();
+}
+
+extern "C" void (DLLCALL FreePPPLibrary)()
+{
+	ManagersContainer::GetInstance().Join();
 }
 
 extern "C" int (DLLCALL CreatePPPSocket)(const char* id)

@@ -10,7 +10,7 @@ class ThreadManager : public ManagerCreator<ThreadManager>
 protected:
 	template<class Object> friend class ManagerCreator;
 	ThreadManager();
-	~ThreadManager();
+	virtual ~ThreadManager();
 public:
 	void AddThread(Thread* thread);
 	void RemoveThread(Thread* thread);

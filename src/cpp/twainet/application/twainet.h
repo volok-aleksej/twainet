@@ -70,6 +70,10 @@ extern "C"
 
 		// Initialize library
 		EXPORT_FUNC void InitLibrary(const TwainetCallback& twainet);
+
+		//Free Library
+		EXPORT_FUNC void FreeLibrary();
+
 		// Create new module
 		// isCoordinator - type of module
 		// Coordinator - the main module to which all must be connected.

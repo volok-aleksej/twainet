@@ -11,7 +11,9 @@ class PPPLibrary : public Singleton<PPPLibrary>
 public:
 	PPPLibrary();
 	~PPPLibrary();
-
+	
+	void InitLibrary();
+	void FreeLibrary();
 	int CreateSocket(const std::string& sessionId);
 	bool Connect(int socket);
 	bool Disconnect(int socket);
@@ -25,6 +27,8 @@ public:
 	std::string GetAvailableId(int number);
 private:
 	HMODULE m_hLibPPP;
+	::InitPPPLibrary initLibrary;
+	::FreePPPLibrary freeLibrary;
 	::PPPListen pppListen;
 	::PPPAccept pppAccept;
 	::CreatePPPSocket createPPPSocket;

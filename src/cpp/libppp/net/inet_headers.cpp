@@ -31,28 +31,16 @@ EtherNetContainer::~EtherNetContainer()
 bool EtherNetContainer::serialize(char* data, int len)
 {
 	std::string sdata(data, len);
-	if(!SerializeData(sdata))
-	{
-		return false;
-	}
-
-	switch(m_ethHeader.ether_type)
-	{
-		case ETHERTYPE_PPPOED:
-			m_child = new PPPoEDContainer;
-			return m_child->serialize(data, len);
-		default:
-			return false;
-	};
+	return SerializeData(sdata) != 0;
 }
 
 bool EtherNetContainer::deserialize(char* data, int& len)
 {
 	std::string sdata;
-	if(!DeserializeData(sdata) ||
-		len < (int)sdata.size())
+	int deserialLen = DeserializeData(sdata);
+	if(len < deserialLen)
 	{
-		len = sdata.size();
+		len = deserialLen;
 		return false;
 	}
 
@@ -60,22 +48,22 @@ bool EtherNetContainer::deserialize(char* data, int& len)
 	return true;
 }
 
-bool EtherNetContainer::SerializeData(const std::string& data)
+int EtherNetContainer::SerializeData(const std::string& data)
 {
 	if(data.size() < sizeof(m_ethHeader))
-		return false;
+		return 0;
 	memcpy(&m_ethHeader, data.c_str(), sizeof(m_ethHeader));
 	m_ethHeader.ether_type = htons(m_ethHeader.ether_type);
-	return true;
+	return sizeof(m_ethHeader);
 }
 
-bool EtherNetContainer::DeserializeData(std::string& data)
+int EtherNetContainer::DeserializeData(std::string& data)
 {
 	data.resize(sizeof(m_ethHeader));
 	ether_header ethHeader = m_ethHeader;
 	ethHeader.ether_type = htons(ethHeader.ether_type);
 	memcpy((void*)data.c_str(), &ethHeader, sizeof(m_ethHeader));
-	return true;
+	return sizeof(m_ethHeader);
 }
 
 /***********************************************************************************************/
@@ -98,31 +86,32 @@ PPPoEContainer::PPPoEContainer(const std::string& srcmac, const std::string& dst
 }
 PPPoEContainer::~PPPoEContainer(){}
 
-bool PPPoEContainer::SerializeData(const std::string& data)
+int PPPoEContainer::SerializeData(const std::string& data)
 {
-	if(!EtherNetContainer::SerializeData(data) ||
-		data.size() < sizeof(m_ethHeader) + sizeof(m_pppoeHeader))
+	int serialLen = EtherNetContainer::SerializeData(data);
+	if(serialLen != 0 ||
+		data.size() < serialLen + sizeof(m_pppoeHeader))
 	{
-		return false;
+		return 0;
 	}
-	memcpy(&m_pppoeHeader, data.c_str() + sizeof(m_ethHeader), sizeof(m_pppoeHeader));
-	m_pppoeHeader .payload = htons(m_pppoeHeader.payload);
-	return true;
+	memcpy(&m_pppoeHeader, data.c_str() + serialLen, sizeof(m_pppoeHeader));
+	m_pppoeHeader.payload = htons(m_pppoeHeader.payload);
+	return serialLen + sizeof(m_pppoeHeader);
 }
 
-bool PPPoEContainer::DeserializeData(std::string& data)
+int PPPoEContainer::DeserializeData(std::string& data)
 {
 	std::string ethdata;
 	if(!EtherNetContainer::DeserializeData(ethdata))
 	{
-		return false;
+		return 0;
 	}
 	data.resize(ethdata.size() + sizeof(m_pppoeHeader));
 	memcpy((void*)data.c_str(), ethdata.c_str(), ethdata.size());
 	pppoe_header pppoeheader = m_pppoeHeader;
-	pppoeheader .payload = htons(pppoeheader.payload);
+	pppoeheader.payload = htons(pppoeheader.payload);
 	memcpy((void*)(data.c_str() + ethdata.size()), &pppoeheader, sizeof(pppoeheader));
-	return true;
+	return data.size();
 }
 
 /***********************************************************************************************/
@@ -130,6 +119,7 @@ bool PPPoEContainer::DeserializeData(std::string& data)
 /***********************************************************************************************/
 PPPoEDContainer::PPPoEDContainer()
 {
+	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
 }
 
 PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code)
@@ -142,12 +132,46 @@ PPPoEDContainer::~PPPoEDContainer()
 {
 }
 
-bool PPPoEDContainer::SerializeData(const std::string& data)
+int PPPoEDContainer::SerializeData(const std::string& data)
 {
-	return false;
+	int serialLen = EtherNetContainer::SerializeData(data);
+	if(serialLen != 0||
+		data.size() < serialLen + m_pppoeHeader.payload)
+	{
+		return false;
+	}
+	
+	char* sdata = (char*)data.c_str() + serialLen;
+	int pos = 0;
+	while(pos < m_pppoeHeader.payload)
+	{
+		unsigned short type;
+		unsigned short len;
+
+		if(pos + 2 > m_pppoeHeader.payload)
+			break;
+		memcpy(&type, sdata + pos, 2);
+		pos += 2;
+
+		if(pos + 2 > m_pppoeHeader.payload)
+			break;
+		memcpy(&len, sdata + pos, 2);
+		pos += 2;
+		
+		type = htons(type);
+		len = htons(len);
+
+		if(pos + len > m_pppoeHeader.payload)
+			break;
+		std::string value(len + 1, 0);
+		memcpy((char*)value.c_str(), sdata + pos, len);
+		m_tags.insert(std::make_pair(type, value));
+	}
+
+	return serialLen + m_pppoeHeader.payload;
 }
 
-bool PPPoEDContainer::DeserializeData(std::string& data)
+int PPPoEDContainer::DeserializeData(std::string& data)
 {
 	m_pppoeHeader.payload = 0;
 	for(std::map<int, std::string>::iterator it = m_tags.begin();
@@ -159,7 +183,7 @@ bool PPPoEDContainer::DeserializeData(std::string& data)
 	std::string pppoedata;
 	if(!PPPoEContainer::DeserializeData(pppoedata))
 	{
-		return false;
+		return 0;
 	}
 	data.resize(pppoedata.size() + m_pppoeHeader.payload);
 	memcpy((void*)data.c_str(), pppoedata.c_str(), pppoedata.size());
@@ -173,5 +197,5 @@ bool PPPoEDContainer::DeserializeData(std::string& data)
 		memcpy((void*)(data.c_str() + pos), it->second.c_str(), it->second.size());
 		pos += it->second.size();
 	}
-	return true;
+	return pppoedata.size() + m_pppoeHeader.payload;
 }

@@ -9,6 +9,7 @@
 #include "udt.h"
 #include "twainet.h"
 #include "application.h"
+#include "connector_lib\ppp\ppp_library.h"
 #include "utils/utils.h"
 
 #pragma warning(disable: 4273)
@@ -40,6 +41,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	Application::GetInstance().Init(twainet);
+	PPPLibrary::GetInstance().InitLibrary();
+}
+
+extern "C" void Twainet::FreeLibrary()
+{
+	ManagersContainer::GetInstance().Join();
+	PPPLibrary::GetInstance().FreeLibrary();
 }
 
 extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator, bool isPPPListener)

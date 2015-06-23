@@ -15,10 +15,6 @@ Application::~Application()
 	std::vector<EthernetMonitor*> monitors;
 	m_monitors.CheckObjects(Ref(this, &Application::RemoveMonitor, monitors));
 	
-	for(std::vector<EthernetMonitor*>::iterator it = monitors.begin(); it != monitors.end(); it++)
-	{
-		delete *it;
-	}
 }
 
 bool Application::RemoveMonitor(const std::vector<EthernetMonitor*>& monitors, const EthernetMonitor* monitor)

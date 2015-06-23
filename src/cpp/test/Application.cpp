@@ -88,7 +88,7 @@ Application::Application()
 
 Application::~Application()
 {
-	m_isStop = true;
+	Join();
 }
 
 void Application::OnStop()
@@ -116,6 +116,7 @@ void Application::ThreadFunc()
 
 void Application::Stop()
 {
+	m_isStop = true;
 }
 
 void Application::onModuleCreationFailed(Twainet::Module module)
@@ -242,7 +243,6 @@ void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& 
 	
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = {0, 0};
-    DWORD count;
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hStdOut, &csbi);
 	csbi.dwCursorPosition.X = 0;
