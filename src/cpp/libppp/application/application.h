@@ -12,7 +12,7 @@ class HostAddress
 public:
 	HostAddress()
 		: m_hostId(getCpuHash()){}
-	HostAddress(unsigned short hostId, const std::string& mac)
+	HostAddress(unsigned short hostId, const std::string& mac = "")
 		: m_hostId(hostId), m_mac(mac){}
 	~HostAddress(){}
 
@@ -39,7 +39,8 @@ protected:
 	~Application();
 
 public:
-	char* GetOwnId();
+	unsigned short GetOwnId();
+	std::vector<HostAddress> GetIds();
 	void AddContact(const HostAddress& mac);
 	void RemoveContact(const HostAddress& mac);
 protected:

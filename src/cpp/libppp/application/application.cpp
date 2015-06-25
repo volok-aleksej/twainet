@@ -60,9 +60,9 @@ void Application::DetectionEthernet()
     pcap_freealldevs(alldevs);
 }
 
-char* Application::GetOwnId()
+unsigned short Application::GetOwnId()
 {
-	return "test";
+	return getCpuHash();
 }
 
 void Application::AddContact(const HostAddress& mac)
@@ -73,4 +73,9 @@ void Application::AddContact(const HostAddress& mac)
 void Application::RemoveContact(const HostAddress& mac)
 {
 	m_contacts.RemoveObject(mac);
+}
+
+std::vector<HostAddress> Application::GetIds()
+{
+	return m_contacts.GetObjectList();
 }
