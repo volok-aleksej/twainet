@@ -75,11 +75,9 @@ typedef struct _pppoed_tag_vendor
 	unsigned int id;
 	unsigned char version[4];
 } pppoed_tag_vendor;
-
 extern pppoed_tag_vendor defaultVendor;
 
-#define PPPOED_VENDOR	std::string((char*)&defaultVendor, sizeof(defaultVendor))
-
+#define PPPOED_DEFAULT_VENDOR	std::string((char*)&defaultVendor, sizeof(defaultVendor))
 #define PPPOE_VERTYPE	0x11
 
 typedef struct _pppoe_tag_header

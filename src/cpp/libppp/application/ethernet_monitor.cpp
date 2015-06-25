@@ -70,33 +70,36 @@ void EthernetMonitor::Stop()
 
 void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 {
-	if (container.m_pppoeHeader.code == PPPOE_PADI &&
-		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_VENDOR &&
+	if (const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_DEFAULT_VENDOR &&
 		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
 		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
 	{
-		int len = 0;
-		PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
-		pado.deserialize(0, len);
-		unsigned char *data = new unsigned char[len];
-		if(pado.deserialize((char*)data, len))
-		{
-			pcap_sendpacket(m_fp, data, len);
-		}
-		delete data;
-		data = 0;
+		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
 
-		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
-		Application::GetInstance().AddContact(addr);
-	}
-	else if (container.m_pppoeHeader.code == PPPOE_PADT &&
-		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_VENDOR &&
-		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
-		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
-	{
-		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
-		Application::GetInstance().RemoveContact(addr);
+		switch(container.m_pppoeHeader.code)
+		{
+			case PPPOE_PADI:
+			{
+				int len = 0;
+				PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
+				pado.deserialize(0, len);
+				unsigned char *data = new unsigned char[len];
+				if(pado.deserialize((char*)data, len))
+				{
+					pcap_sendpacket(m_fp, data, len);
+				}
+				delete data;
+				data = 0;
+
+				Application::GetInstance().AddContact(addr);
+				break;
+			}
+			case PPPOE_PADT:
+			{
+				Application::GetInstance().RemoveContact(addr);
+				break;
+			}
+		}
 	}
 }

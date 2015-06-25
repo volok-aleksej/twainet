@@ -138,7 +138,7 @@ PPPoEDContainer::PPPoEDContainer()
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
 	unsigned short cpuhash = getCpuHash();
 	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
-	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
+	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_DEFAULT_VENDOR));
 }
 
 PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code)
@@ -147,7 +147,7 @@ PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& d
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
 	unsigned short cpuhash = getCpuHash();
 	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
-	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
+	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_DEFAULT_VENDOR));
 }
 
 PPPoEDContainer::~PPPoEDContainer()
