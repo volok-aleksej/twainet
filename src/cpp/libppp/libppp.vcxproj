@@ -16,6 +16,7 @@
     <ClCompile Include="application\dllmain.cpp" />
     <ClCompile Include="application\ethernet_monitor.cpp" />
     <ClCompile Include="net\inet_headers.cpp" />
+    <ClCompile Include="net\parser_states.cpp" />
     <ClCompile Include="socket\ppp_socket.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -24,6 +25,7 @@
     <ClInclude Include="application\libppp.h" />
     <ClInclude Include="common\net_structs.h" />
     <ClInclude Include="net\inet_headers.h" />
+    <ClInclude Include="net\parser_states.h" />
     <ClInclude Include="socket\ppp_socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

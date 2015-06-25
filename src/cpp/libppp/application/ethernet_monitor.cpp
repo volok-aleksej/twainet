@@ -1,5 +1,7 @@
 #include "ethernet_monitor.h"
 #include "net\inet_headers.h"
+#include "net\parser_states.h"
+#include "application\application.h"
 
 EthernetMonitor::EthernetMonitor(pcap_t *fp, const std::string& mac)
 	: m_fp(fp), m_mac(mac)
@@ -42,14 +44,19 @@ void EthernetMonitor::ThreadFunc()
 			break;
 		}
 
-		//TODO(): parser
+		BasicState state(this);
+		BasicState *nextState = &state;
+		while(nextState)
+		{
+			nextState = nextState->NextState((char*)data, header->len);
+		}
 	}
 }
 
 void EthernetMonitor::Stop()
 {
 	int len = 0;
-	PPPoEDContainer padt(m_mac, "ff:ff:ff:ff:ff:ff", PPPOE_PADT);
+	PPPoEDContainer padt(m_mac, ETHER_BROADCAST, PPPOE_PADT);
 	padt.m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 	padt.deserialize(0, len);
 	unsigned char *data = new unsigned char[len];
@@ -61,4 +68,27 @@ void EthernetMonitor::Stop()
 	data = 0;
 
 	pcap_close(m_fp);
+}
+
+void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
+{
+	if (container.m_pppoeHeader.code == PPPOE_PADI &&
+		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_VENDOR &&
+		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
+		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
+	{
+		int len = 0;
+		PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
+		pado.m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
+		pado.deserialize(0, len);
+		unsigned char *data = new unsigned char[len];
+		if(pado.deserialize((char*)data, len))
+		{
+			pcap_sendpacket(m_fp, data, len);
+		}
+		delete data;
+		data = 0;
+
+	//	Application::GetInstance().AddContact();
+	}
 }

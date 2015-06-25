@@ -27,6 +27,7 @@ typedef struct _ether_header
 	unsigned short	ether_type;		//see ether types
 } ether_header;
 
+#define ETHER_BROADCAST "ff:ff:ff:ff:ff:ff"
 
 /************************************************************************************************/
 /*																								*/

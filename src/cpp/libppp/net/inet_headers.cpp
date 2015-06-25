@@ -7,20 +7,40 @@
 EtherNetContainer::EtherNetContainer(){}
 EtherNetContainer::EtherNetContainer(const std::string& srcmac, const std::string& dstmac)
 {
-	for(int i = 0, pos = 0; i < 6; srcmac.size() >= 17 && dstmac.size() >= 17 && i++, pos += 3)
-	{
-		char mactemp[3] = {0};
-		memcpy(mactemp, srcmac.c_str() + pos, 2);
-		m_ethHeader.ether_shost[i] = (unsigned char)strtol(mactemp, NULL, 16);
-		memcpy(mactemp, dstmac.c_str() + pos, 2);
-		m_ethHeader.ether_dhost[i] = (unsigned char)strtol(mactemp, NULL, 16);
-	}
+	memcpy(m_ethHeader.ether_shost, StringToMac(srcmac).c_str(), sizeof(m_ethHeader.ether_shost));
+	memcpy(m_ethHeader.ether_dhost, StringToMac(dstmac).c_str(), sizeof(m_ethHeader.ether_dhost));
 }
 
 EtherNetContainer::~EtherNetContainer()
 {
 }
 
+
+std::string EtherNetContainer::StringToMac(const std::string& str)
+{
+	char mac[6] = {0};
+	for(int i = 0, pos = 0; i < 6; str.size() >= 17 && i++, pos += 3)
+	{
+		char mactemp[3] = {0};
+		memcpy(mactemp, str.c_str() + pos, 2);
+		mac[i] = (unsigned char)strtol(mactemp, NULL, 16);
+	}
+
+	return std::string(mac, 6);
+}
+
+std::string EtherNetContainer::MacToString(const char mac[6])
+{
+	std::string str(17, 0);
+	for(int i = 0, pos = 0; i < 6; str.size() >= 17 && i++, pos += 3)
+	{
+		if(i != 5)
+			sprintf((char*)(str.c_str() + pos), "%02x:", (unsigned char)mac[i]);
+		else
+			sprintf((char*)(str.c_str() + pos), "%02x", (unsigned char)mac[i]);
+	}
+	return str;
+}
 
 bool EtherNetContainer::serialize(char* data, int len)
 {
