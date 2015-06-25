@@ -41,6 +41,9 @@
     <ClInclude Include="resource.h">
       <Filter>application</Filter>
     </ClInclude>
+    <ClInclude Include="..\version.h">
+      <Filter>application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="twainet.rc">

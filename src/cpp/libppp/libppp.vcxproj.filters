@@ -36,6 +36,9 @@
     <ClCompile Include="net\parser_states.cpp">
       <Filter>net</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\cpu_id.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\libppp.h">
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="net\parser_states.h">
       <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\version.h">
+      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

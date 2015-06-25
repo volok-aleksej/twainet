@@ -20,6 +20,10 @@
     <ClCompile Include="socket\ppp_socket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\cpu_id.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
+    <ClInclude Include="..\version.h" />
     <ClInclude Include="application\application.h" />
     <ClInclude Include="application\ethernet_monitor.h" />
     <ClInclude Include="application\libppp.h" />

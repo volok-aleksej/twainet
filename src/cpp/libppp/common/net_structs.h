@@ -70,7 +70,15 @@ typedef struct _ether_header
 #define PPPOE_PADM		0xd3
 #define PPPOE_PADN		0xd4
 
-#define PPPOED_VENDOR	"TwainetPPP"
+typedef struct _pppoed_tag_vendor
+{
+	unsigned int id;
+	unsigned char version[4];
+} pppoed_tag_vendor;
+
+extern pppoed_tag_vendor defaultVendor;
+
+#define PPPOED_VENDOR	std::string((char*)&defaultVendor, sizeof(defaultVendor))
 
 #define PPPOE_VERTYPE	0x11
 

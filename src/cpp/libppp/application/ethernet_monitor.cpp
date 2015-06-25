@@ -20,7 +20,6 @@ void EthernetMonitor::ThreadFunc()
 	unsigned char* data = 0;
 	//Send PADI
 	PPPoEDContainer padi(m_mac, "ff:ff:ff:ff:ff:ff", PPPOE_PADI);
-	padi.m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 	padi.deserialize(0, len);
 	data = new unsigned char[len];
 	if(padi.deserialize((char*)data, len))
@@ -57,7 +56,6 @@ void EthernetMonitor::Stop()
 {
 	int len = 0;
 	PPPoEDContainer padt(m_mac, ETHER_BROADCAST, PPPOE_PADT);
-	padt.m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 	padt.deserialize(0, len);
 	unsigned char *data = new unsigned char[len];
 	if(padt.deserialize((char*)data, len))
@@ -79,7 +77,6 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 	{
 		int len = 0;
 		PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
-		pado.m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 		pado.deserialize(0, len);
 		unsigned char *data = new unsigned char[len];
 		if(pado.deserialize((char*)data, len))
@@ -89,6 +86,17 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 		delete data;
 		data = 0;
 
-	//	Application::GetInstance().AddContact();
+		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
+		Application::GetInstance().AddContact(addr);
+	}
+	else if (container.m_pppoeHeader.code == PPPOE_PADT &&
+		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_VENDOR &&
+		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
+		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
+	{
+		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
+		Application::GetInstance().RemoveContact(addr);
 	}
 }

@@ -1,6 +1,8 @@
 #include <Winsock2.h>
 #include "inet_headers.h"
 
+unsigned short getCpuHash();
+
 /***********************************************************************************************/
 /*                                 EtherNetContainer                                           */
 /***********************************************************************************************/
@@ -134,12 +136,18 @@ int PPPoEContainer::DeserializeData(std::string& data)
 PPPoEDContainer::PPPoEDContainer()
 {
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
+	unsigned short cpuhash = getCpuHash();
+	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
+	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 }
 
 PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code)
 	: PPPoEContainer(srcmac, dstmac, code)
 {
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
+	unsigned short cpuhash = getCpuHash();
+	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
+	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_VENDOR));
 }
 
 PPPoEDContainer::~PPPoEDContainer()
@@ -155,6 +163,8 @@ int PPPoEDContainer::SerializeData(const std::string& data)
 		return false;
 	}
 	
+	m_tags.clear();
+
 	char* sdata = (char*)data.c_str() + serialLen;
 	int pos = 0;
 	while(pos < m_pppoeHeader.payload)
@@ -179,7 +189,28 @@ int PPPoEDContainer::SerializeData(const std::string& data)
 			break;
 		std::string value(len + 1, 0);
 		memcpy((char*)value.c_str(), sdata + pos, len);
-		m_tags.insert(std::make_pair(type, value));
+		switch(type)
+		{
+			case PPPOED_VS:
+			{
+				pppoed_tag_vendor vendor;
+				memcpy(&vendor, value.c_str(), value.size());
+				vendor.id = htonl(vendor.id);
+				memcpy((char*)value.c_str(), &vendor, value.size());
+			}
+			case PPPOED_HU:
+			{
+				unsigned short hostUniq;
+				memcpy(&hostUniq, value.c_str(), value.size());
+				hostUniq = htons(hostUniq);
+				memcpy((char*)value.c_str(), &hostUniq, value.size());
+			}
+			default:
+			{
+				m_tags.insert(std::make_pair(type, value));
+				break;
+			}
+		}
 		pos += len;
 	}
 
@@ -209,7 +240,32 @@ int PPPoEDContainer::DeserializeData(std::string& data)
 		pppoe_tag tag = {htons(it->first), htons(it->second.size())};
 		memcpy((void*)(data.c_str() + pos), &tag, sizeof(tag));
 		pos += sizeof(tag);
-		memcpy((void*)(data.c_str() + pos), it->second.c_str(), it->second.size());
+		std::string value(it->second.size(), 0);
+		switch(it->first)
+		{
+			case PPPOED_VS:
+			{
+				pppoed_tag_vendor vendor;
+				memcpy(&vendor, it->second.c_str(), it->second.size());
+				vendor.id = htonl(vendor.id);
+				memcpy((char*)value.c_str(), &vendor, value.size());
+				break;
+			}
+			case PPPOED_HU:
+			{
+				unsigned short hostUniq;
+				memcpy(&hostUniq, it->second.c_str(), it->second.size());
+				hostUniq = htons(hostUniq);
+				memcpy((char*)value.c_str(), &hostUniq, value.size());
+				break;
+			}
+			default:
+			{
+				memcpy((char*)value.c_str(), it->second.c_str(), it->second.size());
+				break;
+			}
+		}
+		memcpy((void*)(data.c_str() + pos), value.c_str(), value.size());
 		pos += it->second.size();
 	}
 	return pppoedata.size() + m_pppoeHeader.payload;
