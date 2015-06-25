@@ -70,8 +70,10 @@ void EthernetMonitor::Stop()
 
 void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 {
-	if (const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] == PPPOED_DEFAULT_VENDOR &&
-		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
+	if(const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
+		return;
+
+	if (EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
 		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
 	{
 		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
@@ -101,5 +103,12 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 				break;
 			}
 		}
+	}
+	else if(container.m_pppoeHeader.code == PPPOE_PADO &&
+			EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == m_mac)
+	{
+		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
+		Application::GetInstance().AddContact(addr);
 	}
 }
