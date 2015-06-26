@@ -41,7 +41,7 @@ void EthernetMonitor::ManagerFunc()
 		int len = 0;
 		unsigned char* data = 0;
 		//Send PADI
-		PPPoEDContainer padi(m_mac, "ff:ff:ff:ff:ff:ff", PPPOE_PADI);
+		PPPoEDContainer padi(m_mac, ETHER_BROADCAST, PPPOE_PADI);
 		padi.deserialize(0, len);
 		data = new unsigned char[len];
 		if(padi.deserialize((char*)data, len))
