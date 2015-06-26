@@ -9,7 +9,6 @@ IPCCheckerThread::IPCCheckerThread(IPCConnector* connector)
 
 IPCCheckerThread::~IPCCheckerThread()
 {
-	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
 void IPCCheckerThread::ManagerFunc()

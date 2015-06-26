@@ -37,9 +37,9 @@ std::string EtherNetContainer::MacToString(const char mac[6])
 	for(int i = 0, pos = 0; i < 6; str.size() >= 17 && i++, pos += 3)
 	{
 		if(i != 5)
-			sprintf((char*)(str.c_str() + pos), "%02x:", (unsigned char)mac[i]);
+			sprintf((char*)(str.c_str() + pos), "%02X:", (unsigned char)mac[i]);
 		else
-			sprintf((char*)(str.c_str() + pos), "%02x", (unsigned char)mac[i]);
+			sprintf((char*)(str.c_str() + pos), "%02X", (unsigned char)mac[i]);
 	}
 	return str;
 }
@@ -187,30 +187,29 @@ int PPPoEDContainer::SerializeData(const std::string& data)
 
 		if(pos + len > m_pppoeHeader.payload)
 			break;
-		std::string value(len + 1, 0);
+		std::string value(len, 0);
 		memcpy((char*)value.c_str(), sdata + pos, len);
 		switch(type)
 		{
 			case PPPOED_VS:
 			{
 				pppoed_tag_vendor vendor;
-				memcpy(&vendor, value.c_str(), value.size());
+				memcpy(&vendor, value.c_str(), sizeof(vendor));
 				vendor.id = htonl(vendor.id);
-				memcpy((char*)value.c_str(), &vendor, value.size());
+				memcpy((char*)value.c_str(), &vendor, sizeof(vendor));
+				break;
 			}
 			case PPPOED_HU:
 			{
 				unsigned short hostUniq;
-				memcpy(&hostUniq, value.c_str(), value.size());
+				memcpy(&hostUniq, value.c_str(), sizeof(hostUniq));
 				hostUniq = htons(hostUniq);
-				memcpy((char*)value.c_str(), &hostUniq, value.size());
-			}
-			default:
-			{
-				m_tags.insert(std::make_pair(type, value));
+				memcpy((char*)value.c_str(), &hostUniq, sizeof(hostUniq));
 				break;
 			}
 		}
+		
+		m_tags.insert(std::make_pair(type, value));
 		pos += len;
 	}
 

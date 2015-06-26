@@ -5,7 +5,7 @@
 
 class IPCConnector;
 
-class PingThread: public IManager
+class PingThread: public StaticManager
 {
 public:
 	PingThread(IPCConnector* connector);

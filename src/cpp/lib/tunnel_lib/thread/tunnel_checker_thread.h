@@ -5,7 +5,7 @@
 
 class TunnelModule;
 
-class TunnelCheckerThread : public IManager
+class TunnelCheckerThread : public DynamicManager
 {
 public:
 	TunnelCheckerThread(TunnelModule* module);

@@ -11,9 +11,9 @@ class HostAddress
 {
 public:
 	HostAddress()
-		: m_hostId(getCpuHash()){}
-	HostAddress(unsigned short hostId, const std::string& mac = "")
-		: m_hostId(hostId), m_mac(mac){}
+		: m_hostId(getCpuHash()), m_sessionId(0){}
+	HostAddress(unsigned short hostId, const std::string& mac = "", unsigned short sessionId = 0)
+		: m_hostId(hostId), m_mac(mac), m_sessionId(sessionId){}
 	~HostAddress(){}
 
 	bool operator == (const HostAddress& addr)
@@ -25,10 +25,12 @@ public:
 	{
 		m_hostId = addr.m_hostId;
 		m_mac = addr.m_mac;
+		m_sessionId = addr.m_sessionId;
 	}
 	
 	unsigned short m_hostId;
 	std::string m_mac;
+	unsigned short m_sessionId;
 };
 
 class Application : public Singleton<Application>
@@ -41,8 +43,10 @@ protected:
 public:
 	unsigned short GetOwnId();
 	std::vector<HostAddress> GetIds();
-	void AddContact(const HostAddress& mac);
-	void RemoveContact(const HostAddress& mac);
+	bool AddContact(const HostAddress& mac);
+	bool RemoveContact(const HostAddress& mac);
+	bool UpdateContact(const HostAddress& mac);
+	HostAddress GetContact(unsigned short hostId);
 protected:
 	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
 	bool RemoveMonitor(const std::vector<EthernetMonitor*>& monitors, const EthernetMonitor* monitor);

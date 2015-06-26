@@ -26,7 +26,7 @@ TunnelModule::~TunnelModule()
 {
 	removeReceiver();
 
-	delete m_tunnelChecker;
+	m_tunnelChecker->Stop();
 
 	if(m_pppListenThread)
 	{
@@ -74,7 +74,7 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 		onSignal(pdSig);
 	}
 	
-	if(type == TunnelConnector::UNKNOWN)
+	if(type != TunnelConnector::PPP)
 	{
 		InitTunnel itMsg;
 		itMsg.set_own_session_id(m_ownSessionId);

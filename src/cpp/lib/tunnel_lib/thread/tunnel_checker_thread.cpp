@@ -9,7 +9,6 @@ TunnelCheckerThread::TunnelCheckerThread(TunnelModule* module)
 
 TunnelCheckerThread::~TunnelCheckerThread()
 {
-	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
 void TunnelCheckerThread::ManagerFunc()

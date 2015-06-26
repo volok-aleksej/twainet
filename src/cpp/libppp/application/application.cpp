@@ -16,7 +16,6 @@ Application::~Application()
 {
 	std::vector<EthernetMonitor*> monitors;
 	m_monitors.CheckObjects(Ref(this, &Application::RemoveMonitor, monitors));
-	
 }
 
 bool Application::RemoveMonitor(const std::vector<EthernetMonitor*>& monitors, const EthernetMonitor* monitor)
@@ -65,14 +64,35 @@ unsigned short Application::GetOwnId()
 	return getCpuHash();
 }
 
-void Application::AddContact(const HostAddress& mac)
+bool Application::AddContact(const HostAddress& mac)
 {
-	m_contacts.AddObject(mac);
+	HostAddress addr;
+	if(!m_contacts.GetObject(mac, &addr))
+	{
+		return m_contacts.AddObject(mac);
+	}
+	else if(addr.m_mac != mac.m_mac)
+	{
+		return m_contacts.UpdateObject(mac);
+	}
+	return false;	
 }
 
-void Application::RemoveContact(const HostAddress& mac)
+bool Application::UpdateContact(const HostAddress& mac)
 {
-	m_contacts.RemoveObject(mac);
+	return m_contacts.UpdateObject(mac);
+}
+
+HostAddress Application::GetContact(unsigned short hostId)
+{
+	HostAddress addr(hostId);
+	m_contacts.GetObject(addr, &addr);
+	return addr;
+}
+
+bool Application::RemoveContact(const HostAddress& mac)
+{
+	return m_contacts.RemoveObject(mac);
 }
 
 std::vector<HostAddress> Application::GetIds()

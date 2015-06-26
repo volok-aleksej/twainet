@@ -8,7 +8,7 @@
 #include "../signal/signal.h"
 #include "../signal/signal_owner.h"
 
-class ConnectorManager : public SignalOwner, public IManager
+class ConnectorManager : public SignalOwner, public StaticManager
 {
 public:
 	ConnectorManager();

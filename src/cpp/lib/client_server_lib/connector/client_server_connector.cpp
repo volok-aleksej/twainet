@@ -197,7 +197,7 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 {
 	if(m_checker)
 	{
-		delete m_checker;
+		m_checker->Stop();
 		m_checker = 0;
 	}
 	m_ownSessionId = msg.own_session_id();
@@ -220,7 +220,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 {
 	if(m_checker)
 	{
-		delete m_checker;
+		m_checker->Stop();
 		m_checker = 0;
 	}
 

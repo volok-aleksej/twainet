@@ -5,12 +5,11 @@
 
 class IPCConnector;
 
-class IPCCheckerThread : public IManager
+class IPCCheckerThread : public DynamicManager
 {
 public:
 	IPCCheckerThread(IPCConnector* connector);
 	virtual ~IPCCheckerThread();
-	
 protected:
 	void ManagerFunc();
 	void ManagerStart(){};

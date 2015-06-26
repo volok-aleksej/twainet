@@ -3,57 +3,85 @@
 #include "net\parser_states.h"
 #include "application\application.h"
 
+#define TIMEOUT_SEND	10
+#define MAXIMUM_SEND	5
+
 EthernetMonitor::EthernetMonitor(pcap_t *fp, const std::string& mac)
-	: m_fp(fp), m_mac(mac)
+	: m_fp(fp), m_mac(mac), m_timeoutCount(TIMEOUT_SEND), m_currentPADISend(0)
 {
-	Start();
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
 
 EthernetMonitor::~EthernetMonitor()
 {
-	Join();
 }
 
-void EthernetMonitor::ThreadFunc()
+void EthernetMonitor::ManagerStart()
 {
-	int len = 0;
-	unsigned char* data = 0;
-	//Send PADI
-	PPPoEDContainer padi(m_mac, "ff:ff:ff:ff:ff:ff", PPPOE_PADI);
-	padi.deserialize(0, len);
-	data = new unsigned char[len];
-	if(padi.deserialize((char*)data, len))
+	if(!m_fp)
 	{
-		pcap_sendpacket(m_fp, data, len);
+		return;
 	}
-	delete data;
-	data = 0;
 
 	bpf_program fcode;
 	int res = pcap_compile(m_fp, &fcode, "pppoed or pppoes", 1, 0xffffff);
     res = pcap_setfilter(m_fp, &fcode);
+}
 
-	while(!IsStop())
+void EthernetMonitor::ManagerFunc()
+{
+	if(!m_fp)
 	{
-		pcap_pkthdr* header;
-		const unsigned char* data;
-		if (pcap_next_ex(m_fp, &header, &data) < 0 ||
-			!data)
-		{
-			break;
-		}
+		return;
+	}
 
-		BasicState state(this);
-		BasicState *nextState = &state;
-		while(nextState)
+	//send PADI request with timeout
+	if(m_currentPADISend < MAXIMUM_SEND && ++m_timeoutCount >= TIMEOUT_SEND)
+	{
+		int len = 0;
+		unsigned char* data = 0;
+		//Send PADI
+		PPPoEDContainer padi(m_mac, "ff:ff:ff:ff:ff:ff", PPPOE_PADI);
+		padi.deserialize(0, len);
+		data = new unsigned char[len];
+		if(padi.deserialize((char*)data, len))
 		{
-			nextState = nextState->NextState((char*)data, header->len);
+			pcap_sendpacket(m_fp, data, len);
 		}
+		delete data;
+		data = 0;
+		m_timeoutCount = 0;
+		m_currentPADISend++;
+	}
+
+	//get inet data
+	pcap_pkthdr* header;
+	const unsigned char* inetdata = 0;
+	if (pcap_next_ex(m_fp, &header, &inetdata) < 0)
+	{
+		Stop();
+		return;
+	}
+	if(!inetdata)
+	{
+		return;
+	}
+
+	BasicState state(this);
+	BasicState *nextState = &state;
+	while(nextState)
+	{
+		nextState = nextState->NextState((char*)inetdata, header->len);
 	}
 }
 
-void EthernetMonitor::Stop()
+void EthernetMonitor::ManagerStop()
 {
+	if(!m_fp)
+	{
+		return;
+	}
+
 	int len = 0;
 	PPPoEDContainer padt(m_mac, ETHER_BROADCAST, PPPOE_PADT);
 	padt.deserialize(0, len);
@@ -66,15 +94,16 @@ void EthernetMonitor::Stop()
 	data = 0;
 
 	pcap_close(m_fp);
+	m_fp = 0;
 }
 
 void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 {
-	if(const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
+	if(!m_fp || const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
 		return;
 
-	if (EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == ETHER_BROADCAST &&
-		EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost) != m_mac)
+	if (_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), ETHER_BROADCAST) == 0 &&
+		_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost).c_str(), m_mac.c_str()) != 0)
 	{
 		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
 						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
@@ -83,6 +112,9 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 		{
 			case PPPOE_PADI:
 			{
+				if(!Application::GetInstance().AddContact(addr))
+					break;
+
 				int len = 0;
 				PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
 				pado.deserialize(0, len);
@@ -94,7 +126,6 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 				delete data;
 				data = 0;
 
-				Application::GetInstance().AddContact(addr);
 				break;
 			}
 			case PPPOE_PADT:
@@ -104,11 +135,62 @@ void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 			}
 		}
 	}
-	else if(container.m_pppoeHeader.code == PPPOE_PADO &&
-			EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost) == m_mac)
+	else if(_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), ETHER_BROADCAST) != 0 &&
+			_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost).c_str(), m_mac.c_str()) != 0 &&
+			container.m_pppoeHeader.code == PPPOE_PADR)
 	{
 		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
-		Application::GetInstance().AddContact(addr);
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), rand());
+		if(Application::GetInstance().GetContact(addr.m_hostId).m_sessionId != 0)
+			return;
+
+		int len = 0;
+		PPPoEDContainer pads(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADS);
+		pads.m_pppoeHeader.sessionId = addr.m_sessionId;
+		pads.deserialize(0, len);
+		unsigned char *data = new unsigned char[len];
+		if(pads.deserialize((char*)data, len))
+		{
+			pcap_sendpacket(m_fp, data, len);
+		}
+		delete data;
+		data = 0;
+
+		Application::GetInstance().UpdateContact(addr);
+	}
+	else if(_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), m_mac.c_str()) == 0)
+	{
+		HostAddress addr((unsigned short)const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
+						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost),
+						container.m_pppoeHeader.sessionId);
+
+		switch(container.m_pppoeHeader.code)
+		{
+			case PPPOE_PADO:
+			{
+				if(!Application::GetInstance().AddContact(addr) &&
+					( Application::GetInstance().GetContact(addr.m_hostId).m_sessionId != 0||
+					addr.m_hostId < getCpuHash()))
+					break;
+
+				int len = 0;
+				PPPoEDContainer padr(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADR);
+				padr.deserialize(0, len);
+				unsigned char *data = new unsigned char[len];
+				if(padr.deserialize((char*)data, len))
+				{
+					pcap_sendpacket(m_fp, data, len);
+				}
+				delete data;
+				data = 0;
+
+				break;
+			}
+			case PPPOE_PADS:
+			{
+				Application::GetInstance().UpdateContact(addr);
+				break;
+			}
+		}
 	}
 }

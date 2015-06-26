@@ -4,7 +4,7 @@
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false)
-, m_pingThread(this), m_type(UNKNOWN)
+, m_type(UNKNOWN), m_pingThread(this)
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));
