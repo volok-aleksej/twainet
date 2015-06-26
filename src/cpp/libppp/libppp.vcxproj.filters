@@ -30,14 +30,23 @@
     <ClCompile Include="application\ethernet_monitor.cpp">
       <Filter>application</Filter>
     </ClCompile>
-    <ClCompile Include="net\inet_headers.cpp">
-      <Filter>net</Filter>
-    </ClCompile>
     <ClCompile Include="net\parser_states.cpp">
       <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="..\common\cpu_id.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\guid_generator.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tstring.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="net\pppoe_headers.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\ethernet_header.cpp">
+      <Filter>net</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,14 +65,23 @@
     <ClInclude Include="application\ethernet_monitor.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="net\inet_headers.h">
-      <Filter>net</Filter>
-    </ClInclude>
     <ClInclude Include="net\parser_states.h">
       <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="..\version.h">
       <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\guid_generator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="net\pppoe_headers.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\ethernet_header.h">
+      <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

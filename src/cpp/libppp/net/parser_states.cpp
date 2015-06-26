@@ -20,6 +20,9 @@ BasicState* BasicState::NextState(char* data, int len)
 	case ETHERTYPE_PPPOED:
 		m_nextState = new PPPOEDState(m_monitor);
 		return m_nextState;
+	case ETHERTYPE_PPPOES:
+		m_nextState = new PPPOESState(m_monitor);
+		return m_nextState;
 	default:
 		return 0;
 	}
@@ -35,4 +38,21 @@ BasicState* PPPOEDState::NextState(char* data, int len)
 	container.serialize(data, len);
 	OnPacket(container);
 	return 0;
+}
+
+PPPOESState::PPPOESState(EthernetMonitor* monitor)
+	: BasicState(monitor){}
+PPPOESState::~PPPOESState(){}
+
+BasicState* PPPOESState::NextState(char* data, int len)
+{
+	PPPoESContainer container;
+	container.serialize(data, len);
+	switch(container.m_protocol)
+	{
+	case PPPOES_LCP:
+		//TODO(): create next state
+	default:
+		return 0;
+	}
 }

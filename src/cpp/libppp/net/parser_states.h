@@ -33,5 +33,13 @@ public:
 	virtual BasicState* NextState(char* data, int len);
 };
 
+class PPPOESState : public BasicState
+{
+public:
+	PPPOESState(EthernetMonitor* monitor);
+	virtual ~PPPOESState();
+
+	virtual BasicState* NextState(char* data, int len);
+};
 
 #endif/*PARSER_STATES_H*/

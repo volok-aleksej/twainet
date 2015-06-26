@@ -26,11 +26,15 @@ public:
 		m_hostId = addr.m_hostId;
 		m_mac = addr.m_mac;
 		m_sessionId = addr.m_sessionId;
+		m_hostName = addr.m_hostName;
+		m_hostCookie = addr.m_hostCookie;
 	}
 	
 	unsigned short m_hostId;
 	std::string m_mac;
 	unsigned short m_sessionId;
+	std::string m_hostName;
+	std::string m_hostCookie;
 };
 
 class Application : public Singleton<Application>

@@ -2,8 +2,8 @@
 #define ETHERNET_MONITOR_H
 
 #include "thread_lib\common\managers_container.h"
-#include "net/inet_headers.h"
-#include "net/parser_states.h"
+#include "net\pppoe_headers.h"
+#include "net\parser_states.h"
 #include "pcap.h"
 #include <string>
 
