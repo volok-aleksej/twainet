@@ -50,8 +50,7 @@ int PPPLibrary::CreateSocket(const std::string& sessionId)
 		std::string id = sessionId;
 		if(id.empty())
 			id = GetOwnId();
-		unsigned short sid = (unsigned short)strtol(id.c_str(), 0, 16);
-		return createPPPSocket(sid);
+		return createPPPSocket((unsigned char*)id.c_str());
 	}
 
 	return 0;
@@ -121,10 +120,7 @@ std::string PPPLibrary::GetOwnId()
 {	
 	if(m_hLibPPP && getOwnId)
 	{
-		unsigned short ownId = getOwnId();
-		std::string strOwnId(5, 0);
-		sprintf_s((char*)strOwnId.c_str(), strOwnId.size(), "%04x", ownId);
-		return strOwnId.c_str();
+		return (char*)getOwnId();
 	}
 	return "";
 }
@@ -133,10 +129,7 @@ std::string PPPLibrary::GetSocketId(int socket)
 {
 	if(m_hLibPPP && getSocketId)
 	{
-		unsigned short id = getSocketId(socket);
-		std::string strId(5, 0);
-		sprintf_s((char*)strId.c_str(), strId.size(), "%04x", id);
-		return strId.c_str();
+		return (char*)getSocketId(socket);
 	}
 	return "";
 }

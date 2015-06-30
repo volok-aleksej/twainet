@@ -6,7 +6,14 @@
 
 class IManager
 {
+private:
+	friend class DynamicManager;
+	friend class StaticManager;
+	IManager(){}
+
 public:
+	virtual ~IManager(){}
+
 	virtual void ManagerFunc() = 0;
 	virtual void ManagerStart() = 0;
 	virtual void ManagerStop() = 0;

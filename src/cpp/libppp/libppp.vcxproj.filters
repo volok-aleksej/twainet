@@ -48,6 +48,12 @@
     <ClCompile Include="net\ethernet_header.cpp">
       <Filter>net</Filter>
     </ClCompile>
+    <ClCompile Include="application\ppp_connection.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="net\ppp_lcp_headers.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\libppp.h">
@@ -81,6 +87,12 @@
       <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="net\ethernet_header.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ppp_connection.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="net\ppp_lcp_headers.h">
       <Filter>net</Filter>
     </ClInclude>
   </ItemGroup>

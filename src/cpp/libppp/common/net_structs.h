@@ -12,13 +12,13 @@
 #define ETHERTYPE_PPPCC		0x80fd	//PPP Compression Control protocol
 
 /************************************************************************************************/
-/*																								*/
-/*								Ethernet data										            */
-/*                 _ether_header			data												*/
-/*				|----------------------|----------------------|									*/
-/*              |                      |                      |									*/
-/*				|----------------------|----------------------|									*/
-/*																								*/
+/*                                                                                              */
+/*                               Ethernet data                                                  */
+/*                    _ether_header	             data                                           */
+/*              |----------------------|----------------------|                                 */
+/*              |                      |                      |                                 */
+/*              |----------------------|----------------------|                                 */
+/*                                                                                              */
 /************************************************************************************************/
 
 typedef struct _ether_header
@@ -31,13 +31,13 @@ typedef struct _ether_header
 #define ETHER_BROADCAST "FF:FF:FF:FF:FF:FF"
 
 /************************************************************************************************/
-/*																								*/
-/*										PPPoED data												*/
-/*                 _pppoe_header			_pppoe_tag_header		data	   ...				*/
-/*				|----------------------|----------------------|------------|					*/
-/*              |                      |                      |            |   ...				*/
-/*				|----------------------|----------------------|------------|					*/
-/*																								*/
+/*                                                                                              */
+/*                                          PPPoED data                                         */
+/*                    _pppoe_header        _pppoe_tag_header       data        ...              */
+/*              |----------------------|----------------------|------------|                    */
+/*              |                      |                      |            |   ...              */
+/*              |----------------------|----------------------|------------|                    */
+/*                                                                                              */
 /************************************************************************************************/
 //PPPOED tags
 #define PPPOED_EOF		0x000	//End of List
@@ -97,14 +97,44 @@ typedef struct _pppoe_header
 } pppoe_header;
 
 /************************************************************************************************/
-/*																								*/
-/*											PPPoES data											*/
-/*                 _pppoe_header			    protocol		   data	                        */
-/*				|----------------------|----------------------|------------|					*/
-/*              |                      |                      |            |     				*/
-/*				|----------------------|----------------------|------------|					*/
-/*																								*/
+/*                                                                                              */
+/*                                           PPPoES data                                        */
+/*                   _pppoe_header             protocol            data                         */
+/*              |----------------------|----------------------|------------|                    */
+/*              |                      |                      |            |                    */
+/*              |----------------------|----------------------|------------|                    */
+/*                                                                                              */
 /************************************************************************************************/
 #define PPPOES_LCP	0xC021	// LCP protocol
 #define PPPOES_IPCP 0x8021  // IPCP protocol
+
+/************************************************************************************************/
+/*                                                                                              */
+/*                                            PPP LCP data                                      */
+/*                               _ppp_lcp_header             data                               */
+/*                          |----------------------|----------------------|                     */
+/*                          |                      |                      |                     */
+/*                          |----------------------|----------------------|                     */
+/*                                                                                              */
+/************************************************************************************************/
+//PPPLCP code
+#define PPPLCP_CR	// configuration request
+#define PPPLCP_CA	// configuration ask
+#define PPPLCP_CN	// configuration reset
+#define PPPLCP_CN	// configuration reset
+#define PPPLCP_TR	// termination request
+#define PPPLCP_TA	// termination ask
+#define PPPLCP_CR	// code reject
+#define PPPLCP_PR	// protocol reject
+#define PPPLCP_ERQ	// echo request
+#define PPPLCP_ERP	// echo replies
+#define PPPLCP_DR	// discard request
+
+typedef struct _ppp_lcp_header
+{
+	unsigned char code;		// see PPPLCP code
+	unsigned char id;		// request identificator
+	unsigned short len;		// length of data
+} ppp_lcp_header;
+
 #endif/*NET_STRUCTS_H*/

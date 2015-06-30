@@ -14,15 +14,15 @@ extern "C"
 
 	PPP_FUNC void (DLLCALL InitPPPLibrary)();
 	PPP_FUNC void (DLLCALL FreePPPLibrary)();
-	PPP_FUNC int (DLLCALL CreatePPPSocket)(unsigned short id);
+	PPP_FUNC int (DLLCALL CreatePPPSocket)(unsigned char* id);
 	PPP_FUNC bool (DLLCALL PPPListen)(int socket);
 	PPP_FUNC int (DLLCALL PPPAccept)(int socket);
 	PPP_FUNC bool (DLLCALL CreatePPPTunnel)(int socket);
 	PPP_FUNC bool (DLLCALL DestroyPPPTunnel)(int socket);
 	PPP_FUNC int (DLLCALL SendPPPData)(int socket, const char* data, int len);
 	PPP_FUNC int (DLLCALL RecvPPPData)(int socket, char* data, int len);
-	PPP_FUNC unsigned short (DLLCALL GetPPPSocketId)(int socket);
-	PPP_FUNC unsigned short (DLLCALL GetOwnId)();
+	PPP_FUNC unsigned char* (DLLCALL GetPPPSocketId)(int socket);
+	PPP_FUNC unsigned char* (DLLCALL GetOwnId)();
 	PPP_FUNC int (DLLCALL GetAvailableIdCount)();
 	PPP_FUNC unsigned short (DLLCALL GetAvailableId)(int number);
 };

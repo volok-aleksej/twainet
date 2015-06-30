@@ -17,9 +17,11 @@
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\dllmain.cpp" />
     <ClCompile Include="application\ethernet_monitor.cpp" />
+    <ClCompile Include="application\ppp_connection.cpp" />
     <ClCompile Include="net\ethernet_header.cpp" />
     <ClCompile Include="net\pppoe_headers.cpp" />
     <ClCompile Include="net\parser_states.cpp" />
+    <ClCompile Include="net\ppp_lcp_headers.cpp" />
     <ClCompile Include="socket\ppp_socket.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -32,10 +34,12 @@
     <ClInclude Include="application\application.h" />
     <ClInclude Include="application\ethernet_monitor.h" />
     <ClInclude Include="application\libppp.h" />
+    <ClInclude Include="application\ppp_connection.h" />
     <ClInclude Include="common\net_structs.h" />
     <ClInclude Include="net\ethernet_header.h" />
     <ClInclude Include="net\pppoe_headers.h" />
     <ClInclude Include="net\parser_states.h" />
+    <ClInclude Include="net\ppp_lcp_headers.h" />
     <ClInclude Include="socket\ppp_socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

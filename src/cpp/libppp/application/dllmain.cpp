@@ -41,10 +41,11 @@ extern "C" void (DLLCALL InitPPPLibrary)()
 
 extern "C" void (DLLCALL FreePPPLibrary)()
 {
+	Application::GetInstance().Join();
 	ManagersContainer::GetInstance().Join();
 }
 
-extern "C" int (DLLCALL CreatePPPSocket)(unsigned short id)
+extern "C" int (DLLCALL CreatePPPSocket)(unsigned char* id)
 {
 	return 0;
 }
@@ -79,14 +80,14 @@ extern "C" int (DLLCALL RecvPPPData)(int socket, char* data, int len)
 	return 0;
 }
 
-extern "C" unsigned short (DLLCALL GetPPPSocketId)(int socket)
+extern "C" unsigned char* (DLLCALL GetPPPSocketId)(int socket)
 {
 	return 0;
 }
 
-extern "C" unsigned short (DLLCALL GetOwnId)()
+extern "C" unsigned char* (DLLCALL GetOwnId)()
 {
-	return Application::GetInstance().GetOwnId();
+	return (unsigned char*)Application::GetInstance().GetOwnId().c_str();
 }
 
 extern "C" int (DLLCALL GetAvailableIdCount)()

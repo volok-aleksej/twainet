@@ -1,13 +1,12 @@
 #ifndef ETHERNET_MONITOR_H
 #define ETHERNET_MONITOR_H
 
-#include "thread_lib\common\managers_container.h"
 #include "net\pppoe_headers.h"
 #include "net\parser_states.h"
 #include "pcap.h"
 #include <string>
 
-class EthernetMonitor : public DynamicManager
+class EthernetMonitor
 {
 public:
 	EthernetMonitor(pcap_t *fp, const std::string& mac);
@@ -18,13 +17,15 @@ protected:
 	void OnPacket(const PPPoEDContainer& container);
 
 protected:
-	virtual void ManagerStart();
-	virtual void ManagerFunc();
-	virtual void ManagerStop();
+	friend class Application;
+	void MonitorStart();
+	bool MonitorFunc();
+	void MonitorStop();
 private:
 	pcap_t *m_fp;
 	std::string m_mac;
 	int m_timeoutCount; //in second
+	unsigned int m_currentClock;
 	int m_currentPADISend;
 };
 

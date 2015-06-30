@@ -1,7 +1,6 @@
 #include <Winsock2.h>
 #include "pppoe_headers.h"
-
-unsigned short getCpuHash();
+#include "application\application.h"
 
 /***********************************************************************************************/
 /*                                    PPPoEContainer                                           */
@@ -57,12 +56,12 @@ int PPPoEContainer::DeserializeData(std::string& data)
 PPPoEDContainer::PPPoEDContainer()
 {
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
-	unsigned short cpuhash = getCpuHash();
+	std::string cpuhash = Application::GetInstance().GetOwnId();
 	char compName[200] = {0};
 	DWORD sizeName = sizeof(compName);
 	GetComputerNameA(compName, &sizeName);
 
-	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
+	m_tags.insert(std::make_pair(PPPOED_HU, cpuhash));
 	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_DEFAULT_VENDOR));
 	m_tags.insert(std::make_pair(PPPOED_AN, compName));
 }
@@ -71,12 +70,12 @@ PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& d
 	: PPPoEContainer(srcmac, dstmac, code)
 {
 	m_ethHeader.ether_type = ETHERTYPE_PPPOED;
-	unsigned short cpuhash = getCpuHash();
+	std::string cpuhash = Application::GetInstance().GetOwnId();
 	char compName[200] = {0};
 	DWORD sizeName = sizeof(compName);
 	GetComputerNameA(compName, &sizeName);
 
-	m_tags.insert(std::make_pair(PPPOED_HU, std::string((char*)&cpuhash, sizeof(cpuhash))));
+	m_tags.insert(std::make_pair(PPPOED_HU, cpuhash));
 	m_tags.insert(std::make_pair(PPPOED_VS, PPPOED_DEFAULT_VENDOR));
 	m_tags.insert(std::make_pair(PPPOED_AN, compName));
 }
@@ -130,14 +129,6 @@ int PPPoEDContainer::SerializeData(const std::string& data)
 				memcpy((char*)value.c_str(), &vendor, sizeof(vendor));
 				break;
 			}
-			case PPPOED_HU:
-			{
-				unsigned short hostUniq;
-				memcpy(&hostUniq, value.c_str(), sizeof(hostUniq));
-				hostUniq = htons(hostUniq);
-				memcpy((char*)value.c_str(), &hostUniq, sizeof(hostUniq));
-				break;
-			}
 		}
 		
 		m_tags.insert(std::make_pair(type, value));
@@ -181,14 +172,6 @@ int PPPoEDContainer::DeserializeData(std::string& data)
 				memcpy((char*)value.c_str(), &vendor, value.size());
 				break;
 			}
-			case PPPOED_HU:
-			{
-				unsigned short hostUniq;
-				memcpy(&hostUniq, it->second.c_str(), it->second.size());
-				hostUniq = htons(hostUniq);
-				memcpy((char*)value.c_str(), &hostUniq, value.size());
-				break;
-			}
 			default:
 			{
 				memcpy((char*)value.c_str(), it->second.c_str(), it->second.size());
@@ -214,7 +197,6 @@ PPPoESContainer::PPPoESContainer(const std::string& srcmac, const std::string& d
 	: PPPoEContainer(srcmac, dstmac, 0)
 {
 	m_ethHeader.ether_type = ETHERTYPE_PPPOES;
-	m_pppoeHeader.code = 0;
 	m_pppoeHeader.sessionId = sessionId;
 	m_protocol = protocol;
 }
