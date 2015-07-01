@@ -9,7 +9,10 @@ class PPPoEContainer : public EtherNetContainer
 public:
 	PPPoEContainer();
 	PPPoEContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code);
+	PPPoEContainer(const PPPoEContainer& container);
 	virtual ~PPPoEContainer();
+
+	void operator = (const PPPoEContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);
 	virtual int DeserializeData(std::string& data);
@@ -22,7 +25,10 @@ class PPPoEDContainer : public PPPoEContainer
 public:
 	PPPoEDContainer();
 	PPPoEDContainer(const std::string& srcmac, const std::string& dstmac, unsigned char code);
+	PPPoEDContainer(const PPPoEDContainer& container);
 	virtual ~PPPoEDContainer();
+
+	void operator = (const PPPoEDContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);
 	virtual int DeserializeData(std::string& data);
@@ -35,7 +41,10 @@ class PPPoESContainer : public PPPoEContainer
 public:
 	PPPoESContainer();
 	PPPoESContainer(const std::string& srcmac, const std::string& dstmac, unsigned short sessionId, unsigned short protocol);
+	PPPoESContainer(const PPPoESContainer& container);
 	virtual ~PPPoESContainer();
+
+	void operator = (const PPPoESContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);
 	virtual int DeserializeData(std::string& data);

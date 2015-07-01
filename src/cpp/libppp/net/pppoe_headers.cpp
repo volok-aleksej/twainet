@@ -20,7 +20,19 @@ PPPoEContainer::PPPoEContainer(const std::string& srcmac, const std::string& dst
 	m_pppoeHeader.code = code;
 	m_pppoeHeader.payload = 0;
 }
+
+PPPoEContainer::PPPoEContainer(const PPPoEContainer& container)
+	: EtherNetContainer(container)
+{
+	operator = (container);
+}
+
 PPPoEContainer::~PPPoEContainer(){}
+
+void PPPoEContainer::operator = (const PPPoEContainer& container)
+{
+	m_pppoeHeader = container.m_pppoeHeader;
+}
 
 int PPPoEContainer::SerializeData(const std::string& data)
 {
@@ -80,8 +92,17 @@ PPPoEDContainer::PPPoEDContainer(const std::string& srcmac, const std::string& d
 	m_tags.insert(std::make_pair(PPPOED_AN, compName));
 }
 
-PPPoEDContainer::~PPPoEDContainer()
+PPPoEDContainer::PPPoEDContainer(const PPPoEDContainer& container)
+	: PPPoEContainer(container)
 {
+	operator = (container);
+}
+
+PPPoEDContainer::~PPPoEDContainer(){}
+
+void PPPoEDContainer::operator = (const PPPoEDContainer& container)
+{
+	m_tags = container.m_tags;
 }
 
 int PPPoEDContainer::SerializeData(const std::string& data)
@@ -201,6 +222,12 @@ PPPoESContainer::PPPoESContainer(const std::string& srcmac, const std::string& d
 	m_protocol = protocol;
 }
 
+PPPoESContainer::PPPoESContainer(const PPPoESContainer& container)
+	: PPPoEContainer(container)
+{
+	operator = (container);
+}
+
 PPPoESContainer::~PPPoESContainer()
 {
 }
@@ -218,6 +245,11 @@ int PPPoESContainer::SerializeData(const std::string& data)
 	memcpy(&protocol, data.c_str() + serialLen, sizeof(unsigned short));
 	m_protocol = htons(protocol);
 	return serialLen + sizeof(unsigned short);
+}
+
+void PPPoESContainer::operator = (const PPPoESContainer& container)
+{
+	m_protocol = container.m_protocol;
 }
 
 int PPPoESContainer::DeserializeData(std::string& data)

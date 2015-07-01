@@ -13,6 +13,9 @@
     <Filter Include="net">
       <UniqueIdentifier>{be4c6024-aecd-4e83-89c7-467ad099eaa7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ppp">
+      <UniqueIdentifier>{0bf088af-ec5a-416b-a01e-3f1aa8c53d38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -48,11 +51,14 @@
     <ClCompile Include="net\ethernet_header.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="application\ppp_connection.cpp">
-      <Filter>application</Filter>
-    </ClCompile>
     <ClCompile Include="net\ppp_lcp_headers.cpp">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="ppp\pppoed_connection.cpp">
+      <Filter>ppp</Filter>
+    </ClCompile>
+    <ClCompile Include="ppp\ppp_connection.cpp">
+      <Filter>ppp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,11 +95,14 @@
     <ClInclude Include="net\ethernet_header.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="application\ppp_connection.h">
-      <Filter>application</Filter>
-    </ClInclude>
     <ClInclude Include="net\ppp_lcp_headers.h">
       <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="ppp\pppoed_connection.h">
+      <Filter>ppp</Filter>
+    </ClInclude>
+    <ClInclude Include="ppp\ppp_connection.h">
+      <Filter>ppp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

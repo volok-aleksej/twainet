@@ -8,10 +8,19 @@ EtherNetContainer::EtherNetContainer(const std::string& srcmac, const std::strin
 	memcpy(m_ethHeader.ether_dhost, StringToMac(dstmac).c_str(), sizeof(m_ethHeader.ether_dhost));
 }
 
+EtherNetContainer::EtherNetContainer(const EtherNetContainer& container)
+{
+	operator = (container);
+}
+
 EtherNetContainer::~EtherNetContainer()
 {
 }
 
+void EtherNetContainer::operator = (const EtherNetContainer& container)
+{
+	m_ethHeader = container.m_ethHeader;
+}
 
 std::string EtherNetContainer::StringToMac(const std::string& str)
 {

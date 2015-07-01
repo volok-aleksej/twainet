@@ -9,7 +9,10 @@ class EtherNetContainer : public DataMessage
 public:
 	EtherNetContainer();
 	EtherNetContainer(const std::string& srcmac, const std::string& dstmac);
+	EtherNetContainer(const EtherNetContainer& container);
 	virtual ~EtherNetContainer();
+
+	void operator = (const EtherNetContainer& container);
 
 	static std::string StringToMac(const std::string& str);
 	static std::string MacToString(const char mac[6]);

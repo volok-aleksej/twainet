@@ -2,7 +2,9 @@
 #include "ppp_connection.h"
 #include "ethernet_monitor.h"
 #include "net\parser_states.h"
+#include "common\ref.h"
 #include "common\guid_generator.h"
+#include "ppp\pppoed_connection.h"
 
 #define TIMEOUT_SEND	10
 #define MAXIMUM_SEND	5
@@ -15,6 +17,21 @@ EthernetMonitor::EthernetMonitor(pcap_t *fp, const std::string& mac)
 
 EthernetMonitor::~EthernetMonitor()
 {
+}
+
+std::string EthernetMonitor::GetMac()
+{
+	return m_mac;
+}
+
+void EthernetMonitor::SendPacket(unsigned char* data, int len)
+{
+	if(!m_fp)
+	{
+		return;
+	}
+
+	pcap_sendpacket(m_fp, data, len);
 }
 
 void EthernetMonitor::MonitorStart()
@@ -88,6 +105,8 @@ void EthernetMonitor::MonitorStop()
 	{
 		return;
 	}
+	
+	m_contacts.CheckObjects(Ref(this, &EthernetMonitor::RemoveConnection));
 
 	int len = 0;
 	PPPoEDContainer padt(m_mac, ETHER_BROADCAST, PPPOE_PADT);
@@ -104,130 +123,67 @@ void EthernetMonitor::MonitorStop()
 	m_fp = 0;
 }
 
+bool EthernetMonitor::RemoveConnection(const PPPoEDConnection* connection)
+{
+	const_cast<PPPoEDConnection*>(connection)->Stop();
+	return true;
+}
+
+bool EthernetMonitor::CheckConnection(const EthernetMonitor::Contact& contact, const PPPoEDConnection* connection)
+{
+	if(contact.m_hostId == connection->GetHostId())
+	{
+		const_cast<EthernetMonitor::Contact&>(contact).m_connection = const_cast<PPPoEDConnection*>(connection);
+		return true;
+	}
+
+	return false;
+}
+
+void EthernetMonitor::ListConnection(const std::vector<std::string>& list, const PPPoEDConnection* connection)
+{
+	const_cast<std::vector<std::string>&>(list).push_back(connection->GetHostId());
+}
+
+void EthernetMonitor::ConnectorPacket(const PPPoEDContainer& container, const PPPoEDConnection* connection)
+{
+	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];
+	if(connection->GetHostId() == hostId)
+	{
+		const_cast<PPPoEDConnection*>(connection)->OnPacket(container);
+	}
+}
+
+bool EthernetMonitor::AddContact(const std::string& hostId)
+{
+	Contact contact(hostId);
+	m_contacts.ProcessingObjects(Ref(this, &EthernetMonitor::CheckConnection, contact));
+	if(!contact.m_connection)
+	{
+		return m_contacts.AddObject(new PPPoEDConnection(this, hostId));
+	}
+
+	return false;	
+}
+
+bool EthernetMonitor::RemoveContact(const std::string& hostId)
+{
+	Contact contact(hostId);
+	m_contacts.CheckObjects(Ref(this, &EthernetMonitor::CheckConnection, contact));
+	if(contact.m_connection)
+	{
+		contact.m_connection->Stop();
+	}
+
+	return true;
+}
+
 void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 {
 	if(!m_fp || const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
 		return;
-
-	if (_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), ETHER_BROADCAST) == 0 &&
-		_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost).c_str(), m_mac.c_str()) != 0)
-	{
-		PPPHost addr(const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost));
-
-		switch(container.m_pppoeHeader.code)
-		{
-			case PPPOE_PADI:
-			{
-
-				int len = 0;
-				PPPoEDContainer pado(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADO);
-				pado.m_tags[PPPOED_ACC] = CreateGUID();
-				pado.deserialize(0, len);
-				unsigned char *data = new unsigned char[len];
-				if(pado.deserialize((char*)data, len))
-				{
-					pcap_sendpacket(m_fp, data, len);
-				}
-				delete data;
-				data = 0;
-
-				addr.m_hostCookie = pado.m_tags[PPPOED_ACC];
-				addr.m_hostName = pado.m_tags[PPPOED_AN];
-				
-				if(!Application::GetInstance().AddContact(addr))
-				{
-					Application::GetInstance().RemoveContact(addr);
-					Application::GetInstance().AddContact(addr);
-				}
-
-				break;
-			}
-			case PPPOE_PADT:
-			{
-				Application::GetInstance().RemoveContact(addr);
-				break;
-			}
-		}
-	}
-	else if(_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), ETHER_BROADCAST) != 0 &&
-			_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost).c_str(), m_mac.c_str()) != 0 &&
-			container.m_pppoeHeader.code == PPPOE_PADR)
-	{
-		PPPHost addr(const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), rand());
-		PPPHost orgAddr = Application::GetInstance().GetContact(addr.m_hostId);
-		if (orgAddr.m_sessionId != 0 ||
-			orgAddr.m_hostCookie != const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_ACC])
-		{
-			Application::GetInstance().RemoveContact(orgAddr);
-			return;
-		}
-
-		int len = 0;
-		PPPoEDContainer pads(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADS);
-		pads.m_tags[PPPOED_ACC] = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_ACC];
-		pads.m_pppoeHeader.sessionId = addr.m_sessionId;
-		pads.deserialize(0, len);
-		unsigned char *data = new unsigned char[len];
-		if(pads.deserialize((char*)data, len))
-		{
-			pcap_sendpacket(m_fp, data, len);
-		}
-		delete data;
-		data = 0;
-
-		addr.m_hostCookie = orgAddr.m_hostCookie;
-		addr.m_connection = new PPPConnection(addr.m_hostId, true);
-		Application::GetInstance().UpdateContact(addr);
-	}
-	else if(_stricmp(EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_dhost).c_str(), m_mac.c_str()) == 0)
-	{
-		PPPHost addr(const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU].c_str(),
-						EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost),
-						container.m_pppoeHeader.sessionId);
-		
-		addr.m_hostCookie = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_ACC];
-		addr.m_hostName = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_AN];
-
-		switch(container.m_pppoeHeader.code)
-		{
-			case PPPOE_PADO:
-			{
-				if (!Application::GetInstance().AddContact(addr) &&
-					Application::GetInstance().GetContact(addr.m_hostId).m_sessionId != 0)
-					break;
-
-				int len = 0;
-				PPPoEDContainer padr(m_mac, EtherNetContainer::MacToString((char*)container.m_ethHeader.ether_shost), PPPOE_PADR);
-				padr.m_tags[PPPOED_ACC] = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_ACC];
-				padr.deserialize(0, len);
-				unsigned char *data = new unsigned char[len];
-				if(padr.deserialize((char*)data, len))
-				{
-					pcap_sendpacket(m_fp, data, len);
-				}
-				delete data;
-				data = 0;
-				
-				addr.m_hostCookie = padr.m_tags[PPPOED_ACC];
-				Application::GetInstance().UpdateContact(addr);
-
-				break;
-			}
-			case PPPOE_PADS:
-			{
-				PPPHost orgAddr = Application::GetInstance().GetContact(addr.m_hostId);
-				if (orgAddr.m_sessionId != 0 ||
-					orgAddr.m_hostCookie != addr.m_hostCookie)
-				{
-					Application::GetInstance().RemoveContact(orgAddr);
-					return;
-				}
-				addr.m_connection = new PPPConnection(addr.m_hostId, false);
-				Application::GetInstance().UpdateContact(addr);
-				break;
-			}
-		}
-	}
+	
+	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];
+	AddContact(hostId);
+	m_contacts.ProcessingObjects(Ref(this, &EthernetMonitor::ConnectorPacket, container));
 }
