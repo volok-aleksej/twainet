@@ -1,17 +1,16 @@
 #include "application.h"
-#include "ppp_connection.h"
 #include "ethernet_monitor.h"
-#include "net\parser_states.h"
 #include "common\ref.h"
 #include "common\guid_generator.h"
+#include "net\parser_states.h"
 #include "ppp\pppoed_connection.h"
+#include "ppp\ppp_connection.h"
 
-#define TIMEOUT_SEND	10
-#define MAXIMUM_SEND	5
+#define TIMEOUT_SEND	100
 
 EthernetMonitor::EthernetMonitor(pcap_t *fp, const std::string& mac)
 	: m_fp(fp), m_mac(mac), m_timeoutCount(TIMEOUT_SEND)
-	, m_currentPADISend(0), m_currentClock((GetTickCount()/1000))
+	, m_currentClock((GetTickCount()/1000))
 {
 }
 
@@ -54,7 +53,7 @@ bool EthernetMonitor::MonitorFunc()
 	}
 
 	//send PADI request with timeout
-	if(m_currentPADISend < MAXIMUM_SEND && m_timeoutCount >= TIMEOUT_SEND)
+	if(m_timeoutCount >= TIMEOUT_SEND)
 	{
 		int len = 0;
 		unsigned char* data = 0;
@@ -68,7 +67,6 @@ bool EthernetMonitor::MonitorFunc()
 		}
 		delete data;
 		data = 0;
-		m_currentPADISend++;
 		m_timeoutCount = 0;
 	}
 	else if(m_currentClock != (GetTickCount()/1000))
@@ -180,7 +178,9 @@ bool EthernetMonitor::RemoveContact(const std::string& hostId)
 
 void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
 {
-	if(!m_fp || const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
+	if (!m_fp ||
+		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR ||
+		EtherNetContainer::MacToString((const char*)container.m_ethHeader.ether_shost) == m_mac)
 		return;
 	
 	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];

@@ -6,9 +6,9 @@
 
 pppoed_tag_vendor defaultVendor = {0xffc5ca87/*crc32 hash of TwainetPPP*/, {VER_NUMBER_MAJOR, VER_NUMBER_MINOR, VER_NUMBER_RELEASE, VER_NUMBER_BUILD}};
 std::string getMAC(sockaddr_in* addr);
-std::string CreateGUID();
+std::string RandString(int size);
 
-std::string Application::m_computerId = CreateGUID();
+std::string Application::m_computerId = RandString(4);
 
 Application::Application()
 {

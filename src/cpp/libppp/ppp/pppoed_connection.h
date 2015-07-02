@@ -35,7 +35,8 @@ protected:
 	void ManagerFunc();
 	void ManagerStart();
 	void ManagerStop();
-
+protected:
+	void SendPPPoED(PPPoEDContainer container);
 protected:
 	std::string m_hostId;
 	std::string m_mac;

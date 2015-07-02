@@ -53,10 +53,9 @@ private:
 	std::string m_mac;
 	ObjectManager<PPPoEDConnection*> m_contacts;
 
-	//for PADI request
-	int m_timeoutCount; //in second
-	unsigned int m_currentClock; //in second
-	int m_currentPADISend;
+	//for PADI request time in seconds
+	int m_timeoutCount;
+	unsigned int m_currentClock;
 	
 };
 

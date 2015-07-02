@@ -20,3 +20,23 @@ std::string CreateGUID()
 #endif
 	return guidStr.c_str();
 }
+
+std::string RandString(int size)
+{
+	std::string GUID = CreateGUID();
+	size_t charN = 0;
+	char erazeChars[] = {'{', '}', '-'};
+	while(charN < 3)
+	{
+		size_t pos = GUID.find(erazeChars[charN]);
+		if(pos == -1)
+		{
+			charN++;
+			continue;
+		}
+
+		GUID.erase(pos, 1);
+	}
+
+	return size < GUID.size() ? std::string(GUID.begin(), GUID.begin() + size) : GUID;
+}
