@@ -7,8 +7,13 @@
 
 class EthernetMonitor;
 
-class PPPoEDConnection : public DynamicManager
+class PPPoEConnection : public DynamicManager
 {
+protected:
+	PPPoEConnection(EthernetMonitor* monitor, const std::string& hostId);
+public:
+	virtual ~PPPoEConnection();
+
 public:
 	enum State
 	{
@@ -18,33 +23,32 @@ public:
 		PADS
 	};
 
-public:
-	PPPoEDConnection(EthernetMonitor* monitor, const std::string& hostId);
-	virtual ~PPPoEDConnection();
-
 	std::string GetHostId() const;
-	bool operator == (const PPPoEDConnection& addr) const;
+	bool operator == (const PPPoEConnection& addr) const;
 	void OnPacket(const PPPoEDContainer& pppoed);
+	void OnPacket(const PPPoESContainer& pppoes);
 
 protected:
 	template<typename TClass, typename TFunc> friend class Reference;
 	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
-	bool DeleteContainer(const PPPoEDContainer* pppoed);
-	bool GetContainer(PPPoEDContainer** const container, const PPPoEDContainer* pppoed);
+	bool DeleteContainer(const PPPoEContainer* pppoed);
+	bool GetContainer(PPPoEContainer** const container, const PPPoEContainer* pppoed);
 protected:
-	void ManagerFunc();
-	void ManagerStart();
-	void ManagerStop();
+	virtual void ManagerFunc();
+	virtual void ManagerStart();
+	virtual void ManagerStop();
 protected:
 	void SendPPPoED(PPPoEDContainer container);
+	void OnContainer(PPPoEDContainer* container);
+	void OnContainer(PPPoESContainer* container);
 protected:
 	std::string m_hostId;
 	std::string m_mac;
 	unsigned short m_sessionId;
 	std::string m_hostName;
 	std::string m_hostCookie;
-	State m_state;
-	ObjectManager<PPPoEDContainer*> m_containers;
+	State m_statePPPoS;
+	ObjectManager<PPPoEContainer*> m_containers;
 	EthernetMonitor* m_monitor;
 };
 

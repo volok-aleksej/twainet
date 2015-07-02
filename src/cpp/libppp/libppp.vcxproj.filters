@@ -54,10 +54,10 @@
     <ClCompile Include="net\ppp_lcp_headers.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="ppp\pppoed_connection.cpp">
+    <ClCompile Include="ppp\ppp_connection.cpp">
       <Filter>ppp</Filter>
     </ClCompile>
-    <ClCompile Include="ppp\ppp_connection.cpp">
+    <ClCompile Include="ppp\pppoe_connection.cpp">
       <Filter>ppp</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,10 +98,10 @@
     <ClInclude Include="net\ppp_lcp_headers.h">
       <Filter>net</Filter>
     </ClInclude>
-    <ClInclude Include="ppp\pppoed_connection.h">
+    <ClInclude Include="ppp\ppp_connection.h">
       <Filter>ppp</Filter>
     </ClInclude>
-    <ClInclude Include="ppp\ppp_connection.h">
+    <ClInclude Include="ppp\pppoe_connection.h">
       <Filter>ppp</Filter>
     </ClInclude>
   </ItemGroup>

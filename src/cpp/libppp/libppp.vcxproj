@@ -21,7 +21,7 @@
     <ClCompile Include="net\pppoe_headers.cpp" />
     <ClCompile Include="net\parser_states.cpp" />
     <ClCompile Include="net\ppp_lcp_headers.cpp" />
-    <ClCompile Include="ppp\pppoed_connection.cpp" />
+    <ClCompile Include="ppp\pppoe_connection.cpp" />
     <ClCompile Include="ppp\ppp_connection.cpp" />
     <ClCompile Include="socket\ppp_socket.cpp" />
   </ItemGroup>
@@ -40,7 +40,7 @@
     <ClInclude Include="net\pppoe_headers.h" />
     <ClInclude Include="net\parser_states.h" />
     <ClInclude Include="net\ppp_lcp_headers.h" />
-    <ClInclude Include="ppp\pppoed_connection.h" />
+    <ClInclude Include="ppp\pppoe_connection.h" />
     <ClInclude Include="ppp\ppp_connection.h" />
     <ClInclude Include="socket\ppp_socket.h" />
   </ItemGroup>

@@ -1,8 +1,7 @@
 #include "ppp_connection.h"
 
-PPPConnection::PPPConnection(const std::string& hostId, bool isServer)
-	: m_hostId(hostId), m_state(OFF)
-	, m_lcpState(LCP_BEGIN), m_isServer(isServer)
+PPPConnection::PPPConnection(EthernetMonitor* monitor, const std::string& hostId)
+	: PPPoEConnection(monitor, hostId), m_statePPP(OFF), m_stateLCP(LCP_BEGIN), m_isServer(false)
 {
 	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 }
@@ -13,12 +12,5 @@ PPPConnection::~PPPConnection()
 
 void PPPConnection::ManagerFunc()
 {
-}
-
-void PPPConnection::ManagerStart()
-{
-}
-
-void PPPConnection::ManagerStop()
-{
+	PPPoEConnection::ManagerFunc();
 }

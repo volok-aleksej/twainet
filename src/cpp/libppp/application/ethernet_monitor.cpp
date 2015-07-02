@@ -3,7 +3,7 @@
 #include "common\ref.h"
 #include "common\guid_generator.h"
 #include "net\parser_states.h"
-#include "ppp\pppoed_connection.h"
+#include "ppp\pppoe_connection.h"
 #include "ppp\ppp_connection.h"
 
 #define TIMEOUT_SEND	100
@@ -121,34 +121,34 @@ void EthernetMonitor::MonitorStop()
 	m_fp = 0;
 }
 
-bool EthernetMonitor::RemoveConnection(const PPPoEDConnection* connection)
+bool EthernetMonitor::RemoveConnection(const PPPoEConnection* connection)
 {
-	const_cast<PPPoEDConnection*>(connection)->Stop();
+	const_cast<PPPoEConnection*>(connection)->Stop();
 	return true;
 }
 
-bool EthernetMonitor::CheckConnection(const EthernetMonitor::Contact& contact, const PPPoEDConnection* connection)
+bool EthernetMonitor::CheckConnection(const EthernetMonitor::Contact& contact, const PPPoEConnection* connection)
 {
 	if(contact.m_hostId == connection->GetHostId())
 	{
-		const_cast<EthernetMonitor::Contact&>(contact).m_connection = const_cast<PPPoEDConnection*>(connection);
+		const_cast<EthernetMonitor::Contact&>(contact).m_connection = const_cast<PPPoEConnection*>(connection);
 		return true;
 	}
 
 	return false;
 }
 
-void EthernetMonitor::ListConnection(const std::vector<std::string>& list, const PPPoEDConnection* connection)
+void EthernetMonitor::ListConnection(const std::vector<std::string>& list, const PPPoEConnection* connection)
 {
 	const_cast<std::vector<std::string>&>(list).push_back(connection->GetHostId());
 }
 
-void EthernetMonitor::ConnectorPacket(const PPPoEDContainer& container, const PPPoEDConnection* connection)
+void EthernetMonitor::ConnectorPacket(const PPPoEDContainer& container, const PPPoEConnection* connection)
 {
 	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];
 	if(connection->GetHostId() == hostId)
 	{
-		const_cast<PPPoEDConnection*>(connection)->OnPacket(container);
+		const_cast<PPPoEConnection*>(connection)->OnPacket(container);
 	}
 }
 
@@ -158,7 +158,7 @@ bool EthernetMonitor::AddContact(const std::string& hostId)
 	m_contacts.ProcessingObjects(Ref(this, &EthernetMonitor::CheckConnection, contact));
 	if(!contact.m_connection)
 	{
-		return m_contacts.AddObject(new PPPoEDConnection(this, hostId));
+		return m_contacts.AddObject(new PPPConnection(this, hostId));
 	}
 
 	return false;	

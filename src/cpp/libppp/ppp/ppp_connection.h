@@ -1,9 +1,9 @@
 #ifndef PPP_CONNECTION_H
 #define PPP_CONNECTION_H
 
-#include "thread_lib\common\managers_container.h"
+#include "pppoe_connection.h"
 
-class PPPConnection : public DynamicManager
+class PPPConnection : public PPPoEConnection
 {
 public:
 	enum ConnectionState
@@ -28,17 +28,14 @@ public:
 		LCP_SENDC
 	};
 public:
-	PPPConnection(const std::string& hostId, bool isServer);
+	PPPConnection(EthernetMonitor* monitor, const std::string& hostId);
 	~PPPConnection();
 
 protected:
 	void ManagerFunc();
-	void ManagerStart();
-	void ManagerStop();
 private:
-	std::string m_hostId;
-	ConnectionState m_state;
-	LCPState m_lcpState;
+	ConnectionState m_statePPP;
+	LCPState m_stateLCP;
 	bool m_isServer;
 };
 

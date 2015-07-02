@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-class PPPoEDConnection;
+class PPPoEConnection;
 
 class EthernetMonitor
 {
@@ -29,16 +29,16 @@ protected:
 			: m_connection(0), m_hostId(hostId){}
 		~Contact(){}
 
-		PPPoEDConnection* m_connection;
+		PPPoEConnection* m_connection;
 		std::string m_hostId;
 	};
 
 	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
 	template<typename TClass, typename TFunc> friend class Reference;
-	void ListConnection(const std::vector<std::string>& list, const PPPoEDConnection* connection);
-	bool CheckConnection(const Contact& contact, const PPPoEDConnection* connection);
-	bool RemoveConnection(const PPPoEDConnection* connection);
-	void ConnectorPacket(const PPPoEDContainer& container, const PPPoEDConnection* connection);
+	void ListConnection(const std::vector<std::string>& list, const PPPoEConnection* connection);
+	bool CheckConnection(const Contact& contact, const PPPoEConnection* connection);
+	bool RemoveConnection(const PPPoEConnection* connection);
+	void ConnectorPacket(const PPPoEDContainer& container, const PPPoEConnection* connection);
 protected:
 	friend class BasicState;
 	void OnPacket(const PPPoEDContainer& container);
@@ -51,9 +51,9 @@ protected:
 private:
 	pcap_t *m_fp;
 	std::string m_mac;
-	ObjectManager<PPPoEDConnection*> m_contacts;
+	ObjectManager<PPPoEConnection*> m_contacts;
 
-	//for PADI request time in seconds
+	//for PADI request time in second
 	int m_timeoutCount;
 	unsigned int m_currentClock;
 	
