@@ -22,7 +22,7 @@ class IConnection
 public:
 	virtual ~IConnection(){}
 
-	virtual bool IsConnectionPacket(IConnectionPacket* packet)
+	bool IsConnectionPacket(IConnectionPacket* packet)
 	{
 		for(std::vector<std::string>::iterator it = m_packetNames.begin();
 			it != m_packetNames.end(); it++)
@@ -59,9 +59,12 @@ public:
 
 	virtual bool IsConnectionPacket(IConnection* conn)
 	{
-		if(conn && typeid(*conn) == typeid(Connection))
+		Connection* connection = 0;
+		if (conn &&
+			(connection = dynamic_cast<Connection*>(conn)) &&
+			conn->IsConnectionPacket(this))
 		{
-			return conn->IsConnectionPacket(this);
+			return connection->IsConnectionPacket(m_packet);
 		}
 		return false;
 	}
@@ -71,7 +74,8 @@ public:
 		if(!conn)
 			return;
 		Connection* connection = dynamic_cast<Connection*>(conn);
-		(connection->*ConnectionFunc)(m_packet);
+		if(connection)
+			(connection->*ConnectionFunc)(m_packet);
 	}
 
 	virtual std::string GetType()

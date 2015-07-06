@@ -44,8 +44,11 @@ protected:
 	friend class BasicState;
 	void OnPacket(const IConnectionPacket& packet);
 protected:
-	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
 	void OnPacket(PPPoEDContainer* packet);
+	bool IsConnectionPacket(PPPoEDContainer* packet);
+public:
+	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
+	typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor, &EthernetMonitor::OnPacket> PPPoEDMonitorPacket;
 protected:
 	friend class Application;
 	void MonitorStart();
@@ -59,8 +62,6 @@ private:
 	//for PADI request time in second
 	int m_timeoutCount;
 	unsigned int m_currentClock;
-public:
-	typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor, &EthernetMonitor::OnPacket> PPPoEDMonitorPacket;
 };
 
 

@@ -10,20 +10,9 @@ PPPConnection::~PPPConnection()
 {
 }
 
-bool PPPConnection::IsConnectionPacket(IConnectionPacket* packet)
+bool PPPConnection::IsConnectionPacket(PPPoESContainer* packet)
 {
-	if(!IConnection::IsConnectionPacket(packet))
-		return false;
-	
-	PPPoESPacket* pppoes = dynamic_cast<PPPoESPacket*>(packet);
-	if(!pppoes)
-		return PPPoEConnection::IsConnectionPacket(packet);
-
-	PPPoESContainer* container = pppoes->GetPacket();
-	if(!container)
-		return false;
-		
-	return GetSessionId() == container->m_pppoeHeader.sessionId;
+	return GetSessionId() == packet->m_pppoeHeader.sessionId;
 }
 
 void PPPConnection::OnPacket(PPPoESContainer* container)

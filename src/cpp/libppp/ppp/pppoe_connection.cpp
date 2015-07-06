@@ -171,23 +171,12 @@ void PPPoEConnection::ManagerStop()
 	m_containers.CheckObjects(Ref(this, &PPPoEConnection::DeleteContainer));
 }
 
-bool PPPoEConnection::IsConnectionPacket(IConnectionPacket* packet)
+bool PPPoEConnection::IsConnectionPacket(PPPoEDContainer* packet)
 {
-	if(!IConnection::IsConnectionPacket(packet))
-		return false;
-	
-	PPPoEDPacket* pppoed = dynamic_cast<PPPoEDPacket*>(packet);
-	if(!pppoed)
-		return false;
-		
-	PPPoEDContainer* container = pppoed->GetPacket();
-	if(!container)
-		return false;
-
 	if(m_sessionId)
-		return m_sessionId == container->m_pppoeHeader.sessionId;
+		return m_sessionId == packet->m_pppoeHeader.sessionId;
 	else
-		return container->m_tags[PPPOED_HU] == m_hostId;
+		return packet->m_tags[PPPOED_HU] == m_hostId;
 }
 
 void PPPoEConnection::SendPPPoED(PPPoEDContainer container)

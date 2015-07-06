@@ -146,8 +146,9 @@ void EthernetMonitor::ListConnection(const std::vector<std::string>& list, const
 
 void EthernetMonitor::ConnectorPacket(const IConnectionPacket& packet, const PPPoEConnection* connection)
 {
-	if(const_cast<PPPoEConnection*>(connection)->IsConnectionPacket(const_cast<IConnectionPacket*>(&packet)))
-		const_cast<IConnectionPacket*>(&packet)->PacketConnection(const_cast<PPPoEConnection*>(connection));
+	IConnection* conn = static_cast<IConnection*>(const_cast<PPPoEConnection*>(connection));
+	if(const_cast<IConnectionPacket*>(&packet)->IsConnectionPacket(conn))
+		const_cast<IConnectionPacket*>(&packet)->PacketConnection(conn);
 }
 
 bool EthernetMonitor::AddContact(const std::string& hostId)
@@ -180,6 +181,11 @@ void EthernetMonitor::OnPacket(PPPoEDContainer* packet)
 		RemoveContact(packet->m_tags[PPPOED_HU]);
 	else
 		AddContact(packet->m_tags[PPPOED_HU]);
+}
+
+bool EthernetMonitor::IsConnectionPacket(PPPoEDContainer* packet)
+{
+	return true;
 }
 
 void EthernetMonitor::OnPacket(const IConnectionPacket& packet)

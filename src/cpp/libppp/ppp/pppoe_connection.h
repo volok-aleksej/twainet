@@ -31,8 +31,6 @@ public:
 	std::string GetMac() const;
 
 protected:
-	friend class EthernetMonitor;
-	virtual bool IsConnectionPacket(IConnectionPacket* packet);
 	virtual void ManagerFunc();
 	virtual void ManagerStart();
 	virtual void ManagerStop();
@@ -47,7 +45,9 @@ protected:
 
 	void OnPacket(PPPoEDContainer* container);
 	void OnContainer(PPPoEDContainer* container);
+	bool IsConnectionPacket(PPPoEDContainer* packet);
 public:
+	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
 	typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnPacket> PPPoEDPacket;
 	typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnContainer> PPPoEDSelfPacket;
 
