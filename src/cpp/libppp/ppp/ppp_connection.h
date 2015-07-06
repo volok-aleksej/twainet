@@ -5,7 +5,6 @@
 
 class PPPConnection;
 
-typedef ConnectionPacket<PPPoESContainer, PPPConnection> PPPoESPacket;
 
 class PPPConnection : public PPPoEConnection
 {
@@ -36,17 +35,21 @@ public:
 	~PPPConnection();
 
 protected:
-	void ManagerFunc();
-	void ManagerStop();
 	bool IsConnectionPacket(IConnectionPacket* packet);
+
+protected:
+	void OnPacket(PPPoESContainer* container);
+	void OnContainer(PPPoESContainer* container);
+
+public:
+	typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnPacket> PPPoESPacket;
+	typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnContainer> PPPoESSelfPacket;
+
 protected:
 	ConnectionState m_statePPP;
 	LCPState m_stateLCP;
 	bool m_isServer;
 
-private:
-	template<typename Packet, typename Connection> friend class ConnectionPacket;
-	void OnPacket(PPPoESContainer* container);
 };
 
 #endif/*PPP_CONNECTION_H*/

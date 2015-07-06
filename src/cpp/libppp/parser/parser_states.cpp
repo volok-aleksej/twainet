@@ -48,9 +48,9 @@ BasicState* PPPOEDState::NextState(char* data, int len)
 	if(container.m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR)
 		return 0;
 
-	PPPoEDMonitorPacket monitorPacket(&container);
+	EthernetMonitor::PPPoEDMonitorPacket monitorPacket(&container);
 	OnPacket(monitorPacket);
-	PPPoEDPacket packet(&container);
+	PPPoEConnection::PPPoEDPacket packet(&container);
 	OnPacket(packet);
 	return 0;
 }

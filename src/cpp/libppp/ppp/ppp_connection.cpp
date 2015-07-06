@@ -10,16 +10,6 @@ PPPConnection::~PPPConnection()
 {
 }
 
-void PPPConnection::ManagerFunc()
-{
-	PPPoEConnection::ManagerFunc();
-}
-
-void PPPConnection::ManagerStop()
-{
-	PPPoEConnection::ManagerStop();
-}
-
 bool PPPConnection::IsConnectionPacket(IConnectionPacket* packet)
 {
 	if(!IConnection::IsConnectionPacket(packet))
@@ -37,5 +27,11 @@ bool PPPConnection::IsConnectionPacket(IConnectionPacket* packet)
 }
 
 void PPPConnection::OnPacket(PPPoESContainer* container)
+{
+	PPPoESSelfPacket* packet = new PPPoESSelfPacket(container);
+	m_containers.AddObject(packet);
+}
+
+void PPPConnection::OnContainer(PPPoESContainer* container)
 {
 }

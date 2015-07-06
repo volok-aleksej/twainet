@@ -40,38 +40,39 @@ std::string PPPoEConnection::GetMac() const
 	return m_mac;
 }
 
-bool PPPoEConnection::DeleteContainer(const PPPoEDContainer* pppoed)
+bool PPPoEConnection::DeleteContainer(const IConnectionPacket* pppoed)
 {
 	delete pppoed;
 	return true;
 }
 
-bool PPPoEConnection::GetContainer(PPPoEDContainer** const container, const PPPoEDContainer* pppoe)
+bool PPPoEConnection::GetContainer(IConnectionPacket** const container, const IConnectionPacket* pppoe)
 {
 	if(*container)
 		return false;
 	
-	*const_cast<PPPoEDContainer**>(container) = const_cast<PPPoEDContainer*>(pppoe);
+	*const_cast<IConnectionPacket**>(container) = const_cast<IConnectionPacket*>(pppoe);
 	return true;
 }
 
-void PPPoEConnection::OnPacket(PPPoEDContainer* packet)
+void PPPoEConnection::OnPacket(PPPoEDContainer* container)
 {
-	m_containers.AddObject((PPPoEDContainer*)packet->Clone());
+	PPPoEDSelfPacket *packet = new PPPoEDSelfPacket((PPPoEDContainer*)container->Clone());
+	m_containers.AddObject(packet);
 }
 
 void PPPoEConnection::ManagerFunc()
 {
-	PPPoEDContainer* pppoed = 0;
-	m_containers.CheckObjects(Ref(this, &PPPoEConnection::GetContainer, &pppoed));
-	if(!pppoed)
+	IConnectionPacket* packet = 0;
+	m_containers.CheckObjects(Ref(this, &PPPoEConnection::GetContainer, &packet));
+	if(!packet)
 	{
 		return;
 	}
 
-	OnContainer(pppoed);
+	packet->PacketConnection(this);
 
-	delete pppoed;
+	delete packet;
 }
 
 void PPPoEConnection::OnContainer(PPPoEDContainer* container)

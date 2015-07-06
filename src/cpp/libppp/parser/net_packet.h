@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "common\ref.h"
 
 class IConnection;
 
@@ -43,14 +44,18 @@ private:
 	std::vector<std::string> m_packetNames;
 };
 
-template<typename Packet, typename Connection>
+template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)>
 class ConnectionPacket : public IConnectionPacket
 {
 public:
 	ConnectionPacket() : m_packet(0){}
 	ConnectionPacket(Packet* packet)
-		: m_packet(packet){}
-	virtual ~ConnectionPacket(){}
+		: m_packet((Packet*)packet->Clone()){}
+	virtual ~ConnectionPacket()
+	{
+		if(m_packet)
+			delete m_packet;
+	}
 
 	virtual bool IsConnectionPacket(IConnection* conn)
 	{
@@ -66,10 +71,7 @@ public:
 		if(!conn)
 			return;
 		Connection* connection = dynamic_cast<Connection*>(conn);
-		if(connection)
-		{
-			connection->OnPacket(m_packet);
-		}
+		(connection->*ConnectionFunc)(m_packet);
 	}
 
 	virtual std::string GetType()

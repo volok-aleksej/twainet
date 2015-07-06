@@ -10,8 +10,6 @@
 #include <vector>
 
 class PPPoEConnection;
-class EthernetMonitor;
-typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor> PPPoEDMonitorPacket;
 
 class EthernetMonitor : public IConnection
 {
@@ -46,7 +44,7 @@ protected:
 	friend class BasicState;
 	void OnPacket(const IConnectionPacket& packet);
 protected:
-	template<typename Packet, typename Connection> friend class ConnectionPacket;
+	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
 	void OnPacket(PPPoEDContainer* packet);
 protected:
 	friend class Application;
@@ -61,7 +59,9 @@ private:
 	//for PADI request time in second
 	int m_timeoutCount;
 	unsigned int m_currentClock;
-	
+public:
+	typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor, &EthernetMonitor::OnPacket> PPPoEDMonitorPacket;
 };
+
 
 #endif/*ETHERNET_MONITOR_H*/
