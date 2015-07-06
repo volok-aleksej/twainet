@@ -4,6 +4,7 @@
 #include <string>
 
 class EthernetMonitor;
+class IConnectionPacket;
 
 class BasicState
 {
@@ -13,13 +14,9 @@ public:
 
 	virtual BasicState* NextState(char* data, int len);
 
-	template<class Container>
-	void OnPacket(Container container)
-	{
-		m_monitor->OnPacket(container);
-	}
+	void OnPacket(const IConnectionPacket& container);
 
-private:
+protected:
 	EthernetMonitor* m_monitor;
 	BasicState* m_nextState;
 };
@@ -42,4 +39,12 @@ public:
 	virtual BasicState* NextState(char* data, int len);
 };
 
+class PPPLCPState : public BasicState
+{
+public:
+	PPPLCPState(EthernetMonitor* monitor);
+	virtual ~PPPLCPState();
+
+	virtual BasicState* NextState(char* data, int len);
+};
 #endif/*PARSER_STATES_H*/

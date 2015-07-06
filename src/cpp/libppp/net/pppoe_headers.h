@@ -12,6 +12,7 @@ public:
 	PPPoEContainer(const PPPoEContainer& container);
 	virtual ~PPPoEContainer();
 
+	virtual EtherNetContainer* Clone();
 	void operator = (const PPPoEContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);
@@ -28,6 +29,7 @@ public:
 	PPPoEDContainer(const PPPoEDContainer& container);
 	virtual ~PPPoEDContainer();
 
+	virtual EtherNetContainer* Clone();
 	void operator = (const PPPoEDContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);
@@ -44,6 +46,7 @@ public:
 	PPPoESContainer(const PPPoESContainer& container);
 	virtual ~PPPoESContainer();
 
+	virtual EtherNetContainer* Clone();
 	void operator = (const PPPoESContainer& container);
 protected:
 	virtual int SerializeData(const std::string& data);

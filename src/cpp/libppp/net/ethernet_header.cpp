@@ -22,6 +22,11 @@ void EtherNetContainer::operator = (const EtherNetContainer& container)
 	m_ethHeader = container.m_ethHeader;
 }
 
+EtherNetContainer* EtherNetContainer::Clone()
+{
+	return new EtherNetContainer(*this);
+}
+
 std::string EtherNetContainer::StringToMac(const std::string& str)
 {
 	char mac[6] = {0};

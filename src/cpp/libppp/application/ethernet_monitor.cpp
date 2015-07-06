@@ -2,7 +2,7 @@
 #include "ethernet_monitor.h"
 #include "common\ref.h"
 #include "common\guid_generator.h"
-#include "net\parser_states.h"
+#include "parser\parser_states.h"
 #include "ppp\pppoe_connection.h"
 #include "ppp\ppp_connection.h"
 
@@ -12,6 +12,7 @@ EthernetMonitor::EthernetMonitor(pcap_t *fp, const std::string& mac)
 	: m_fp(fp), m_mac(mac), m_timeoutCount(TIMEOUT_SEND)
 	, m_currentClock((GetTickCount()/1000))
 {
+	AddPacketName(PPPoEDMonitorPacket());
 }
 
 EthernetMonitor::~EthernetMonitor()
@@ -143,13 +144,10 @@ void EthernetMonitor::ListConnection(const std::vector<std::string>& list, const
 	const_cast<std::vector<std::string>&>(list).push_back(connection->GetHostId());
 }
 
-void EthernetMonitor::ConnectorPacket(const PPPoEDContainer& container, const PPPoEConnection* connection)
+void EthernetMonitor::ConnectorPacket(const IConnectionPacket& packet, const PPPoEConnection* connection)
 {
-	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];
-	if(connection->GetHostId() == hostId)
-	{
-		const_cast<PPPoEConnection*>(connection)->OnPacket(container);
-	}
+	if(const_cast<PPPoEConnection*>(connection)->IsConnectionPacket(const_cast<IConnectionPacket*>(&packet)))
+		const_cast<IConnectionPacket*>(&packet)->PacketConnection(const_cast<PPPoEConnection*>(connection));
 }
 
 bool EthernetMonitor::AddContact(const std::string& hostId)
@@ -176,14 +174,20 @@ bool EthernetMonitor::RemoveContact(const std::string& hostId)
 	return true;
 }
 
-void EthernetMonitor::OnPacket(const PPPoEDContainer& container)
+void EthernetMonitor::OnPacket(PPPoEDContainer* packet)
 {
-	if (!m_fp ||
-		const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_VS] != PPPOED_DEFAULT_VENDOR ||
-		EtherNetContainer::MacToString((const char*)container.m_ethHeader.ether_shost) == m_mac)
+	AddContact(packet->m_tags[PPPOED_HU]);
+}
+
+void EthernetMonitor::OnPacket(const IConnectionPacket& packet)
+{
+	if (!m_fp)
 		return;
-	
-	std::string hostId = const_cast<PPPoEDContainer&>(container).m_tags[PPPOED_HU];
-	AddContact(hostId);
-	m_contacts.ProcessingObjects(Ref(this, &EthernetMonitor::ConnectorPacket, container));
+
+	if(const_cast<IConnectionPacket&>(packet).IsConnectionPacket(this))
+	{
+		const_cast<IConnectionPacket&>(packet).PacketConnection(this);
+	}
+
+	m_contacts.ProcessingObjects(Ref(this, &EthernetMonitor::ConnectorPacket, packet));
 }

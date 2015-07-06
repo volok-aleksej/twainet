@@ -16,6 +16,9 @@
     <Filter Include="ppp">
       <UniqueIdentifier>{0bf088af-ec5a-416b-a01e-3f1aa8c53d38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="parser">
+      <UniqueIdentifier>{46a9eeb3-d4c1-484c-9363-15242ed80281}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -32,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="application\ethernet_monitor.cpp">
       <Filter>application</Filter>
-    </ClCompile>
-    <ClCompile Include="net\parser_states.cpp">
-      <Filter>net</Filter>
     </ClCompile>
     <ClCompile Include="..\common\cpu_id.cpp">
       <Filter>common</Filter>
@@ -60,6 +60,9 @@
     <ClCompile Include="ppp\pppoe_connection.cpp">
       <Filter>ppp</Filter>
     </ClCompile>
+    <ClCompile Include="parser\parser_states.cpp">
+      <Filter>parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\libppp.h">
@@ -76,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="application\ethernet_monitor.h">
       <Filter>application</Filter>
-    </ClInclude>
-    <ClInclude Include="net\parser_states.h">
-      <Filter>net</Filter>
     </ClInclude>
     <ClInclude Include="..\version.h">
       <Filter>application</Filter>
@@ -103,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="ppp\pppoe_connection.h">
       <Filter>ppp</Filter>
+    </ClInclude>
+    <ClInclude Include="parser\parser_states.h">
+      <Filter>parser</Filter>
+    </ClInclude>
+    <ClInclude Include="parser\net_packet.h">
+      <Filter>parser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

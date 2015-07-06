@@ -12,6 +12,7 @@ public:
 	EtherNetContainer(const EtherNetContainer& container);
 	virtual ~EtherNetContainer();
 
+	virtual EtherNetContainer* Clone();
 	void operator = (const EtherNetContainer& container);
 
 	static std::string StringToMac(const std::string& str);

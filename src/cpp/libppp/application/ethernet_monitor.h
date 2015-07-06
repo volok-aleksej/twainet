@@ -1,16 +1,19 @@
 #ifndef ETHERNET_MONITOR_H
 #define ETHERNET_MONITOR_H
 
-#include "net\pppoe_headers.h"
-#include "net\parser_states.h"
+#include "net\ppp_lcp_headers.h"
+#include "parser\parser_states.h"
+#include "parser\net_packet.h"
 #include "pcap.h"
 #include "thread_lib\common\object_manager.h"
 #include <string>
 #include <vector>
 
 class PPPoEConnection;
+class EthernetMonitor;
+typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor> PPPoEDMonitorPacket;
 
-class EthernetMonitor
+class EthernetMonitor : public IConnection
 {
 public:
 	EthernetMonitor(pcap_t *fp, const std::string& mac);
@@ -38,11 +41,13 @@ protected:
 	void ListConnection(const std::vector<std::string>& list, const PPPoEConnection* connection);
 	bool CheckConnection(const Contact& contact, const PPPoEConnection* connection);
 	bool RemoveConnection(const PPPoEConnection* connection);
-	void ConnectorPacket(const PPPoEDContainer& container, const PPPoEConnection* connection);
+	void ConnectorPacket(const IConnectionPacket& packet, const PPPoEConnection* connection);
 protected:
 	friend class BasicState;
-	void OnPacket(const PPPoEDContainer& container);
-
+	void OnPacket(const IConnectionPacket& packet);
+protected:
+	template<typename Packet, typename Connection> friend class ConnectionPacket;
+	void OnPacket(PPPoEDContainer* packet);
 protected:
 	friend class Application;
 	void MonitorStart();

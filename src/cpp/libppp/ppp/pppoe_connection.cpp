@@ -6,7 +6,10 @@
 std::string RandString(int size);
 
 PPPoEConnection::PPPoEConnection(EthernetMonitor* monitor, const std::string& hostId)
-	: m_hostId(hostId), m_sessionId(0), m_statePPPoS(PADI), m_monitor(monitor){}
+	: m_hostId(hostId), m_sessionId(0), m_statePPPoS(PADI), m_monitor(monitor)
+{
+	AddPacketName(PPPoEDPacket());
+}
 
 PPPoEConnection::~PPPoEConnection()
 {
@@ -17,55 +20,43 @@ std::string PPPoEConnection::GetHostId() const
 	return m_hostId;
 }
 
-bool PPPoEConnection::operator == (const PPPoEConnection& addr) const
+unsigned short PPPoEConnection::GetSessionId() const
 {
-	bool retSession = false;
-	if(m_sessionId && m_hostId.empty())
-		return m_sessionId == addr.m_sessionId;
-	else if(m_sessionId)
-		return m_sessionId == addr.m_sessionId && m_hostId == addr.m_hostId;
-	else if(m_hostId.empty())
-		return false;
-	else
-		return addr.m_hostId == m_hostId;
+	return m_sessionId;
 }
 
-bool PPPoEConnection::DeleteContainer(const PPPoEContainer* pppoed)
+bool PPPoEConnection::DeleteContainer(const PPPoEDContainer* pppoed)
 {
 	delete pppoed;
 	return true;
 }
 
-bool PPPoEConnection::GetContainer(PPPoEContainer** const container, const PPPoEContainer* pppoe)
+bool PPPoEConnection::GetContainer(PPPoEDContainer** const container, const PPPoEDContainer* pppoe)
 {
 	if(*container)
 		return false;
 	
-	*const_cast<PPPoEContainer**>(container) = const_cast<PPPoEContainer*>(pppoe);
+	*const_cast<PPPoEDContainer**>(container) = const_cast<PPPoEDContainer*>(pppoe);
 	return true;
 }
 
-void PPPoEConnection::OnPacket(const PPPoEDContainer& pppoed)
+void PPPoEConnection::OnPacket(PPPoEDContainer* packet)
 {
-	m_containers.AddObject(new PPPoEDContainer(pppoed));
-}
-
-void PPPoEConnection::OnPacket(const PPPoESContainer& pppoes)
-{
-	m_containers.AddObject(new PPPoESContainer(pppoes));
+	m_containers.AddObject((PPPoEDContainer*)packet->Clone());
 }
 
 void PPPoEConnection::ManagerFunc()
 {
-	PPPoEContainer* pppoe = 0;
-	m_containers.CheckObjects(Ref(this, &PPPoEConnection::GetContainer, &pppoe));
-	if(!pppoe)
+	PPPoEDContainer* pppoed = 0;
+	m_containers.CheckObjects(Ref(this, &PPPoEConnection::GetContainer, &pppoed));
+	if(!pppoed)
 	{
 		return;
 	}
 
-	OnContainer(dynamic_cast<PPPoEDContainer*>(pppoe));
-	delete pppoe;
+	OnContainer(pppoed);
+
+	delete pppoed;
 }
 
 void PPPoEConnection::OnContainer(PPPoEDContainer* container)

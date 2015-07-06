@@ -118,17 +118,17 @@ typedef struct _pppoe_header
 /*                                                                                              */
 /************************************************************************************************/
 //PPPLCP code
-#define PPPLCP_CR	// configuration request
-#define PPPLCP_CA	// configuration ask
-#define PPPLCP_CN	// configuration reset
-#define PPPLCP_CN	// configuration reset
-#define PPPLCP_TR	// termination request
-#define PPPLCP_TA	// termination ask
-#define PPPLCP_CR	// code reject
-#define PPPLCP_PR	// protocol reject
-#define PPPLCP_ERQ	// echo request
-#define PPPLCP_ERP	// echo replies
-#define PPPLCP_DR	// discard request
+#define PPPLCP_CR	0x1	// configuration request
+#define PPPLCP_CA	0x2	// configuration ask
+#define PPPLCP_CNC	0x3	// configuration no confirm
+#define PPPLCP_CNR	0x4	// configuration reset
+#define PPPLCP_TR	0x5	// termination request
+#define PPPLCP_TA	0x6	// termination ask
+#define PPPLCP_CRJ	0x7	// code reject
+#define PPPLCP_PR	0x8	// protocol reject
+#define PPPLCP_ERQ	0x9	// echo request
+#define PPPLCP_ERP	0xA	// echo replies
+#define PPPLCP_DR	0xB	// discard request
 
 typedef struct _ppp_lcp_header
 {
@@ -136,5 +136,28 @@ typedef struct _ppp_lcp_header
 	unsigned char id;		// request identificator
 	unsigned short len;		// length of data
 } ppp_lcp_header;
+
+/************************************************************************************************/
+/*                                                                                              */
+/*                                   LCP configuration data                                     */
+/*                               _ppp_lcp_conf             data                                 */
+/*                          |----------------------|----------------------|                     */
+/*                          |                      |                      |                     */
+/*                          |----------------------|----------------------|                     */
+/*                                                                                              */
+/************************************************************************************************/
+//PPP LCP Configuration type
+#define PPPLCPCONF_MRU	0x1		//Maximum Receive Unit
+#define PPPLCPCONF_AUTH	0x3		//Authentication Protocol
+#define PPPLCPCONF_QLT	0x4		//Quality Protocol
+#define PPPLCPCONF_MGN	0x5		//Magic Number
+#define PPPLCPCONF_PFC	0x7		//Protocol Field Compression
+#define PPPLCPCONF_ACFC	0x8		//Address and Control Field Compression
+
+typedef struct _ppp_lcp_conf
+{
+	unsigned char type;			//see PPP LCP Configuration type
+	unsigned char len;			//length of data
+} ppp_lcp_conf;
 
 #endif/*NET_STRUCTS_H*/

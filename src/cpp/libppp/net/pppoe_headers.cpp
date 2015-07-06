@@ -29,6 +29,11 @@ PPPoEContainer::PPPoEContainer(const PPPoEContainer& container)
 
 PPPoEContainer::~PPPoEContainer(){}
 
+EtherNetContainer* PPPoEContainer::Clone()
+{
+	return new PPPoEContainer(*this);
+}
+
 void PPPoEContainer::operator = (const PPPoEContainer& container)
 {
 	m_pppoeHeader = container.m_pppoeHeader;
@@ -99,6 +104,11 @@ PPPoEDContainer::PPPoEDContainer(const PPPoEDContainer& container)
 }
 
 PPPoEDContainer::~PPPoEDContainer(){}
+
+EtherNetContainer* PPPoEDContainer::Clone()
+{
+	return new PPPoEDContainer(*this);
+}
 
 void PPPoEDContainer::operator = (const PPPoEDContainer& container)
 {
@@ -230,6 +240,11 @@ PPPoESContainer::PPPoESContainer(const PPPoESContainer& container)
 
 PPPoESContainer::~PPPoESContainer()
 {
+}
+
+EtherNetContainer* PPPoESContainer::Clone()
+{
+	return new PPPoESContainer(*this);
 }
 
 int PPPoESContainer::SerializeData(const std::string& data)
