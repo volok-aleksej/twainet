@@ -176,7 +176,10 @@ bool EthernetMonitor::RemoveContact(const std::string& hostId)
 
 void EthernetMonitor::OnPacket(PPPoEDContainer* packet)
 {
-	AddContact(packet->m_tags[PPPOED_HU]);
+	if(packet->m_pppoeHeader.code == PPPOE_PADT)
+		RemoveContact(packet->m_tags[PPPOED_HU]);
+	else
+		AddContact(packet->m_tags[PPPOED_HU]);
 }
 
 void EthernetMonitor::OnPacket(const IConnectionPacket& packet)

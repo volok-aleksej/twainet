@@ -29,22 +29,30 @@ public:
 
 	std::string GetHostId() const;
 	unsigned short GetSessionId() const;
+	std::string GetHostName() const;
+	std::string GetHostCookie() const;
+	std::string GetMac() const;
 protected:
 	virtual void ManagerFunc();
 	virtual void ManagerStart();
 	virtual void ManagerStop();
+
+	friend class EthernetMonitor;
+	virtual bool IsConnectionPacket(IConnectionPacket* packet);
 protected:
 	void SendPPPoED(PPPoEDContainer container);
 	void OnContainer(PPPoEDContainer* container);
 
 protected:
+	EthernetMonitor* m_monitor;
+	State m_statePPPoE;
+
+private:
 	std::string m_hostId;
 	std::string m_mac;
 	unsigned short m_sessionId;
 	std::string m_hostName;
 	std::string m_hostCookie;
-	State m_statePPPoS;
-	EthernetMonitor* m_monitor;
 
 private:
 	ObjectManager<PPPoEDContainer*> m_containers;

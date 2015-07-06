@@ -14,7 +14,6 @@ public:
 	virtual bool IsConnectionPacket(IConnection* conn) = 0;
 	virtual void PacketConnection(IConnection* conn) = 0;
 	virtual std::string GetType() = 0;
-	virtual IConnectionPacket* Clone() = 0;
 };
 
 class IConnection
@@ -51,19 +50,11 @@ public:
 	ConnectionPacket() : m_packet(0){}
 	ConnectionPacket(Packet* packet)
 		: m_packet(packet){}
-	ConnectionPacket(const ConnectionPacket* packet)
-		: m_packet(dynamic_cast<Packet*>(packet->m_packet->Clone()))
-	{
-	}
-	virtual ~ConnectionPacket()
-	{
-		if(m_packet)
-			delete m_packet;
-	}
+	virtual ~ConnectionPacket(){}
 
 	virtual bool IsConnectionPacket(IConnection* conn)
 	{
-		if(conn)
+		if(conn && typeid(*conn) == typeid(Connection))
 		{
 			return conn->IsConnectionPacket(this);
 		}
@@ -86,11 +77,10 @@ public:
 		return typeid(Packet).name();
 	}
 
-	virtual IConnectionPacket* Clone()
+	Packet* GetPacket()
 	{
-		return new ConnectionPacket<Packet, Connection>(this);
+		return m_packet;
 	}
-
 private:
 	Packet *m_packet;
 };

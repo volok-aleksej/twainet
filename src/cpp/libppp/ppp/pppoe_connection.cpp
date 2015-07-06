@@ -6,7 +6,7 @@
 std::string RandString(int size);
 
 PPPoEConnection::PPPoEConnection(EthernetMonitor* monitor, const std::string& hostId)
-	: m_hostId(hostId), m_sessionId(0), m_statePPPoS(PADI), m_monitor(monitor)
+	: m_hostId(hostId), m_sessionId(0), m_statePPPoE(PADI), m_monitor(monitor)
 {
 	AddPacketName(PPPoEDPacket());
 }
@@ -23,6 +23,21 @@ std::string PPPoEConnection::GetHostId() const
 unsigned short PPPoEConnection::GetSessionId() const
 {
 	return m_sessionId;
+}
+
+std::string PPPoEConnection::GetHostName() const
+{
+	return m_hostName;
+}
+
+std::string PPPoEConnection::GetHostCookie() const
+{
+	return m_hostCookie;
+}
+
+std::string PPPoEConnection::GetMac() const
+{
+	return m_mac;
 }
 
 bool PPPoEConnection::DeleteContainer(const PPPoEDContainer* pppoed)
@@ -70,31 +85,31 @@ void PPPoEConnection::OnContainer(PPPoEDContainer* container)
 	m_hostName = container->m_tags[PPPOED_AN];
 
 	//get PADI request
-	if(container->m_pppoeHeader.code == PPPOE_PADI && m_statePPPoS == PADI)
+	if(container->m_pppoeHeader.code == PPPOE_PADI && m_statePPPoE == PADI)
 	{
 		PPPoEDContainer pado(m_monitor->GetMac(), m_mac, PPPOE_PADO);
 		pado.m_tags[PPPOED_ACC] = m_hostCookie = RandString(16);
 		SendPPPoED(pado);
-		m_statePPPoS = PADO;
+		m_statePPPoE = PADO;
 	}
 
 	//get PADO request
 	if(container->m_pppoeHeader.code == PPPOE_PADO)
 	{
-		if (m_statePPPoS == PADI || 
-			m_statePPPoS == PADO && container->m_tags[PPPOED_HU] < Application::GetInstance().GetOwnId())
+		if (m_statePPPoE == PADI || 
+			m_statePPPoE == PADO && container->m_tags[PPPOED_HU] < Application::GetInstance().GetOwnId())
 		{
 			PPPoEDContainer padr(m_monitor->GetMac(), m_mac, PPPOE_PADR);
 			padr.m_tags[PPPOED_ACC] = m_hostCookie = container->m_tags[PPPOED_ACC];
 			SendPPPoED(padr);
-			m_statePPPoS = PADR;
+			m_statePPPoE = PADR;
 		}
 	}
 
 	//get PADR request
 	if(container->m_pppoeHeader.code == PPPOE_PADR)
 	{
-		switch(m_statePPPoS)
+		switch(m_statePPPoE)
 		{
 			case PADO:
 			{
@@ -107,7 +122,7 @@ void PPPoEConnection::OnContainer(PPPoEDContainer* container)
 				pads.m_tags[PPPOED_ACC] = m_hostCookie;
 				pads.m_pppoeHeader.sessionId = m_sessionId = (unsigned short)GetTickCount();
 				SendPPPoED(pads);
-				m_statePPPoS = PADS;
+				m_statePPPoE = PADS;
 				break;
 			}
 			case PADI:
@@ -121,7 +136,7 @@ void PPPoEConnection::OnContainer(PPPoEDContainer* container)
 	//get PADS request
 	if(container->m_pppoeHeader.code == PPPOE_PADS)
 	{
-		switch(m_statePPPoS)
+		switch(m_statePPPoE)
 		{
 			case PADR:
 			{
@@ -131,7 +146,7 @@ void PPPoEConnection::OnContainer(PPPoEDContainer* container)
 				}
 
 				m_sessionId = container->m_pppoeHeader.sessionId;
-				m_statePPPoS = PADS;
+				m_statePPPoE = PADS;
 				
 				//TODO(): initiate lcp connection
 				
@@ -153,6 +168,25 @@ void PPPoEConnection::ManagerStart()
 void PPPoEConnection::ManagerStop()
 {
 	m_containers.CheckObjects(Ref(this, &PPPoEConnection::DeleteContainer));
+}
+
+bool PPPoEConnection::IsConnectionPacket(IConnectionPacket* packet)
+{
+	if(!IConnection::IsConnectionPacket(packet))
+		return false;
+	
+	PPPoEDPacket* pppoed = dynamic_cast<PPPoEDPacket*>(packet);
+	if(!pppoed)
+		return false;
+		
+	PPPoEDContainer* container = pppoed->GetPacket();
+	if(!container)
+		return false;
+
+	if(m_sessionId)
+		return m_sessionId == container->m_pppoeHeader.sessionId;
+	else
+		return container->m_tags[PPPOED_HU] == m_hostId;
 }
 
 void PPPoEConnection::SendPPPoED(PPPoEDContainer container)

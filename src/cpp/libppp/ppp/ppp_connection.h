@@ -3,6 +3,10 @@
 
 #include "pppoe_connection.h"
 
+class PPPConnection;
+
+typedef ConnectionPacket<PPPoESContainer, PPPConnection> PPPoESPacket;
+
 class PPPConnection : public PPPoEConnection
 {
 public:
@@ -33,10 +37,16 @@ public:
 
 protected:
 	void ManagerFunc();
-private:
+	void ManagerStop();
+	bool IsConnectionPacket(IConnectionPacket* packet);
+protected:
 	ConnectionState m_statePPP;
 	LCPState m_stateLCP;
 	bool m_isServer;
+
+private:
+	template<typename Packet, typename Connection> friend class ConnectionPacket;
+	void OnPacket(PPPoESContainer* container);
 };
 
 #endif/*PPP_CONNECTION_H*/
