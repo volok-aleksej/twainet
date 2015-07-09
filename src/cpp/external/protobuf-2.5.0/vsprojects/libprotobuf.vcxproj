@@ -90,12 +90,10 @@
     <ClInclude Include="..\src\google\protobuf\generated_message_util.h" />
     <ClInclude Include="..\src\google\protobuf\io\gzip_stream.h" />
     <ClInclude Include="..\src\google\protobuf\stubs\hash.h" />
-    <ClInclude Include="..\src\google\protobuf\compiler\importer.h" />
     <ClInclude Include="..\src\google\protobuf\stubs\map-util.h" />
     <ClInclude Include="..\src\google\protobuf\message.h" />
     <ClInclude Include="..\src\google\protobuf\message_lite.h" />
     <ClInclude Include="..\src\google\protobuf\stubs\once.h" />
-    <ClInclude Include="..\src\google\protobuf\compiler\parser.h" />
     <ClInclude Include="..\src\google\protobuf\stubs\platform_macros.h" />
     <ClInclude Include="..\src\google\protobuf\io\printer.h" />
     <ClInclude Include="..\src\google\protobuf\reflection_ops.h" />
@@ -130,11 +128,9 @@
     <ClCompile Include="..\src\google\protobuf\generated_message_reflection.cc" />
     <ClCompile Include="..\src\google\protobuf\generated_message_util.cc" />
     <ClCompile Include="..\src\google\protobuf\io\gzip_stream.cc" />
-    <ClCompile Include="..\src\google\protobuf\compiler\importer.cc" />
     <ClCompile Include="..\src\google\protobuf\message.cc" />
     <ClCompile Include="..\src\google\protobuf\message_lite.cc" />
     <ClCompile Include="..\src\google\protobuf\stubs\once.cc" />
-    <ClCompile Include="..\src\google\protobuf\compiler\parser.cc" />
     <ClCompile Include="..\src\google\protobuf\io\printer.cc" />
     <ClCompile Include="..\src\google\protobuf\reflection_ops.cc" />
     <ClCompile Include="..\src\google\protobuf\repeated_field.cc" />

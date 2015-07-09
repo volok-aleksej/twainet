@@ -60,9 +60,6 @@
     <ClInclude Include="..\src\google\protobuf\stubs\hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\google\protobuf\compiler\importer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\google\protobuf\stubs\map-util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\google\protobuf\stubs\once.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\google\protobuf\compiler\parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\google\protobuf\stubs\platform_macros.h">
@@ -176,9 +170,6 @@
     <ClCompile Include="..\src\google\protobuf\io\gzip_stream.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\google\protobuf\compiler\importer.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\google\protobuf\message.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -186,9 +177,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\google\protobuf\stubs\once.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\google\protobuf\compiler\parser.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\google\protobuf\io\printer.cc">
