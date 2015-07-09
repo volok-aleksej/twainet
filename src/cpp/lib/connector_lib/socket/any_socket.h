@@ -3,6 +3,19 @@
 
 #include <string>
 
+#ifdef WIN32
+#include <winsock2.h>
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#define SD_BOTH SHUT_RDWR
+#endif/*WIN32*/
+
 #ifndef INVALID_SOCKET
 #	define INVALID_SOCKET 0
 #endif/*INVALID_SOCKET*/

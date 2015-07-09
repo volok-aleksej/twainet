@@ -39,7 +39,7 @@ std::string RandString(int size)
 		GUID.erase(pos, 1);
 	}
 
-	return size < GUID.size() ? std::string(GUID.begin(), GUID.begin() + size) : GUID;
+	return size < (int)GUID.size() ? std::string(GUID.begin(), GUID.begin() + size) : GUID;
 }
 
 int GetError()

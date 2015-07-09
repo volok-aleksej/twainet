@@ -1,18 +1,5 @@
 #include "tcp_socket.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#include <windows.h>
-#else
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#define SD_BOTH SHUT_RDWR
-#endif/*WIN32*/
-
 TCPSocket::TCPSocket()
 {
 	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -77,7 +64,11 @@ int TCPSocket::Accept(std::string& ip, int& port)
 	}
 
 	sockaddr_in si;
-	unsigned int len = sizeof(si);
+#ifdef WIN32
+		int len = sizeof(si);
+#else
+		unsigned int len = sizeof(si);
+#endif/*WIN32*/
 	int sock = (int)accept(m_socket, (sockaddr*)&si, &len);
 	ip = inet_ntoa(si.sin_addr);
 	port = si.sin_port;
@@ -171,7 +162,11 @@ bool TCPSocket::Close()
 void TCPSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_in addr = {0};
-	unsigned int len = sizeof(addr);
+#ifdef WIN32
+		int len = sizeof(addr);
+#else
+		unsigned int len = sizeof(addr);
+#endif/*WIN32*/
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{
 		ip = inet_ntoa(addr.sin_addr);

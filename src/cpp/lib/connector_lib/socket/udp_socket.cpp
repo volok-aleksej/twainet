@@ -1,18 +1,5 @@
 #include "udp_socket.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#include <windows.h>
-#else
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#define SD_BOTH SHUT_RDWR
-#endif/*WIN32*/
-
 UDPSocket::UDPSocket()
 {
 	m_socket = (int)socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -129,7 +116,11 @@ bool UDPSocket::Recv(char* data, int len)
 	while (recvlen > 0)
 	{
 		sockaddr_in addr = {0};
+#ifdef WIN32
+		int addrLen = sizeof(addr);
+#else
 		unsigned int addrLen = sizeof(addr);
+#endif/*WIN32*/
 		int res = recvfrom(m_socket, data + len - recvlen, recvlen, 0, (sockaddr*)&addr, &addrLen);
 		if(res <= 0)
 		{
@@ -145,7 +136,11 @@ bool UDPSocket::Recv(char* data, int len)
 void UDPSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_in addr = {0};
+#ifdef WIN32
+	int len = sizeof(addr);
+#else
 	unsigned int len = sizeof(addr);
+#endif/*WIN32*/
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{
 		ip = inet_ntoa(addr.sin_addr);
@@ -190,7 +185,11 @@ bool UDPSocket::RecvFrom(char* data, int len, std::string& ip, int& port)
 	while (recvlen > 0)
 	{
 		sockaddr_in addr = {0};
+#ifdef WIN32
+		int addrLen = sizeof(addr);
+#else
 		unsigned int addrLen = sizeof(addr);
+#endif/*WIN32*/
 		int res = recvfrom(m_socket, data + len - recvlen, recvlen, 0, (sockaddr*)&addr, &addrLen);
 		if(res <= 0)
 		{

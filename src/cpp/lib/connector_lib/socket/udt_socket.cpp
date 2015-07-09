@@ -4,13 +4,6 @@
 #include "udt.h"
 #pragma warning(default:4251)
 
-#ifndef WIN32
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#define SD_BOTH SHUT_RDWR
-#endif/*WIN32*/
-
 UDTSocket::UDTSocket()
 : m_udpSocket(0)
 {
@@ -207,7 +200,11 @@ bool UDTSocket::Close()
 void UDTSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_in addr = {0};
-	unsigned int len = sizeof(addr);
+#ifdef WIN32
+		int len = sizeof(addr);
+#else
+		unsigned int len = sizeof(addr);
+#endif/*WIN32*/
 	if(m_udpSocket)
 	{
 		if ((m_udpSocket && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
