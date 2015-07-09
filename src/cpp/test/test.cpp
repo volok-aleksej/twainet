@@ -7,7 +7,7 @@
 #include <windows.h>
 #include "twainet\application\twainet.h"
 #include "application.h"
-#include "common\guid_generator.h"
+#include "common\common_func.h"
 #include "thread_lib\thread\thread_manager.h"
 
 int _tmain(int argc, _TCHAR* argv[])

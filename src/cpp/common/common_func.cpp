@@ -3,7 +3,7 @@
 #else
 #endif
 
-#include "guid_generator.h"
+#include "common_func.h"
 
 
 std::string CreateGUID()
@@ -39,4 +39,13 @@ std::string RandString(int size)
 	}
 
 	return size < GUID.size() ? std::string(GUID.begin(), GUID.begin() + size) : GUID;
+}
+
+int GetError()
+{
+#ifdef WIN32
+	return ::GetLastError();
+#else
+	return errno;
+#endif
 }

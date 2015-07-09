@@ -8,7 +8,7 @@
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "connector_lib/ppp/ppp_library.h"
-#include "common/guid_generator.h"
+#include "common/common_func.h"
 
 extern std::vector<std::string> GetLocalIps();
 

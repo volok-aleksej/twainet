@@ -93,17 +93,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\messages\ipc.pb.cc" />
+    <ClCompile Include="..\..\common\common_func.cpp" />
     <ClCompile Include="connector\ipc_connector.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
     <ClCompile Include="module\ipc_object_name.cpp" />
     <ClCompile Include="thread\ipc_checker_thread.cpp" />
     <ClCompile Include="thread\ping_thread.cpp" />
     <ClCompile Include="..\..\utils\utils.cpp" />
-    <ClCompile Include="..\..\common\guid_generator.cpp" />
     <ClCompile Include="..\..\common\tstring.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\ipc.pb.h" />
+    <ClInclude Include="..\..\common\common_func.h" />
     <ClInclude Include="connector\ipc_connector.h" />
     <ClInclude Include="connector\ipc_connector_factory.h" />
     <ClInclude Include="connector\proto_message.h" />
@@ -112,7 +113,6 @@
     <ClInclude Include="thread\ipc_checker_thread.h" />
     <ClInclude Include="thread\ping_thread.h" />
     <ClInclude Include="..\..\utils\utils.h" />
-    <ClInclude Include="..\..\common\guid_generator.h" />
     <ClInclude Include="..\..\common\tstring.h" />
   </ItemGroup>
   <ItemGroup>

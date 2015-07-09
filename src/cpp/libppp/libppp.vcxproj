@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\guid_generator.cpp" />
+    <ClCompile Include="..\common\common_func.cpp" />
     <ClCompile Include="..\common\network.cpp" />
     <ClCompile Include="..\common\tstring.cpp" />
     <ClCompile Include="application\application.cpp" />
@@ -29,7 +29,7 @@
     <ClCompile Include="..\common\cpu_id.cpp">
       <FileType>CppHeader</FileType>
     </ClCompile>
-    <ClInclude Include="..\common\guid_generator.h" />
+    <ClInclude Include="..\common\common_func.h" />
     <ClInclude Include="..\common\tstring.h" />
     <ClInclude Include="..\version.h" />
     <ClInclude Include="application\application.h" />

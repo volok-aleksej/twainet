@@ -42,10 +42,10 @@
     <ClCompile Include="..\..\utils\utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\guid_generator.cpp">
+    <ClCompile Include="..\..\common\tstring.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\tstring.cpp">
+    <ClCompile Include="..\..\common\common_func.cpp">
       <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,10 +77,10 @@
     <ClInclude Include="..\..\utils\utils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\guid_generator.h">
+    <ClInclude Include="..\..\common\tstring.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\tstring.h">
+    <ClInclude Include="..\..\common\common_func.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>

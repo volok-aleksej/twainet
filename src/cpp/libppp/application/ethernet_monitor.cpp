@@ -1,7 +1,7 @@
 #include "application.h"
 #include "ethernet_monitor.h"
 #include "common\ref.h"
-#include "common\guid_generator.h"
+#include "common\common_func.h"
 #include "parser\parser_states.h"
 #include "ppp\pppoe_connection.h"
 #include "ppp\ppp_connection.h"

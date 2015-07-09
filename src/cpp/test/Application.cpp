@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
-#include "common\guid_generator.h"
+#include "common\common_func.h"
 #include <string>
 #include <time.h>
 

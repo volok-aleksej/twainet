@@ -1,13 +1,12 @@
 #include "ipc_module.h"
 #include "common/common.h"
+#include "common/common_func.h"
 #include "connector_lib/thread/connect_thread.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "thread_lib/thread/thread_manager.h"
 
 const std::string IPCModule::m_coordinatorIPCName = "IPCCoordinator";
 const int IPCModule::m_maxTryConnectCount = 10;
-
-extern std::string CreateGUID();
 
 /*******************************************************************************/
 /*                               IPCObject                                     */

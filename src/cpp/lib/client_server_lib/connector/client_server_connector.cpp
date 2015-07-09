@@ -1,7 +1,7 @@
 #include "client_server_connector.h"
 #include "message/client_server_messages.h"
 #include "module/client_server_module.h"
-#include "common/guid_generator.h"
+#include "common/common_func.h"
 
 class ClientSendMessage : public DataMessage
 {

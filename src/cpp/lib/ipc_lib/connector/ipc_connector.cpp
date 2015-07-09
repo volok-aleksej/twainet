@@ -1,7 +1,7 @@
 #include "ipc_connector.h"
 #include "module/ipc_module.h"
 
-#include "common/guid_generator.h"
+#include "common/common_func.h"
 #include "utils/utils.h"
 
 #include "connector_lib/message/connector_messages.h"

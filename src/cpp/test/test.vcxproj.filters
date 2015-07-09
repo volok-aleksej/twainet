@@ -24,7 +24,7 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\guid_generator.cpp">
+    <ClCompile Include="..\common\common_func.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\guid_generator.h">
+    <ClInclude Include="..\common\common_func.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
