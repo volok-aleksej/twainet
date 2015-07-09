@@ -25,7 +25,7 @@ public:
 	bool RemoveObject(const Object& object)
 	{
 		CSLocker locker(&m_cs);
-		for (std::vector<Object>::iterator it = m_objects.begin();
+		for (typename std::vector<Object>::iterator it = m_objects.begin();
 			it != m_objects.end();
 			it++)
 		{
@@ -43,7 +43,7 @@ public:
 	{
 		bool res = false;
 		CSLocker locker(&m_cs);
-		for (std::vector<Object>::iterator it = m_objects.begin();
+		for (typename std::vector<Object>::iterator it = m_objects.begin();
 			it != m_objects.end();
 			it++)
 		{
@@ -61,7 +61,7 @@ public:
 	{
 		bool res = false;
 		CSLocker locker(&m_cs);
-		for (std::vector<Object>::iterator it = m_objects.begin();
+		for (typename std::vector<Object>::iterator it = m_objects.begin();
 			it != m_objects.end();
 			it++)
 		{
@@ -97,7 +97,7 @@ public:
 	void CheckObjects(Func func)
 	{
 		CSLocker locker(&m_cs);
-		for (std::vector<Object>::iterator it = m_objects.begin();
+		for (typename std::vector<Object>::iterator it = m_objects.begin();
 			it != m_objects.end();)
 		{
 			bool erase;
@@ -117,7 +117,7 @@ public:
 	void ProcessingObjects(Func func)
 	{
 		CSLocker locker(&m_cs);
-		for (std::vector<Object>::iterator it = m_objects.begin();
+		for (typename std::vector<Object>::iterator it = m_objects.begin();
 			it != m_objects.end();
 			it++)
 		{

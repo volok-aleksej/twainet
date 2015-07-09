@@ -8,7 +8,7 @@
 class ThreadManager : public ManagerCreator<ThreadManager>
 {
 protected:
-	template<class Object> friend class ManagerCreator;
+	friend class ManagerCreator<ThreadManager>;
 	ThreadManager();
 	virtual ~ThreadManager();
 public:

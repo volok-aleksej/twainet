@@ -1,8 +1,8 @@
 #ifndef MANAGERS_CONTAINER_H
 #define MANAGERS_CONTAINER_H
 
-#include "..\common\thread_singleton.h"
-#include "..\common\object_manager.h"
+#include "../common/thread_singleton.h"
+#include "../common/object_manager.h"
 
 class IManager
 {
@@ -47,6 +47,35 @@ private:
 	bool m_isStop;
 };
 
+template<class Object> class ManagerCreator;
+
+class ManagersContainer : public ThreadSingleton<ManagersContainer>
+{
+protected:
+	friend class Singleton<ManagersContainer>;
+	ManagersContainer();
+	~ManagersContainer();
+
+public:
+	friend class ManagerCreator<ManagersContainer>;
+	void AddManager(IManager* manager);
+	void RemoveManager(IManager* manager);
+
+protected:
+	template<typename TClass, typename TFunc> friend class Reference;
+	bool RunManager(const IManager* manager);
+	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	bool CheckManager(const std::vector<IManager*>& managers, const IManager* manager);
+protected:
+	virtual void ThreadFunc();
+	virtual void OnStop();
+	virtual void OnStart();
+	virtual void Stop();
+private:
+	ObjectManager<IManager*> m_managers;
+	bool m_isExit;
+};
+
 template<class Object>
 class ManagerCreator : public Singleton<ManagerCreator<Object> >, public StaticManager
 {
@@ -71,7 +100,7 @@ public:
 	}
 
 protected:
-	template<class Object> friend class Singleton;
+	friend class Singleton<ManagerCreator>;
 	ManagerCreator()
 	{
 		if(object)
@@ -95,32 +124,5 @@ protected:
 
 template<class Object>
 Object* ManagerCreator<Object>::object = 0;
-
-class ManagersContainer : public ThreadSingleton<ManagersContainer>
-{
-protected:
-	template<class Object> friend class Singleton;
-	ManagersContainer();
-	~ManagersContainer();
-
-public:
-	template<class Object> friend class ManagerCreator;
-	void AddManager(IManager* manager);
-	void RemoveManager(IManager* manager);
-
-protected:
-	template<typename TClass, typename TFunc> friend class Reference;
-	bool RunManager(const IManager* manager);
-	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
-	bool CheckManager(const std::vector<IManager*>& managers, const IManager* manager);
-protected:
-	virtual void ThreadFunc();
-	virtual void OnStop();
-	virtual void OnStart();
-	virtual void Stop();
-private:
-	ObjectManager<IManager*> m_managers;
-	bool m_isExit;
-};
 
 #endif/*MANAGERS_CONTAINER_H*/

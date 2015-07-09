@@ -1,5 +1,7 @@
 #include "thread.h"
-#include <process.h>
+#ifdef WIN32
+#	include <process.h>
+#endif/*WIN32*/
 
 void Thread::sleep(unsigned long millisec)
 {

@@ -31,14 +31,14 @@ public:
 	ReferenceObject(TClass* ref, TFunc f, const TObject& obj)
 		: m_ref(ref), m_func(f), m_obj(obj){}
 
-	template<typename TObject>
-	void operator ()(const TObject& obj)
+	template<typename TRefObject>
+	void operator ()(const TRefObject& obj)
 	{
 		(m_ref->*m_func)(m_obj, obj);
 	}
 
-	template<typename TObject, typename TReturn>
-	void operator ()(const TObject& obj, TReturn& res)
+	template<typename TRefObject, typename TReturn>
+	void operator ()(const TRefObject& obj, TReturn& res)
 	{
 		res = (m_ref->*m_func)(m_obj, obj);
 	}
@@ -86,7 +86,7 @@ ReferenceObject<TClass, TFunc, TObject> Ref(TClass* ref, TFunc func, const TObje
 template<typename TFunc>
 OwnReference<TFunc> Ref(TFunc func)
 {
-	return OwnReference<Func>(func);
+	return OwnReference<TFunc>(func);
 }
 
 #endif/*REF_H*/

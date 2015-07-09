@@ -8,6 +8,7 @@
 #include <windows.h>
 #else
 #include <pthread.h>
+#include <unistd.h>
 #endif/*WIN32*/
 
 class Thread
