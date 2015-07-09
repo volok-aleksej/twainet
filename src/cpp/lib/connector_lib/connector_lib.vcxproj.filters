@@ -81,6 +81,9 @@
     <ClCompile Include="ppp\ppp_library.cpp">
       <Filter>ppp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\common_func.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connector\connector.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="ppp\ppp_library.h">
       <Filter>ppp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\common_func.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

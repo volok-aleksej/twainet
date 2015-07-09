@@ -93,7 +93,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\messages\ipc.pb.cc" />
-    <ClCompile Include="..\..\common\common_func.cpp" />
     <ClCompile Include="connector\ipc_connector.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
     <ClCompile Include="module\ipc_object_name.cpp" />
@@ -104,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\ipc.pb.h" />
-    <ClInclude Include="..\..\common\common_func.h" />
     <ClInclude Include="connector\ipc_connector.h" />
     <ClInclude Include="connector\ipc_connector_factory.h" />
     <ClInclude Include="connector\proto_message.h" />
