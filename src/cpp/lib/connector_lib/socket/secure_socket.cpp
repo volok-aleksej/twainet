@@ -10,7 +10,7 @@
 
 #include "secure_socket.h"
 #include "udt_socket.h"
-#include "common\aes.h"
+#include "common/aes.h"
 
 #pragma warning(disable:4251)
 #include "udt.h"
@@ -18,7 +18,8 @@
 
 #define RSA_DATA_SIZE 2048
 #define SSL_HEADER_SIZE	8
-#define SSL_HEADER	"STARTTLS"
+
+char SecureSocket::m_ssl_header[] = "STARTTLS";
 
 SecureSocket::SecureSocket()
 	: m_bInit(false)
@@ -44,9 +45,9 @@ bool SecureSocket::PerformSslVerify()
 
 		//send STARTTLS to and receive it from other side
 		unsigned char sslHeader[SSL_HEADER_SIZE] = {0};
-		if (!Send(SSL_HEADER, SSL_HEADER_SIZE) ||
+		if (!Send(m_ssl_header, SSL_HEADER_SIZE) ||
 			!Recv((char*)sslHeader, SSL_HEADER_SIZE) ||
-			memcmp(sslHeader, SSL_HEADER, SSL_HEADER_SIZE) != 0)
+			memcmp(sslHeader, m_ssl_header, SSL_HEADER_SIZE) != 0)
 		{
 			throw false;
 		}

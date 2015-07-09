@@ -1,4 +1,5 @@
 #include "listen_thread.h"
+#include "common/common_func.h"
 #include "socket/socket_factory.h"
 #include "socket/any_socket.h"
 #include "connector/connector.h"
@@ -27,7 +28,7 @@ void ListenThread::ThreadFunc()
 	if(!m_socket->Bind(m_address.m_localIP, m_address.m_localPort) ||
 		!m_socket->Listen(100))
 	{
-		ListenErrorMessage errMsg(m_address.m_id, "", GetLastError());
+		ListenErrorMessage errMsg(m_address.m_id, "", GetError());
 		onSignal(errMsg);
 		delete m_socket;
 		m_socket = 0;
@@ -58,7 +59,7 @@ void ListenThread::ThreadFunc()
 		}
 		else
 		{
-			ErrorMessage errMsg("", GetLastError());
+			ErrorMessage errMsg("", GetError());
 			onSignal(errMsg);
 			delete m_socket;
 			m_socket = 0;

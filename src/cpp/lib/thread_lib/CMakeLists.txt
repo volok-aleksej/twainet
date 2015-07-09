@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 project(thread_lib)
 
-set(BUILD_64_TARGET 1)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug")
+#    set(CMAKE_BUILD_TYPE "Release")
+endif(NOT CMAKE_BUILD_TYPE)
 
 set (SRC_${PROJECT_NAME}
     common/critical_section.cpp
@@ -13,7 +16,6 @@ set (SRC_${PROJECT_NAME}
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
-#add_executable(${PROJECT_NAME} ${SRC_${PROJECT_NAME}})
-#set(CMAKE_EXECUTABLE_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})
-set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE})

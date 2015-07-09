@@ -1,4 +1,7 @@
 #include "message_handler.h"
+#ifndef WIN32
+#	include <string.h>
+#endif/*WIN32*/
 
 MessageHandler::~MessageHandler(void)
 {

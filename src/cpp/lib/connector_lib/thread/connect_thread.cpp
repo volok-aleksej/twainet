@@ -1,4 +1,5 @@
 #include "connect_thread.h"
+#include "common/common_func.h"
 #include "socket/any_socket.h"
 #include "socket/socket_factory.h"
 #include "connector/connector.h"
@@ -37,7 +38,7 @@ void ConnectThread::ThreadFunc()
 	}
 	else
 	{
-		ConnectErrorMessage errMsg(m_address.m_moduleName, "", GetLastError());
+		ConnectErrorMessage errMsg(m_address.m_moduleName, "", GetError());
 		onSignal(errMsg);
 		delete m_socket;
 		m_socket = 0;

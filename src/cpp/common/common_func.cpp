@@ -1,6 +1,7 @@
 #ifdef WIN32
 #include <objbase.h>
 #else
+#include <errno.h>
 #endif
 
 #include "common_func.h"

@@ -6,6 +6,7 @@
 #include "sender.h"
 
 #include <string>
+#include <typeinfo>
 
 class DataMessage
 	: public Serializer

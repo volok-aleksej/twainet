@@ -1,8 +1,10 @@
 #include "socket_factories.h"
 #include "secure_socket.h"
 #include "udp_socket.h"
-#include "ppp_socket.h"
-#include "ppp/ppp_library.h"
+#ifdef WIN32
+#	include "ppp_socket.h"
+#	include "ppp/ppp_library.h"
+#endif/*WIN32*/
 
 /*******************************************************************************************************/
 /*                                          TCPSocketFactory                                           */
@@ -109,6 +111,7 @@ void UDTSecureSocketFactory::SetUdpSocket(int udpSocket)
 	m_udpSocket = udpSocket;
 }
 
+#ifdef WIN32
 /*******************************************************************************************************/
 /*                                          PPPSocketFactory                                           */
 /*******************************************************************************************************/
@@ -142,3 +145,4 @@ AnySocket* PPPSecureSocketFactory::CreateSocket(int socket)
 {
 	return new SecurePPPSocket(socket);
 }
+#endif/*WIN32*/

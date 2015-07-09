@@ -9,7 +9,7 @@ class Signal;
 class SignalManager : public ManagerCreator<SignalManager>
 {
 protected:
-	template<class Object> friend class ManagerCreator;
+	friend class ManagerCreator<SignalManager>;
 	SignalManager();
 	~SignalManager();
 public:

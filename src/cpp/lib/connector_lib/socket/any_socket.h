@@ -3,6 +3,13 @@
 
 #include <string>
 
+#ifndef INVALID_SOCKET
+#	define INVALID_SOCKET 0
+#endif/*INVALID_SOCKET*/
+#ifndef SOCKET_ERROR
+#	define SOCKET_ERROR 0
+#endif/*SOCKET_ERROR*/
+
 class AnySocket
 {
 public:

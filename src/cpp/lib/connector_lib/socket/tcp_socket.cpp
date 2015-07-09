@@ -4,10 +4,13 @@
 #include <winsock2.h>
 #include <windows.h>
 #else
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
+#define SD_BOTH SHUT_RDWR
 #endif/*WIN32*/
 
 TCPSocket::TCPSocket()
@@ -74,7 +77,7 @@ int TCPSocket::Accept(std::string& ip, int& port)
 	}
 
 	sockaddr_in si;
-	int len = sizeof(si);
+	unsigned int len = sizeof(si);
 	int sock = (int)accept(m_socket, (sockaddr*)&si, &len);
 	ip = inet_ntoa(si.sin_addr);
 	port = si.sin_port;
@@ -158,13 +161,17 @@ bool TCPSocket::Close()
 	}
 	
 	shutdown(m_socket, SD_BOTH);
+#ifdef WIN32
 	return closesocket(m_socket) == 0;
+#else
+	return close(m_socket) == 0;
+#endif/*WIN32*/
 }
 
 void TCPSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_in addr = {0};
-	int len = sizeof(addr);
+	unsigned int len = sizeof(addr);
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{
 		ip = inet_ntoa(addr.sin_addr);

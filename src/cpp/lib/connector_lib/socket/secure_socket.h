@@ -28,6 +28,8 @@ protected:
 	unsigned char m_keyOwn[32];
 	unsigned char m_keyOther[32];
 	std::string m_recvdata;
+public:
+	static char m_ssl_header[];
 };
 
 

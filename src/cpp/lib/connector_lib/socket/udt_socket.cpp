@@ -4,6 +4,13 @@
 #include "udt.h"
 #pragma warning(default:4251)
 
+#ifndef WIN32
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#define SD_BOTH SHUT_RDWR
+#endif/*WIN32*/
+
 UDTSocket::UDTSocket()
 : m_udpSocket(0)
 {
@@ -102,7 +109,7 @@ int UDTSocket::Accept(std::string& ip, int& port)
 
 	sockaddr_in si;
 	int len = sizeof(si);
-	int sock = UDT::accept(m_socket, (SOCKADDR*)&si, &len);
+	int sock = UDT::accept(m_socket, (sockaddr*)&si, &len);
 	ip = inet_ntoa(si.sin_addr);
 	port = si.sin_port;
 	return sock;
@@ -187,7 +194,11 @@ bool UDTSocket::Close()
 	if(m_udpSocket)
 	{
 		shutdown(m_udpSocket, SD_BOTH);
+#ifdef WIN32
 		closesocket(m_udpSocket);
+#else
+		close(m_udpSocket);
+#endif/*WIN32*/
 	}
 
 	return UDT::close(m_socket) == 0;
@@ -196,11 +207,11 @@ bool UDTSocket::Close()
 void UDTSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_in addr = {0};
-	int len = sizeof(addr);
+	unsigned int len = sizeof(addr);
 	if(m_udpSocket)
 	{
 		if ((m_udpSocket && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
-			!UDT::getsockname(m_socket, (sockaddr*)&addr, &len))
+			!UDT::getsockname(m_socket, (sockaddr*)&addr, (int*)&len))
 		{
 			ip = inet_ntoa(addr.sin_addr);
 			port = ntohs(addr.sin_port);
