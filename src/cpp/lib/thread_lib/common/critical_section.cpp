@@ -6,6 +6,7 @@ CriticalSection::CriticalSection()
 	InitializeCriticalSection(&m_cs);
 #else
 	pthread_mutex_init(&m_cs, 0);
+	m_threadlock = 0;
 #endif
 }
 
@@ -15,6 +16,7 @@ CriticalSection::~CriticalSection()
 	DeleteCriticalSection(&m_cs);
 #else
 	pthread_mutex_destroy (&m_cs);
+	m_threadlock = 0;
 #endif
 }
 
@@ -23,7 +25,13 @@ void CriticalSection::Enter()
 #ifdef WIN32
 	EnterCriticalSection(&m_cs);
 #else
-	pthread_mutex_lock (&m_cs);
+	if(m_threadlock != pthread_self())
+	{
+	    pthread_mutex_lock (&m_cs);
+	    m_threadlock = pthread_self();
+	}
+	else
+	    m_cs.__data.__count++;
 #endif
 }
 
@@ -32,7 +40,16 @@ void CriticalSection::Leave()
 #ifdef WIN32
 	LeaveCriticalSection(&m_cs);
 #else
-	pthread_mutex_unlock(&m_cs);
+	if(m_threadlock == pthread_self() && 
+	    m_cs.__data.__count == 0)
+	{
+	  m_threadlock = 0;
+	  pthread_mutex_unlock(&m_cs);
+	}
+	else
+	{
+	    m_cs.__data.__count--;
+	}
 #endif
 }
 

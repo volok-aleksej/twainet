@@ -9,102 +9,102 @@
 #include <string>
 #include <time.h>
 
-Twainet::TwainetCallback tc = {&Application::OnServerConnected, &Application::OnServerDisconnected, &Application::OnServerCreationFailed,
-							   &Application::OnClientConnected, &Application::OnClientDisconnected, &Application::OnClientConnectionFailed,
-							   &Application::OnModuleConnected,	&Application::OnModuleDisconnected, &Application::OnModuleConnectionFailed,
-							   &Application::OnModuleCreationFailed, &Application::OnTunnelConnected, &Application::OnTunnelDisconnected,
-							   &Application::OnTunnelCreationFailed, &Application::OnMessageRecv};
+Twainet::TwainetCallback tc = {&ApplicationTest::OnServerConnected, &ApplicationTest::OnServerDisconnected, &ApplicationTest::OnServerCreationFailed,
+							   &ApplicationTest::OnClientConnected, &ApplicationTest::OnClientDisconnected, &ApplicationTest::OnClientConnectionFailed,
+							   &ApplicationTest::OnModuleConnected,	&ApplicationTest::OnModuleDisconnected, &ApplicationTest::OnModuleConnectionFailed,
+							   &ApplicationTest::OnModuleCreationFailed, &ApplicationTest::OnTunnelConnected, &ApplicationTest::OnTunnelDisconnected,
+							   &ApplicationTest::OnTunnelCreationFailed, &ApplicationTest::OnMessageRecv};
 
-void TWAINET_CALL Application::OnModuleCreationFailed(Twainet::Module module)
+void TWAINET_CALL ApplicationTest::OnModuleCreationFailed(Twainet::Module module)
 {
-	Application::GetInstance().onModuleCreationFailed(module);
+	ApplicationTest::GetInstance().onModuleCreationFailed(module);
 }
 
-void TWAINET_CALL Application::OnServerCreationFailed(Twainet::Module module)
+void TWAINET_CALL ApplicationTest::OnServerCreationFailed(Twainet::Module module)
 {
-	Application::GetInstance().onServerCreationFailed(module);
+	ApplicationTest::GetInstance().onServerCreationFailed(module);
 }
 
-void TWAINET_CALL Application::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL ApplicationTest::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
-	Application::GetInstance().onTunnelCreationFailed(module, sessionId);
+	ApplicationTest::GetInstance().onTunnelCreationFailed(module, sessionId);
 }
 
-void TWAINET_CALL Application::OnServerConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL ApplicationTest::OnServerConnected(Twainet::Module module, const char* sessionId)
 {
-	Application::GetInstance().onServerConnected(module, sessionId);
+	ApplicationTest::GetInstance().onServerConnected(module, sessionId);
 }
 
-void TWAINET_CALL Application::OnClientConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL ApplicationTest::OnClientConnected(Twainet::Module module, const char* sessionId)
 {
-	Application::GetInstance().onClientConnected(module, sessionId);
+	ApplicationTest::GetInstance().onClientConnected(module, sessionId);
 }
 
-void TWAINET_CALL Application::OnClientDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL ApplicationTest::OnClientDisconnected(Twainet::Module module, const char* sessionId)
 {
-	Application::GetInstance().onClientDisconnected(module, sessionId);
+	ApplicationTest::GetInstance().onClientDisconnected(module, sessionId);
 }
 
-void TWAINET_CALL Application::OnClientConnectionFailed(Twainet::Module module)
+void TWAINET_CALL ApplicationTest::OnClientConnectionFailed(Twainet::Module module)
 {
-	Application::GetInstance().onClientConnectionFailed(module);
+	ApplicationTest::GetInstance().onClientConnectionFailed(module);
 }
 
-void TWAINET_CALL Application::OnServerDisconnected(Twainet::Module module)
+void TWAINET_CALL ApplicationTest::OnServerDisconnected(Twainet::Module module)
 {
-	Application::GetInstance().onServerDisconnected(module);
+	ApplicationTest::GetInstance().onServerDisconnected(module);
 }
 
-void TWAINET_CALL Application::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL ApplicationTest::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
-	Application::GetInstance().onModuleConnected(module, moduleId);
+	ApplicationTest::GetInstance().onModuleConnected(module, moduleId);
 }
 
-void TWAINET_CALL Application::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL ApplicationTest::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
-	Application::GetInstance().onModuleDisconnected(module, moduleId);
+	ApplicationTest::GetInstance().onModuleDisconnected(module, moduleId);
 }
 
-void TWAINET_CALL Application::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL ApplicationTest::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
-	Application::GetInstance().onModuleConnectionFailed(module, moduleId);
+	ApplicationTest::GetInstance().onModuleConnectionFailed(module, moduleId);
 }
 
-void TWAINET_CALL Application::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+void TWAINET_CALL ApplicationTest::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
-	Application::GetInstance().onTunnelConnected(module, sessionId, type);
+	ApplicationTest::GetInstance().onTunnelConnected(module, sessionId, type);
 }
 
-void TWAINET_CALL Application::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL ApplicationTest::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
-	Application::GetInstance().onTunnelDisconnected(module, sessionId);
+	ApplicationTest::GetInstance().onTunnelDisconnected(module, sessionId);
 }
 
-void TWAINET_CALL Application::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+void TWAINET_CALL ApplicationTest::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
-	Application::GetInstance().onMessageRecv(module, msg);
+	ApplicationTest::GetInstance().onMessageRecv(module, msg);
 }
 
-Application::Application()
+ApplicationTest::ApplicationTest()
 	: m_isStop(false)
 {
 	Start();
 }
 
-Application::~Application()
+ApplicationTest::~ApplicationTest()
 {
 	Join();
 }
 
-void Application::OnStop()
+void ApplicationTest::OnStop()
 {
 }
 
-void Application::OnStart()
+void ApplicationTest::OnStart()
 {
 }
 
-void Application::ThreadFunc()
+void ApplicationTest::ThreadFunc()
 {
 	std::string guid = CreateGUID();
 	memset(&m_moduleName, 0, sizeof(m_moduleName));
@@ -118,56 +118,56 @@ void Application::ThreadFunc()
 	Twainet::CreateServer(m_module, 1054);
 	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
 #else
-	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
+	Twainet::ConnectToServer(m_module, "192.168.71.156", 1054);
 #endif
 	while(!m_isStop){Thread::sleep(200);}
 }
 
-void Application::Stop()
+void ApplicationTest::Stop()
 {
 	m_isStop = true;
 }
 
-void Application::onModuleCreationFailed(Twainet::Module module)
+void ApplicationTest::onModuleCreationFailed(Twainet::Module module)
 {
 	m_isStop = true;
 }
 
-void Application::onServerCreationFailed(Twainet::Module module)
+void ApplicationTest::onServerCreationFailed(Twainet::Module module)
 {
 	m_isStop = false;
 }
 
-void Application::onTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+void ApplicationTest::onTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
 	printf("tunnel creation failed - %s\n", sessionId);
 }
 
-void Application::onServerConnected(Twainet::Module module, const char* sessionId)
+void ApplicationTest::onServerConnected(Twainet::Module module, const char* sessionId)
 {
 	printf("server connected - %s\n", sessionId);
 }
 
-void Application::onClientConnected(Twainet::Module module, const char* sessionId)
+void ApplicationTest::onClientConnected(Twainet::Module module, const char* sessionId)
 {
 	printf("client connected - %s\n", sessionId);
 }
 
-void Application::onClientDisconnected(Twainet::Module module, const char* sessionId)
+void ApplicationTest::onClientDisconnected(Twainet::Module module, const char* sessionId)
 {
 	printf("client disconnected - %s\n", sessionId);
 }
 
-void Application::onClientConnectionFailed(Twainet::Module module)
+void ApplicationTest::onClientConnectionFailed(Twainet::Module module)
 {
 }
 
-void Application::onServerDisconnected(Twainet::Module module)
+void ApplicationTest::onServerDisconnected(Twainet::Module module)
 {
 	printf("server disconnected\n");
 }
 
-void Application::onModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void ApplicationTest::onModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	if(module == m_module)
 	{
@@ -196,18 +196,18 @@ void Application::onModuleConnected(Twainet::Module module, const Twainet::Modul
 	}
 }
 
-void Application::onModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void ApplicationTest::onModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	printf("module disconnected - %s\n", moduleId.m_name);
 }
 
-void Application::onModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void ApplicationTest::onModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	if(module == m_module)
 		printf("module connection failed - %s\n", moduleId.m_name);
 }
 
-void Application::onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+void ApplicationTest::onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	printf("tunnel connection - %s type - %d\n", sessionId, type);
 //#ifdef DEBUG_1
@@ -240,12 +240,12 @@ void Application::onTunnelConnected(Twainet::Module module, const char* sessionI
 //#endif/*DEBUG_1*/
 }
 
-void Application::onTunnelDisconnected(Twainet::Module module, const char* sessionId)
+void ApplicationTest::onTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
 	printf("tunnel disconnected - %s\n", sessionId);
 }
 
-void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+void ApplicationTest::onMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
 	static int dataLen = 0;
 	dataLen += msg.m_dataLen;

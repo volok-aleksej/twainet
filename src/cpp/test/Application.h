@@ -4,11 +4,11 @@
 #include "twainet/application/twainet.h"
 #include "thread_lib/common/thread_singleton.h"
 
-class Application : public ThreadSingleton<Application>
+class ApplicationTest : public ThreadSingleton<ApplicationTest>
 {
 public:
-	Application();
-	~Application();
+	ApplicationTest();
+	~ApplicationTest();
 
 	virtual void ThreadFunc();
 	virtual void OnStop();

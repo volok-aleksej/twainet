@@ -5,6 +5,7 @@
 #	include <windows.h>
 #else
 #	include <stdlib.h>
+#	include <stdio.h>
 #endif/*WIN32*/
 #include <string.h>
 #include <iostream>
@@ -19,6 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 #endif/*WIN32*/
 {
+	printf("begin\n");
 	Twainet::InitLibrary(tc);
 #ifdef DEBUG_1
 	std::string guid = CreateGUID();
@@ -26,8 +28,12 @@ int main(int argc, char* argv[])
 	Twainet::Module module = Twainet::CreateModule(moduleName, true, false);
 #endif/*DEBUG_1*/
 	
-	Application::GetInstance();
+	ApplicationTest::GetInstance();
+#ifdef WIN32
 	system("pause");
+#else
+	getchar();
+#endif/*WIN32*/
 	Twainet::FreeLibrary();
 	return 0;
 }				

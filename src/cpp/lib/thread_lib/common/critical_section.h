@@ -6,6 +6,7 @@
 #include <windows.h>
 #else
 #include <pthread.h>
+#include <sys/types.h>
 #endif/*WIN32*/
 
 class CriticalSection
@@ -21,6 +22,7 @@ private:
 	CRITICAL_SECTION m_cs;
 #else
 	pthread_mutex_t m_cs;
+	pthread_t m_threadlock;
 #endif/*WIN32*/
 };
 
