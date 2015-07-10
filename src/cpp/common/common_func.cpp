@@ -3,6 +3,7 @@
 #else
 #include <errno.h>
 #include <uuid/uuid.h>
+#include <stdio.h>
 #endif
 
 #include "common_func.h"
@@ -21,7 +22,12 @@ std::string CreateGUID()
 #else
 	uuid_t out;
 	uuid_generate_time(out);
-	guidStr = (char*)out;
+	for(int i = 0; i < sizeof(out); i++)
+	{
+	  char num[10] = {0};
+	  snprintf(num, 10, "%d", out[i]);
+	  guidStr.append(num);
+	}
 #endif
 	return guidStr.c_str();
 }

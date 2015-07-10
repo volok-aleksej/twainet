@@ -118,7 +118,7 @@ void ApplicationTest::ThreadFunc()
 	Twainet::CreateServer(m_module, 1054);
 	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
 #else
-	Twainet::ConnectToServer(m_module, "192.168.71.156", 1054);
+	Twainet::ConnectToServer(m_module, "10.100.70.74", 1054);
 #endif
 	while(!m_isStop){Thread::sleep(200);}
 }
