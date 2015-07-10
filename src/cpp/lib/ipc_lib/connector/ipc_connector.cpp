@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "ipc_connector.h"
 #include "module/ipc_module.h"
 

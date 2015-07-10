@@ -14,6 +14,7 @@
 #include "thread_lib/common/object_manager.h"
 
 #include <string>
+#include <stdarg.h>
 
 class IPCListenThread : public ListenThread
 {
@@ -114,11 +115,11 @@ protected:
 	std::string m_coordinatorName;
 	bool m_isExit;
 	int m_countListener;
-	int m_count—onnect;
+	int m_countConnect;
 	ObjectManager<TryConnectCounter> m_tryConnectCounters;
 	
 	CriticalSection m_csConnectors;
-	std::map<std::string, std::vector<std::string>> m_connectors;
+	std::map<std::string, std::vector<std::string> > m_connectors;
 };
 
 template<class Msg>

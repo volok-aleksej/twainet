@@ -36,7 +36,7 @@ void g_wcstombs(std::string& dest, const std::wstring& src)
 #ifdef WIN32
 		rv = WideCharToMultiByte(CP_ACP, 0, lsrc, (int)src.size(), (char*)dest.c_str(), rv, 0, 0);
 #else
-		rv = wcstombs(dest.c_str(), lsrc, rv);
+		rv = wcstombs((char*)dest.c_str(), lsrc, rv);
 #endif
 		dest.resize(rv);
 		c++;

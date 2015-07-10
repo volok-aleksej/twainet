@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdio.h>
 
 std::vector<std::string> CommonUtils::DelimitString(const std::string& src, const std::string& delimit)
 {
@@ -45,7 +46,11 @@ std::string CommonUtils::FormatTime(time_t time)
 	int day = (time / (24 * 60 * 60)) % 60;
 
 	char data[20] = {0};
+#ifdef WIN32
 	sprintf_s(data, 20, "%02d  %02d:%02d:%02d", day, hour, min, sec);
+#else
+	sprintf(data, "%02d  %02d:%02d:%02d", day, hour, min, sec);
+#endif/*WIN32*/
 	res = data;
 
 	return res;

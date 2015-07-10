@@ -1,6 +1,10 @@
+#include <stdio.h>
+
 #include "ipc_module.h"
+
 #include "common/common.h"
 #include "common/common_func.h"
+
 #include "connector_lib/thread/connect_thread.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "thread_lib/thread/thread_manager.h"
@@ -64,7 +68,7 @@ void IPCModule::TryConnectCounter::operator = (const TryConnectCounter& counter)
 IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory)
 : m_moduleName(moduleName), m_factory(factory)
 , m_isCoordinator(false), m_isExit(false), m_listenThread(0)
-, m_countListener(0), m_count—onnect(0)
+, m_countListener(0), m_countConnect(0)
 {
 	m_manager.addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
 }
@@ -201,7 +205,7 @@ void IPCModule::ConnectToCoordinator()
 	address.m_connectorFactory = m_factory->Clone();
 	address.m_socketFactory = new TCPSocketFactory;
 	address.m_ip = "127.0.0.1";
-	address.m_port = g_ipcCoordinatorPorts[m_count—onnect];
+	address.m_port = g_ipcCoordinatorPorts[m_countConnect];
 	ConnectThread* thread = new ConnectThread(address);
 	thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectorMessage, onAddConnector));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectErrorMessage, onErrorConnect));
@@ -306,13 +310,13 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 {
 	if(msg.m_moduleName == m_coordinatorIPCName)
 	{
-		if(m_count—onnect + 1 == g_ipcCoordinatorPortCount)
+		if(m_countConnect + 1 == g_ipcCoordinatorPortCount)
 		{
-			m_count—onnect = 0;
+			m_countConnect = 0;
 		}
 		else
 		{
-			m_count—onnect++;
+			m_countConnect++;
 		}
 
 		ConnectToCoordinator();
@@ -377,7 +381,7 @@ void IPCModule::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 	}
 
 	m_csConnectors.Enter();
-	std::map<std::string, std::vector<std::string>>::iterator it = m_connectors.find(object.m_ipcName.GetModuleNameString());
+	std::map<std::string, std::vector<std::string> >::iterator it = m_connectors.find(object.m_ipcName.GetModuleNameString());
 	if(it != m_connectors.end())
 	{
 		IPCObjectName newName(msg.ipc_new_name());
@@ -428,7 +432,7 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 {
 	bool isModuleDelete = false;
 	m_csConnectors.Enter();
-	std::map<std::string, std::vector<std::string>>::iterator it = m_connectors.find(msg.m_id);
+	std::map<std::string, std::vector<std::string> >::iterator it = m_connectors.find(msg.m_id);
 	if(it != m_connectors.end())
 	{
 		std::vector<std::string>::iterator it1 = std::find(it->second.begin(), it->second.end(), msg.m_connId);
@@ -457,13 +461,13 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 		!m_coordinatorName.empty() && msg.m_id == m_coordinatorName)
 	{
 		m_ipcObject.Clear();
-		if(m_count—onnect + 1 == g_ipcCoordinatorPortCount)
+		if(m_countConnect + 1 == g_ipcCoordinatorPortCount)
 		{
-			m_count—onnect = 0;
+			m_countConnect = 0;
 		}
 		else
 		{
-			m_count—onnect++;
+			m_countConnect++;
 		}
 
 		Thread::sleep(1000);

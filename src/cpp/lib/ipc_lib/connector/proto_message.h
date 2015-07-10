@@ -33,7 +33,7 @@ public:
 
 	virtual bool deserialize(char* data, int& len)
 	{
-		int size = ByteSize();
+		int size = this->ByteSize();
 		if (size > len)
 		{
 			len = size;
@@ -41,12 +41,12 @@ public:
 		}
 
 		len = size;
-		return SerializeToArray(data, len);
+		return this->SerializeToArray(data, len);
 	}
 
 	virtual std::string GetName()const
 	{
-		return GetTypeName();
+		return this->GetTypeName();
 	}
 
 	static std::string GetMessageName()
@@ -108,11 +108,11 @@ public:
 
 	virtual bool deserialize(char* data, int& len)
 	{
-		int size = ByteSize();
+		int size = this->ByteSize();
 		std::string newData;
 		newData.resize(size, 0);
 		IPCMessage msg;
-		msg.set_message_name(GetTypeName());
+		msg.set_message_name(this->GetTypeName());
 		*msg.add_ipc_path() = m_ipcPath;
 		msg.set_message(newData);
 		int newSize = msg.ByteSize();
@@ -123,7 +123,7 @@ public:
 		}
 
 		len = newSize;
-		if(!SerializeToArray((char*)newData.c_str(), size))
+		if(!this->SerializeToArray((char*)newData.c_str(), size))
 		{
 			return false;
 		}
@@ -141,7 +141,7 @@ public:
 
 	virtual std::string GetName()const
 	{
-		return GetTypeName();
+		return this->GetTypeName();
 	}
 
 	static std::string GetMessageName()
@@ -160,7 +160,7 @@ public:
 	HandlerProtoMessage(THandler* handler)
 		: m_handler(handler){}
 	HandlerProtoMessage(THandler* handler, const TMessage& msg, const IPCName& ipcPath)
-		: SimpleProtoMessage(msg, ipcPath), m_handler(handler){}
+		: SimpleProtoMessage<TMessage>(msg, ipcPath), m_handler(handler){}
 
 	~HandlerProtoMessage(){}
 
