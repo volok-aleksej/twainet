@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\dllmain.cpp" />
+    <ClCompile Include="application\twainet.cpp" />
     <ClCompile Include="message\NotificationMessages.cpp" />
     <ClCompile Include="module\twainet_module.cpp" />
   </ItemGroup>

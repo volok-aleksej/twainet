@@ -24,6 +24,9 @@
     <ClCompile Include="message\NotificationMessages.cpp">
       <Filter>message</Filter>
     </ClCompile>
+    <ClCompile Include="application\twainet.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">

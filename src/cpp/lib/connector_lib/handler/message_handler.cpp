@@ -25,7 +25,7 @@ bool MessageHandler::onData(char* data, int len)
 	memcpy(&typeLen, data, sizeof(int));
 	int headerLen = sizeof(int) + typeLen;
 	if (typeLen
-		&& len >= (unsigned int)headerLen)
+		&& len >= headerLen)
 	{
 		std::string type("", typeLen);
 		memcpy((char*)type.c_str(), data + sizeof(size_t), typeLen);

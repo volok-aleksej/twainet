@@ -148,7 +148,7 @@ bool SecureSocket::Recv(char* data, int len)
 
 bool SecureSocket::GetData(char* data, int len)
 {
-	if(m_recvdata.size() < len)
+	if((int)m_recvdata.size() < len)
 	{
 		return false;
 	}
