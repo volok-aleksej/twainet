@@ -47,6 +47,7 @@ private:
 	int m_udpSocket;
 };
 
+#ifdef WIN32
 class PPPSocketFactory : public SocketFactory
 {
 public:
@@ -68,5 +69,6 @@ public:
 private:
 	std::string m_sessionId;
 };
+#endif/*WIN32*/
 
 #endif/*SOCKET_FACTORIES_H*/
