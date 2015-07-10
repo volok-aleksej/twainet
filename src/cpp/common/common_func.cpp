@@ -2,6 +2,7 @@
 #include <objbase.h>
 #else
 #include <errno.h>
+#include <uuid/uuid.h>
 #endif
 
 #include "common_func.h"
@@ -18,6 +19,8 @@ std::string CreateGUID()
 	StringFromGUID2(guid, (wchar_t*)guidWStr.c_str(), guidWStr.size());
 	g_wcstombs(guidStr, guidWStr);
 #else
+	uuid_t out;
+	uuid_generate_time(out);
 #endif
 	return guidStr.c_str();
 }
