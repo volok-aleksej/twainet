@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(protobuf)
 
+execute_process(COMMAND svn checkout https://github.com/google/protobuf/tags/v2.5.0/src src
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 #    set(CMAKE_BUILD_TYPE "Release")
