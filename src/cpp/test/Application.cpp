@@ -1,6 +1,11 @@
-#include "stdafx.h"
+#ifdef WIN32
+#	include "stdafx.h"
+#else
+#	include <string.h>
+#	include <stdio.h>
+#endif/*WIN32*/
 #include "Application.h"
-#include "common\common_func.h"
+#include "common/common_func.h"
 #include <string>
 #include <time.h>
 
@@ -10,72 +15,72 @@ Twainet::TwainetCallback tc = {&Application::OnServerConnected, &Application::On
 							   &Application::OnModuleCreationFailed, &Application::OnTunnelConnected, &Application::OnTunnelDisconnected,
 							   &Application::OnTunnelCreationFailed, &Application::OnMessageRecv};
 
-void _stdcall Application::OnModuleCreationFailed(Twainet::Module module)
+void TWAINET_CALL Application::OnModuleCreationFailed(Twainet::Module module)
 {
 	Application::GetInstance().onModuleCreationFailed(module);
 }
 
-void _stdcall Application::OnServerCreationFailed(Twainet::Module module)
+void TWAINET_CALL Application::OnServerCreationFailed(Twainet::Module module)
 {
 	Application::GetInstance().onServerCreationFailed(module);
 }
 
-void _stdcall Application::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL Application::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
 	Application::GetInstance().onTunnelCreationFailed(module, sessionId);
 }
 
-void _stdcall Application::OnServerConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL Application::OnServerConnected(Twainet::Module module, const char* sessionId)
 {
 	Application::GetInstance().onServerConnected(module, sessionId);
 }
 
-void _stdcall Application::OnClientConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL Application::OnClientConnected(Twainet::Module module, const char* sessionId)
 {
 	Application::GetInstance().onClientConnected(module, sessionId);
 }
 
-void _stdcall Application::OnClientDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL Application::OnClientDisconnected(Twainet::Module module, const char* sessionId)
 {
 	Application::GetInstance().onClientDisconnected(module, sessionId);
 }
 
-void _stdcall Application::OnClientConnectionFailed(Twainet::Module module)
+void TWAINET_CALL Application::OnClientConnectionFailed(Twainet::Module module)
 {
 	Application::GetInstance().onClientConnectionFailed(module);
 }
 
-void _stdcall Application::OnServerDisconnected(Twainet::Module module)
+void TWAINET_CALL Application::OnServerDisconnected(Twainet::Module module)
 {
 	Application::GetInstance().onServerDisconnected(module);
 }
 
-void _stdcall Application::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL Application::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	Application::GetInstance().onModuleConnected(module, moduleId);
 }
 
-void _stdcall Application::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL Application::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	Application::GetInstance().onModuleDisconnected(module, moduleId);
 }
 
-void _stdcall Application::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL Application::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	Application::GetInstance().onModuleConnectionFailed(module, moduleId);
 }
 
-void _stdcall Application::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+void TWAINET_CALL Application::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	Application::GetInstance().onTunnelConnected(module, sessionId, type);
 }
 
-void _stdcall Application::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL Application::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
 	Application::GetInstance().onTunnelDisconnected(module, sessionId);
 }
 
-void _stdcall Application::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+void TWAINET_CALL Application::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
 	Application::GetInstance().onMessageRecv(module, msg);
 }
@@ -103,7 +108,11 @@ void Application::ThreadFunc()
 {
 	std::string guid = CreateGUID();
 	memset(&m_moduleName, 0, sizeof(m_moduleName));
+#ifdef WIN32
 	strcpy_s(m_moduleName.m_name, MAX_NAME_LENGTH, guid.c_str());
+#else
+	strcpy(m_moduleName.m_name, guid.c_str());
+#endif/*WIN32*/
 	m_module = Twainet::CreateModule(m_moduleName, false, true);
 #ifdef DEBUG_1
 	Twainet::CreateServer(m_module, 1054);
@@ -111,7 +120,7 @@ void Application::ThreadFunc()
 #else
 	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
 #endif
-	while(!m_isStop){Sleep(200);}
+	while(!m_isStop){Thread::sleep(200);}
 }
 
 void Application::Stop()
@@ -240,12 +249,13 @@ void Application::onMessageRecv(Twainet::Module module, const Twainet::Message& 
 {
 	static int dataLen = 0;
 	dataLen += msg.m_dataLen;
-	
+#ifdef WIN32
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = {0, 0};
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(hStdOut, &csbi);
 	csbi.dwCursorPosition.X = 0;
     SetConsoleCursorPosition(hStdOut, csbi.dwCursorPosition);
+#endif
 	printf("datalen: %u", dataLen);
 }

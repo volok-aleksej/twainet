@@ -21,6 +21,7 @@ std::string CreateGUID()
 #else
 	uuid_t out;
 	uuid_generate_time(out);
+	guidStr = (char*)out;
 #endif
 	return guidStr.c_str();
 }

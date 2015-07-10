@@ -13,7 +13,11 @@
 #include "common/aes.h"
 
 #pragma warning(disable:4251)
-#include "udt.h"
+#ifdef WIN32
+#	include "udt.h"
+#else
+#	include "udt/udt.h"
+#endif/*WIN32*/
 #pragma warning(default:4251)
 
 #define RSA_DATA_SIZE 2048
@@ -301,6 +305,7 @@ bool SecureTCPSocket::RecvData(char* data, int len)
 /*********************************************************************************/
 /*                              SecurePPPSocket                                  */
 /*********************************************************************************/
+#ifdef WIN32
 SecurePPPSocket::SecurePPPSocket(int socket)
 : PPPSocket(socket)
 {
@@ -350,3 +355,4 @@ bool SecurePPPSocket::RecvData(char* data, int len)
 {
 	return PPPSocket::Recv(data, len);
 }
+#endif/*WIN32*/

@@ -62,6 +62,7 @@ protected:
 	virtual bool RecvData(char* data, int len);
 };
 
+#ifdef WIN32
 class SecurePPPSocket : public SecureSocket, public PPPSocket
 {
 public:
@@ -74,5 +75,7 @@ protected:
 	virtual bool SendData(char* data, int len);
 	virtual bool RecvData(char* data, int len);
 };
+
+#endif/*WIN32*/
 
 #endif/*SECURE_SOCKET_H*/

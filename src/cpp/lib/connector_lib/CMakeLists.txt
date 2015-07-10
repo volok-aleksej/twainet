@@ -25,12 +25,12 @@ set (SRC_${PROJECT_NAME}
     thread/connect_thread.cpp
     thread/listen_thread.cpp
 )
+# 
+add_definitions(-fPIC)	
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/openssl
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src)
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})

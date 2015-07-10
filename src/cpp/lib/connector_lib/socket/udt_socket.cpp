@@ -1,7 +1,11 @@
 #include "udt_socket.h"
 
 #pragma warning(disable:4251)
-#include "udt.h"
+#ifdef WIN32
+#	include "udt.h"
+#else
+#	include "udt/udt.h"
+#endif/*WIN32*/
 #pragma warning(default:4251)
 
 UDTSocket::UDTSocket()
@@ -67,7 +71,11 @@ bool UDTSocket::Bind(const std::string& host, int port)
 	}
 	else
 	{
+#ifdef WIN32
 		int res = UDT::bind(m_socket, m_udpSocket);
+#else
+		int res = UDT::bind2(m_socket, m_udpSocket);
+#endif
 		if (res == SOCKET_ERROR)
 		{
 			return false;

@@ -20,10 +20,11 @@ set (SRC_${PROJECT_NAME}
     thread/ping_thread.cpp
 )
 
+add_definitions(-fPIC)	
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages)
 
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})

@@ -8,8 +8,11 @@
 #	include "connector_lib/ppp/ppp_library.h"
 #else
 #endif/*WIN32*/
-
-#include "udt.h"
+#ifdef WIN32
+#	include "udt.h"
+#else
+#	include "udt/udt.h"
+#endif/*WIN32*/
 #include "twainet.h"
 #include "application.h"
 #include "utils/utils.h"

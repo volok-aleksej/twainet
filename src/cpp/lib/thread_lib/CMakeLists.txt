@@ -14,6 +14,8 @@ set (SRC_${PROJECT_NAME}
     thread/thread_manager.cpp
 )
 
+add_definitions(-fPIC)	
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})
