@@ -18,6 +18,7 @@
 
 extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
+	UDT::startup();
 	Application::GetInstance().Init(twainet);
 #ifdef WIN32
 	PPPLibrary::GetInstance().InitLibrary();
@@ -27,6 +28,7 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 extern "C" void Twainet::FreeLibrary()
 {
 	ManagersContainer::GetInstance().Join();
+	UDT::cleanup();
 #ifdef WIN32
 	PPPLibrary::GetInstance().FreeLibrary();
 #endif/*WIN32*/
