@@ -1,7 +1,7 @@
 #ifndef TUNNEL_CHECKER_THREAD_H
 #define TUNNEL_CHECKER_THREAD_H
 
-#include "thread_lib\common\managers_container.h"
+#include "thread_lib/common/managers_container.h"
 
 class TunnelModule;
 

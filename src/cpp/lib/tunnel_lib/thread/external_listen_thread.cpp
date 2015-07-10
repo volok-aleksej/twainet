@@ -1,5 +1,6 @@
 #include "external_listen_thread.h"
-#include "../message/tunnel_messages.h"
+#include "message/tunnel_messages.h"
+#include "common/common_func.h"
 #include "connector_lib/socket/udp_socket.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "thread_lib/thread/thread_manager.h"
@@ -118,7 +119,7 @@ bool ExternalListenThread::CheckGetSession()
 
 void ExternalListenThread::SignalError()
 {
-	ListenErrorMessage errMsg(m_address.m_id, "", GetLastError());
+	ListenErrorMessage errMsg(m_address.m_id, "", GetError());
 	onSignal(errMsg);
 }
 

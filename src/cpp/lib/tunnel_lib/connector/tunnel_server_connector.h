@@ -2,7 +2,7 @@
 #define TUNNEL_SERVER_CONNECTOR_H
 
 #include "tunnel_connector.h"
-#include "ipc_lib\connector\ipc_connector.h"
+#include "ipc_lib/connector/ipc_connector.h"
 
 class TunnelServerConnector : public IPCConnector
 {

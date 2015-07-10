@@ -1,6 +1,7 @@
 #ifndef PPP_LIBRARY_H
 #define PPP_LIBRARY_H
 
+#ifdef WIN32
 #include <windows.h>
 #include <string>
 #include "common\singleton.h"
@@ -41,5 +42,6 @@ private:
 	::GetAvailableIdCount getAvailableIdCount;
 	::GetAvailableId getAvailableId;
 };
+#endif/*WIN32*/
 
 #endif/*PPP_LIBRARY_H*/

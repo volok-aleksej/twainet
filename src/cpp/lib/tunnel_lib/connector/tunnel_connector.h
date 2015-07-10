@@ -1,8 +1,8 @@
 #ifndef TUNNEL_CONNECTOR_H
 #define TUNNEL_CONNECTOR_H
 
-#include "ipc_lib\connector\ipc_connector.h"
-#include "ipc_lib\thread\ping_thread.h"
+#include "ipc_lib/connector/ipc_connector.h"
+#include "ipc_lib/thread/ping_thread.h"
 
 #pragma warning(disable:4244 4267)
 #include "../messages/client_server.pb.h"

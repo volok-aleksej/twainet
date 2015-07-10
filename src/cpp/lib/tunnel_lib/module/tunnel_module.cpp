@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdio.h>
 #include "tunnel_module.h"
 #include "connector/tunnel_connector.h"
 #include "../thread/external_listen_thread.h"
@@ -665,6 +666,7 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 
 void TunnelModule::CreatePPPConnectThread(const std::string& extSessionId)
 {
+#ifdef WIN32
 	CSLocker lock(&m_cs);
 	TunnelConnect* tunnel;
 	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
@@ -686,10 +688,12 @@ void TunnelModule::CreatePPPConnectThread(const std::string& extSessionId)
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddPPPConnector));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorPPPConnect));
 	thread->Start();
+#endif/*WIN32*/
 }
 
 void TunnelModule::CreatePPPListenThread()
 {
+#ifdef WIN32
 	if(m_pppListenThread)
 	{
 		m_pppListenThread->Stop();
@@ -709,6 +713,7 @@ void TunnelModule::CreatePPPListenThread()
 	m_pppListenThread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorPPPListener));
 	m_pppListenThread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddPPPConnector));
 	m_pppListenThread->Start();
+#endif/*WIN32*/
 }
 
 void TunnelModule::CheckTunnels()
@@ -723,7 +728,7 @@ void TunnelModule::CheckTunnels()
 		{
 			std::string sessionId = it->first;
 			delete it->second;
-			it = m_tunnels.erase(it); 
+			m_tunnels.erase(it++); 
 			OnTunnelConnectFailed(sessionId);
 		}
 		else
@@ -738,7 +743,7 @@ void TunnelModule::CheckTunnels()
 		if(curTime - it->second->m_creationTime > 30)//TODO: 30 second ?
 		{
 			delete it->second;
-			it = m_servers.erase(it); 
+			m_servers.erase(it++); 
 		}
 		else
 		{

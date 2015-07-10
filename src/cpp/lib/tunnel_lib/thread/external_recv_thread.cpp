@@ -1,4 +1,5 @@
 #include "external_recv_thread.h"
+#include "common/common_func.h"
 #include "connector_lib/socket/udp_socket.h"
 #include "connector_lib/message/connector_messages.h"
 
@@ -33,14 +34,14 @@ void ExternalRecvThread::ThreadFunc()
 	{
 		if (!m_socket->Recv((char*)&len, sizeof(int)))
 		{
-			ListenErrorMessage msg(m_id, "", GetLastError());
+			ListenErrorMessage msg(m_id, "", GetError());
 			onSignal(msg);
 			break;
 		}
 
 		if(len < 0 || len > 0xffff)
 		{
-			ListenErrorMessage msg(m_id, "", GetLastError());
+			ListenErrorMessage msg(m_id, "", GetError());
 			onSignal(msg);
 			break;
 		}
@@ -51,7 +52,7 @@ void ExternalRecvThread::ThreadFunc()
 		int port;
 		if(!m_socket->RecvFrom((char*)data.c_str(), len, ip, port))
 		{
-			ListenErrorMessage msg(m_id, "", GetLastError());
+			ListenErrorMessage msg(m_id, "", GetError());
 			onSignal(msg);
 			break;
 		}

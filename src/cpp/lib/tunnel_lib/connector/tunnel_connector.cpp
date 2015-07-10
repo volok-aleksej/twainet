@@ -1,6 +1,6 @@
 #include "tunnel_connector.h"
-#include "module\tunnel_module.h"
-#include "message\tunnel_messages.h"
+#include "module/tunnel_module.h"
+#include "message/tunnel_messages.h"
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false)

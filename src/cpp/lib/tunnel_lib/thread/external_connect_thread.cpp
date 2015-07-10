@@ -1,4 +1,5 @@
 #include "external_connect_thread.h"
+#include "common/common_func.h"
 #include "connector_lib/socket/udp_socket.h"
 #include "connector_lib/socket/udt_socket.h"
 #include "connector_lib/socket/socket_factories.h"
@@ -96,6 +97,6 @@ void ExternalConnectThread::SignalError()
 	}
 	m_csSocket.Leave();
 
-	ConnectErrorMessage errMsg(m_address.m_moduleName, "", GetLastError());
+	ConnectErrorMessage errMsg(m_address.m_moduleName, "", GetError());
 	onSignal(errMsg);
 }

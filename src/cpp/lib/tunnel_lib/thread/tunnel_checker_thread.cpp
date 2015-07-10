@@ -1,5 +1,5 @@
 #include "tunnel_checker_thread.h"
-#include "module\tunnel_module.h"
+#include "module/tunnel_module.h"
 
 TunnelCheckerThread::TunnelCheckerThread(TunnelModule* module)
 : m_module(module)

@@ -1,7 +1,8 @@
 #include "relay_listen_thread.h"
-#include "../connector/tunnel_connector.h"
-#include "../connector/tunnel_server_connector.h"
-#include "../message/tunnel_messages.h"
+#include "common/common_func.h"
+#include "connector/tunnel_connector.h"
+#include "connector/tunnel_server_connector.h"
+#include "message/tunnel_messages.h"
 #include "ipc_lib/module/ipc_module.h"
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "thread_lib/thread/thread_manager.h"
@@ -196,6 +197,6 @@ bool RelayListenThread::CheckConnect()
 
 void RelayListenThread::SignalError()
 {
-	ListenErrorMessage errMsg(m_address.m_id, "", GetLastError());
+	ListenErrorMessage errMsg(m_address.m_id, "", GetError());
 	onSignal(errMsg);
 }

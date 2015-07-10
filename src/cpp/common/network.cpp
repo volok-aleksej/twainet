@@ -53,7 +53,7 @@ std::vector<std::string> GetLocalIps()
 	char host[NI_MAXHOST];
 
 	if (getifaddrs(&ifaddr) == -1) {
-		return;
+		return ips;
 	}
 
 	for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
@@ -68,7 +68,7 @@ std::vector<std::string> GetLocalIps()
 				sizeof(struct sockaddr_in6),
 				host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 			if (s != 0) {
-				return;
+				return ips;
 			}
 			else if (host[0] == '1' && host[1] == '2' && host[2] == '7')
 			{
