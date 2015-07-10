@@ -112,9 +112,15 @@ extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module modu
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	const IPCObjectName& name = twainetModule->GetModuleName();
 	Twainet::ModuleName retName = {0};
+#ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.module_name().c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, name.host_name().c_str());
 	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, name.suffix().c_str());
+#else
+	strcpy(retName.m_name, name.module_name().c_str());
+	strcpy(retName.m_host, name.host_name().c_str());
+	strcpy(retName.m_suffix, name.suffix().c_str());
+#endif/*WIN32*/
 	return retName;
 }
 
@@ -138,9 +144,15 @@ extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet
 	for(std::vector<IPCObjectName>::iterator it = objects.begin();
 		it != objects.end(); it++, i++)
 	{
+#ifdef WIN32
 		strcpy_s(modules[i].m_name, MAX_NAME_LENGTH, it->module_name().c_str());
 		strcpy_s(modules[i].m_host, MAX_NAME_LENGTH, it->host_name().c_str());
 		strcpy_s(modules[i].m_suffix, MAX_NAME_LENGTH, it->suffix().c_str());
+#else
+		strcpy(modules[i].m_name, it->module_name().c_str());
+		strcpy(modules[i].m_host, it->host_name().c_str());
+		strcpy(modules[i].m_suffix, it->suffix().c_str());
+#endif/*WIN32*/
 	}
 	return objects.size();
 }

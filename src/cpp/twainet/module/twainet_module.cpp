@@ -1,6 +1,6 @@
 #include "twainet_module.h"
-#include "ipc_lib\connector\ipc_connector_factory.h"
-#include "application\application.h"
+#include "ipc_lib/connector/ipc_connector_factory.h"
+#include "application/application.h"
 
 TwainetModule::TwainetModule(const IPCObjectName& ipcName, bool isPPPListener)
 	: TunnelModule(ipcName, new IPCConnectorFactory<IPCConnector>(ipcName), isPPPListener)

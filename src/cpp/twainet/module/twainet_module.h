@@ -1,7 +1,7 @@
 #ifndef TWAINET_MODULE_H
 #define TWAINET_MODULE_H
 
-#include "tunnel_lib\module\tunnel_module.h"
+#include "tunnel_lib/module/tunnel_module.h"
 
 class TwainetModule : public TunnelModule
 {

@@ -5,11 +5,18 @@
 #undef SendMessage
 #endif/*SendMessage*/
 
-#ifdef TWAINET_EXPORT
-#define TWAINET_FUNC __declspec(dllexport) 
+#ifdef WIN32
+#	define TWAINET_CALL __stdcall
+#	ifdef TWAINET_EXPORT
+#		define TWAINET_FUNC __declspec(dllexport)
+#	else
+#		define TWAINET_FUNC __declspec(dllimport) 
+#	endif // TWAINET_EXPORT
 #else
-#define TWAINET_FUNC __declspec(dllimport) 
-#endif // TWAINET_EXPORT
+#	define TWAINET_CALL
+#	define TWAINET_FUNC extern
+#endif/*WIN32*/
+
 
 #define MAX_NAME_LENGTH 255
 
@@ -52,20 +59,20 @@ extern "C"
 
 		struct TwainetCallback
 		{
-			void (_stdcall *OnServerConnected)(Module module, const char* sessionId);
-			void (_stdcall *OnServerDisconnected)(Module module);
-			void (_stdcall *OnServerCreationFailed)(Module module);
-			void (_stdcall *OnClientConnected)(Module module, const char* sessionId);
-			void (_stdcall *OnClientDisconnected)(Module module, const char* sessionId);
-			void (_stdcall *OnClientConnectionFailed)(Module module);
-			void (_stdcall *OnModuleConnected)(Module module, const ModuleName& moduleId);
-			void (_stdcall *OnModuleDisconnected)(Module module, const ModuleName& moduleId);
-			void (_stdcall *OnModuleConnectionFailed)(Module module, const ModuleName& moduleName);
-			void (_stdcall *OnModuleCreationFailed)(Module module);
-			void (_stdcall *OnTunnelConnected)(Module module, const char* sessionId, TypeConnection type);
-			void (_stdcall *OnTunnelDisconnected)(Module module, const char* sessionId);
-			void (_stdcall *OnTunnelCreationFailed)(Module module, const char* sessionId);
-			void (_stdcall *OnMessageRecv)(Module module, const Message& msg);
+			void (TWAINET_CALL *OnServerConnected)(Module module, const char* sessionId);
+			void (TWAINET_CALL *OnServerDisconnected)(Module module);
+			void (TWAINET_CALL *OnServerCreationFailed)(Module module);
+			void (TWAINET_CALL *OnClientConnected)(Module module, const char* sessionId);
+			void (TWAINET_CALL *OnClientDisconnected)(Module module, const char* sessionId);
+			void (TWAINET_CALL *OnClientConnectionFailed)(Module module);
+			void (TWAINET_CALL *OnModuleConnected)(Module module, const ModuleName& moduleId);
+			void (TWAINET_CALL *OnModuleDisconnected)(Module module, const ModuleName& moduleId);
+			void (TWAINET_CALL *OnModuleConnectionFailed)(Module module, const ModuleName& moduleName);
+			void (TWAINET_CALL *OnModuleCreationFailed)(Module module);
+			void (TWAINET_CALL *OnTunnelConnected)(Module module, const char* sessionId, TypeConnection type);
+			void (TWAINET_CALL *OnTunnelDisconnected)(Module module, const char* sessionId);
+			void (TWAINET_CALL *OnTunnelCreationFailed)(Module module, const char* sessionId);
+			void (TWAINET_CALL *OnMessageRecv)(Module module, const Message& msg);
 		};
 
 		// Initialize library

@@ -1,6 +1,6 @@
 #include "NotificationMessages.h"
-#include "client_server_lib\module\client_server_module.h"
-#include "tunnel_lib\module\tunnel_module.h"
+#include "client_server_lib/module/client_server_module.h"
+#include "tunnel_lib/module/tunnel_module.h"
 
 /*******************************************************************************************/
 /*                                 NotificationMessage                                     */
@@ -41,8 +41,13 @@ void ClientServerConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	}
 	
 	Twainet::ModuleName retName = {0};
+#ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, m_sessionId.c_str());
+#else
+	strcpy(retName.m_name, name.c_str());
+	strcpy(retName.m_host, m_sessionId.c_str());
+#endif/*WIN32*/
 	callbacks.OnModuleConnected(m_module, retName);
 }
 
@@ -62,9 +67,15 @@ void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	IPCObjectName name = IPCObjectName::GetIPCName(m_moduleName);
 	Twainet::ModuleName retName = {0};
+#ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.module_name().c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, name.host_name().c_str());
 	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, name.suffix().c_str());
+#else
+	strcpy(retName.m_name, name.module_name().c_str());
+	strcpy(retName.m_host, name.host_name().c_str());
+	strcpy(retName.m_suffix, name.suffix().c_str());
+#endif/*WIN32*/
 	callbacks.OnModuleConnected(m_module, retName);
 }
 
@@ -97,9 +108,15 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	}
 
 	Twainet::ModuleName retName = {0};
+#ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
 	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+#else
+	strcpy(retName.m_name, idName.module_name().c_str());
+	strcpy(retName.m_host, idName.host_name().c_str());
+	strcpy(retName.m_suffix, idName.suffix().c_str());
+#endif/*WIN32*/
 	callbacks.OnModuleDisconnected(m_module, retName);
 }
 
@@ -119,8 +136,13 @@ void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
 	Twainet::ModuleName retName = {0};
+#ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, TunnelModule::m_tunnelIPCName.c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, m_sessionId.c_str());
+#else
+	strcpy(retName.m_name, TunnelModule::m_tunnelIPCName.c_str());
+	strcpy(retName.m_host, m_sessionId.c_str());
+#endif/*WIN32*/
 	callbacks.OnModuleConnected(m_module, retName);
 }
 
@@ -146,9 +168,15 @@ void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 	{
 		IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
 		Twainet::ModuleName retName = {0};
+#ifdef WIN32
 		strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
 		strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
 		strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+#else
+		strcpy(retName.m_name, idName.module_name().c_str());
+		strcpy(retName.m_host, idName.host_name().c_str());
+		strcpy(retName.m_suffix, idName.suffix().c_str());
+#endif/*WIN32*/
 		callbacks.OnModuleConnectionFailed(m_module, retName);
 	}
 }
@@ -180,9 +208,15 @@ void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 		it != m_path.end(); it++)
 	{
 		IPCObjectName idName = IPCObjectName::GetIPCName(*it);
+#ifdef WIN32
 		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
 		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
 		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_suffix, MAX_NAME_LENGTH, idName.suffix().c_str());
+#else
+		strcpy((char*)msg.m_path[it - m_path.begin()].m_name, idName.module_name().c_str());
+		strcpy((char*)msg.m_path[it - m_path.begin()].m_host, idName.host_name().c_str());
+		strcpy((char*)msg.m_path[it - m_path.begin()].m_suffix, idName.suffix().c_str());
+#endif/*WIN32*/
 	}
 	callbacks.OnMessageRecv(m_module, msg);
 	delete msg.m_path;

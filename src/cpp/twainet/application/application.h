@@ -2,14 +2,14 @@
 #define APPLICATION_H
 
 #include "twainet.h"
-#include "twainet\module\twainet_module.h"
-#include "twainet\message\NotificationMessages.h"
-#include "thread_lib\common\managers_container.h"
+#include "twainet/module/twainet_module.h"
+#include "twainet/message/NotificationMessages.h"
+#include "thread_lib/common/managers_container.h"
 
 class Application : public ManagerCreator<Application>
 {
 protected:
-	template<class Object> friend class ManagerCreator;
+	friend class ManagerCreator<Application>;
 	Application();
 	~Application();
 	virtual void ManagerFunc();
