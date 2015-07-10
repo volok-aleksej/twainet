@@ -28,7 +28,7 @@ bool MessageHandler::onData(char* data, int len)
 		&& len >= headerLen)
 	{
 		std::string type("", typeLen);
-		memcpy((char*)type.c_str(), data + sizeof(size_t), typeLen);
+		memcpy((char*)type.c_str(), data + sizeof(unsigned int), typeLen);
 		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);
 		if (it != m_messages.end())
 		{
@@ -67,8 +67,8 @@ bool MessageHandler::deserialize(const DataMessage& msg, char* data, int& len)
 
 	if(res && data)
 	{
-		memcpy(data, &typeLen, sizeof(size_t));
-		memcpy(data + sizeof(size_t), type.c_str(), typeLen);
+		memcpy(data, &typeLen, sizeof(unsigned int));
+		memcpy(data + sizeof(unsigned int), type.c_str(), typeLen);
 	}
 
 	return res;
