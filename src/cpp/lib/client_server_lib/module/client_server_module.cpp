@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "client_server_module.h"
 #include "connector_lib/thread/connect_thread.h"
 #include "connector_lib/socket/socket_factories.h"

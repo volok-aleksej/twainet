@@ -1,7 +1,7 @@
 #ifndef CLIENT_SERVER_MESSAGES_H
 #define CLIENT_SERVER_MESSAGES_H
 
-#include "connector_lib\message\connector_messages.h"
+#include "connector_lib/message/connector_messages.h"
 
 class ClientServerConnectedMessage : public ConnectedMessage
 {
