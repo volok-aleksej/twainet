@@ -585,9 +585,9 @@ void CUDT::connect(const sockaddr* serv_addr)
    // Wait for the negotiated configurations from the peer side.
    response.pack(0, NULL, resdata, m_iPayloadSize);
 
-   uint64_t timeo = 3000000;
+   uint64_t timeo = 60000000;
    if (m_bRendezvous)
-      timeo *= 1;
+      timeo *= 10;
    uint64_t entertime = CTimer::getTime();
    uint64_t last_req_time = 0;
 

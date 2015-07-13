@@ -360,7 +360,8 @@ m_iMSS(0),
 m_iFlightFlagSize(0),
 m_iReqType(0),
 m_iID(0),
-m_iCookie(0)
+m_iCookie(0),
+m_piPeerIP()
 {
 }
 
