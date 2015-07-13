@@ -9,6 +9,8 @@
 #include <string>
 #include <time.h>
 
+#define DEBUG_1
+
 Twainet::TwainetCallback tc = {&ApplicationTest::OnServerConnected, &ApplicationTest::OnServerDisconnected, &ApplicationTest::OnServerCreationFailed,
 							   &ApplicationTest::OnClientConnected, &ApplicationTest::OnClientDisconnected, &ApplicationTest::OnClientConnectionFailed,
 							   &ApplicationTest::OnModuleConnected,	&ApplicationTest::OnModuleDisconnected, &ApplicationTest::OnModuleConnectionFailed,
@@ -186,7 +188,7 @@ void ApplicationTest::onModuleConnected(Twainet::Module module, const Twainet::M
 					strcmp(modules[i].m_name, "Client") == 0)
 				{
 					//Twainet::SetTunnelType(m_module, ownSessionId.c_str(), modules[i].m_host, Twainet::PPP);
-					Twainet::CreateTunnel(m_module, modules[i].m_host, Twainet::PPP);
+					Twainet::CreateTunnel(m_module, modules[i].m_host, Twainet::EXTERNAL);
 				}
 			}
 		}

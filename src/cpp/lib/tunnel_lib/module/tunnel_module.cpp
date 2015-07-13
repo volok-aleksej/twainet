@@ -724,7 +724,7 @@ void TunnelModule::CheckTunnels()
 	for(std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.begin();
 		it != m_tunnels.end();)
 	{
-		if(curTime - it->second->m_creationTime > 30)//TODO: 30 second ?
+		if(curTime - it->second->m_creationTime > 60)//TODO: 60 second ?
 		{
 			std::string sessionId = it->first;
 			delete it->second;
@@ -740,7 +740,7 @@ void TunnelModule::CheckTunnels()
 	for(std::map<std::string, TunnelServer*>::iterator it = m_servers.begin();
 		it != m_servers.end();)
 	{
-		if(curTime - it->second->m_creationTime > 30)//TODO: 30 second ?
+		if(curTime - it->second->m_creationTime > 60)//TODO: 60 second ?
 		{
 			delete it->second;
 			m_servers.erase(it++); 

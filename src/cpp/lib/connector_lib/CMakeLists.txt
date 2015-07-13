@@ -25,7 +25,7 @@ set (SRC_${PROJECT_NAME}
     thread/connect_thread.cpp
     thread/listen_thread.cpp
 )
-# 
+
 add_definitions(-fPIC)	
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
