@@ -7,5 +7,6 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 add_subdirectory(lib)
+add_subdirectory(external/udt4)
 add_subdirectory(twainet)
 add_subdirectory(test)

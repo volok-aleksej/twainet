@@ -14,7 +14,8 @@ set (SRC_${PROJECT_NAME}
 )
 
 set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE})
-set(DEPENDENCY_LIBS thread_lib
+set(DEPENDENCY_LIBS udt
+		    thread_lib
 		    connector_lib
 		    ipc_lib
 		    client_server_lib
@@ -25,7 +26,8 @@ add_definitions(-fPIC)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../messages)
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src)
 
 add_library (${PROJECT_NAME} SHARED ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/${PROJECT_NAME})
@@ -33,6 +35,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/work/${CMAKE
 
 set(EXTRA_LIBS pthread)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+	find_library(UDT_LIBRARY  NAMES udt PATHS ${LIB_PATH})
+	if(UDT_LIBRARY)
+	  set(EXTRA_LIBS ${EXTRA_LIBS} ${UDT_LIBRARY})
+	endif(UDT_LIBRARY)
 	find_library(THREAD_LIBRARY  NAMES thread_lib PATHS ${LIB_PATH})
 	if(THREAD_LIBRARY)
 	  set(EXTRA_LIBS ${EXTRA_LIBS} ${THREAD_LIBRARY})
@@ -59,4 +65,4 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	target_link_libraries(${PROJECT_NAME} ${DEPENDENCY_LIBS})
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
-target_link_libraries(${PROJECT_NAME} protobuf udt crypto uuid)
+target_link_libraries(${PROJECT_NAME} protobuf crypto uuid)

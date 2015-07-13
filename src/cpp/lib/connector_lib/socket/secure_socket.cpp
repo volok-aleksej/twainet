@@ -13,11 +13,7 @@
 #include "common/aes.h"
 
 #pragma warning(disable:4251)
-#ifdef WIN32
-#	include "udt.h"
-#else
-#	include "udt/udt.h"
-#endif/*WIN32*/
+#include "udt.h"
 #pragma warning(default:4251)
 
 #define RSA_DATA_SIZE 2048

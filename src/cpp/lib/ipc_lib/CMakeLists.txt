@@ -9,6 +9,14 @@ if(NOT CMAKE_BUILD_TYPE)
 #    set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
+add_custom_command(OUTPUT 
+		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.cc
+		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.h
+		  PRE_BUILD COMMAND
+		  protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+			 --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+			 ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.proto)
+
 set (SRC_${PROJECT_NAME}
     ../../../messages/ipc.pb.cc
     ../../common/tstring.cpp
