@@ -20,7 +20,7 @@
 #	define INVALID_SOCKET 0
 #endif/*INVALID_SOCKET*/
 #ifndef SOCKET_ERROR
-#	define SOCKET_ERROR 0
+#	define SOCKET_ERROR -1
 #endif/*SOCKET_ERROR*/
 
 class AnySocket
