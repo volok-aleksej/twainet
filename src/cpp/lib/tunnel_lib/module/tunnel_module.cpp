@@ -512,7 +512,7 @@ void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 {
 	CSLocker lock(&m_cs);
 	IPCObjectName sessionId(msg.ipc_name());
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(sessionId.GetModuleNameString());
+	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(sessionId.host_name());
 	if(it != m_tunnels.end())
 	{
 		delete it->second;
