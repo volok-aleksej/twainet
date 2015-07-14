@@ -170,9 +170,7 @@ bool ServiceManager::Stop()
 #else
 	std::string app_name = app_self_name();
 	pid_t pid = 0;
-	std::string pid_file("/var/run/");
-	pid_file.append(app_name);
-	pid_file.append(".pid");
+	std::string pid_file = get_process_pid_filename();
 	File f(pid_file);
 	if(!f.IsExist())
 		return 0;
@@ -257,4 +255,26 @@ bool ServiceManager::QueryStatus(SERVICE_STATUS_PROCESS& ssp)
 	return re == TRUE;
 }
 
+#endif/*WIN32*/
+
+#ifndef WIN32
+std::string get_process_pid_filename()
+{
+	std::string app_name = app_self_name();
+	pid_t pid = 0;
+	std::string pid_file;
+	if(geteuid() == 0)
+	{
+		pid_file = "/var/run/";
+	}
+	else
+	{
+		struct  passwd* pw = getpwuid(getuid());
+		pid_file = pw->pw_dir;
+		pid_file += "/";
+	}
+	pid_file.append(app_name);
+	pid_file.append(".pid");
+	return pid_file;
+}
 #endif/*WIN32*/
