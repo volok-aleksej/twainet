@@ -1,4 +1,6 @@
 #include "service_manager.h"
+#include "common/file.h"
+#include "common/process.h"
 
 extern int run_process();
 
@@ -90,6 +92,9 @@ bool ServiceManager::Start()
 			return true;
 		}
 	}
+#else
+	run_process();
+	return true;
 #endif/*WIN32*/
 	return false;
 }
@@ -162,6 +167,27 @@ bool ServiceManager::Stop()
 			return true;
 		}
 	}
+#else
+	std::string app_name = app_self_name();
+	pid_t pid = 0;
+	std::string pid_file("/var/run/");
+	pid_file.append(app_name);
+	pid_file.append(".pid");
+	File f(pid_file);
+	if(!f.IsExist())
+		return 0;
+
+	std::ifstream om(pid_file.c_str(), std::ios::in | std::ios::binary);
+	om >> pid;
+	f.Delete();
+	if(pid == 0)
+		return 0;
+
+	syslog(LOG_INFO, "Stopping daemonizing process %s", app_name.c_str());	
+	kill(pid, SIGTERM);
+	kill(pid, SIGKILL);
+
+	return 0;
 #endif/*WIN32*/
 	return false;
 }

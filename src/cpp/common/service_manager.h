@@ -3,6 +3,11 @@
 
 #ifdef WIN32
 #	include <windows.h>
+#else
+#	include <iostream>
+#	include <fstream> 
+#	include <syslog.h>
+#	include <signal.h>
 #endif/*WIN32*/
 
 #include <string>
