@@ -158,6 +158,7 @@ bool SecureSocket::GetData(char* data, int len)
 	memcpy((char*)newdata, m_recvdata.c_str() + len, m_recvdata.size() - len);
 	m_recvdata.resize(m_recvdata.size() - len, 0);
 	memcpy((char*)m_recvdata.c_str(), newdata, m_recvdata.size());
+	delete newdata;
 	return true;
 }
 
