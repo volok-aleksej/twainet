@@ -1,27 +1,32 @@
 #include "service_manager.h"
 
-#ifdef WIN32
+extern int run_process();
 
 ServiceManager::ServiceManager(const std::string& serviceName)
 : m_serviceName(serviceName)
 {
+#ifdef WIN32
 	m_scManager = ::OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	if(::GetLastError())
 	{
 		m_scManager = NULL;
 	}
+#endif/*WIN32*/
 }
 
 ServiceManager::~ServiceManager()
 {
+#ifdef WIN32
 	if (NULL != m_scManager) {
 		::CloseServiceHandle(m_scManager);
 		m_scManager = NULL;
 	}
+#endif/*WIN32*/
 }
 
 bool ServiceManager::Start()
 {
+#ifdef WIN32
 	if(NULL == m_scManager)
 	{
 		return false;
@@ -85,11 +90,13 @@ bool ServiceManager::Start()
 			return true;
 		}
 	}
+#endif/*WIN32*/
 	return false;
 }
 
 bool ServiceManager::Stop()
 {
+#ifdef WIN32
 	if(NULL == m_scManager)
 	{
 		return false;
@@ -155,11 +162,13 @@ bool ServiceManager::Stop()
 			return true;
 		}
 	}
+#endif/*WIN32*/
 	return false;
 }
 
 bool ServiceManager::Install(const std::string& descr, const std::string& binPath)
 {
+#ifdef WIN32
 	if(NULL == m_scManager)
 	{
 		return false;
@@ -175,11 +184,13 @@ bool ServiceManager::Install(const std::string& descr, const std::string& binPat
 		return true;
 	}
 
+#endif/*WIN32*/
 	return false;
 }
 
 bool ServiceManager::Remove()
 {
+#ifdef WIN32
 	if(NULL == m_scManager)
 	{
 		return false;
@@ -191,9 +202,11 @@ bool ServiceManager::Remove()
 		::CloseServiceHandle(m_service);
 		return res == TRUE;
 	}
+#endif/*WIN32*/
 	return false;
 }
 
+#ifdef WIN32
 bool ServiceManager::OpenService()
 {
 	if(NULL == m_scManager)

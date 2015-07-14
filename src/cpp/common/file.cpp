@@ -118,7 +118,7 @@ void File::CreateDir()
 
 		if(::access(folder.c_str(), 0) != 0)
 		{
-			::mkdir(folder.c_str());
+			::mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 		}
 	} while (pos != -1);
 }
@@ -131,7 +131,7 @@ int File::GetFileSize()
 	}
 
 	struct stat st;
-	::fstat(m_file->_file, &st);
+	::fstat(fileno(m_file), &st);
 	return st.st_size;
 }
 
