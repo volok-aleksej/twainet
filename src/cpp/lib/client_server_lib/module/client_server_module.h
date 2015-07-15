@@ -8,9 +8,30 @@
 
 class ClientServerModule : public IPCModule
 {
+	class UserPassword
+	{
+public:
+		UserPassword(std::string userName = "", std::string password = "")
+			: m_userName(userName), m_password(password){}
+		
+		void operator = (const UserPassword& userPass)
+		{
+			m_userName = userPass.m_userName;
+			m_password = userPass.m_password;
+		}
+
+		bool operator == (const UserPassword& userPass)
+		{
+			return m_userName == userPass.m_userName;
+		}
+
+		std::string m_userName;
+		std::string m_password;
+	};
 public:
 	static const std::string m_serverIPCName;
 	static const std::string m_clientIPCName;
+
 public:
 	ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
 	virtual ~ClientServerModule();
@@ -19,6 +40,9 @@ public:
 	void Disconnect();
 	void SetUserName(const std::string& userName);
 	void SetPassword(const std::string& password);
+	void AddUser(const std::string& userName, const std::string& password);
+	void RemoveUser(const std::string& userName, const std::string& password);
+	void ClearUsers();
 
 	void StartServer(int port);
 	bool IsStopServer();
@@ -49,11 +73,11 @@ private:
 	std::string m_ip;
 	int m_port;
 	bool m_isStopConnect;
-	std::string m_userName;
-	std::string m_password;
+	UserPassword m_userPassword;
 
 	//for server
 	IPCListenThread* m_serverThread;
+	ObjectManager<UserPassword> m_userPasswords;
 };
 
 

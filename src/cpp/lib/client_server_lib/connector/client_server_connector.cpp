@@ -92,7 +92,7 @@ void ClientServerConnector::OnStart()
 	{
 		ProtoMessage<Login, ClientServerConnector> loginMsg(this);
 		loginMsg.set_name(m_userName);
-		loginMsg.set_pasword(m_password);
+		loginMsg.set_password(m_password);
 		toMessage(loginMsg);
 	}
 }
@@ -200,11 +200,17 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 		m_checker->Stop();
 		m_checker = 0;
 	}
-	m_ownSessionId = msg.own_session_id();
 
 	LoginResultMessage lrMsg(this, msg);
 	onSignal(lrMsg);
-	
+	if(msg.login_result() == LOGIN_FAILURE)
+	{
+		Stop();
+		return;
+	}
+
+	m_ownSessionId = msg.own_session_id();
+
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
@@ -224,10 +230,19 @@ void ClientServerConnector::onMessage(const Login& msg)
 		m_checker = 0;
 	}
 
-	ProtoMessage<LoginResult, ClientServerConnector> loginResultMsg(this);
-	loginResultMsg.set_login_result(LOGIN_SUCCESS);
+	LoginMessage loginMsg(this, msg);
+	onSignal(loginMsg);
+
+	LoginResultMessage loginResultMsg(this);
+	loginResultMsg.set_login_result(loginMsg.login_result());
 	loginResultMsg.set_own_session_id(CreateGUID());
 	toMessage(loginResultMsg);
+
+	if(loginMsg.login_result() == LOGIN_FAILURE)
+	{
+		Stop();
+		return;
+	}
 
 	m_ownSessionId = loginResultMsg.own_session_id();
 	

@@ -30,6 +30,12 @@ extern "C"
 {
 	namespace Twainet
 	{
+		struct UserPassword
+		{
+			char m_user[MAX_NAME_LENGTH];
+			char m_pass[MAX_NAME_LENGTH];
+		};
+
 		struct ModuleName
 		{
 			char m_name[MAX_NAME_LENGTH];
@@ -95,7 +101,7 @@ extern "C"
 		TWAINET_FUNC void CreateServer(const Module module, int port);
 		
 		// Connect to server. If connection is successful will be created server module
-		TWAINET_FUNC void ConnectToServer(const Module module, const char* host, int port);
+		TWAINET_FUNC void ConnectToServer(const Module module, const char* host, int port, const UserPassword& userPassword);
 		
 		// Disconnect from server. Server module will be destroyed
 		TWAINET_FUNC void DisconnectFromServer(const Module module);
@@ -135,6 +141,9 @@ extern "C"
 
 		//Set tunnel's type that have to create between two clients
 		TWAINET_FUNC void SetTunnelType(const Module module, const char* oneSessionId, const char* twoSessionId, TypeConnection type);
+
+		//Set user list for login operation on server
+		TWAINET_FUNC void SetUsersList(const Module module, const UserPassword* users, int sizeUsers);
 	}
 };
 

@@ -5,7 +5,6 @@
 #	define WIN32_LEAN_AND_MEAN     
 #	include <winsock2.h>
 #	include <windows.h>
-#	include "connector_lib/ppp/ppp_library.h"
 #else
 #endif/*WIN32*/
 #include "udt.h"
@@ -19,18 +18,12 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	UDT::startup();
 	Application::GetInstance().Init(twainet);
-#ifdef WIN32
-	PPPLibrary::GetInstance().InitLibrary();
-#endif/*WIN32*/
 }
 
 extern "C" void Twainet::FreeLibrary()
 {
 	ManagersContainer::GetInstance().Join();
 	UDT::cleanup();
-#ifdef WIN32
-	PPPLibrary::GetInstance().FreeLibrary();
-#endif/*WIN32*/
 }
 
 extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator, bool isPPPListener)
@@ -42,59 +35,91 @@ extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& modu
 
 extern "C" void Twainet::DeleteModule(const Twainet::Module module)
 {
+	if(!module)
+		return;
+
 	Application::GetInstance().DeleteModule((TwainetModule*)module);
 }
 
 extern "C" void Twainet::CreateServer(const Twainet::Module module, int port)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->StartServer(port);
 }
 
-extern "C" void Twainet::ConnectToServer(const Twainet::Module module, const char* host, int port)
+extern "C" void Twainet::ConnectToServer(const Twainet::Module module, const char* host, int port, const UserPassword& userPassword)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->SetUserName(userPassword.m_user);
+	twainetModule->SetPassword(userPassword.m_pass);
 	twainetModule->Connect(host, port);
 }
 
 extern "C" void Twainet::DisconnectFromServer(const Twainet::Module module)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->Disconnect();
 }
 
 extern "C" void Twainet::DisconnectFromClient(const Twainet::Module module, const char* sessionId)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->DisconnectModule(IPCObjectName(ClientServerModule::m_clientIPCName, sessionId));
 }
 
 extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->ConnectTo(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
 }
 
 extern "C" void DisconnectFromModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->DisconnectModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
 }
 
 extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->InitNewTunnel(sessionId, (TunnelConnector::TypeConnection)type);
 }
 
 extern "C" void Twainet::DisconnectTunnel(const Twainet::Module module, const char* sessionId)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->DestroyTunnel(sessionId);
 }
 
 extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet::Message& msg)
 {
+	if(!module)
+		return;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	IPCMessage message;
 	message.set_message_name(msg.m_typeMessage);
@@ -110,6 +135,12 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 
 extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module module)
 {
+	if(!module)
+	{
+		ModuleName moduleName = {0};
+		return moduleName;
+	}
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	const IPCObjectName& name = twainetModule->GetModuleName();
 	Twainet::ModuleName retName = {0};
@@ -133,6 +164,9 @@ extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
 
 extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet::ModuleName* modules, int& sizeModules)
 {
+	if(!module)
+		return 0;
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	std::vector<IPCObjectName> objects = twainetModule->GetIPCObjects();
 	if(sizeModules < (int)objects.size())
@@ -162,4 +196,17 @@ extern "C" void Twainet::SetTunnelType(const Twainet::Module module, const char*
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->SetTypeTunnel(oneSessionId, twoSessionId, (TunnelConnector::TypeConnection)type);
+}
+
+extern "C" void Twainet::SetUsersList(const Twainet::Module module, const Twainet::UserPassword* users, int sizeUsers)
+{
+	if(!module)
+		return;
+
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->ClearUsers();
+	for(int i = 0; i < sizeUsers; i++)
+	{
+		twainetModule->AddUser(users[i].m_user, users[i].m_pass);
+	}
 }

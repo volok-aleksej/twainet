@@ -90,12 +90,30 @@ void ClientServerModule::Disconnect()
 
 void ClientServerModule::SetUserName(const std::string& userName)
 {
-	m_userName = userName;
+	m_userPassword.m_userName = userName;
 }
 
 void ClientServerModule::SetPassword(const std::string& password)
 {
-	m_password = password;
+	m_userPassword.m_password = password;
+}
+
+void ClientServerModule::AddUser(const std::string& userName, const std::string& password)
+{
+	UserPassword user(userName, password);
+	if(!m_userPasswords.AddObject(user))
+		m_userPasswords.UpdateObject(user);
+}
+
+void ClientServerModule::RemoveUser(const std::string& userName, const std::string& password)
+{
+	UserPassword user(userName, password);
+	m_userPasswords.RemoveObject(user);
+}
+
+void ClientServerModule::ClearUsers()
+{
+	m_userPasswords.Clear();
 }
 
 void ClientServerModule::StartServer(int port)
@@ -148,8 +166,9 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 	ClientServerConnector* conn = static_cast<ClientServerConnector*>(msg.m_conn);
 	if(conn)
 	{
-		conn->SetUserName(m_userName);
-		conn->SetPassword(m_password);
+		conn->SetUserName(m_userPassword.m_userName);
+		conn->SetPassword(m_userPassword.m_password);
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginMessage, onLogin));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, ClientServerConnectedMessage, onConnected));
 	}
@@ -181,9 +200,24 @@ void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
 	ServerCreationFailed();
 }
 
+void ClientServerModule::onLogin(const LoginMessage& msg)
+{
+	UserPassword user(msg.name());
+	if(m_userPasswords.GetObject(user, &user) && user.m_password == msg.password())
+		const_cast<LoginMessage&>(msg).set_login_result(LOGIN_SUCCESS);
+	else
+		const_cast<LoginMessage&>(msg).set_login_result(LOGIN_FAILURE);
+}
+
 void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 {
-	m_ownSessionId = msg.own_session_id();
+	if(msg.login_result() == LOGIN_FAILURE)
+	{
+		OnConnectFailed(ClientServerModule::m_serverIPCName);
+		m_isStopConnect = true;
+	}
+	else
+		m_ownSessionId = msg.own_session_id();
 }
 
 void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)

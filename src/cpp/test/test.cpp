@@ -14,8 +14,6 @@
 #include "common/common_func.h"
 #include "thread_lib/thread/thread_manager.h"
 
-#define DEBUG_1
-
 #ifdef WIN32
 int _tmain(int argc, _TCHAR* argv[])
 #else

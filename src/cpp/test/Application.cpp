@@ -9,8 +9,6 @@
 #include <string>
 #include <time.h>
 
-#define DEBUG_1
-
 Twainet::TwainetCallback tc = {&ApplicationTest::OnServerConnected, &ApplicationTest::OnServerDisconnected, &ApplicationTest::OnServerCreationFailed,
 							   &ApplicationTest::OnClientConnected, &ApplicationTest::OnClientDisconnected, &ApplicationTest::OnClientConnectionFailed,
 							   &ApplicationTest::OnModuleConnected,	&ApplicationTest::OnModuleDisconnected, &ApplicationTest::OnModuleConnectionFailed,
@@ -118,9 +116,13 @@ void ApplicationTest::ThreadFunc()
 	m_module = Twainet::CreateModule(m_moduleName, false, true);
 #ifdef DEBUG_1
 	Twainet::CreateServer(m_module, 1054);
-	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
+	Twainet::UserPassword user = {"test", "pass"};
+	Twainet::SetUsersList(m_module, &user, 1);
+	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054, user);
 #else
-	Twainet::ConnectToServer(m_module, "10.100.70.74", 1054);
+//	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
+	Twainet::UserPassword user = {"test", "pass"};
+	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
 #endif
 	while(!m_isStop){Thread::sleep(200);}
 }
@@ -162,6 +164,7 @@ void ApplicationTest::onClientDisconnected(Twainet::Module module, const char* s
 
 void ApplicationTest::onClientConnectionFailed(Twainet::Module module)
 {
+	printf("client connection failed\n");
 }
 
 void ApplicationTest::onServerDisconnected(Twainet::Module module)

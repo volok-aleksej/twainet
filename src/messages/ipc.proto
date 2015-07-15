@@ -32,11 +32,11 @@ message IPCObjectList
 
 message ModuleName
 {
-	required IPCName ipc_name = 1;
-	optional string ip = 2;
-	optional int32 port	= 3;
-	optional bool is_exist = 4;
-	optional string conn_id = 5;
+	required IPCName ipc_name	= 1;
+	required string ip			= 2;	//for ipc communication in local computer only
+	required int32 port			= 3;	//for ipc communication in local computer only
+	optional bool is_exist		= 4;	//for internal usage
+	optional string conn_id		= 5;	//for internal usage
 }
 
 message ModuleState

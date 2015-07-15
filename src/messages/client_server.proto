@@ -14,17 +14,18 @@ enum TunnelType {
 
 message Login {
 	required string name					= 1;
-	required string pasword					= 2;
+	required string password					= 2;
+	optional ResultCode login_result		= 3;	//for internal usage
 }
 
 message LoginResult {
 	required ResultCode login_result		= 1;
-	optional string own_session_id			= 2;
+	required string own_session_id			= 2;
 }
 
 message TunnelConnectAddress {
-	optional string ip						= 1;
-	optional int32 port						= 2;
+	required string ip						= 1;
+	required int32 port						= 2;
 }
 
 message InitTunnel {
