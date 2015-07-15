@@ -206,6 +206,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\socket\ppp_socket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\socket\ppp_socket.h"
+				>
+			</File>
+			<File
 				RelativePath=".\socket\secure_socket.cpp"
 				>
 			</File>
@@ -359,6 +367,18 @@
 			</File>
 			<File
 				RelativePath=".\signal\signal_receiver.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="ppp"
+			>
+			<File
+				RelativePath=".\ppp\ppp_library.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ppp\ppp_library.h"
 				>
 			</File>
 		</Filter>

@@ -1,3 +1,4 @@
+#define WIN32_LEAN_AND_MEAN
 #include <Winsock2.h>
 #include "ppp_lcp_headers.h"
 

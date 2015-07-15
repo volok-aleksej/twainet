@@ -61,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).exe"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
 				GenerateDebugInformation="true"
@@ -137,8 +137,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).exe"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
 				GenerateDebugInformation="true"
@@ -183,11 +183,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\common_func.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\test.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\common\tstring.cpp"
 				>
 			</File>
 		</Filter>
@@ -201,11 +209,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\common_func.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
 				RelativePath=".\targetver.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\tstring.h"
 				>
 			</File>
 		</Filter>

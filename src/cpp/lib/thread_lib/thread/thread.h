@@ -4,7 +4,8 @@
 #include "../common/critical_section.h"
 
 #ifdef WIN32
-#define _WINSOCKAPI_   // prevent inclusion of winsock.h, we need winsock2.h
+#define WIN32_LEAN_AND_MEAN
+#include <WinSock2.h>
 #include <windows.h>
 #else
 #include <pthread.h>

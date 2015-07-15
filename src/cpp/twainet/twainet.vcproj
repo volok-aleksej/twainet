@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -61,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
+				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
 				ModuleDefinitionFile=""
@@ -121,7 +121,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -139,8 +139,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ProjectName).dll"
+				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
 				ModuleDefinitionFile=""
@@ -190,6 +190,10 @@
 			</File>
 			<File
 				RelativePath=".\application\dllmain.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\application\twainet.cpp"
 				>
 			</File>
 			<File

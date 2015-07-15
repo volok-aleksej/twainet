@@ -266,11 +266,11 @@
 			Name="common"
 			>
 			<File
-				RelativePath="..\..\common\guid_generator.cpp"
+				RelativePath="..\..\common\common_func.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\guid_generator.h"
+				RelativePath="..\..\common\common_func.h"
 				>
 			</File>
 			<File

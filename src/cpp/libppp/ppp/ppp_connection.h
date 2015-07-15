@@ -31,14 +31,10 @@ public:
 	PPPConnection(EthernetMonitor* monitor, const std::string& hostId);
 	~PPPConnection();
 
-protected:
 	void OnPacket(PPPoESContainer* container);
 	void OnContainer(PPPoESContainer* container);
 	bool IsConnectionPacket(PPPoESContainer* packet);
 public:
-	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
-	typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnPacket> PPPoESPacket;
-	typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnContainer> PPPoESSelfPacket;
 
 protected:
 	ConnectionState m_statePPP;
@@ -46,5 +42,8 @@ protected:
 	bool m_isServer;
 
 };
+
+typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnPacket> PPPoESPacket;
+typedef ConnectionPacket<PPPoESContainer, PPPConnection, &PPPConnection::OnContainer> PPPoESSelfPacket;
 
 #endif/*PPP_CONNECTION_H*/

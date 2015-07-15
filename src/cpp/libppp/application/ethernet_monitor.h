@@ -43,12 +43,9 @@ protected:
 protected:
 	friend class BasicState;
 	void OnPacket(const IConnectionPacket& packet);
-protected:
+public:
 	void OnPacket(PPPoEDContainer* packet);
 	bool IsConnectionPacket(PPPoEDContainer* packet);
-public:
-	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
-	typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor, &EthernetMonitor::OnPacket> PPPoEDMonitorPacket;
 protected:
 	friend class Application;
 	void MonitorStart();
@@ -64,5 +61,6 @@ private:
 	unsigned int m_currentClock;
 };
 
+typedef ConnectionPacket<PPPoEDContainer, EthernetMonitor, &EthernetMonitor::OnPacket> PPPoEDMonitorPacket;
 
 #endif/*ETHERNET_MONITOR_H*/

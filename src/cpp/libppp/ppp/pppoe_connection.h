@@ -42,15 +42,10 @@ protected:
 	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
 	bool DeleteContainer(const IConnectionPacket* pppoed);
 	bool GetContainer(IConnectionPacket** const container, const IConnectionPacket* pppoed);
-
+public:
 	void OnPacket(PPPoEDContainer* container);
 	void OnContainer(PPPoEDContainer* container);
 	bool IsConnectionPacket(PPPoEDContainer* packet);
-public:
-	template<typename Packet, typename Connection, typename void (Connection::*ConnectionFunc)(Packet*)> friend class ConnectionPacket;
-	typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnPacket> PPPoEDPacket;
-	typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnContainer> PPPoEDSelfPacket;
-
 protected:
 	EthernetMonitor* m_monitor;
 	State m_statePPPoE;
@@ -64,5 +59,7 @@ private:
 	std::string m_hostCookie;
 };
 
+typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnPacket> PPPoEDPacket;
+typedef ConnectionPacket<PPPoEDContainer, PPPoEConnection, &PPPoEConnection::OnContainer> PPPoEDSelfPacket;
 
 #endif/*PPPOED_CONNECTION_H*/

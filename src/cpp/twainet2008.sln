@@ -43,6 +43,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "twainet\twainet.
 		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libppp", "libppp\libppp.vcproj", "{6561962C-5779-4291-8675-093817DBEFE6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1F5FD41D-D68E-4830-91C7-EDA03898328D} = {1F5FD41D-D68E-4830-91C7-EDA03898328D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -85,6 +90,10 @@ Global
 		{F613D49A-D0EE-4F3C-B860-B6A76260519E}.Debug|Win32.Build.0 = Debug|Win32
 		{F613D49A-D0EE-4F3C-B860-B6A76260519E}.Release|Win32.ActiveCfg = Release|Win32
 		{F613D49A-D0EE-4F3C-B860-B6A76260519E}.Release|Win32.Build.0 = Release|Win32
+		{6561962C-5779-4291-8675-093817DBEFE6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6561962C-5779-4291-8675-093817DBEFE6}.Debug|Win32.Build.0 = Debug|Win32
+		{6561962C-5779-4291-8675-093817DBEFE6}.Release|Win32.ActiveCfg = Release|Win32
+		{6561962C-5779-4291-8675-093817DBEFE6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
