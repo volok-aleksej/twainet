@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;;&quot;$(SolutionDir)external/openssl&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
