@@ -25,7 +25,7 @@ std::string app_self_name()
 		return  "";
 	
 	return (vstr.end() - 1)->c_str();
-#elseif __APPLE__
+#elif __APPLE__
 	std::string strname = "";
 	int mib[5] = {CTL_KERN, KERN_ARGMAX, 0};
 	size_t len =  sizeof(int);

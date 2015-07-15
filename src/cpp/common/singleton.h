@@ -1,7 +1,7 @@
-#ifndef SINGLTON_H
-#define SINGLTON_H
+#ifndef SINGLETON_H
+#define SINGLETON_H
 
-template<class Object>
+template<typename Object>
 class Singleton
 {
 public:
@@ -15,4 +15,4 @@ protected:
 	Singleton(){}
 };
 
-#endif/*SINGLTON_H*/
+#endif/*SINGLETON_H*/

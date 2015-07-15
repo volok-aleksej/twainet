@@ -2,11 +2,12 @@
 #define CRITICAL_SECTION_H
 
 #ifdef WIN32
-#include <winsock2.h>
-#include <windows.h>
+#	define WIN32_LEAN_AND_MEAN
+#	include <winsock2.h>
+#	include <windows.h>
 #else
-#include <pthread.h>
-#include <sys/types.h>
+#	include <pthread.h>
+#	include <sys/types.h>
 #endif/*WIN32*/
 
 class CriticalSection
