@@ -114,16 +114,8 @@ void ApplicationTest::ThreadFunc()
 	strcpy(m_moduleName.m_name, guid.c_str());
 #endif/*WIN32*/
 	m_module = Twainet::CreateModule(m_moduleName, false, true);
-#ifdef DEBUG_1
-	Twainet::CreateServer(m_module, 1054);
-	Twainet::UserPassword user = {"test", "pass"};
-	Twainet::SetUsersList(m_module, &user, 1);
-	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054, user);
-#else
-//	Twainet::ConnectToServer(m_module, "127.0.0.1", 1054);
-	Twainet::UserPassword user = {"test", "pass"};
-	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
-#endif
+	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2paccess"};
+	Twainet::ConnectToServer(m_module, "rmm1-dev.comodormm.com", 1054, user);
 	while(!m_isStop){Thread::sleep(200);}
 }
 

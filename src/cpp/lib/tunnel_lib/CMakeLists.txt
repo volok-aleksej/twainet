@@ -25,7 +25,8 @@ add_definitions(-fPIC)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages)
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
 
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
