@@ -17,7 +17,7 @@ UDPSocket::~UDPSocket()
 	
 bool UDPSocket::Bind(const std::string& host, int port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -63,7 +63,7 @@ bool UDPSocket::Connect(const std::string& host, int port)
 
 bool UDPSocket::Send(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -107,7 +107,7 @@ bool UDPSocket::Send(char* data, int len)
 
 bool UDPSocket::Recv(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -150,7 +150,7 @@ void UDPSocket::GetIPPort(std::string& ip, int& port)
 
 bool UDPSocket::Close()
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -176,7 +176,7 @@ void UDPSocket::SetSendAddr(const std::string& host, int port)
 
 bool UDPSocket::RecvFrom(char* data, int len, std::string& ip, int& port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}

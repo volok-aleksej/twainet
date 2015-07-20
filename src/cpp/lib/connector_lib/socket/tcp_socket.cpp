@@ -17,7 +17,7 @@ TCPSocket::~TCPSocket()
 
 bool TCPSocket::Bind(const std::string& host, int port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -42,13 +42,13 @@ bool TCPSocket::Bind(const std::string& host, int port)
 
 	si.sin_port = htons(port);
 	si.sin_family = AF_INET;
-
+	
 	return bind(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
 }
 
 bool TCPSocket::Listen(int limit)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ bool TCPSocket::Listen(int limit)
 
 int TCPSocket::Accept(std::string& ip, int& port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return INVALID_SOCKET;
 	}
@@ -77,7 +77,7 @@ int TCPSocket::Accept(std::string& ip, int& port)
 
 bool TCPSocket::Connect(const std::string& host, int port)
 {
-	if(!m_socket || host.empty())
+	if(m_socket == INVALID_SOCKET || host.empty())
 	{
 		return false;
 	}
@@ -101,7 +101,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 
 bool TCPSocket::Send(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -124,7 +124,7 @@ bool TCPSocket::Send(char* data, int len)
 
 bool TCPSocket::Recv(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -146,7 +146,7 @@ bool TCPSocket::Recv(char* data, int len)
 
 bool TCPSocket::Close()
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}

@@ -5,13 +5,13 @@
 #pragma warning(default:4251)
 
 UDTSocket::UDTSocket()
-: m_udpSocket(0)
+: m_udpSocket(INVALID_SOCKET)
 {
 	m_socket = UDT::socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
 }
 
 UDTSocket::UDTSocket(int socket, bool isUdp)
-: m_udpSocket(0)
+: m_udpSocket(INVALID_SOCKET)
 {
 	if(isUdp)
 	{
@@ -36,12 +36,12 @@ UDTSocket::~UDTSocket()
 
 bool UDTSocket::Bind(const std::string& host, int port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
 
-	if(!m_udpSocket)
+	if(m_udpSocket == INVALID_SOCKET)
 	{
 		sockaddr_in si;
 		if(host.empty())
@@ -85,7 +85,7 @@ bool UDTSocket::Bind(const std::string& host, int port)
 
 bool UDTSocket::Listen(int limit)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -95,7 +95,7 @@ bool UDTSocket::Listen(int limit)
 
 int UDTSocket::Accept(std::string& ip, int& port)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return 0;
 	}
@@ -110,7 +110,7 @@ int UDTSocket::Accept(std::string& ip, int& port)
 
 bool UDTSocket::Connect(const std::string& host, int port)
 {
-	if(!m_socket || host.empty())
+	if(m_socket == INVALID_SOCKET || host.empty())
 	{
 		return false;
 	}
@@ -134,7 +134,7 @@ bool UDTSocket::Connect(const std::string& host, int port)
 
 bool UDTSocket::Send(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -157,7 +157,7 @@ bool UDTSocket::Send(char* data, int len)
 
 bool UDTSocket::Recv(char* data, int len)
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
@@ -179,12 +179,12 @@ bool UDTSocket::Recv(char* data, int len)
 
 bool UDTSocket::Close()
 {
-	if(!m_socket)
+	if(m_socket == INVALID_SOCKET)
 	{
 		return false;
 	}
 
-	if(m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
 		shutdown(m_udpSocket, SD_BOTH);
 #ifdef WIN32
@@ -205,9 +205,9 @@ void UDTSocket::GetIPPort(std::string& ip, int& port)
 #else
 		unsigned int len = sizeof(addr);
 #endif/*WIN32*/
-	if(m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
-		if ((m_udpSocket && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
+		if ((m_udpSocket != INVALID_SOCKET && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
 			!UDT::getsockname(m_socket, (sockaddr*)&addr, (int*)&len))
 		{
 			ip = inet_ntoa(addr.sin_addr);

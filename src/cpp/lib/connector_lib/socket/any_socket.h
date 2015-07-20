@@ -18,7 +18,7 @@
 #endif/*WIN32*/
 
 #ifndef INVALID_SOCKET
-#	define INVALID_SOCKET 0
+#	define INVALID_SOCKET -1
 #endif/*INVALID_SOCKET*/
 #ifndef SOCKET_ERROR
 #	define SOCKET_ERROR -1
