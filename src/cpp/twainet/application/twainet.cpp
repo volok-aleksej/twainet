@@ -6,6 +6,7 @@
 #	include <winsock2.h>
 #	include <windows.h>
 #else
+#	include <signal.h>
 #endif/*WIN32*/
 #include "udt.h"
 #include "twainet.h"
@@ -18,6 +19,9 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
 	UDT::startup();
 	Application::GetInstance().Init(twainet);
+#ifndef WIN32
+	signal(SIGPIPE, SIG_IGN);
+#endif/*WIN32*/
 }
 
 extern "C" void Twainet::FreeLibrary()
