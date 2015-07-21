@@ -32,9 +32,9 @@ void ConnectThread::ThreadFunc()
 		Connector* connector = m_address.m_connectorFactory->CreateConnector(m_socket);
 		connector->SetId(m_address.m_id);
 		connector->SetRemoteAddr(m_address.m_ip, m_address.m_port);
+		m_socket = 0;
 		ConnectorMessage msg(connector);
 		onSignal(msg);
-		m_socket = 0;
 	}
 	else
 	{
