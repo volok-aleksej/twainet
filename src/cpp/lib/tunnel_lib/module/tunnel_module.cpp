@@ -52,6 +52,13 @@ TunnelModule::~TunnelModule()
 
 void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type)
 {
+	IPCObject object(IPCObjectName(m_tunnelIPCName, extSessionId));
+	if(m_modules.GetObject(object, &object))
+	{
+		OnTunnelConnectFailed(extSessionId);
+		return;
+	}
+	
 	printf("init new tunnel - sessionId: %s\n", extSessionId.c_str());
 	if (type == TunnelConnector::PPP ||
 		type == TunnelConnector::UNKNOWN)
