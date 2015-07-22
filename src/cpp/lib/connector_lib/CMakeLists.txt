@@ -8,6 +8,8 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 set (SRC_${PROJECT_NAME}
     ../../common/common_func.cpp
+    ../../utils/base64.cpp
+    ../../utils/md5.cpp
     common/aes.cpp
     connector/connector.cpp
     connector/connector_manager.cpp
@@ -18,6 +20,7 @@ set (SRC_${PROJECT_NAME}
     signal/signal_owner.cpp
     signal/signal_receiver.cpp
     socket/secure_socket.cpp
+    socket/proxy_socket.cpp
     socket/socket_factories.cpp
     socket/tcp_socket.cpp
     socket/udp_socket.cpp
