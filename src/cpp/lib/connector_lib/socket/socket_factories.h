@@ -11,11 +11,41 @@ public:
 	AnySocket* CreateSocket(int socket);
 };
 
+class TCPProxySocketFactory : public SocketFactory
+{
+public:
+	TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass);
+
+	AnySocket* CreateSocket();
+	AnySocket* CreateSocket(int socket);
+
+private:
+	const std::string& m_ip;
+	int m_port;
+	const std::string& m_user;
+	const std::string& m_pass;
+};
+
 class TCPSecureSocketFactory : public SocketFactory
 {
 public:
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+};
+
+class TCPSecureProxySocketFactory : public SocketFactory
+{
+public:
+	TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass);
+
+	AnySocket* CreateSocket();
+	AnySocket* CreateSocket(int socket);
+
+private:
+	const std::string& m_ip;
+	int m_port;
+	const std::string& m_user;
+	const std::string& m_pass;
 };
 
 class UDPSocketFactory : public SocketFactory

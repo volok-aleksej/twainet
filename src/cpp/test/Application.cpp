@@ -113,9 +113,12 @@ void ApplicationTest::ThreadFunc()
 #else
 	strcpy(m_moduleName.m_name, guid.c_str());
 #endif/*WIN32*/
-	m_module = Twainet::CreateModule(m_moduleName, false, true);
+	m_module = Twainet::CreateModule(m_moduleName, true, false);
+	Twainet::UserPassword proxyuser = {"test", "test"};
+	Twainet::UseProxy(m_module, "vpnbrowse.me", 80, proxyuser);
 	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2paccess"};
-	Twainet::ConnectToServer(m_module, "rmm1-dev.comodormm.com", 1054, user);
+	Twainet::ConnectToServer(m_module, "199.66.200.133", 1054, user);
+//	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
 	while(!m_isStop){Thread::sleep(200);}
 }
 
@@ -169,27 +172,8 @@ void ApplicationTest::onModuleConnected(Twainet::Module module, const Twainet::M
 	if(module == m_module)
 	{
 		printf("module connected - %s.%s\n", moduleId.m_name, moduleId.m_host);
-		if (strcmp(moduleId.m_name, "Client") == 0)
-		{
-			Twainet::ModuleName modules[50] = {0};
-			int size = 50;
-			size = Twainet::GetExistingModules(m_module, modules, size);
-			std::string ownSessionId = Twainet::GetSessionId(m_module);
-			for(int i = 0; i < size; i++)
-			{
-				if (!ownSessionId.empty() &&
-					strlen(modules[i].m_host) != 0 &&
-					strcmp(modules[i].m_host, ownSessionId.c_str()) != 0 &&
-					strcmp(modules[i].m_name, "Client") == 0)
-				{
-					//Twainet::SetTunnelType(m_module, ownSessionId.c_str(), modules[i].m_host, Twainet::PPP);
-					Twainet::CreateTunnel(m_module, modules[i].m_host, Twainet::EXTERNAL);
-				}
-			}
-		}
-		else
-		{
-		}
+		//if(strcmp(moduleId.m_name, "Server") == 0)
+			Twainet::CreateTunnel(m_module, "1279512910471221722913024402262116155159", Twainet::RELAY);
 	}
 }
 

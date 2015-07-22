@@ -178,3 +178,8 @@ int TCPSocket::GetSocket()
 {
 	return m_socket;
 }
+
+void TCPSocket::Initialize()
+{
+	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+}

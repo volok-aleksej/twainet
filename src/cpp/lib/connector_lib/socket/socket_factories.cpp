@@ -1,5 +1,6 @@
 #include "socket_factories.h"
 #include "secure_socket.h"
+#include "proxy_socket.h"
 #include "udp_socket.h"
 #ifdef WIN32
 #	include "ppp_socket.h"
@@ -22,16 +23,58 @@ AnySocket* TCPSocketFactory::CreateSocket(int socket)
 /*******************************************************************************************************/
 /*                                      TCPSecureSocketFactory                                         */
 /*******************************************************************************************************/
+TCPProxySocketFactory::TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
+: m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
+
+AnySocket* TCPProxySocketFactory::CreateSocket()
+{
+	ProxyTCPSocket* socket = new ProxyTCPSocket(m_ip, m_port);
+	socket->SetUserName(m_user);
+	socket->SetPassword(m_pass);
+	return socket;
+}
+
+AnySocket* TCPProxySocketFactory::CreateSocket(int socket)
+{
+	ProxyTCPSocket* new_socket = new ProxyTCPSocket(socket, m_ip, m_port);
+	new_socket->SetUserName(m_user);
+	new_socket->SetPassword(m_pass);
+	return new_socket;
+}
+
+/*******************************************************************************************************/
+/*                                      TCPSecureSocketFactory                                         */
+/*******************************************************************************************************/
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
 	return new SecureTCPSocket();
-//	return new TCPSocket();
 }
 
 AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 {
 	return new SecureTCPSocket(socket);
-//	return new TCPSocket(socket);
+}
+
+/*******************************************************************************************************/
+/*                                      TCPSecureSocketFactory                                         */
+/*******************************************************************************************************/
+TCPSecureProxySocketFactory::TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
+: m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
+
+AnySocket* TCPSecureProxySocketFactory::CreateSocket()
+{
+	SecureProxyTCPSocket* socket = new SecureProxyTCPSocket(m_ip, m_port);
+	socket->SetUserName(m_user);
+	socket->SetPassword(m_pass);
+	return socket;
+}
+
+AnySocket* TCPSecureProxySocketFactory::CreateSocket(int socket)
+{
+	SecureProxyTCPSocket* new_socket = new SecureProxyTCPSocket(socket, m_ip, m_port);
+	new_socket->SetUserName(m_user);
+	new_socket->SetPassword(m_pass);
+	return new_socket;
 }
 
 /*******************************************************************************************************/

@@ -24,6 +24,8 @@ public:
 	virtual void GetIPPort(std::string& ip, int& port);
 	virtual bool Close();
 	virtual int GetSocket();
+protected:
+	void Initialize();
 private:
 	int m_socket;
 	CriticalSection m_cs;

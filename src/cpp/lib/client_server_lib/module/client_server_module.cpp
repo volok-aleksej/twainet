@@ -11,6 +11,7 @@ const std::string ClientServerModule::m_clientIPCName = "Client";
 ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 : IPCModule(ipcName, factory)
 , m_isStopConnect(true), m_serverThread(0)
+, m_isUseProxy(false)
 {
 	//StartAsCoordinator();
 }
@@ -34,13 +35,18 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	m_ip = ip;
 	m_port = port;
 
+	SocketFactory* factory;
+	if(m_isUseProxy)
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+	else
+		factory = new TCPSecureSocketFactory;
+
 	ConnectAddress address;
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = m_serverIPCName;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_clientIPCName);
-	address.m_socketFactory = new TCPSecureSocketFactory;
-//	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = factory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
@@ -159,6 +165,29 @@ void ClientServerModule::StopServer()
 const std::string& ClientServerModule::GetSessionId()
 {
 	return m_ownSessionId;
+}
+
+
+void ClientServerModule::UseStandartConnections()
+{
+	m_isUseProxy = false;
+}
+
+void ClientServerModule::UseProxy(const std::string& ip, int port)
+{
+	m_isUseProxy = true;
+	m_proxyPort = port;
+	m_proxyIp = ip;
+}
+
+void ClientServerModule::SetProxyUserName(const std::string& userName)
+{
+	m_proxyUserPassword.m_userName = userName;
+}
+
+void ClientServerModule::SetProxyPassword(const std::string& password)
+{
+	m_proxyUserPassword.m_password = password;
 }
 
 void ClientServerModule::onAddConnector(const ConnectorMessage& msg)

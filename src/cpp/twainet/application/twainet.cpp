@@ -214,3 +214,23 @@ extern "C" void Twainet::SetUsersList(const Twainet::Module module, const Twaine
 		twainetModule->AddUser(users[i].m_user, users[i].m_pass);
 	}
 }
+
+extern "C" void Twainet::UseProxy(const Twainet::Module module, const char* host, int port, const Twainet::UserPassword& userPassword)
+{
+	if(!module)
+		return;
+
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->UseProxy(host, port);
+	twainetModule->SetProxyUserName(userPassword.m_user);
+	twainetModule->SetProxyPassword(userPassword.m_pass);
+}
+
+extern "C" void Twainet::UseStandartConnections(const Twainet::Module module)
+{
+	if(!module)
+		return;
+
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	twainetModule->UseStandartConnections();
+}

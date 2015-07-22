@@ -139,11 +139,17 @@ extern "C"
 		// Get list of existing module names that is available in current module
 		TWAINET_FUNC int GetExistingModules(const Module module, ModuleName* modules, int& sizeModules);
 
-		//Set tunnel's type that have to create between two clients
+		// Set tunnel's type that have to create between two clients
 		TWAINET_FUNC void SetTunnelType(const Module module, const char* oneSessionId, const char* twoSessionId, TypeConnection type);
 
-		//Set user list for login operation on server
+		// Set user list for login operation on server
 		TWAINET_FUNC void SetUsersList(const Module module, const UserPassword* users, int sizeUsers);
+
+		// Use server and tunnel connections throw proxy server
+		TWAINET_FUNC void UseProxy(const Module module, const char* host, int port, const UserPassword& userPassword);
+
+		// Use standart connections
+		TWAINET_FUNC void UseStandartConnections(const Module module);
 	}
 };
 

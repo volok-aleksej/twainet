@@ -8,6 +8,13 @@ ThreadManager::ThreadManager()
 
 ThreadManager::~ThreadManager()
 {
+	std::vector<Thread*> threads;
+	m_threads.CheckObjects(Ref(this, &ThreadManager::StopThread, threads));
+	
+	for(std::vector<Thread*>::iterator it = threads.begin(); it != threads.end(); it++)
+	{
+		delete *it;
+	}
 }
 
 void ThreadManager::AddThread(Thread* thread)
@@ -53,11 +60,4 @@ void ThreadManager::ManagerFunc()
 
 void ThreadManager::ManagerStop()
 {
-	std::vector<Thread*> threads;
-	m_threads.CheckObjects(Ref(this, &ThreadManager::StopThread, threads));
-	
-	for(std::vector<Thread*>::iterator it = threads.begin(); it != threads.end(); it++)
-	{
-		delete *it;
-	}
 }

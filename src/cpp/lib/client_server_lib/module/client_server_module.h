@@ -43,6 +43,10 @@ public:
 	void AddUser(const std::string& userName, const std::string& password);
 	void RemoveUser(const std::string& userName, const std::string& password);
 	void ClearUsers();
+	void UseStandartConnections();
+	void UseProxy(const std::string& ip, int port);
+	void SetProxyUserName(const std::string& userName);
+	void SetProxyPassword(const std::string& password);
 
 	void StartServer(int port);
 	bool IsStopServer();
@@ -74,6 +78,12 @@ private:
 	int m_port;
 	bool m_isStopConnect;
 	UserPassword m_userPassword;
+
+	//for client with proxy
+	bool m_isUseProxy;
+	std::string m_proxyIp;
+	int m_proxyPort;
+	UserPassword m_proxyUserPassword;
 
 	//for server
 	IPCListenThread* m_serverThread;

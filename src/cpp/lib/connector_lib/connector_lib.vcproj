@@ -190,6 +190,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\common\common_func.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\common_func.h"
+				>
+			</File>
+			<File
 				RelativePath="..\thread_lib\common\object_manager.h"
 				>
 			</File>
@@ -211,6 +219,14 @@
 			</File>
 			<File
 				RelativePath=".\socket\ppp_socket.h"
+				>
+			</File>
+			<File
+				RelativePath=".\socket\proxy_socket.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\socket\proxy_socket.h"
 				>
 			</File>
 			<File
@@ -379,6 +395,26 @@
 			</File>
 			<File
 				RelativePath=".\ppp\ppp_library.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="utils"
+			>
+			<File
+				RelativePath="..\..\utils\base64.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\base64.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\md5.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\md5.h"
 				>
 			</File>
 		</Filter>

@@ -25,6 +25,9 @@
     <Filter Include="ppp">
       <UniqueIdentifier>{687cf751-2b55-48c8-9622-b54ff6102d6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{7aed10ab-5f32-4110-9460-3f715f44370a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="connector\connector.cpp">
@@ -83,6 +86,15 @@
     </ClCompile>
     <ClCompile Include="..\..\common\common_func.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="socket\proxy_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\base64.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\md5.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +196,15 @@
     </ClInclude>
     <ClInclude Include="..\..\common\common_func.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\proxy_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\base64.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\md5.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
