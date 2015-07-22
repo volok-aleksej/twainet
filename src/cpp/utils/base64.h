@@ -1,6 +1,11 @@
 #ifndef BASE64_H
 #define BASE64_H
 
+#ifndef WIN32
+#	include <stdio.h>
+#	include <string.h>
+#endif/*WIN32*/
+
 #include <string>
 
 std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len);

@@ -7,12 +7,13 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <stdio.h>
 #endif/*WIN32*/
 
 #include "proxy_socket.h"
-#include "utils\base64.h"
-#include "utils\md5.h"
-#include "utils\utils.h"
+#include "utils/base64.h"
+#include "utils/md5.h"
+#include "utils/utils.h"
 #include <vector>
 
 #define HTTP_RESPONSE_OK 200
@@ -64,7 +65,7 @@ bool ProxySocket::PerformProxyConnection(const std::string& ip, int port)
 bool ProxySocket::sendConnectCmd(const std::string& httpheaders)
 {
 	char portBuffer[6] = {0};
-	_itoa_s (m_targetPort, portBuffer, 6, 10);
+	sprintf(portBuffer, "%d", m_targetPort);
 	std::string resultString("CONNECT ");
 	resultString += m_targetIp + ":" + portBuffer + " HTTP/1.1\r\n" + httpheaders + "\r\n";
 	return SendData((char*)resultString.c_str(), resultString.size());
@@ -256,7 +257,7 @@ bool ProxySocket::performDigestProxyAuthentication(const std::string& proxyRespo
 	std::string remoteAddress(m_targetIp);
 	remoteAddress.append(":");
 	char port[10];
-	_itoa_s(m_targetPort, port, 10, 10);
+	sprintf(port, "%d", m_targetPort);
 	remoteAddress.append(port);
 	if (DIGEST_AUTH & authType)
 	{
@@ -374,7 +375,7 @@ const std::string ProxySocket::encryptToMd5(const std::string &sourceString)
    char hex_output[16*2 + 1];
    for (int di = 0; di < 16; ++di)
    {
-      sprintf_s(hex_output + di * 2, sizeof(char)*3, "%02x", digest[di]);
+      sprintf(hex_output + di * 2, "%02x", digest[di]);
    }
 
    std::string resultString (hex_output, 32);
@@ -385,7 +386,7 @@ const std::string ProxySocket::encryptToMd5(const std::string &sourceString)
 const std::string ProxySocket::generateStandartHeaders()
 {
 	char portBuffer[6] = {0};
-	_itoa_s (m_targetPort, portBuffer, 6, 10);
+	sprintf(portBuffer, "%d", m_targetPort);
 	std::string result;
 	result.append("Proxy-Connection: Keep-Alive\r\n");
 	result.append("Host: ").append(m_targetIp).append(":").append(portBuffer).append("\r\n");
