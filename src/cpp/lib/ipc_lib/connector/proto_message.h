@@ -27,8 +27,8 @@ public:
 
 	virtual bool serialize(char* data, int len)
 	{
-		::google::protobuf::Message::Clear();
-		return ::google::protobuf::Message::ParseFromArray(data, len);
+		TMessage::Clear();
+		return TMessage::ParseFromArray(data, len);
 	}
 
 	virtual bool deserialize(char* data, int& len)
@@ -173,8 +173,8 @@ public:
 
 	virtual bool serialize(char* data, int len)
 	{
-		::google::protobuf::Message::Clear();
-		return ::google::protobuf::Message::ParseFromArray(data, len);
+		TMessage::Clear();
+		return TMessage::ParseFromArray(data, len);
 	}
 private:
 	THandler* m_handler;
