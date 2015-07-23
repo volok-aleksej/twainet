@@ -266,14 +266,6 @@
 			Name="common"
 			>
 			<File
-				RelativePath="..\..\common\common_func.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\common_func.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\common\tstring.cpp"
 				>
 			</File>
