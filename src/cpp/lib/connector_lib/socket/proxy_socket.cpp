@@ -373,7 +373,6 @@ bool ProxySocket::performNtlmProxyAuthentication(const std::string& proxyRespons
 {
 	tSmbNtlmAuthRequest request;
 	buildSmbNtlmAuthRequest( &request, m_userName.c_str(), "");
-	dumpSmbNtlmAuthRequest(stderr, &request);
 	char buffer[NTLM_BUF_SIZE] = {0};
 	int n = 0;
 	if ((n = base64_ntop((unsigned char*)&request, SmbLength(&request), buffer, NTLM_BUF_SIZE)) <= 0)
@@ -382,7 +381,9 @@ bool ProxySocket::performNtlmProxyAuthentication(const std::string& proxyRespons
 	}
 
 	buffer[n] = '\0';
-	if(!SendData(buffer, strlen(buffer)))
+	std::string resultString;
+	resultString = resultString + "Proxy-authorization: NTLM " + buffer + "\r\n" + generateStandartHeaders();
+	if(!sendConnectCmd(resultString))
 	{
 		return false;
 	}
@@ -407,7 +408,7 @@ bool ProxySocket::performNtlmProxyAuthentication(const std::string& proxyRespons
 		posBegin = pos + auth_header_Negotiate.size();
 	}
 
-	posEnd = rsp.find("\r\n", pos);
+	posEnd = rsp.find("\r\n", posBegin);
 	if(posEnd == std::string::npos || posEnd - posBegin > NTLM_BUF_SIZE)
 	{
 		return false;
@@ -416,27 +417,27 @@ bool ProxySocket::performNtlmProxyAuthentication(const std::string& proxyRespons
 	memset(buffer, 0, NTLM_BUF_SIZE);
 	memcpy(buffer, rsp.c_str() + posBegin, posEnd - posBegin);
 	tSmbNtlmAuthChallenge challenge;
-	if(base64_pton(buffer + 2, (unsigned char*)&challenge, sizeof(challenge)) <= 0)
+	if(base64_pton(buffer, (unsigned char*)&challenge, sizeof(challenge)) <= 0)
 	{
 		return false;
 	}
 	
-	dumpSmbNtlmAuthChallenge(stdout, &challenge);
-
 	tSmbNtlmAuthResponse response;
 	buildSmbNtlmAuthResponse(&challenge, &response, m_userName.c_str(), m_password.c_str());
-	dumpSmbNtlmAuthResponse(stderr, &response);
-	if (n = base64_ntop( ( unsigned char * ) &response, SmbLength(&response), buffer, NTLM_BUF_SIZE) <= 0)
+	if ((n = base64_ntop( ( unsigned char * ) &response, SmbLength(&response), buffer, NTLM_BUF_SIZE)) <= 0)
 	{
 		return false;
 	}
 	
 	buffer[n] = '\0';
-	if(!SendData(buffer, strlen(buffer)))
+	resultString.clear();
+	resultString = resultString + "Proxy-authorization: NTLM " + buffer + "\r\n" + generateStandartHeaders();
+	if(!sendConnectCmd(resultString))
 	{
 		return false;
 	}
 
+	rsp.clear();
 	if(!recvProxyResponse(codeResponse, rsp))
 	{
 		return false;
