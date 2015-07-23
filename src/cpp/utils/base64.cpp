@@ -1,4 +1,5 @@
 #include "base64.h"
+#include <stdlib.h>
 
 #define Assert(Cond) if (!(Cond)) abort()
 

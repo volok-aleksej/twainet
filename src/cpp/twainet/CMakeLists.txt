@@ -82,6 +82,11 @@ find_library(PROTOBUF_LIBRARY NAMES protobuf PATHS ${LIB_PATH})
 if(PROTOBUF_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARY})
 endif(PROTOBUF_LIBRARY)
+
+find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH} /usr/lib/x86_64-linux-gnu)
+if(NTLM_LIBRARY)
+  target_link_libraries(${PROJECT_NAME} ${NTLM_LIBRARY})
+endif(NTLM_LIBRARY)
 	
 target_link_libraries(${PROJECT_NAME} crypto uuid)
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${TWAINET_VERSION_STRING})
