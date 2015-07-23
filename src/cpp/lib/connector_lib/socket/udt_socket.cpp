@@ -205,7 +205,7 @@ void UDTSocket::GetIPPort(std::string& ip, int& port)
 #else
 		unsigned int len = sizeof(addr);
 #endif/*WIN32*/
-	if(m_udpSocket != INVALID_SOCKET)
+	if(m_socket != INVALID_SOCKET)
 	{
 		if ((m_udpSocket != INVALID_SOCKET && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
 			!UDT::getsockname(m_socket, (sockaddr*)&addr, (int*)&len))
