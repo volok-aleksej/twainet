@@ -137,7 +137,7 @@ UDTSecureSocketFactory::UDTSecureSocketFactory()
 
 AnySocket* UDTSecureSocketFactory::CreateSocket()
 {
-	if(m_udpSocket != INVALID_SOCKET)
+	if(m_udpSocket == INVALID_SOCKET)
 	{
 		return new SecureUDTSocket();
 	}
@@ -149,7 +149,7 @@ AnySocket* UDTSecureSocketFactory::CreateSocket()
 
 AnySocket* UDTSecureSocketFactory::CreateSocket(int socket)
 {
-	if(m_udpSocket != INVALID_SOCKET)
+	if(m_udpSocket == INVALID_SOCKET)
 	{
 		return new SecureUDTSocket(socket, false);
 	}
