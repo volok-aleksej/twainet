@@ -1,23 +1,75 @@
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
-#include <windows.h>
+#	define WIN32_LEAN_AND_MEAN
+#	include <winsock2.h>
+#	include <windows.h>
 #else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdio.h>
+#	include <sys/types.h>
+#	include <sys/socket.h>
+#	include <netinet/in.h>
+#	include <netdb.h>
+#	include <stdio.h>
+
+#	define sprintf_s snprintf
+
 #endif/*WIN32*/
 
 #include "proxy_socket.h"
 #include "utils/base64.h"
-#include "utils/md5.h"
 #include "utils/utils.h"
+#include "md5.h"
+#include "ntlm.h"
 #include <vector>
 
 #define HTTP_RESPONSE_OK 200
 #define HTTP_RESPONSE_PROXY_AUTH_REQ 407
+#define NTLM_BUF_SIZE	512
+
+#ifdef WIN32
+
+g_dumpSmbNtlmAuthRequest dumpSmbNtlmAuthRequest;
+g_dumpSmbNtlmAuthChallenge dumpSmbNtlmAuthChallenge;
+g_dumpSmbNtlmAuthResponse dumpSmbNtlmAuthResponse;
+g_buildSmbNtlmAuthRequest buildSmbNtlmAuthRequest;
+g_buildSmbNtlmAuthRequest_noatsplit buildSmbNtlmAuthRequest_noatsplit;
+g_buildSmbNtlmAuthResponse buildSmbNtlmAuthResponse;
+g_buildSmbNtlmAuthResponse_noatsplit buildSmbNtlmAuthResponse_noatsplit;
+g_ntlm_smb_encrypt ntlm_smb_encrypt;
+g_ntlm_smb_nt_encrypt ntlm_smb_nt_encrypt;
+g_ntlm_check_version ntlm_check_version;
+
+class LibNtlmInitializer
+{
+public:
+	LibNtlmInitializer()
+	{
+		HMODULE module = LoadLibraryA("LibNtlm.dll");
+		if(!module)
+		{
+			MessageBoxA(NULL, "Dynamic library LibNtlm.dll isn't found", "Load Error", MB_OK | MB_ICONERROR);
+			exit(0);
+		}
+
+		dumpSmbNtlmAuthRequest = (g_dumpSmbNtlmAuthRequest)GetProcAddress(module, "dumpSmbNtlmAuthRequest");
+		dumpSmbNtlmAuthChallenge = (g_dumpSmbNtlmAuthChallenge)GetProcAddress(module, "dumpSmbNtlmAuthChallenge");
+		dumpSmbNtlmAuthResponse = (g_dumpSmbNtlmAuthResponse)GetProcAddress(module, "dumpSmbNtlmAuthResponse");
+		buildSmbNtlmAuthRequest = (g_buildSmbNtlmAuthRequest)GetProcAddress(module, "buildSmbNtlmAuthRequest");
+		buildSmbNtlmAuthRequest_noatsplit = (g_buildSmbNtlmAuthRequest_noatsplit)GetProcAddress(module, "buildSmbNtlmAuthRequest_noatsplit");
+		buildSmbNtlmAuthResponse = (g_buildSmbNtlmAuthResponse)GetProcAddress(module, "buildSmbNtlmAuthResponse");
+		buildSmbNtlmAuthResponse_noatsplit = (g_buildSmbNtlmAuthResponse_noatsplit)GetProcAddress(module, "buildSmbNtlmAuthResponse_noatsplit");
+		ntlm_smb_encrypt = (g_ntlm_smb_encrypt)GetProcAddress(module, "ntlm_smb_encrypt");
+		ntlm_smb_nt_encrypt = (g_ntlm_smb_nt_encrypt)GetProcAddress(module, "ntlm_smb_nt_encrypt");
+		ntlm_check_version = (g_ntlm_check_version)GetProcAddress(module, "ntlm_check_version");
+	}
+};
+
+LibNtlmInitializer libNtlminitializer;
+#endif/*WIN32*/
+
+
+const std::string ProxySocket::auth_header_BASIC = "Proxy-Authenticate: Basic";
+const std::string ProxySocket::auth_header_DIGEST = "Proxy-Authenticate: Digest";
+const std::string ProxySocket::auth_header_NTLM = "Proxy-Authenticate: NTLM";
+const std::string ProxySocket::auth_header_Negotiate = "Proxy-Authenticate: Negotiate";
 
 ProxySocket::ProxySocket(const std::string& ip, int port)
 	: m_ip(ip), m_port(port) {}
@@ -65,7 +117,7 @@ bool ProxySocket::PerformProxyConnection(const std::string& ip, int port)
 bool ProxySocket::sendConnectCmd(const std::string& httpheaders)
 {
 	char portBuffer[6] = {0};
-	sprintf(portBuffer, "%d", m_targetPort);
+	sprintf_s(portBuffer, 6, "%d", m_targetPort);
 	std::string resultString("CONNECT ");
 	resultString += m_targetIp + ":" + portBuffer + " HTTP/1.1\r\n" + httpheaders + "\r\n";
 	return SendData((char*)resultString.c_str(), resultString.size());
@@ -154,16 +206,16 @@ bool ProxySocket::performProxyAuthtorization(const std::string& proxyResponse)
 	}
 
 	bool res = false;
-	if (std::string::npos != proxyResponse.find("Proxy-Authenticate: NTLM") ||
-		std::string::npos != proxyResponse.find("Proxy-Authenticate: Negotiate"))
+	if (std::string::npos != proxyResponse.find(auth_header_NTLM) ||
+		std::string::npos != proxyResponse.find(auth_header_Negotiate))
 	{
 		res = performNtlmProxyAuthentication(proxyResponse);
 	}
-	else if (std::string::npos != proxyResponse.find("Proxy-Authenticate: Digest") )
+	else if (std::string::npos != proxyResponse.find(auth_header_DIGEST) )
 	{
 		res = performDigestProxyAuthentication(proxyResponse);
 	}
-	else if (std::string::npos != proxyResponse.find("Proxy-Authenticate: Basic") )
+	else if (std::string::npos != proxyResponse.find(auth_header_BASIC) )
 	{
 		res = performBasicProxyAuthentication(proxyResponse);
 	}
@@ -205,7 +257,7 @@ bool ProxySocket::performBasicProxyAuthentication(const std::string& proxyRespon
 
 bool ProxySocket::performDigestProxyAuthentication(const std::string& proxyResponse)
 {
-	size_t posBegin = proxyResponse.find("Proxy-Authenticate: Digest") + strlen("Proxy-Authenticate: Digest");
+	size_t posBegin = proxyResponse.find(auth_header_DIGEST) + auth_header_DIGEST.size();
 	size_t posEnd = proxyResponse.find("\r\n", posBegin);
 	if(posBegin == -1 || posEnd == -1)
 	{
@@ -257,7 +309,7 @@ bool ProxySocket::performDigestProxyAuthentication(const std::string& proxyRespo
 	std::string remoteAddress(m_targetIp);
 	remoteAddress.append(":");
 	char port[10];
-	sprintf(port, "%d", m_targetPort);
+	sprintf_s(port, 10, "%d", m_targetPort);
 	remoteAddress.append(port);
 	if (DIGEST_AUTH & authType)
 	{
@@ -319,6 +371,82 @@ bool ProxySocket::performDigestProxyAuthentication(const std::string& proxyRespo
 
 bool ProxySocket::performNtlmProxyAuthentication(const std::string& proxyResponse)
 {
+	tSmbNtlmAuthRequest request;
+	buildSmbNtlmAuthRequest( &request, m_userName.c_str(), "");
+	dumpSmbNtlmAuthRequest(stderr, &request);
+	char buffer[NTLM_BUF_SIZE] = {0};
+	int n = 0;
+	if ((n = base64_ntop((unsigned char*)&request, SmbLength(&request), buffer, NTLM_BUF_SIZE)) <= 0)
+	{
+		return false;
+	}
+
+	buffer[n] = '\0';
+	if(!SendData(buffer, strlen(buffer)))
+	{
+		return false;
+	}
+
+	int codeResponse;
+	std::string rsp;
+	if(!recvProxyResponse(codeResponse, rsp))
+	{
+		return false;
+	}
+
+	size_t posBegin = std::string::npos, posEnd = std::string::npos;
+	size_t pos = rsp.find(auth_header_NTLM);
+	if (std::string::npos != pos)
+	{
+		posBegin = pos + auth_header_NTLM.size();
+	}
+
+	pos = rsp.find(auth_header_Negotiate);
+	if (std::string::npos != pos)
+	{
+		posBegin = pos + auth_header_Negotiate.size();
+	}
+
+	posEnd = rsp.find("\r\n", pos);
+	if(posEnd == std::string::npos || posEnd - posBegin > NTLM_BUF_SIZE)
+	{
+		return false;
+	}
+
+	memset(buffer, 0, NTLM_BUF_SIZE);
+	memcpy(buffer, rsp.c_str() + posBegin, posEnd - posBegin);
+	tSmbNtlmAuthChallenge challenge;
+	if(base64_pton(buffer + 2, (unsigned char*)&challenge, sizeof(challenge)) <= 0)
+	{
+		return false;
+	}
+	
+	dumpSmbNtlmAuthChallenge(stdout, &challenge);
+
+	tSmbNtlmAuthResponse response;
+	buildSmbNtlmAuthResponse(&challenge, &response, m_userName.c_str(), m_password.c_str());
+	dumpSmbNtlmAuthResponse(stderr, &response);
+	if (n = base64_ntop( ( unsigned char * ) &response, SmbLength(&response), buffer, NTLM_BUF_SIZE) <= 0)
+	{
+		return false;
+	}
+	
+	buffer[n] = '\0';
+	if(!SendData(buffer, strlen(buffer)))
+	{
+		return false;
+	}
+
+	if(!recvProxyResponse(codeResponse, rsp))
+	{
+		return false;
+	}
+
+	if(codeResponse == HTTP_RESPONSE_OK)
+	{
+		return true;
+	}
+
 	return false;
 }
 
@@ -375,7 +503,7 @@ const std::string ProxySocket::encryptToMd5(const std::string &sourceString)
    char hex_output[16*2 + 1];
    for (int di = 0; di < 16; ++di)
    {
-      sprintf(hex_output + di * 2, "%02x", digest[di]);
+      sprintf_s(hex_output + di * 2, 16*2 + 1 - di * 2, "%02x", digest[di]);
    }
 
    std::string resultString (hex_output, 32);
@@ -386,7 +514,7 @@ const std::string ProxySocket::encryptToMd5(const std::string &sourceString)
 const std::string ProxySocket::generateStandartHeaders()
 {
 	char portBuffer[6] = {0};
-	sprintf(portBuffer, "%d", m_targetPort);
+	sprintf_s(portBuffer, 6, "%d", m_targetPort);
 	std::string result;
 	result.append("Proxy-Connection: Keep-Alive\r\n");
 	result.append("Host: ").append(m_targetIp).append(":").append(portBuffer).append("\r\n");

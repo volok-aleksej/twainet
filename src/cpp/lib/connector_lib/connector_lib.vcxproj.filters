@@ -93,9 +93,6 @@
     <ClCompile Include="..\..\utils\base64.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\utils\md5.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connector\connector.h">
@@ -201,9 +198,6 @@
       <Filter>socket</Filter>
     </ClInclude>
     <ClInclude Include="..\..\utils\base64.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\utils\md5.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>

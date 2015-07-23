@@ -9,7 +9,6 @@ endif(NOT CMAKE_BUILD_TYPE)
 set (SRC_${PROJECT_NAME}
     ../../common/common_func.cpp
     ../../utils/base64.cpp
-    ../../utils/md5.cpp
     common/aes.cpp
     connector/connector.cpp
     connector/connector_manager.cpp

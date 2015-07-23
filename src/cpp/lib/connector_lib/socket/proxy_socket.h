@@ -11,6 +11,11 @@ class ProxySocket
 		DIGEST_AUTH            = 2,
 		DIGEST_AUTH_INTEGRITY  = 8
 	};
+
+	static const std::string auth_header_BASIC;
+	static const std::string auth_header_DIGEST;
+	static const std::string auth_header_NTLM;
+	static const std::string auth_header_Negotiate;
 public:
 	ProxySocket(const std::string& ip, int port);
 
