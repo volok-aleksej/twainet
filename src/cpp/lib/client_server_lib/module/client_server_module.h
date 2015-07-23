@@ -72,6 +72,12 @@ protected:
 
 	//for client
 	std::string m_ownSessionId;
+
+	//for client with proxy
+	bool m_isUseProxy;
+	std::string m_proxyIp;
+	int m_proxyPort;
+	UserPassword m_proxyUserPassword;
 private:
 	//for client
 	std::string m_ip;
@@ -79,11 +85,6 @@ private:
 	bool m_isStopConnect;
 	UserPassword m_userPassword;
 
-	//for client with proxy
-	bool m_isUseProxy;
-	std::string m_proxyIp;
-	int m_proxyPort;
-	UserPassword m_proxyUserPassword;
 
 	//for server
 	IPCListenThread* m_serverThread;

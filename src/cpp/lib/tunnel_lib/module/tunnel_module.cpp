@@ -575,13 +575,18 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 		return;
 	}
 	tunnel = it->second;
-
+	
+	SocketFactory* factory;
+	if(m_isUseProxy)
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+	else
+		factory = new TCPSecureSocketFactory;
 	ConnectAddress address;
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSecureSocketFactory;
+	address.m_socketFactory = factory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
@@ -656,13 +661,19 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 		return;
 	}
 	tunnel = it->second;
+	
+	SocketFactory* factory;
+	if(m_isUseProxy)
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+	else
+		factory = new TCPSecureSocketFactory;
 
 	ConnectAddress address;
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSecureSocketFactory;
+	address.m_socketFactory = factory;
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
