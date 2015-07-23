@@ -18,7 +18,8 @@ public:
 	enum TypeConnection
 	{
 		UNKNOWN,
-		LOCAL,
+		LOCAL_TCP,
+		LOCAL_UDP,
 		EXTERNAL,
 		RELAY,
 		PPP

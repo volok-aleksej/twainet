@@ -69,8 +69,10 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 	PeerData peerData;
 	peerData.set_one_session_id(m_ownSessionId);
 	peerData.set_two_session_id(extSessionId);
-	if(type == TunnelConnector::LOCAL)		
-		peerData.set_type(TUNNEL_LOCAL);
+	if(type == TunnelConnector::LOCAL_TCP)		
+		peerData.set_type(TUNNEL_LOCAL_TCP);
+	if(type == TunnelConnector::LOCAL_UDP)		
+		peerData.set_type(TUNNEL_LOCAL_UDP);
 	if(type == TunnelConnector::EXTERNAL)
 		peerData.set_type(TUNNEL_EXTERNAL);
 	if(type == TunnelConnector::RELAY)
@@ -108,8 +110,11 @@ void TunnelModule::SetTypeTunnel(const std::string& oneSessionId, const std::str
 
 	switch(type)
 	{
-	case TunnelConnector::LOCAL:
-		peerData.set_type(TUNNEL_LOCAL);
+	case TunnelConnector::LOCAL_TCP:
+		peerData.set_type(TUNNEL_LOCAL_TCP);
+		break;
+	case TunnelConnector::LOCAL_UDP:
+		peerData.set_type(TUNNEL_LOCAL_UDP);
 		break;
 	case TunnelConnector::EXTERNAL:
 		peerData.set_type(TUNNEL_EXTERNAL);
@@ -171,9 +176,13 @@ void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)
 		return;
 	}
 
-	if(msg.type() == TUNNEL_LOCAL)
+	if(msg.type() == TUNNEL_LOCAL_TCP)
 	{
-		CreateLocalListenThread(msg.ext_session_id());
+		CreateLocalListenThread(msg.ext_session_id(), true);
+	}
+	else if(msg.type() == TUNNEL_LOCAL_UDP)
+	{
+		CreateLocalListenThread(msg.ext_session_id(), false);
 	}
 	else if(msg.type() == TUNNEL_EXTERNAL)
 	{
@@ -206,10 +215,20 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 		type = TUNNEL_ALL;
 
 	//--------local connection---------------------
-	if(type == TUNNEL_LOCAL || type == TUNNEL_ALL)
+	if(type == TUNNEL_LOCAL_TCP || type == TUNNEL_ALL)
 	{
 		InitTunnelSignal itMsg(msg);
-		itMsg.set_type(TUNNEL_LOCAL);
+		itMsg.set_type(TUNNEL_LOCAL_TCP);
+		onSignal(itMsg);
+		itMsg.set_own_session_id(msg.ext_session_id());
+		itMsg.set_ext_session_id(msg.own_session_id());
+		onSignal(itMsg);
+	}
+	
+	if(type == TUNNEL_LOCAL_UDP || type == TUNNEL_ALL)
+	{
+		InitTunnelSignal itMsg(msg);
+		itMsg.set_type(TUNNEL_LOCAL_UDP);
 		onSignal(itMsg);
 		itMsg.set_own_session_id(msg.ext_session_id());
 		itMsg.set_ext_session_id(msg.own_session_id());
@@ -259,11 +278,11 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 
 void TunnelModule::onTryConnectTo(const TryConnectToMessage& msg)
 {
-	if(msg.type() == TUNNEL_LOCAL)
+	if(msg.type() == TUNNEL_LOCAL_TCP || msg.type() == TUNNEL_LOCAL_UDP)
 	{
 		for(int i = 0; i < msg.adresses_size(); i++)
 		{
-			CreateLocalConnectThread(msg.ext_session_id(), msg.adresses(i).ip(), msg.adresses(i).port());
+			CreateLocalConnectThread(msg.ext_session_id(), msg.adresses(i).ip(), msg.adresses(i).port(), msg.type() == TUNNEL_LOCAL_TCP);
 		}
 	}
 	else if(msg.type() == TUNNEL_EXTERNAL)
@@ -287,10 +306,28 @@ void TunnelModule::onInitTunnelStarted(const InitTunnelStartedMessage& msg)
 	}
 }
 
-void TunnelModule::onCreatedLocalListener(const CreatedListenerMessage& msg)
+void TunnelModule::onCreatedLocalTCPListener(const CreatedListenerMessage& msg)
 {
 	TryConnectTo tctMsg;
-	tctMsg.set_type(TUNNEL_LOCAL);
+	tctMsg.set_type(TUNNEL_LOCAL_TCP);
+	tctMsg.set_own_session_id(m_ownSessionId);
+	tctMsg.set_ext_session_id(msg.m_id);
+	std::vector<std::string> ips = GetLocalIps();
+	for(size_t i = 0; i < ips.size(); i++)
+	{
+		TunnelConnectAddress* address = tctMsg.add_adresses();
+		address->set_ip(ips[i]);
+		address->set_port(msg.m_port);
+	}
+
+	TryConnectToSignal tctSig(tctMsg);
+	onSignal(tctSig);
+}
+
+void TunnelModule::onCreatedLocalUDPListener(const CreatedListenerMessage& msg)
+{
+	TryConnectTo tctMsg;
+	tctMsg.set_type(TUNNEL_LOCAL_UDP);
 	tctMsg.set_own_session_id(m_ownSessionId);
 	tctMsg.set_ext_session_id(msg.m_id);
 	std::vector<std::string> ips = GetLocalIps();
@@ -321,12 +358,22 @@ void TunnelModule::onErrorLocalConnect(const ConnectErrorMessage& msg)
 {
 }
 
-void TunnelModule::onAddLocalConnector(const ConnectorMessage& msg)
+void TunnelModule::onAddLocalTCPConnector(const ConnectorMessage& msg)
 {
 	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
 	if(connector)
 	{
-		connector->SetTypeConnection(TunnelConnector::LOCAL);
+		connector->SetTypeConnection(TunnelConnector::LOCAL_TCP);
+	}
+	IPCModule::onAddConnector(msg);
+}
+
+void TunnelModule::onAddLocalUDPConnector(const ConnectorMessage& msg)
+{
+	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
+	if(connector)
+	{
+		connector->SetTypeConnection(TunnelConnector::LOCAL_UDP);
 	}
 	IPCModule::onAddConnector(msg);
 }
@@ -532,7 +579,7 @@ void TunnelModule::onConnected(const TunnelConnectedMessage& msg)
 	OnTunnelConnected(msg.m_id, msg.m_type);
 }
 
-void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
+void TunnelModule::CreateLocalListenThread(const std::string& extSessionId, bool isTCP)
 {
 	CSLocker lock(&m_cs);
 	TunnelConnect* tunnel;
@@ -543,17 +590,31 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	}
 	tunnel = it->second;
 
+	SocketFactory* factory;
+	if(isTCP)
+		factory = new TCPSecureSocketFactory;
+	else
+		factory = new UDTSecureSocketFactory;
+
 	ListenAddress address;
 	address.m_id = extSessionId;
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSecureSocketFactory;
+	address.m_socketFactory = factory;
 	address.m_acceptCount = 1;
 	ListenThread* thread = new IPCListenThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalListener));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorLocalListener));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalConnector));
+	if(isTCP)
+	{
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalTCPListener));
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalTCPConnector));
+	}
+	else
+	{
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalUDPListener));
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalUDPConnector));
+	}
 
 	if(tunnel->m_localListenThread)
 	{
@@ -565,7 +626,7 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	thread->Start();
 }
 
-void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port)
+void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port, bool isTCP)
 {
 	CSLocker lock(&m_cs);
 	TunnelConnect* tunnel;
@@ -577,10 +638,12 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	tunnel = it->second;
 	
 	SocketFactory* factory;
-	if(m_isUseProxy)
+	if(m_isUseProxy && isTCP)
 		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
-	else
+	else if(isTCP)
 		factory = new TCPSecureSocketFactory;
+	else
+		factory = new UDTSecureSocketFactory;
 	ConnectAddress address;
 	address.m_localIP = "";
 	address.m_localPort = 0;
@@ -590,7 +653,10 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalConnector));
+	if(isTCP)
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalTCPConnector));
+	else
+		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalUDPConnector));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorLocalConnect));
 	thread->Start();
 }

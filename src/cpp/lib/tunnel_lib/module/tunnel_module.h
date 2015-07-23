@@ -27,10 +27,12 @@ protected:
 	void onTryConnectTo(const TryConnectToMessage& msg);
 	void onInitTunnelStarted(const InitTunnelStartedMessage& msg);
 
-	void onCreatedLocalListener(const CreatedListenerMessage& msg);
+	void onCreatedLocalTCPListener(const CreatedListenerMessage& msg);
+	void onCreatedLocalUDPListener(const CreatedListenerMessage& msg);
 	void onErrorLocalListener(const ListenErrorMessage& msg);
 	void onErrorLocalConnect(const ConnectErrorMessage& msg);
-	void onAddLocalConnector(const ConnectorMessage& msg);
+	void onAddLocalTCPConnector(const ConnectorMessage& msg);
+	void onAddLocalUDPConnector(const ConnectorMessage& msg);
 	void onErrorExternalConnect(const ConnectErrorMessage& msg);
 	void onAddExternalConnector(const ConnectorMessage& msg);
 	void onErrorRelayConnect(const ConnectErrorMessage& msg);
@@ -55,8 +57,8 @@ protected:
 	void onAddRelayServerConnector(const ConnectorMessage& msg);
 
 private:
-	void CreateLocalListenThread(const std::string& extSessionId);
-	void CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
+	void CreateLocalListenThread(const std::string& extSessionId, bool isTCP);
+	void CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port, bool isTCP);
 	void InitExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateRelayConnectThread(const std::string& extSessionId, const std::string& ip, int port);

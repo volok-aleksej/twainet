@@ -7,9 +7,10 @@ enum ResultCode {
 
 enum TunnelType {
 	TUNNEL_ALL								= 0;
-	TUNNEL_LOCAL							= 1;
-	TUNNEL_EXTERNAL							= 2;
-	TUNNEL_RELAY							= 3;
+	TUNNEL_LOCAL_TCP						= 1;
+	TUNNEL_LOCAL_UDP						= 2;
+	TUNNEL_EXTERNAL							= 3;
+	TUNNEL_RELAY							= 4;
 }
 
 message Login {

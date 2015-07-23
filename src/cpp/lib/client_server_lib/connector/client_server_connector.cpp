@@ -172,7 +172,7 @@ void ClientServerConnector::onTryConnectToSignal(const TryConnectToSignal& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
 	if(((idName.module_name() == ClientServerModule::m_serverIPCName
-		&& msg.type() == TUNNEL_LOCAL)
+		&& (msg.type() == TUNNEL_LOCAL_TCP || msg.type() == TUNNEL_LOCAL_UDP))
 		|| (idName.module_name() == ClientServerModule::m_clientIPCName
 		&& msg.type() == TUNNEL_EXTERNAL))
 		&& msg.own_session_id() == m_ownSessionId)

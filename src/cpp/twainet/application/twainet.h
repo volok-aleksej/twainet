@@ -55,10 +55,11 @@ extern "C"
 		enum TypeConnection
 		{
 			UNKNOWN = 0,
-			LOCAL = 1,
-			EXTERNAL = 2,
-			RELAY = 3,
-			PPP = 4
+			LOCAL_TCP = 1,
+			LOCAL_UDP = 2,
+			EXTERNAL = 3,
+			RELAY = 4,
+			PPP = 5
 		};
 
 		typedef void* Module;
@@ -145,7 +146,7 @@ extern "C"
 		// Set user list for login operation on server
 		TWAINET_FUNC void SetUsersList(const Module module, const UserPassword* users, int sizeUsers);
 
-		// Use server and tunnel connections throw proxy server
+		// Use server and tunnel connections throw http proxy server
 		TWAINET_FUNC void UseProxy(const Module module, const char* host, int port, const UserPassword& userPassword);
 
 		// Use standart connections
