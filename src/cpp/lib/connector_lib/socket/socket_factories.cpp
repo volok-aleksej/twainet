@@ -7,6 +7,10 @@
 #	include "ppp/ppp_library.h"
 #endif/*WIN32*/
 
+#ifndef INVALID_SOCKET
+#	define INVALID_SOCKET -1
+#endif/*INVALID_SOCKET*/
+
 /*******************************************************************************************************/
 /*                                          TCPSocketFactory                                           */
 /*******************************************************************************************************/
@@ -93,6 +97,9 @@ AnySocket* UDPSocketFactory::CreateSocket(int socket)
 /*******************************************************************************************************/
 /*                                         UDTSocketFactory                                            */
 /*******************************************************************************************************/
+UDTSocketFactory::UDTSocketFactory()
+: m_udpSocket(INVALID_SOCKET) {}
+
 AnySocket* UDTSocketFactory::CreateSocket()
 {
 	if(m_udpSocket != INVALID_SOCKET)
@@ -125,6 +132,9 @@ void UDTSocketFactory::SetUdpSocket(int udpSocket)
 /*******************************************************************************************************/
 /*                                      UDTSecureSocketFactory                                         */
 /*******************************************************************************************************/
+UDTSecureSocketFactory::UDTSecureSocketFactory()
+: m_udpSocket(INVALID_SOCKET) {}
+
 AnySocket* UDTSecureSocketFactory::CreateSocket()
 {
 	if(m_udpSocket != INVALID_SOCKET)
