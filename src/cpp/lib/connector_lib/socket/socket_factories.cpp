@@ -95,7 +95,7 @@ AnySocket* UDPSocketFactory::CreateSocket(int socket)
 /*******************************************************************************************************/
 AnySocket* UDTSocketFactory::CreateSocket()
 {
-	if(!m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
 		return new UDTSocket();
 	}
@@ -107,7 +107,7 @@ AnySocket* UDTSocketFactory::CreateSocket()
 
 AnySocket* UDTSocketFactory::CreateSocket(int socket)
 {
-	if(!m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
 		return new UDTSocket(socket, false);
 	}
@@ -127,7 +127,7 @@ void UDTSocketFactory::SetUdpSocket(int udpSocket)
 /*******************************************************************************************************/
 AnySocket* UDTSecureSocketFactory::CreateSocket()
 {
-	if(!m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
 		return new SecureUDTSocket();
 	}
@@ -139,7 +139,7 @@ AnySocket* UDTSecureSocketFactory::CreateSocket()
 
 AnySocket* UDTSecureSocketFactory::CreateSocket(int socket)
 {
-	if(!m_udpSocket)
+	if(m_udpSocket != INVALID_SOCKET)
 	{
 		return new SecureUDTSocket(socket, false);
 	}

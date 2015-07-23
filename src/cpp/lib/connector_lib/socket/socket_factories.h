@@ -58,6 +58,9 @@ public:
 class UDTSocketFactory : public SocketFactory
 {
 public:
+	UDTSocketFactory()
+		: m_udpSocket(INVALID_SOCKET) {}
+
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
 
@@ -69,6 +72,9 @@ private:
 class UDTSecureSocketFactory : public SocketFactory
 {
 public:
+	UDTSecureSocketFactory()
+		: m_udpSocket(INVALID_SOCKET) {}
+
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
 
