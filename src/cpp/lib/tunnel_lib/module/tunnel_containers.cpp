@@ -2,11 +2,12 @@
 #include "thread/external_connect_thread.h"
 #include "connector_lib/thread/listen_thread.h"
 #include "connector_lib/connector/connector.h"
+#include "connector_lib/socket/udp_socket.h"
 #include "thread_lib/thread/thread_manager.h"
 #include <time.h>
 
 TunnelConnect::TunnelConnect(const std::string& sessionId)
-: m_sessionId(sessionId), m_localListenThread(0)
+: m_sessionId(sessionId), m_localListenThread(0), m_localUdpSocket(0)
 , m_externalConnectThread(0), m_creationTime(0)
 {
 	time(&m_creationTime);
@@ -25,6 +26,11 @@ TunnelConnect::~TunnelConnect()
 			(*it)->Stop();
 			ThreadManager::GetInstance().AddThread(*it);
 		}
+	}
+
+	if(m_localUdpSocket)
+	{
+		m_localUdpSocket->Close();
 	}
 
 	m_localListenThread = 0;

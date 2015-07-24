@@ -11,6 +11,7 @@ using namespace client_server;
 class ExternalConnectThread;
 class ListenThread;
 class Thread;
+class UDPSocket;
 
 class TunnelConnect
 {
@@ -19,6 +20,7 @@ public:
 	~TunnelConnect();
 
 	ListenThread* m_localListenThread;
+	UDPSocket* m_localUdpSocket;
 	ExternalConnectThread* m_externalConnectThread;
 	std::string m_sessionId;
 	time_t m_creationTime;
