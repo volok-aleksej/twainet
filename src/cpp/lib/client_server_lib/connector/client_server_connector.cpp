@@ -54,7 +54,6 @@ void ClientServerConnector::SubscribeConnector(const IPCConnector* connector)
 	if(ipcConn)
 	{
 		ipcSubscribe(ipcConn, SIGNAL_FUNC(this, ClientServerConnector, IPCProtoMessage, onIPCMessage));
-		ipcSubscribe(ipcConn, SIGNAL_FUNC(this, ClientServerConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
 	}
 	ClientServerConnector* conn = dynamic_cast<ClientServerConnector*>(ipcConn);
 	if(conn)
@@ -62,16 +61,7 @@ void ClientServerConnector::SubscribeConnector(const IPCConnector* connector)
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
-	}
-}
-
-void ClientServerConnector::onNewConnector(const Connector* connector)
-{
-	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
-	if(conn)
-	{
-		SubscribeConnector(conn);
-		conn->SubscribeConnector(this);
+		ipcSubscribe(ipcConn, SIGNAL_FUNC(this, ClientServerConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
 	}
 }
 
