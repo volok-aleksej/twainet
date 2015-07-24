@@ -35,7 +35,8 @@ public:
 	virtual ~IPCConnector();
 
 	virtual void onNewConnector(const Connector* connector);
-	virtual void Subscribe(::SignalOwner* owner);
+	virtual void SubscribeConnector(const IPCConnector* connector);
+	virtual void SubscribeModule(::SignalOwner* owner);
 
 	IPCObjectName GetModuleName() const;
 protected:
@@ -80,6 +81,7 @@ protected:
 	IPCCheckerThread *m_checker;
 	bool m_bConnected;
 	bool m_isNotifyRemove;
+	bool m_isSendIPCObjects;
 	bool m_isCoordinator;
 private:
 	IPCObjectName m_moduleName;

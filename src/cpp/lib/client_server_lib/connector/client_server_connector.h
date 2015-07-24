@@ -29,8 +29,9 @@ public:
 	virtual ~ClientServerConnector();
 
 	virtual void onNewConnector(const Connector* connector);
+	virtual void SubscribeConnector(const IPCConnector* connector);
+	virtual void SubscribeModule(::SignalOwner* owner);
 	virtual void OnConnected();
-	virtual void Subscribe(::SignalOwner* owner);
 
 	void SetUserName(const std::string& userName);
 	void SetPassword(const std::string& password);
@@ -48,6 +49,7 @@ protected:
 	void onPeerDataSignal(const PeerDataSignal& msg);
 	void onIPCObjectListMessage(const IPCObjectListMessage& msg);
 	void onAddIPCObjectMessage(const AddIPCObjectMessage& msg);
+	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
 
 protected:
 	template<typename TMessage, typename THandler> friend class ProtoMessage;

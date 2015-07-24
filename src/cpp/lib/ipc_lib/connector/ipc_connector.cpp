@@ -11,7 +11,9 @@
 #pragma warning(disable: 4355)
 
 IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
-: Connector(socket), m_moduleName(moduleName), m_bConnected(false)
+: Connector(socket), m_moduleName(moduleName)
+, m_bConnected(false), m_isCoordinator(false)
+, m_isNotifyRemove(true), m_isSendIPCObjects(false)
 , m_checker(0), m_isExist(false), m_rand(CreateGUID())
 {
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
@@ -65,7 +67,9 @@ void IPCConnector::OnStart()
 	ListenerParamMessage msg(m_moduleName.GetModuleNameString());
 	onSignal(msg);
 	m_moduleName = IPCObjectName::GetIPCName(msg.m_moduleName);
-	m_isNotifyRemove = m_isCoordinator = msg.m_isCoordinator;
+	m_isCoordinator = msg.m_isCoordinator;
+	m_isNotifyRemove = m_isCoordinator;
+	m_isSendIPCObjects = m_isNotifyRemove;
 
 	ProtoMessage<ModuleName> mnMsg(this);
 	*mnMsg.mutable_ipc_name() = m_moduleName;
@@ -130,7 +134,7 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		return;
 	}
 
-	if(m_isCoordinator)
+	if(m_isSendIPCObjects)
 	{
 		IPCObjectListMessage ipcolMsg(this);
 		onSignal(ipcolMsg);
@@ -276,11 +280,16 @@ void IPCConnector::onNewConnector(const Connector* connector)
 	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
 	if(conn)
 	{
-		addIPCSubscriber(conn, SIGNAL_FUNC(conn, IPCConnector, IPCProtoMessage, onIPCMessage));
-		addIPCSubscriber(conn, SIGNAL_FUNC(conn, IPCConnector, ModuleNameMessage, onModuleNameMessage));
-		addIPCSubscriber(conn, SIGNAL_FUNC(conn, IPCConnector, UpdateIPCObjectMessage, onUpdateIPCObjectMessage));
-		addIPCSubscriber(conn, SIGNAL_FUNC(conn, IPCConnector, ModuleStateMessage, onModuleStateMessage));
-		addIPCSubscriber(conn, SIGNAL_FUNC(conn, IPCConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
+		SubscribeConnector(conn);
+		conn->SubscribeConnector(this);
+	}
+}
+
+void IPCConnector::SubscribeConnector(const IPCConnector* connector)
+{
+	IPCConnector* conn = const_cast<IPCConnector*>(connector);
+	if(conn)
+	{
 		ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, IPCProtoMessage, onIPCMessage));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, ModuleNameMessage, onModuleNameMessage));
 		ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, UpdateIPCObjectMessage, onUpdateIPCObjectMessage));
@@ -289,7 +298,7 @@ void IPCConnector::onNewConnector(const Connector* connector)
 	}
 }
 
-void IPCConnector::Subscribe(::SignalOwner* owner)
+void IPCConnector::SubscribeModule(::SignalOwner* owner)
 {
 	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ChangeIPCNameMessage, onChangeIPCNameMessage));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, IPCMessageSignal, onIPCMessage));

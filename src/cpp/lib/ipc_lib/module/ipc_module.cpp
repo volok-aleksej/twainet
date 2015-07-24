@@ -298,7 +298,7 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenerParamMessage, getListenPort));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectedMessage, onConnected));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCProtoMessage, onIPCMessage));
-		connector->Subscribe(dynamic_cast<SignalOwner*>(this));
+		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
 		m_manager.AddConnection(msg.m_conn);
 	}
 	else

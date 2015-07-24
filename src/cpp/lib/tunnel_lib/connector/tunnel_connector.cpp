@@ -7,10 +7,7 @@ TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleN
 , m_type(UNKNOWN), m_pingThread(this)
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
-	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));
-	
-	m_isNotifyRemove = true;
-	m_isCoordinator = false;
+	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));	
 }
 
 TunnelConnector::~TunnelConnector()

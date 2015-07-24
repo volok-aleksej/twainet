@@ -41,9 +41,6 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelStartedMessage(this));
 	addMessage(new PeerDataMessage(this));
 	addMessage(new ProtoMessage<ModuleName, ClientServerConnector>(this));
-
-	m_isNotifyRemove = true;
-	m_isCoordinator = false;
 }
 
 ClientServerConnector::~ClientServerConnector()
@@ -51,33 +48,40 @@ ClientServerConnector::~ClientServerConnector()
 	removeReceiver();
 }
 
+void ClientServerConnector::SubscribeConnector(const IPCConnector* connector)
+{
+	IPCConnector* ipcConn = const_cast<IPCConnector*>(connector);
+	if(ipcConn)
+	{
+		ipcSubscribe(ipcConn, SIGNAL_FUNC(this, ClientServerConnector, IPCProtoMessage, onIPCMessage));
+		ipcSubscribe(ipcConn, SIGNAL_FUNC(this, ClientServerConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
+	}
+	ClientServerConnector* conn = dynamic_cast<ClientServerConnector*>(ipcConn);
+	if(conn)
+	{
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
+		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
+	}
+}
+
 void ClientServerConnector::onNewConnector(const Connector* connector)
 {
 	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
 	if(conn)
 	{
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerConnector, IPCProtoMessage, onIPCMessage));
-	}
-	ClientServerConnector* csConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
-	if(csConn)
-	{
-		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
-		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
-		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
-		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
-		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
-		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
-		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, IPCProtoMessage, onIPCMessage));
+		SubscribeConnector(conn);
+		conn->SubscribeConnector(this);
 	}
 }
 
-void ClientServerConnector::Subscribe(::SignalOwner* owner)
+void ClientServerConnector::SubscribeModule(::SignalOwner* owner)
 {
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelSignal, onInitTunnelSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelStartedSignal, onInitTunnelStartedSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, PeerDataSignal, onPeerDataSignal));
-	IPCConnector::Subscribe(owner);
+	IPCConnector::SubscribeModule(owner);
 }
 
 void ClientServerConnector::SetUserName(const std::string& userName)
@@ -124,12 +128,11 @@ IPCObjectName ClientServerConnector::GetIPCName()
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	IPCObjectName path(msg.ipc_path(0));
-	if (m_ownSessionId == path.GetModuleNameString() &&
-		GetModuleName().module_name() == ClientServerModule::m_serverIPCName)
+	if(path.GetModuleNameString() == m_id)
 	{
 		IPCProtoMessage newMsg(msg);
 		newMsg.clear_ipc_path();
-		IPCObjectName server(ClientServerModule::m_clientIPCName, m_ownSessionId);
+		IPCObjectName server(GetModuleName().module_name(), m_ownSessionId);
 		*newMsg.add_ipc_path() = server;
 		for(int i = 1; i < msg.ipc_path_size(); i++)
 		{
@@ -217,6 +220,11 @@ void ClientServerConnector::onAddIPCObjectMessage(const AddIPCObjectMessage& msg
 	{
 		toMessage(msg);
 	}
+}
+
+void ClientServerConnector::onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg)
+{
+	IPCConnector::onRemoveIPCObjectMessage(msg);
 }
 
 void ClientServerConnector::onMessage(const LoginResult& msg)
