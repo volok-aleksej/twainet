@@ -5,6 +5,7 @@
 
 #pragma warning(disable:4244 4267)
 #include "../messages/client_server.pb.h"
+#include "../messages/ipc.pb.h"
 using namespace client_server;
 #pragma warning(default:4244 4267)
 
@@ -45,6 +46,8 @@ protected:
 	void onTryConnectToMessage(const TryConnectToMessage& msg);
 	void onTryConnectToSignal(const TryConnectToSignal& msg);
 	void onPeerDataSignal(const PeerDataSignal& msg);
+	void onIPCObjectListMessage(const IPCObjectListMessage& msg);
+	void onAddIPCObjectMessage(const AddIPCObjectMessage& msg);
 
 protected:
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
@@ -59,6 +62,7 @@ protected:
 	//Client and Server Messages
 	void onMessage(const InitTunnel& msg);
 	void onMessage(const TryConnectTo& msg);
+	void onMessage(const ModuleName& msg);
 private:
 	std::string m_userName;
 	std::string m_password;

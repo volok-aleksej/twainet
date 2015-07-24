@@ -40,6 +40,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new TryConnectToMessage(this));
 	addMessage(new InitTunnelStartedMessage(this));
 	addMessage(new PeerDataMessage(this));
+	addMessage(new ProtoMessage<ModuleName, ClientServerConnector>(this));
 
 	m_isNotifyRemove = true;
 	m_isCoordinator = false;
@@ -62,6 +63,10 @@ void ClientServerConnector::onNewConnector(const Connector* connector)
 	{
 		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
 		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, TryConnectToMessage, onTryConnectToMessage));
+		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
+		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, IPCObjectListMessage, onIPCObjectListMessage));
+		ipcSubscribe(csConn, SIGNAL_FUNC(this, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
+		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, AddIPCObjectMessage, onAddIPCObjectMessage));
 		addIPCSubscriber(csConn, SIGNAL_FUNC(csConn, ClientServerConnector, IPCProtoMessage, onIPCMessage));
 	}
 }
@@ -193,6 +198,27 @@ void ClientServerConnector::onPeerDataSignal(const PeerDataSignal& msg)
 	}
 }
 
+void ClientServerConnector::onIPCObjectListMessage(const IPCObjectListMessage& msg)
+{
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName)
+	{
+		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
+		ipcObject->set_ip("");
+		ipcObject->set_port(0);
+		*ipcObject->mutable_ipc_name() = idName;
+	}
+}
+
+void ClientServerConnector::onAddIPCObjectMessage(const AddIPCObjectMessage& msg)
+{
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName)
+	{
+		toMessage(msg);
+	}
+}
+
 void ClientServerConnector::onMessage(const LoginResult& msg)
 {
 	if(m_checker)
@@ -275,6 +301,25 @@ void ClientServerConnector::onMessage(const InitTunnel& msg)
 	{
 		InitTunnelMessage itMsg(this, msg);
 		onSignal(itMsg);
+	}
+}
+
+void ClientServerConnector::onMessage(const ModuleName& msg)
+{
+	IPCConnector::onMessage(msg);
+	
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_clientIPCName)
+	{
+		IPCObjectListMessage ipcolMsg(this);
+		onIPCSignal(ipcolMsg);
+		toMessage(ipcolMsg);
+
+		AddIPCObjectMessage aipcoMsg(this);
+		aipcoMsg.set_ip("");
+		aipcoMsg.set_port(0);
+		*aipcoMsg.mutable_ipc_name() = idName;
+		onIPCSignal(aipcoMsg);
 	}
 }
 
