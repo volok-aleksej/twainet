@@ -114,11 +114,25 @@ void ApplicationTest::ThreadFunc()
 	strcpy(m_moduleName.m_name, guid.c_str());
 #endif/*WIN32*/
 	m_module = Twainet::CreateModule(m_moduleName, true, false);
-	Twainet::UserPassword proxyuser = {"test", "test"};
-	Twainet::UseProxy(m_module, "vpnbrowse.me", 80, proxyuser);
+	/*
+	Twainet::ModuleName moduleName = {0};
+	strcpy_s(moduleName.m_name, MAX_NAME_LENGTH, CreateGUID().c_str());
+	Twainet::Module module = Twainet::CreateModule(moduleName, false, false);
+	strcpy_s(moduleName.m_name, MAX_NAME_LENGTH, CreateGUID().c_str());
+	Twainet::Module module1 = Twainet::CreateModule(moduleName, false, false);
+	*/
+
+//	Twainet::UserPassword proxyuser = {"test", "test"};
+//	Twainet::UseProxy(m_module, "127.0.0.1", 8080, proxyuser);
 	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2paccess"};
 	Twainet::ConnectToServer(m_module, "199.66.200.133", 1054, user);
 //	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
+
+/*
+	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2paccess"};
+	Twainet::SetUsersList(m_module, &user, 1);
+	Twainet::CreateServer(m_module, 1054);
+*/
 	while(!m_isStop){Thread::sleep(200);}
 }
 
@@ -172,8 +186,8 @@ void ApplicationTest::onModuleConnected(Twainet::Module module, const Twainet::M
 	if(module == m_module)
 	{
 		printf("module connected - %s.%s\n", moduleId.m_name, moduleId.m_host);
-		//if(strcmp(moduleId.m_name, "Server") == 0)
-			Twainet::CreateTunnel(m_module, "1279512910471221722913024402262116155159", Twainet::RELAY);
+		if(strcmp(moduleId.m_name, "Server") == 0)
+			Twainet::CreateTunnel(m_module, "63163140492441722913024402262116155159", Twainet::LOCAL_UDP);
 	}
 }
 

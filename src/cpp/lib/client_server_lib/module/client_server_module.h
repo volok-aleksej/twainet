@@ -59,6 +59,7 @@ protected:
 	virtual void OnServerConnected();
 	virtual void OnClientConnector(const std::string& sessionId);
 	virtual void ServerCreationFailed();
+	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
 protected:
 	friend class Signal;
 	void onAddConnector(const ConnectorMessage& msg);

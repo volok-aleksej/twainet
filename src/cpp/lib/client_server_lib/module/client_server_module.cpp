@@ -87,6 +87,22 @@ void ClientServerModule::ServerCreationFailed()
 {
 }
 
+void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
+{
+	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
+	std::vector<IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		if(it->m_ipcName.module_name() != m_clientIPCName && it->m_ipcName.module_name() != m_serverIPCName)
+		{
+			AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
+			ipcObject->set_ip(it->m_ip);
+			ipcObject->set_port(it->m_port);
+			*ipcObject->mutable_ipc_name() = it->m_ipcName;
+		}
+	}
+}
+
 void ClientServerModule::Disconnect()
 {
 	IPCObjectName ipcName(m_serverIPCName, m_ownSessionId);

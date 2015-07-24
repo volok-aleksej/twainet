@@ -192,6 +192,19 @@ void IPCModule::ModuleCreationFialed()
 {
 }
 
+void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
+{
+	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
+	std::vector<IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
+		ipcObject->set_ip(it->m_ip);
+		ipcObject->set_port(it->m_port);
+		*ipcObject->mutable_ipc_name() = it->m_ipcName;
+	}
+}
+
 void IPCModule::ConnectToCoordinator()
 {
 	if(m_isExit)
@@ -498,15 +511,7 @@ void IPCModule::getListenPort(const ListenerParamMessage& msg)
 
 void IPCModule::onIPCObjectList(const IPCObjectListMessage& msg)
 {
-	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
-	std::vector<IPCObject>::iterator it;
-	for(it = list.begin(); it != list.end(); it++)
-	{
-		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
-		ipcObject->set_ip(it->m_ip);
-		ipcObject->set_port(it->m_port);
-		*ipcObject->mutable_ipc_name() = it->m_ipcName;
-	}
+	FillIPCObjectList(const_cast<IPCObjectListMessage&>(msg));
 }
 
 std::vector<IPCObjectName> IPCModule::GetIPCObjects()

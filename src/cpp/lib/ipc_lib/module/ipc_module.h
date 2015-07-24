@@ -99,6 +99,7 @@ protected:
 	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 	virtual bool CheckFireConnector(const std::string& moduleName);
 	virtual void ModuleCreationFialed();
+	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
 
 protected:
 	void Start(const std::string& ip, int port);

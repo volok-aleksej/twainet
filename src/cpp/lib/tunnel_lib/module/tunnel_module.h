@@ -21,6 +21,7 @@ protected:
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnTunnelConnectFailed(const std::string& sessionId);
 	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
+	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
 protected:
 	//for client
 	void onInitTunnel(const InitTunnelMessage& msg);
