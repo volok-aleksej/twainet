@@ -1,5 +1,6 @@
 #include "logger.h"
 #include <stdarg.h>
+#include <string.h>
 
 Logger::Logger()
 	: m_logFile(0)
