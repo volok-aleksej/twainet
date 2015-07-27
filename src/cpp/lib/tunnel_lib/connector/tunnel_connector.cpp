@@ -1,6 +1,7 @@
 #include "tunnel_connector.h"
 #include "module/tunnel_module.h"
 #include "message/tunnel_messages.h"
+#include "common/logger.h"
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false)
@@ -51,6 +52,7 @@ void TunnelConnector::onMessage(const ModuleName& msg)
 {
 	if(m_isServer)
 	{
+		LOG_INFO("ModuleName message: m_id-%s, m_module-%s\n", m_id.c_str(), GetModuleName().GetModuleNameString().c_str());
 		ModuleNameMessage mnMsg(this, msg);
 		onSignal(mnMsg);
 	}
@@ -64,6 +66,7 @@ void TunnelConnector::onMessage(const ModuleState& msg)
 {
 	if(m_isServer)
 	{
+		LOG_INFO("ModuleState message: m_id-%s, m_module-%s, exist - %d\n", m_id.c_str(), GetModuleName().GetModuleNameString().c_str(), msg.exist());
 		ModuleStateMessage mnMsg(this, msg);
 		mnMsg.set_id(m_id);
 		onSignal(mnMsg);

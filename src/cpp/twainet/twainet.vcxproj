@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\file.cpp" />
+    <ClCompile Include="..\common\logger.cpp" />
+    <ClCompile Include="..\utils\path_parser.cpp" />
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\dllmain.cpp" />
     <ClCompile Include="application\twainet.cpp" />
@@ -18,6 +21,9 @@
     <ClCompile Include="module\twainet_module.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\file.h" />
+    <ClInclude Include="..\common\logger.h" />
+    <ClInclude Include="..\utils\path_parser.h" />
     <ClInclude Include="..\version.h" />
     <ClInclude Include="application\application.h" />
     <ClInclude Include="application\twainet.h" />

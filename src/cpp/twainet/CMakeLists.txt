@@ -13,6 +13,9 @@ set(TWAINET_VERSION_BUILD 1)
 set(TWAINET_VERSION_STRING ${TWAINET_VERSION_MAJOR}.${TWAINET_VERSION_MINOR})
 
 set (SRC_${PROJECT_NAME}
+        ../common/file.cpp
+        ../common/logger.cpp
+        ../utils/path_parser.cpp
 	application/application.cpp
 	application/twainet.cpp
 	message/NotificationMessages.cpp

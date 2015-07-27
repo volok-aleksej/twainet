@@ -4,6 +4,7 @@
 #include "connector_lib/socket/socket_factories.h"
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "thread_lib/thread/thread_manager.h"
+#include "common/logger.h"
 
 const std::string ClientServerModule::m_serverIPCName = "Server";
 const std::string ClientServerModule::m_clientIPCName = "Client";
@@ -13,7 +14,6 @@ ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFa
 , m_isStopConnect(true), m_serverThread(0)
 , m_isUseProxy(false)
 {
-	//StartAsCoordinator();
 }
 
 ClientServerModule::~ClientServerModule()
@@ -75,20 +75,22 @@ bool ClientServerModule::CheckFireConnector(const std::string& moduleName)
 
 void ClientServerModule::OnServerConnected()
 {
-	printf("\nClient connected to server. sessionId: %s", m_ownSessionId.c_str());
+	LOG_INFO("Client connected to server. sessionId: %s\n", m_ownSessionId.c_str());
 }
 
 void ClientServerModule::OnClientConnector(const std::string& sessionId)
 {
-	printf("\nServer incoming client connection. sessionId: %s", sessionId.c_str());
+	LOG_INFO("Server incoming client connection. sessionId: %s\n", sessionId.c_str());
 }
 
 void ClientServerModule::ServerCreationFailed()
 {
+	LOG_INFO("Server creation failed. m_moduleName %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void ClientServerModule::OnAuthFailed()
 {
+	LOG_INFO("Client authorization failed. m_moduleName %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
@@ -109,6 +111,7 @@ void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
 
 void ClientServerModule::Disconnect()
 {
+	LOG_INFO("Try client disconnect. sessionId %s\n", m_ownSessionId.c_str());
 	IPCObjectName ipcName(m_serverIPCName, m_ownSessionId);
 	m_manager.StopConnection(ipcName.GetModuleNameString());
 	m_isStopConnect = true;
@@ -126,6 +129,7 @@ void ClientServerModule::SetPassword(const std::string& password)
 
 void ClientServerModule::AddUser(const std::string& userName, const std::string& password)
 {
+	LOG_INFO("Add user %s: m_moduleName - %s\n", userName.c_str(), m_moduleName.GetModuleNameString().c_str());
 	UserPassword user(userName, password);
 	if(!m_userPasswords.AddObject(user))
 		m_userPasswords.UpdateObject(user);
@@ -133,17 +137,20 @@ void ClientServerModule::AddUser(const std::string& userName, const std::string&
 
 void ClientServerModule::RemoveUser(const std::string& userName, const std::string& password)
 {
+	LOG_INFO("Remove user %s: m_moduleName - %s\n", userName.c_str(), m_moduleName.GetModuleNameString().c_str());
 	UserPassword user(userName, password);
 	m_userPasswords.RemoveObject(user);
 }
 
 void ClientServerModule::ClearUsers()
 {
+	LOG_INFO("Clear users: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 	m_userPasswords.Clear();
 }
 
 void ClientServerModule::StartServer(int port)
 {
+	LOG_INFO("Try start server on port %d: m_moduleName - %s\n", port, m_moduleName.GetModuleNameString().c_str());
 	if(m_serverThread)
 	{
 		m_serverThread->Stop();
@@ -174,6 +181,7 @@ bool ClientServerModule::IsStopServer()
 
 void ClientServerModule::StopServer()
 {
+	LOG_INFO("Try stop server: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 	if(m_serverThread)
 	{
 		m_serverThread->Stop();
@@ -190,11 +198,13 @@ const std::string& ClientServerModule::GetSessionId()
 
 void ClientServerModule::UseStandartConnections()
 {
+	LOG_INFO("Use Standard Connectivity: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 	m_isUseProxy = false;
 }
 
 void ClientServerModule::UseProxy(const std::string& ip, int port)
 {
+	LOG_INFO("Use Connectivity by Proxy: ip - %s, port - %d, m_moduleName - %s\n", ip.c_str(), port, m_moduleName.GetModuleNameString().c_str());
 	m_isUseProxy = true;
 	m_proxyPort = port;
 	m_proxyIp = ip;
@@ -239,6 +249,7 @@ void ClientServerModule::onErrorConnect(const ConnectErrorMessage& msg)
 
 void ClientServerModule::onCreatedListener(const CreatedListenerMessage& msg)
 {
+	LOG_INFO("Server created: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)

@@ -12,6 +12,7 @@
 #include "twainet.h"
 #include "application.h"
 #include "utils/utils.h"
+#include "common/logger.h"
 
 #pragma warning(disable: 4273)
 
@@ -233,4 +234,9 @@ extern "C" void Twainet::UseStandartConnections(const Twainet::Module module)
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	twainetModule->UseStandartConnections();
+}
+
+extern "C" void Twainet::UseLog(char* logFileName)
+{
+	Logger::GetInstance().SetLogFile(logFileName);
 }

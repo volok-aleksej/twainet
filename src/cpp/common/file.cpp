@@ -7,7 +7,8 @@
 #include <io.h>
 
 #define access _access
-#define mkdir _mkdir
+#define mkdir(file, param) _mkdir(file)
+#define fileno _fileno
 
 #else
 #include <unistd.h>

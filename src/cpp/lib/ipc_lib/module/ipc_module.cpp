@@ -3,6 +3,7 @@
 
 #include "ipc_module.h"
 
+#include "common/logger.h"
 #include "common/common.h"
 #include "common/common_func.h"
 
@@ -103,6 +104,7 @@ void IPCModule::StartAsCoordinator()
 
 void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 {
+	LOG_INFO("Try Connect with %s: m_moduleName - %s\n", const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 	IPCObjectName module(moduleName);
 	TryConnectCounter counter(module.GetModuleNameString());
 	if(m_isExit || m_tryConnectCounters.GetObject(counter, &counter))
@@ -136,6 +138,7 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 
 void IPCModule::DisconnectModule(const IPCObjectName& moduleName)
 {
+	LOG_INFO("Try disconnect from %s: m_moduleName - %s\n", const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 	IPCObjectName module(moduleName);
 	m_manager.StopConnection(module.GetModuleNameString());
 }
@@ -165,18 +168,22 @@ void IPCModule::Start(const std::string& ip, int port)
 
 void IPCModule::OnNewConnector(Connector* connector)
 {
+	LOG_INFO("New connector created: m_id - %s, m_moduleName - %s\n", connector->GetId().c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::OnConnected(const std::string& moduleName)
 {
+	LOG_INFO("Connector created: moduleName - %s, m_moduleName - %s\n", moduleName.c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::OnFireConnector(const std::string& moduleName)
 {
+	LOG_INFO("Connector destroyed: moduleName - %s, m_moduleName - %s\n", moduleName.c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::OnConnectFailed(const std::string& moduleName)
 {
+	LOG_INFO("Connection failed: moduleName - %s, m_moduleName - %s\n", moduleName.c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
@@ -190,6 +197,7 @@ bool IPCModule::CheckFireConnector(const std::string& moduleName)
 
 void IPCModule::ModuleCreationFialed()
 {
+	LOG_INFO("Module Creation Failed: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
@@ -207,6 +215,7 @@ void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
 
 void IPCModule::ConnectToCoordinator()
 {
+	LOG_INFO("Try Connect with coordinator: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 	if(m_isExit)
 	{
 		return;
@@ -238,13 +247,13 @@ void IPCModule::UpdateModuleName(const IPCObjectName& moduleName)
 	*uioMsg.mutable_ipc_new_name() = moduleName;
 	onUpdateIPCObject(uioMsg);
 
+	LOG_INFO("Update ipc name: old - %s, new - %s\n", m_moduleName.GetModuleNameString().c_str(), const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str());
 	m_moduleName = moduleName;
 
 	ChangeIPCNameMessage cinMsg(0);
 	*cinMsg.mutable_ipc_name() = m_moduleName;
 	onSignal(cinMsg);
 
-	printf("Update ipc name: %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::SendMsg(const IPCMessageSignal& msg)
@@ -275,6 +284,8 @@ void IPCModule::onCreatedListener(const CreatedListenerMessage& msg)
 	{
 		ConnectToCoordinator();
 	}
+
+	LOG_INFO("Module created: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::onErrorListener(const ListenErrorMessage& msg)
@@ -362,6 +373,7 @@ void IPCModule::onConnected(const ConnectedMessage& msg)
 	OnConnected(msg.m_id);
 	if(msg.m_bWithCoordinator)
 	{
+		LOG_INFO("Module connected with coordinator: coordinator name - %s, m_moduleName - %s\n", m_coordinatorName.c_str(), m_moduleName.GetModuleNameString().c_str());
 		m_coordinatorName = msg.m_id;
 	}
 }
@@ -380,6 +392,7 @@ void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
 void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)
 {
 	IPCObject object(msg.ipc_name(), msg.ip(), msg.port());
+	LOG_INFO("Add IPC Object: ipc name - %s, m_moduleName - %s\n", object.m_ipcName.GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 	m_ipcObject.AddObject(object);
 }
 
@@ -421,12 +434,20 @@ void IPCModule::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 	{
 		m_modules.AddObject(object);
 	}
+
+	IPCObjectName ipcNameNew(msg.ipc_new_name());
+	IPCObjectName ipcNameOld(msg.ipc_old_name());
+	LOG_INFO("Update IPC Object: ipc name old - %s, ipc name new - %s, m_moduleName - %s\n",
+			ipcNameOld.GetModuleNameString().c_str(),
+			ipcNameNew.GetModuleNameString().c_str(),
+			m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
 {
 	IPCObject object(IPCObjectName::GetIPCName(msg.ipc_name()));
 	m_ipcObject.RemoveObject(object);
+	LOG_INFO("Remove IPC Object: ipc name - %s, m_moduleName - %s\n", object.m_ipcName.GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCModule::onModuleName(const ModuleNameMessage& msg)

@@ -4,6 +4,7 @@
 #include "module/ipc_module.h"
 
 #include "common/common_func.h"
+#include "common/logger.h"
 #include "utils/utils.h"
 
 #include "connector_lib/message/connector_messages.h"
@@ -111,6 +112,8 @@ void IPCConnector::onMessage(const ModuleName& msg)
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
 
+	LOG_INFO("ModuleName message: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
+
 	AddIPCObjectMessage aoMsg(this);
 	aoMsg.set_ip(msg.ip());
 	aoMsg.set_port(msg.port());
@@ -131,6 +134,7 @@ void IPCConnector::onMessage(const ModuleName& msg)
 
 	if(m_isExist)
 	{
+		LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
 		return;
 	}
 
@@ -149,6 +153,7 @@ void IPCConnector::onMessage(const ModuleState& msg)
 {
 	if(msg.exist() && m_isExist)
 	{
+		LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
 		Stop();
 	}
 	else if(msg.exist() && !m_isExist)
@@ -161,11 +166,12 @@ void IPCConnector::onMessage(const ModuleState& msg)
 		if (msMsg.exist() && m_rand > msMsg.rndval()
 			|| !msMsg.exist())
 		{
+			LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
 			Stop();
 		}
 		else if(msMsg.exist() && m_rand == msMsg.rndval())
 		{
-			printf("random values is equal\n");
+			LOG_WARNING("Random values is equal: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
 		}
 		else
 		{
@@ -257,8 +263,8 @@ void IPCConnector::onMessage(const ChangeIPCName& msg)
 
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
-
-	printf("change connector id - %s\n", m_id.c_str());
+	
+	LOG_INFO("Change connector id: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCConnector::onMessage(const UpdateIPCObject& msg)
@@ -408,6 +414,7 @@ void IPCConnector::onIPCSignal(const DataMessage& msg)
 
 bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 {
+	LOG_INFO("Set module name: old-%s, new-%s\n", m_moduleName.GetModuleNameString().c_str(), const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str());
 	m_moduleName = moduleName;
 	return true;
 }

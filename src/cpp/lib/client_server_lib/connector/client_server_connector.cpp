@@ -2,6 +2,7 @@
 #include "message/client_server_messages.h"
 #include "module/client_server_module.h"
 #include "common/common_func.h"
+#include "common/logger.h"
 
 class ClientSendMessage : public DataMessage
 {
@@ -224,11 +225,13 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 		m_checker->Stop();
 		m_checker = 0;
 	}
+	
 
 	LoginResultMessage lrMsg(this, msg);
 	onSignal(lrMsg);
 	if(msg.login_result() == LOGIN_FAILURE)
 	{
+		LOG_INFO("Login failed: m_moduleName - %s\n", GetModuleName().GetModuleNameString().c_str());
 		Stop();
 		return;
 	}
@@ -239,6 +242,8 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
 	
+	LOG_INFO("Login succesful: m_id - %s, m_moduleName - %s\n", name.GetModuleNameString().c_str(), GetModuleName().GetModuleNameString().c_str());
+
 	ProtoMessage<ModuleName> mnMsg(this);
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
@@ -264,6 +269,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 
 	if(loginMsg.login_result() == LOGIN_FAILURE)
 	{
+		LOG_INFO("Login failed: m_moduleName - %s\n", GetModuleName().GetModuleNameString().c_str());
 		Stop();
 		return;
 	}
@@ -274,6 +280,8 @@ void ClientServerConnector::onMessage(const Login& msg)
 	SetId(name.GetModuleNameString());
 	IPCConnector::SetModuleName(IPCObjectName(GetModuleName().module_name(), m_ownSessionId));
 	
+	LOG_INFO("Login succesful: m_id - %s, m_moduleName - %s\n", name.GetModuleNameString().c_str(), GetModuleName().GetModuleNameString().c_str());
+
 	ProtoMessage<ModuleName> mnMsg(this);
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
@@ -290,6 +298,7 @@ void ClientServerConnector::onMessage(const PeerData& msg)
 void ClientServerConnector::onMessage(const InitTunnel& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	LOG_INFO("InitTunnel message: m_id - %s, from %s with %s\n", idName.GetModuleNameString().c_str(), msg.own_session_id().c_str(), msg.ext_session_id().c_str());
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
 		InitTunnelSignal itMsg(msg);
@@ -325,6 +334,7 @@ void ClientServerConnector::onMessage(const TryConnectTo& msg)
 {
 	TryConnectToMessage tctMsg(this, msg);
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	LOG_INFO("TryConnectTo message: m_id - %s, from %s with %s by type %d\n", idName.GetModuleNameString().c_str(), msg.own_session_id().c_str(), msg.ext_session_id().c_str(), msg.type());
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
 		tctMsg.set_own_session_id(msg.ext_session_id());

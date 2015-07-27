@@ -152,6 +152,9 @@ extern "C"
 
 		// Use standart connections
 		TWAINET_FUNC void UseStandartConnections(const Module module);
+
+		// Use logger. Log data are written in file
+		TWAINET_FUNC void UseLog(char* logFileName);
 	}
 };
 

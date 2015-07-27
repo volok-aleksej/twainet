@@ -10,6 +10,9 @@
     <Filter Include="message">
       <UniqueIdentifier>{707e8ba7-92eb-475c-b6fa-ee45b8b0440a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{ca1bf454-d269-4700-881c-71ffa1fd9703}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -26,6 +29,15 @@
     </ClCompile>
     <ClCompile Include="application\twainet.cpp">
       <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\file.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\logger.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utils\path_parser.cpp">
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +58,15 @@
     </ClInclude>
     <ClInclude Include="..\version.h">
       <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\file.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\logger.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utils\path_parser.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
