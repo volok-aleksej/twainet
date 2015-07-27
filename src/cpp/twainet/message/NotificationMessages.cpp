@@ -259,3 +259,20 @@ void TunnelCreationFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	callbacks.OnTunnelCreationFailed(m_module, m_sessionId.c_str());
 }
+
+/*******************************************************************************************/
+/*                                        AuthFailed                                       */
+/*******************************************************************************************/
+AuthFailed::AuthFailed(Twainet::Module module)
+	: NotificationMessage(m_module, CLIENT_AUTH_FAILED)
+{
+}
+
+AuthFailed::~AuthFailed()
+{
+}
+
+void AuthFailed::HandleMessage(Twainet::TwainetCallback callbacks)
+{
+	callbacks.OnClientAuthFailed(m_module);
+}

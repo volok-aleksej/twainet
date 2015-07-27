@@ -8,6 +8,7 @@ enum NotificationType
 {
 	SERVER_CONNECTED,
 	CLIENT_CONNECTED,
+	CLIENT_AUTH_FAILED,
 	TUNNEL_CONNECTED,
 	TUNNEL_DISCONNECT,
 	MODULE_CONNECTED,
@@ -128,6 +129,15 @@ public:
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
 private:
 	std::string m_sessionId;
+};
+
+class AuthFailed : public NotificationMessage
+{
+public:
+	AuthFailed(Twainet::Module module);
+	virtual ~AuthFailed();
+
+	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
 };
 
 #endif/*NOTIFICATION_MESSAGES_H*/

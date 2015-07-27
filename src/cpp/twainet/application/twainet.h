@@ -72,6 +72,7 @@ extern "C"
 			void (TWAINET_CALL *OnClientConnected)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnClientDisconnected)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnClientConnectionFailed)(Module module);
+			void (TWAINET_CALL *OnClientAuthFailed)(Module module);
 			void (TWAINET_CALL *OnModuleConnected)(Module module, const ModuleName& moduleId);
 			void (TWAINET_CALL *OnModuleDisconnected)(Module module, const ModuleName& moduleId);
 			void (TWAINET_CALL *OnModuleConnectionFailed)(Module module, const ModuleName& moduleName);

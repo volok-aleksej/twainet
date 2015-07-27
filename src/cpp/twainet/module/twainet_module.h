@@ -24,6 +24,9 @@ protected:
 	// connect with module failed
 	virtual void OnConnectFailed(const std::string& moduleName);
 
+	// connect with server is successful, but login is failed
+	virtual void OnAuthFailed();
+
 	// Connection with module was created.
 	virtual void OnConnected(const std::string& moduleName);
 

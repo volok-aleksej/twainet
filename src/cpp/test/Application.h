@@ -22,6 +22,7 @@ public:
 	static void TWAINET_CALL OnClientConnected(Twainet::Module module, const char* sessionId);
 	static void TWAINET_CALL OnClientDisconnected(Twainet::Module module, const char* sessionId);
 	static void TWAINET_CALL OnClientConnectionFailed(Twainet::Module module);
+	static void TWAINET_CALL OnClientAuthFailed(Twainet::Module module);
 	static void TWAINET_CALL OnServerDisconnected(Twainet::Module module);
 	static void TWAINET_CALL OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
 	static void TWAINET_CALL OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
@@ -37,6 +38,7 @@ protected:
 	void onClientConnected(Twainet::Module module, const char* sessionId);
 	void onClientDisconnected(Twainet::Module module, const char* sessionId);
 	void onClientConnectionFailed(Twainet::Module module);
+	void onClientAuthFailed(Twainet::Module module);
 	void onServerDisconnected(Twainet::Module module);
 	void onModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
 	void onModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId);

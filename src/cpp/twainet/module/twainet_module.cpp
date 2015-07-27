@@ -42,6 +42,11 @@ void TwainetModule::OnConnectFailed(const std::string& moduleName)
 	Application::GetInstance().AddNotifycationMessage(new ConnectionFailed(this, moduleName));
 }
 
+void TwainetModule::OnAuthFailed()
+{
+	Application::GetInstance().AddNotifycationMessage(new AuthFailed(this));
+}
+
 void TwainetModule::OnConnected(const std::string& moduleName)
 {
 	Application::GetInstance().AddNotifycationMessage(new ModuleConnected(this, moduleName));

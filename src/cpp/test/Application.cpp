@@ -11,9 +11,9 @@
 
 Twainet::TwainetCallback tc = {&ApplicationTest::OnServerConnected, &ApplicationTest::OnServerDisconnected, &ApplicationTest::OnServerCreationFailed,
 							   &ApplicationTest::OnClientConnected, &ApplicationTest::OnClientDisconnected, &ApplicationTest::OnClientConnectionFailed,
-							   &ApplicationTest::OnModuleConnected,	&ApplicationTest::OnModuleDisconnected, &ApplicationTest::OnModuleConnectionFailed,
-							   &ApplicationTest::OnModuleCreationFailed, &ApplicationTest::OnTunnelConnected, &ApplicationTest::OnTunnelDisconnected,
-							   &ApplicationTest::OnTunnelCreationFailed, &ApplicationTest::OnMessageRecv};
+							   &ApplicationTest::OnClientAuthFailed, &ApplicationTest::OnModuleConnected,	&ApplicationTest::OnModuleDisconnected,
+							   &ApplicationTest::OnModuleConnectionFailed, &ApplicationTest::OnModuleCreationFailed, &ApplicationTest::OnTunnelConnected,
+							   &ApplicationTest::OnTunnelDisconnected, &ApplicationTest::OnTunnelCreationFailed, &ApplicationTest::OnMessageRecv};
 
 void TWAINET_CALL ApplicationTest::OnModuleCreationFailed(Twainet::Module module)
 {
@@ -48,6 +48,11 @@ void TWAINET_CALL ApplicationTest::OnClientDisconnected(Twainet::Module module, 
 void TWAINET_CALL ApplicationTest::OnClientConnectionFailed(Twainet::Module module)
 {
 	ApplicationTest::GetInstance().onClientConnectionFailed(module);
+}
+
+void TWAINET_CALL ApplicationTest::OnClientAuthFailed(Twainet::Module module)
+{
+	ApplicationTest::GetInstance().onClientAuthFailed(module);
 }
 
 void TWAINET_CALL ApplicationTest::OnServerDisconnected(Twainet::Module module)
@@ -124,7 +129,7 @@ void ApplicationTest::ThreadFunc()
 
 //	Twainet::UserPassword proxyuser = {"test", "test"};
 //	Twainet::UseProxy(m_module, "127.0.0.1", 8080, proxyuser);
-	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2paccess"};
+	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2p"};
 	Twainet::ConnectToServer(m_module, "199.66.200.133", 1054, user);
 //	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
 
@@ -174,6 +179,11 @@ void ApplicationTest::onClientDisconnected(Twainet::Module module, const char* s
 void ApplicationTest::onClientConnectionFailed(Twainet::Module module)
 {
 	printf("client connection failed\n");
+}
+
+void ApplicationTest::onClientAuthFailed(Twainet::Module module)
+{
+	printf("client authorization failed\n");
 }
 
 void ApplicationTest::onServerDisconnected(Twainet::Module module)

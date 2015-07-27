@@ -87,6 +87,10 @@ void ClientServerModule::ServerCreationFailed()
 {
 }
 
+void ClientServerModule::OnAuthFailed()
+{
+}
+
 void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
 {
 	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
@@ -258,7 +262,7 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 {
 	if(msg.login_result() == LOGIN_FAILURE)
 	{
-		OnConnectFailed(ClientServerModule::m_serverIPCName);
+		OnAuthFailed();
 		m_isStopConnect = true;
 	}
 	else
