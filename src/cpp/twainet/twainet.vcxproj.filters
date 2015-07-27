@@ -13,6 +13,9 @@
     <Filter Include="common">
       <UniqueIdentifier>{ca1bf454-d269-4700-881c-71ffa1fd9703}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{28cd4482-1a17-4df4-b14c-c08ac64cb680}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -37,7 +40,7 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\utils\path_parser.cpp">
-      <Filter>common</Filter>
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +69,7 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\utils\path_parser.h">
-      <Filter>common</Filter>
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

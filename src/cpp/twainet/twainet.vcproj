@@ -225,6 +225,38 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="common"
+			>
+			<File
+				RelativePath="..\common\file.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\common\file.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\logger.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\common\logger.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="utils"
+			>
+			<File
+				RelativePath="..\utils\path_parser.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\utils\path_parser.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
