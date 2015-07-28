@@ -18,7 +18,7 @@ extern std::vector<std::string> GetLocalIps();
 const std::string TunnelModule::m_tunnelIPCName = "Tunnel";
 
 TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory, bool isPPPListener)
-: ClientServerModule(ipcName, factory), m_tunnelChecker(0), m_pppListenThread(0)
+	: ClientServerModule(ipcName, factory), m_pppListenThread(0)
 {
 	m_tunnelChecker = new TunnelCheckerThread(this);
 	if(isPPPListener)

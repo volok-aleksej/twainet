@@ -24,6 +24,16 @@ public:
 		{
 			return m_userName == userPass.m_userName;
 		}
+		
+		bool operator != (const UserPassword& userPass)
+		{
+			return m_userName != userPass.m_userName;
+		}
+
+		bool operator < (const UserPassword& userPass) const
+		{
+			return m_userName < userPass.m_userName;
+		}
 
 		std::string m_userName;
 		std::string m_password;

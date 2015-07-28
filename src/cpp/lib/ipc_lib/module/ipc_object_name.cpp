@@ -24,6 +24,16 @@ bool IPCObjectName::operator == (const IPCName& ipcName)
 		suffix() == ipcName.suffix();
 }
 
+bool IPCObjectName::operator < (const IPCName& ipcName) const
+{
+	if (module_name() < ipcName.module_name() ||
+		module_name() == ipcName.module_name() && host_name() < ipcName.host_name() ||
+		module_name() == ipcName.module_name() && host_name() == ipcName.host_name() && suffix() < ipcName.suffix())
+		return true;
+	else
+		return false;
+}
+
 const std::string& IPCObjectName::GetModuleNameString()
 {
 	m_moduleNameString = module_name();

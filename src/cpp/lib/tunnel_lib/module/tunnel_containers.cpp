@@ -63,3 +63,23 @@ bool PeerType::operator == (const PeerType& peerType)
 	return	one_session_id() == peerType.one_session_id() && two_session_id() == peerType.two_session_id() ||
 			one_session_id() == peerType.two_session_id() && two_session_id() == peerType.one_session_id();
 }
+bool PeerType::operator != (const PeerType& peerType)
+{
+	return !(operator == (peerType));
+}
+bool PeerType::operator < (const PeerType& peerType) const
+{
+	int resVal = 0, otherResVal = 0;
+	for(std::string::const_iterator it = one_session_id().begin();
+		it != one_session_id().end(); it++)
+	{
+		resVal += *it;
+	}
+	for(std::string::const_iterator it = peerType.one_session_id().begin();
+		it != peerType.one_session_id().end(); it++)
+	{
+		otherResVal += *it;
+	}
+
+	return resVal < otherResVal;
+}

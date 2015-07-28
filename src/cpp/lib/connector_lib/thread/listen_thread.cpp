@@ -26,7 +26,7 @@ void ListenThread::ThreadFunc()
 {
 	m_socket = m_address.m_socketFactory->CreateSocket();
 	if(!m_socket->Bind(m_address.m_localIP, m_address.m_localPort) ||
-		!m_socket->Listen(100))
+		!m_socket->Listen(SOMAXCONN))
 	{
 		ListenErrorMessage errMsg(m_address.m_id, "", GetError());
 		onSignal(errMsg);

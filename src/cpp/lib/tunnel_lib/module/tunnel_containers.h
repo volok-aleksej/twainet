@@ -46,6 +46,8 @@ public:
 	virtual ~PeerType();
 
 	bool operator == (const PeerType& peerType);
+	bool operator != (const PeerType& peerType);
+	bool operator < (const PeerType& peerType) const;
 };
 
 #endif/*TUNNEL_CONTAINERS_H*/

@@ -2,6 +2,7 @@
 #define OBJECT_MANAGER_H
 
 #include <vector>
+#include <algorithm>
 
 #include "critical_section.h"
 
@@ -12,9 +13,14 @@ public:
 	bool AddObject(const Object& object)
 	{
 		bool res = false;
-		Object object_;
 		CSLocker locker(&m_cs);
-		if(!GetObject(object, &object_))
+		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		if(it != m_objects.end() && *it != object)
+		{
+			res = true;
+			m_objects.insert(it++, object);
+		}
+		else if(it == m_objects.end())
 		{
 			res = true;
 			m_objects.push_back(object);
@@ -25,17 +31,12 @@ public:
 	bool RemoveObject(const Object& object)
 	{
 		CSLocker locker(&m_cs);
-		for (typename std::vector<Object>::iterator it = m_objects.begin();
-			it != m_objects.end();
-			it++)
+		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		if(it != m_objects.end() && (*it) == object)
 		{
-			if((*it) == object)
-			{
-				m_objects.erase(it);
-				return true;
-			}
+			m_objects.erase(it);
+			return true;
 		}
-
 		return false;
 	}
 
@@ -43,17 +44,13 @@ public:
 	{
 		bool res = false;
 		CSLocker locker(&m_cs);
-		for (typename std::vector<Object>::iterator it = m_objects.begin();
-			it != m_objects.end();
-			it++)
+		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		if(it != m_objects.end() && (*it) == object)
 		{
-			if((*it) == object)
-			{
-				*getObject = *it;
-				res = true;
-				break;
-			}
+			*getObject = *it;
+			res = true;
 		}
+
 		return res;
 	}
 	
@@ -61,16 +58,11 @@ public:
 	{
 		bool res = false;
 		CSLocker locker(&m_cs);
-		for (typename std::vector<Object>::iterator it = m_objects.begin();
-			it != m_objects.end();
-			it++)
+		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		if(it != m_objects.end() && (*it) == object)
 		{
-			if((*it) == object)
-			{
-				*it = object;
-				res = true;
-				break;
-			}
+			*it = object;
+			res = true;
 		}
 		return res;
 	}

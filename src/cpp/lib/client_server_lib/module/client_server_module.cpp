@@ -31,6 +31,11 @@ ClientServerModule::~ClientServerModule()
 
 void ClientServerModule::Connect(const std::string& ip, int port)
 {
+	if(m_isExit)
+	{
+		return;
+	}
+
 	m_isStopConnect = false;
 	m_ip = ip;
 	m_port = port;
@@ -58,7 +63,8 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 void ClientServerModule::OnFireConnector(const std::string& moduleName)
 {
 	IPCObjectName ipcModuleName = IPCObjectName::GetIPCName(moduleName);
-	if(ipcModuleName.module_name() == m_serverIPCName && !m_isStopConnect)
+	if (ipcModuleName.module_name() == m_serverIPCName &&
+		!m_isStopConnect && !m_isExit)
 	{
 		m_ownSessionId.clear();
 		Connect(m_ip, m_port);
@@ -237,7 +243,7 @@ void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
 
 void ClientServerModule::onErrorConnect(const ConnectErrorMessage& msg)
 {
-	if(!m_isStopConnect)
+	if(!m_isStopConnect && !m_isExit)
 	{
 		Connect(m_ip, m_port);
 	}

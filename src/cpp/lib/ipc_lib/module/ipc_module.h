@@ -41,6 +41,8 @@ protected:
 		~IPCObject();
 
 		bool operator == (const IPCObject& ipcName);
+		bool operator != (const IPCObject& ipcName);
+		bool operator < (const IPCObject& ipcName) const;
 		void operator = (const IPCObject& ipcName);
 
 		IPCObjectName m_ipcName;
@@ -55,6 +57,8 @@ protected:
 		TryConnectCounter(const std::string& moduleName);
 
 		bool operator == (const TryConnectCounter& ipcName);
+		bool operator != (const TryConnectCounter& ipcName);
+		bool operator < (const TryConnectCounter& ipcName) const;
 		void operator = (const TryConnectCounter& ipcName);
 
 		int m_count;

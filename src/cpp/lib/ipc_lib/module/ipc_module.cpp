@@ -37,6 +37,16 @@ void IPCModule::IPCObject::operator=(const IPCObject& object)
 	m_port = object.m_port;
 }
 
+bool IPCModule::IPCObject::operator != (const IPCObject& object)
+{
+	return !(operator == (object));
+}
+
+bool IPCModule::IPCObject::operator < (const IPCObject& object) const
+{
+	return m_ipcName < object.m_ipcName;
+}
+
 bool IPCModule::IPCObject::operator==(const IPCObject& object)
 {
 	return m_ipcName == object.m_ipcName;
@@ -56,6 +66,16 @@ IPCModule::TryConnectCounter::TryConnectCounter(const std::string& moduleName)
 bool IPCModule::TryConnectCounter::operator == (const TryConnectCounter& counter)
 {
 	return m_moduleName == counter.m_moduleName;
+}
+
+bool IPCModule::TryConnectCounter::operator != (const TryConnectCounter& counter)
+{
+	return m_moduleName != counter.m_moduleName;
+}
+
+bool IPCModule::TryConnectCounter::operator < (const TryConnectCounter& counter) const
+{
+	return m_moduleName < counter.m_moduleName;
 }
 
 void IPCModule::TryConnectCounter::operator = (const TryConnectCounter& counter)
@@ -333,7 +353,7 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 
 void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 {
-	if(msg.m_moduleName == m_coordinatorIPCName)
+	if(msg.m_moduleName == m_coordinatorIPCName && !m_isExit)
 	{
 		if(m_countConnect + 1 == g_ipcCoordinatorPortCount)
 		{
@@ -354,7 +374,7 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 			OnConnectFailed(msg.m_moduleName);
 		}
 
-		if(counter.m_count < m_maxTryConnectCount)
+		if(counter.m_count < m_maxTryConnectCount && !m_isExit)
 		{
 			ConnectTo(IPCObjectName::GetIPCName(msg.m_moduleName));
 			counter.m_count++;
