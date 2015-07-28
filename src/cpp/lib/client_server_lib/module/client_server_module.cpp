@@ -35,7 +35,7 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	{
 		return;
 	}
-
+	
 	m_isStopConnect = false;
 	m_ip = ip;
 	m_port = port;
@@ -63,7 +63,7 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 void ClientServerModule::OnFireConnector(const std::string& moduleName)
 {
 	IPCObjectName ipcModuleName = IPCObjectName::GetIPCName(moduleName);
-	if (ipcModuleName.module_name() == m_serverIPCName &&
+	if ((ipcModuleName.module_name() == m_serverIPCName && ipcModuleName.host_name() == m_ownSessionId)&&
 		!m_isStopConnect && !m_isExit)
 	{
 		m_ownSessionId.clear();
@@ -282,8 +282,14 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 		OnAuthFailed();
 		m_isStopConnect = true;
 	}
-	else
+	else if(m_ownSessionId.empty())
+	{
 		m_ownSessionId = msg.own_session_id();
+	}
+	else
+	{
+		m_manager.StopConnection(IPCObjectName(m_serverIPCName).GetModuleNameString());
+	}
 }
 
 void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)

@@ -8,15 +8,6 @@ Application::Application()
 
 Application::~Application()
 {
-	{
-		CSLocker locker(&m_csModules);
-		for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end();)
-		{
-			(*it)->Exit();
-			delete *it;
-			it = m_modules.erase(it);
-		}
-	}
 }
 
 void Application::ManagerFunc()
@@ -37,6 +28,15 @@ void Application::ManagerFunc()
 
 void Application::ManagerStop()
 {
+	{
+		CSLocker locker(&m_csModules);
+		for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end();)
+		{
+			(*it)->Exit();
+			delete *it;
+			it = m_modules.erase(it);
+		}
+	}
 	{
 		CSLocker locker(&m_csMessages);
 		for(std::vector<NotificationMessage*>::iterator it = m_messages.begin(); it != m_messages.end();)
