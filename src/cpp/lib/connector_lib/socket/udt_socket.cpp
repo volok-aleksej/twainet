@@ -32,6 +32,7 @@ UDTSocket::UDTSocket(int udpSocket, int socket)
 
 UDTSocket::~UDTSocket()
 {
+	Close();
 }
 
 bool UDTSocket::Bind(const std::string& host, int port)
