@@ -192,6 +192,10 @@ SecureUDTSocket::SecureUDTSocket()
 SecureUDTSocket::SecureUDTSocket(int socket, bool isUdp)
 	: UDTSocket(socket, isUdp)
 {
+	if(!isUdp)
+	{
+		PerformSslVerify();
+	}
 }
 
 SecureUDTSocket::SecureUDTSocket(int udpSocket, int socket)
