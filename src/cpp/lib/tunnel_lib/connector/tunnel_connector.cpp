@@ -5,7 +5,7 @@
 
 TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : IPCConnector(socket, moduleName), m_isServer(false)
-, m_type(UNKNOWN), m_pingThread(this)
+, m_type(UNKNOWN), m_pingThread(0)
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));	
@@ -23,6 +23,7 @@ void TunnelConnector::SetServerFlag()
 
 void TunnelConnector::OnStart()
 {
+	m_pingThread = new PingThread(this);
 	if(!m_isServer)
 	{
 		m_checker = new IPCCheckerThread(this);
@@ -40,6 +41,11 @@ void TunnelConnector::OnStart()
 
 void TunnelConnector::OnStop()
 {
+	if(m_pingThread)
+	{
+		m_pingThread->Stop();
+		m_pingThread = 0;
+	}
 	IPCConnector::OnStop();
 }
 

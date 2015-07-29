@@ -21,7 +21,8 @@ public:
 		LOCAL_TCP,
 		LOCAL_UDP,
 		EXTERNAL,
-		RELAY,
+		RELAY_TCP,
+		RELAY_UDP,
 		PPP
 	};
 
@@ -43,7 +44,7 @@ protected:
 	void onMessage(const ModuleState& msg);
 private:
 	bool m_isServer;
-	PingThread m_pingThread;
+	PingThread *m_pingThread;
 	TypeConnection m_type;
 };
 

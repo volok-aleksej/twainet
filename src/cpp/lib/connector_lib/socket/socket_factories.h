@@ -8,7 +8,8 @@ class TCPSocketFactory : public SocketFactory
 {
 public:
 	AnySocket* CreateSocket();
-	AnySocket* CreateSocket(int socket);
+	AnySocket* CreateSocket(int socket);	
+	SocketFactory* Clone();
 };
 
 class TCPProxySocketFactory : public SocketFactory
@@ -18,6 +19,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 
 private:
 	const std::string& m_ip;
@@ -31,6 +33,7 @@ class TCPSecureSocketFactory : public SocketFactory
 public:
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 };
 
 class TCPSecureProxySocketFactory : public SocketFactory
@@ -40,6 +43,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 
 private:
 	const std::string& m_ip;
@@ -53,6 +57,7 @@ class UDPSocketFactory : public SocketFactory
 public:
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 };
 
 class UDTSocketFactory : public SocketFactory
@@ -62,6 +67,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 
 	void SetUdpSocket(int udpSocket);
 private:
@@ -75,6 +81,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 
 	void SetUdpSocket(int udpSocket);
 private:
@@ -89,6 +96,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 private:
 	std::string m_sessionId;
 };
@@ -100,6 +108,7 @@ public:
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
+	SocketFactory* Clone();
 private:
 	std::string m_sessionId;
 };

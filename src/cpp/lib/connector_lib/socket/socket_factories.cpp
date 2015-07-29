@@ -24,6 +24,11 @@ AnySocket* TCPSocketFactory::CreateSocket(int socket)
 	return new TCPSocket(socket);
 }
 
+SocketFactory* TCPSocketFactory::Clone()
+{
+	return new TCPSocketFactory;
+}
+
 /*******************************************************************************************************/
 /*                                      TCPSecureSocketFactory                                         */
 /*******************************************************************************************************/
@@ -46,6 +51,11 @@ AnySocket* TCPProxySocketFactory::CreateSocket(int socket)
 	return new_socket;
 }
 
+SocketFactory* TCPProxySocketFactory::Clone()
+{
+	return new TCPProxySocketFactory(m_ip, m_port, m_user, m_pass);
+}
+
 /*******************************************************************************************************/
 /*                                      TCPSecureSocketFactory                                         */
 /*******************************************************************************************************/
@@ -57,6 +67,11 @@ AnySocket* TCPSecureSocketFactory::CreateSocket()
 AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 {
 	return new SecureTCPSocket(socket);
+}
+
+SocketFactory* TCPSecureSocketFactory::Clone()
+{
+	return new TCPSecureSocketFactory;
 }
 
 /*******************************************************************************************************/
@@ -81,6 +96,11 @@ AnySocket* TCPSecureProxySocketFactory::CreateSocket(int socket)
 	return new_socket;
 }
 
+SocketFactory* TCPSecureProxySocketFactory::Clone()
+{
+	return new TCPSecureProxySocketFactory(m_ip, m_port, m_user, m_pass);
+}
+
 /*******************************************************************************************************/
 /*                                         UDPSocketFactory                                            */
 /*******************************************************************************************************/
@@ -92,6 +112,11 @@ AnySocket* UDPSocketFactory::CreateSocket()
 AnySocket* UDPSocketFactory::CreateSocket(int socket)
 {
 	return new UDPSocket(socket);
+}
+
+SocketFactory* UDPSocketFactory::Clone()
+{
+	return new UDPSocketFactory;
 }
 
 /*******************************************************************************************************/
@@ -129,6 +154,14 @@ void UDTSocketFactory::SetUdpSocket(int udpSocket)
 	m_udpSocket = udpSocket;
 }
 
+SocketFactory* UDTSocketFactory::Clone()
+{
+	UDTSocketFactory* factory = new UDTSocketFactory;
+	if(m_udpSocket != INVALID_SOCKET)
+		factory->SetUdpSocket(m_udpSocket);
+	return factory;
+}
+
 /*******************************************************************************************************/
 /*                                      UDTSecureSocketFactory                                         */
 /*******************************************************************************************************/
@@ -164,6 +197,14 @@ void UDTSecureSocketFactory::SetUdpSocket(int udpSocket)
 	m_udpSocket = udpSocket;
 }
 
+SocketFactory* UDTSecureSocketFactory::Clone()
+{
+	UDTSecureSocketFactory* factory = new UDTSecureSocketFactory;
+	if(m_udpSocket != INVALID_SOCKET)
+		factory->SetUdpSocket(m_udpSocket);
+	return factory;
+}
+
 #ifdef WIN32
 /*******************************************************************************************************/
 /*                                          PPPSocketFactory                                           */
@@ -182,6 +223,11 @@ AnySocket* PPPSocketFactory::CreateSocket(int socket)
 	return new PPPSocket(socket);
 }
 
+SocketFactory* PPPSocketFactory::Clone()
+{
+	return new PPPSocketFactory(m_sessionId);
+}
+
 /*******************************************************************************************************/
 /*                                     PPPSecureSocketFactory                                          */
 /*******************************************************************************************************/
@@ -197,5 +243,10 @@ AnySocket* PPPSecureSocketFactory::CreateSocket()
 AnySocket* PPPSecureSocketFactory::CreateSocket(int socket)
 {
 	return new SecurePPPSocket(socket);
+}
+
+SocketFactory* PPPSecureSocketFactory::Clone()
+{
+	return new PPPSecureSocketFactory(m_sessionId);
 }
 #endif/*WIN32*/

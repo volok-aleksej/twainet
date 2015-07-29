@@ -9,7 +9,6 @@ PingThread::PingThread(IPCConnector* connector)
 
 PingThread::~PingThread()
 {
-	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
 void PingThread::ManagerFunc()

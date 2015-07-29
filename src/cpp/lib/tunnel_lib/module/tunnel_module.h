@@ -30,13 +30,17 @@ protected:
 
 	void onCreatedLocalListener(const CreatedListenerMessage& msg);
 	void onErrorLocalListener(const ListenErrorMessage& msg);
-	void onErrorLocalConnect(const ConnectErrorMessage& msg);
+	void onErrorLocalTCPConnect(const ConnectErrorMessage& msg);
+	void onErrorLocalUDPConnect(const ConnectErrorMessage& msg);
 	void onAddLocalTCPConnector(const ConnectorMessage& msg);
 	void onAddLocalUDPConnector(const ConnectorMessage& msg);
 	void onErrorExternalConnect(const ConnectErrorMessage& msg);
 	void onAddExternalConnector(const ConnectorMessage& msg);
-	void onErrorRelayConnect(const ConnectErrorMessage& msg);
-	void onAddRelayConnector(const ConnectorMessage& msg);
+	void onAddRelayTCPConnector(const ConnectorMessage& msg);
+	void onAddRelayUDPConnector(const ConnectorMessage& msg);
+	void onErrorRelayTCPConnect(const ConnectErrorMessage& msg);
+	void onErrorRelayUDPConnect(const ConnectErrorMessage& msg);
+
 	void onCreatedPPPListener(const CreatedListenerMessage& msg);
 	void onErrorPPPListener(const ListenErrorMessage& msg);
 	void onErrorPPPConnect(const ConnectErrorMessage& msg);
@@ -52,9 +56,11 @@ protected:
 	void onCreatedExternalListener(const CreatedServerListenerMessage& msg);
 	void onGotExternalAddress(const GotExternalAddressMessage& msg);
 	void onErrorExternalListener(const ListenErrorMessage& msg);
-	void onCreatedRelayListener(const CreatedServerListenerMessage& msg);
+	void onCreatedRelayTCPListener(const CreatedServerListenerMessage& msg);
 	void onErrorRelayListener(const ListenErrorMessage& msg);
 	void onAddRelayServerConnector(const ConnectorMessage& msg);
+	void onCreatedRelayUDPListener(const CreatedServerListenerMessage& msg);
+	void onAddRelayUDPServerConnector(const ConnectorMessage& msg);
 
 private:
 	void CreateLocalListenThread(const std::string& extSessionId);
@@ -62,7 +68,7 @@ private:
 	void CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port, bool isTCP);
 	void InitExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
 	void CreateExternalConnectThread(const std::string& extSessionId, const std::string& ip, int port);
-	void CreateRelayConnectThread(const std::string& extSessionId, const std::string& ip, int port);
+	void CreateRelayConnectThread(const std::string& extSessionId, const std::string& ip, int port, bool isTCP);
 	void CreatePPPConnectThread(const std::string& extSessionId);
 	void CreatePPPListenThread();
 

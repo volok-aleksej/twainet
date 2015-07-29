@@ -5,7 +5,7 @@
 
 class IPCConnector;
 
-class PingThread: public StaticManager
+class PingThread: public DynamicManager
 {
 public:
 	PingThread(IPCConnector* connector);

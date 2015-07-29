@@ -58,8 +58,9 @@ extern "C"
 			LOCAL_TCP = 1,
 			LOCAL_UDP = 2,
 			EXTERNAL = 3,
-			RELAY = 4,
-			PPP = 5
+			RELAY_TCP = 4,
+			RELAY_UDP = 5,
+			PPP = 6
 		};
 
 		typedef void* Module;

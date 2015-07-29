@@ -21,6 +21,7 @@ ConnectorManager::~ConnectorManager()
 		DisconnectedMessage msg(it->second, it->first);
 		onSignal(msg);
 	}
+
 	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
 }
 
