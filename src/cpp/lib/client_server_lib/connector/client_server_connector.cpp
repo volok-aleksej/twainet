@@ -119,18 +119,23 @@ IPCObjectName ClientServerConnector::GetIPCName()
 void ClientServerConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	IPCObjectName path(msg.ipc_path(0));
-	if(path.GetModuleNameString() == m_id)
+	if(path == GetModuleName())
 	{
 		IPCProtoMessage newMsg(msg);
 		newMsg.clear_ipc_path();
-		IPCObjectName server(GetModuleName().module_name(), m_ownSessionId);
-		*newMsg.add_ipc_path() = server;
+		IPCObjectName client = IPCObjectName::GetIPCName(m_id);
+		*newMsg.add_ipc_path() = client;
 		for(int i = 1; i < msg.ipc_path_size(); i++)
 		{
 			*newMsg.add_ipc_path() = msg.ipc_path(i);
 		}
 		toMessage(newMsg);
 	}
+	else if(path.GetModuleNameString() == m_id)
+	{
+		toMessage(msg);
+	}
+	  
 }
 
 void ClientServerConnector::onInitTunnelSignal(const InitTunnelSignal& msg)
