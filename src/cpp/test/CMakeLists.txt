@@ -35,4 +35,11 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	add_dependencies(${PROJECT_NAME} thread_lib twainet)
 	target_link_libraries(${PROJECT_NAME} thread_lib twainet)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+
+
+find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH} /usr/lib/x86_64-linux-gnu)
+if(NTLM_LIBRARY)
+  target_link_libraries(${PROJECT_NAME} ${NTLM_LIBRARY})
+endif(NTLM_LIBRARY)
+
 target_link_libraries(${PROJECT_NAME} pthread)

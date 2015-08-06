@@ -84,6 +84,8 @@ protected:
 
 	//for client
 	std::string m_ownSessionId;
+	std::string m_ip;
+	int m_port;
 
 	//for client with proxy
 	bool m_isUseProxy;
@@ -92,8 +94,6 @@ protected:
 	UserPassword m_proxyUserPassword;
 private:
 	//for client
-	std::string m_ip;
-	int m_port;
 	bool m_isStopConnect;
 	UserPassword m_userPassword;
 

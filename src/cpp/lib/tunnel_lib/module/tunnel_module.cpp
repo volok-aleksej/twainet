@@ -93,6 +93,8 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 		InitTunnel itMsg;
 		itMsg.set_own_session_id(m_ownSessionId);
 		itMsg.set_ext_session_id(extSessionId);
+		itMsg.mutable_address()->set_ip(m_ip);
+		itMsg.mutable_address()->set_port(0);
 		InitTunnelSignal itSig(itMsg);
 		onSignal(itSig);
 	}
@@ -216,15 +218,15 @@ void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)
 	}
 	else if(msg.type() == TUNNEL_EXTERNAL)
 	{
-		InitExternalConnectThread(msg.ext_session_id(), msg.address().ip(), msg.address().port());
+		InitExternalConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port());
 	}
 	else if(msg.type() == TUNNEL_RELAY_TCP)
 	{
-		CreateRelayConnectThread(msg.ext_session_id(), msg.address().ip(), msg.address().port(), true);
+		CreateRelayConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port(), true);
 	}
 	else if(msg.type() == TUNNEL_RELAY_UDP)
 	{
-		CreateRelayConnectThread(msg.ext_session_id(), msg.address().ip(), msg.address().port(), false);
+		CreateRelayConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port(), false);
 	}
 }
 
@@ -276,8 +278,8 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 	if(type == TUNNEL_EXTERNAL || type == TUNNEL_ALL)
 	{
 		TunnelServerListenAddress address;
-		address.m_localIP = "";
-		address.m_localPort = 0;
+		address.m_localIP = msg.has_address() ? msg.address().ip() : "";
+		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
@@ -297,8 +299,8 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 	if(type == TUNNEL_RELAY_TCP || type == TUNNEL_ALL)
 	{
 		TunnelServerListenAddress address;
-		address.m_localIP = "";
-		address.m_localPort = 0;
+		address.m_localIP = msg.has_address() ? msg.address().ip() : "";
+		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
@@ -317,8 +319,8 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 	if(type == TUNNEL_RELAY_UDP)
 	{
 		TunnelServerListenAddress address;
-		address.m_localIP = GetLocalIps()[0];
-		address.m_localPort = 0;
+		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps()[0]/*TODO: use external ip*/;
+		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();

@@ -8,7 +8,7 @@
 #include "thread_lib/thread/thread_manager.h"
 #include "connector_lib/socket/socket_factories.h"
 
-extern std::vector<std::string> GetLocalIps();
+//extern std::vector<std::string> GetLocalIps();
 
 RelayListenThread::RelayListenThread(const TunnelServerListenAddress& address)
 : m_address(address), m_listenThreadOne(0), m_listenThreadTwo(0)
@@ -114,7 +114,8 @@ void RelayListenThread::ThreadFunc()
 	{
 		if(CheckGetAddresses())
 		{
-			std::string ip = GetLocalIps()[0];//TODO: use external ip
+			std::string ip;
+//			ip = GetLocalIps()[0];//TODO: use external ip
 			for(std::map<std::string, Address>::iterator it = m_addresses.begin();
 				it != m_addresses.end(); it++)
 			{
