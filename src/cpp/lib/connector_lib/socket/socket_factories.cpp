@@ -2,10 +2,6 @@
 #include "secure_socket.h"
 #include "proxy_socket.h"
 #include "udp_socket.h"
-#ifdef WIN32
-#	include "ppp_socket.h"
-#	include "ppp/ppp_library.h"
-#endif/*WIN32*/
 
 #ifndef INVALID_SOCKET
 #	define INVALID_SOCKET -1
@@ -204,49 +200,3 @@ SocketFactory* UDTSecureSocketFactory::Clone()
 		factory->SetUdpSocket(m_udpSocket);
 	return factory;
 }
-
-#ifdef WIN32
-/*******************************************************************************************************/
-/*                                          PPPSocketFactory                                           */
-/*******************************************************************************************************/
-PPPSocketFactory::PPPSocketFactory(const std::string& sessionId)
-	: m_sessionId(sessionId){}
-
-AnySocket* PPPSocketFactory::CreateSocket()
-{
-	int socket = PPPLibrary::GetInstance().CreateSocket(m_sessionId);
-	return new PPPSocket(socket);
-}
-
-AnySocket* PPPSocketFactory::CreateSocket(int socket)
-{
-	return new PPPSocket(socket);
-}
-
-SocketFactory* PPPSocketFactory::Clone()
-{
-	return new PPPSocketFactory(m_sessionId);
-}
-
-/*******************************************************************************************************/
-/*                                     PPPSecureSocketFactory                                          */
-/*******************************************************************************************************/
-PPPSecureSocketFactory::PPPSecureSocketFactory(const std::string& sessionId)
-	: m_sessionId(sessionId){}
-
-AnySocket* PPPSecureSocketFactory::CreateSocket()
-{
-	int socket = PPPLibrary::GetInstance().CreateSocket(m_sessionId);
-	return new SecurePPPSocket(socket);
-}
-
-AnySocket* PPPSecureSocketFactory::CreateSocket(int socket)
-{
-	return new SecurePPPSocket(socket);
-}
-
-SocketFactory* PPPSecureSocketFactory::Clone()
-{
-	return new PPPSecureSocketFactory(m_sessionId);
-}
-#endif/*WIN32*/

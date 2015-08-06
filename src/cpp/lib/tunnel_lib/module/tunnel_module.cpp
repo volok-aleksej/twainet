@@ -9,7 +9,6 @@
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "connector_lib/socket/udp_socket.h"
-#include "connector_lib/ppp/ppp_library.h"
 #include "common/common_func.h"
 #include "common/logger.h"
 
@@ -17,12 +16,10 @@ extern std::vector<std::string> GetLocalIps();
 
 const std::string TunnelModule::m_tunnelIPCName = "Tunnel";
 
-TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory, bool isPPPListener)
-	: ClientServerModule(ipcName, factory), m_pppListenThread(0)
+TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
+	: ClientServerModule(ipcName, factory)
 {
 	m_tunnelChecker = new TunnelCheckerThread(this);
-	if(isPPPListener)
-		CreatePPPListenThread();
 }
 
 TunnelModule::~TunnelModule()
@@ -30,14 +27,7 @@ TunnelModule::~TunnelModule()
 	removeReceiver();
 
 	m_tunnelChecker->Stop();
-
-	if(m_pppListenThread)
-	{
-		m_pppListenThread->Stop();
-		ThreadManager::GetInstance().AddThread(m_pppListenThread);
-		m_pppListenThread = 0;
-	}
-
+	
 	CSLocker lock(&m_cs);
 	for(std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.begin();
 		it != m_tunnels.end(); it++)
@@ -62,12 +52,6 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 	}
 	
 	LOG_INFO("Init new tunnel: from %s to %s\n", m_ownSessionId.c_str(), extSessionId.c_str());
-	if (type == TunnelConnector::PPP ||
-		type == TunnelConnector::UNKNOWN)
-	{
-		CreatePPPConnectThread(extSessionId);
-	}
-
 	PeerData peerData;
 	peerData.set_one_session_id(m_ownSessionId);
 	peerData.set_two_session_id(extSessionId);
@@ -81,23 +65,19 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 		peerData.set_type(TUNNEL_RELAY_TCP);
 	if(type == TunnelConnector::RELAY_UDP)
 		peerData.set_type(TUNNEL_RELAY_UDP);
-	if (type != TunnelConnector::UNKNOWN &&
-		type != TunnelConnector::PPP)
+	if (type != TunnelConnector::UNKNOWN)
 	{
 		PeerDataSignal pdSig(peerData);
 		onSignal(pdSig);
 	}
 	
-	if(type != TunnelConnector::PPP)
-	{
-		InitTunnel itMsg;
-		itMsg.set_own_session_id(m_ownSessionId);
-		itMsg.set_ext_session_id(extSessionId);
-		itMsg.mutable_address()->set_ip(m_ip);
-		itMsg.mutable_address()->set_port(0);
-		InitTunnelSignal itSig(itMsg);
-		onSignal(itSig);
-	}
+	InitTunnel itMsg;
+	itMsg.set_own_session_id(m_ownSessionId);
+	itMsg.set_ext_session_id(extSessionId);
+	itMsg.mutable_address()->set_ip(m_ip);
+	itMsg.mutable_address()->set_port(0);
+	InitTunnelSignal itSig(itMsg);
+	onSignal(itSig);
 }
 
 void TunnelModule::DestroyTunnel(const std::string& extSessionId)
@@ -658,30 +638,6 @@ void TunnelModule::onAddRelayUDPConnector(const ConnectorMessage& msg)
 	IPCModule::onAddConnector(msg);
 }
 
-
-void TunnelModule::onCreatedPPPListener(const CreatedListenerMessage& msg)
-{
-}
-
-void TunnelModule::onErrorPPPListener(const ListenErrorMessage& msg)
-{
-}
-
-void TunnelModule::onErrorPPPConnect(const ConnectErrorMessage& msg)
-{
-}
-
-void TunnelModule::onAddPPPConnector(const ConnectorMessage& msg)
-{
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::PPP);
-	}
-
-	IPCModule::onAddConnector(msg);
-}
-
 void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 {
 	CSLocker lock(&m_cs);
@@ -922,58 +878,6 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorRelayUDPConnect));
 	}
 	thread->Start();
-}
-
-void TunnelModule::CreatePPPConnectThread(const std::string& extSessionId)
-{
-#ifdef WIN32
-	CSLocker lock(&m_cs);
-	TunnelConnect* tunnel;
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(extSessionId);
-	if(it == m_tunnels.end())
-	{
-		tunnel = new TunnelConnect(extSessionId);
-		m_tunnels.insert(std::make_pair(extSessionId, tunnel));
-	}
-	
-	ConnectAddress address;
-	address.m_localIP = "";
-	address.m_localPort = 0;
-	address.m_moduleName = address.m_id = extSessionId;
-	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(PPPLibrary::GetInstance().GetOwnId());
-	address.m_socketFactory = new PPPSecureSocketFactory(extSessionId);
-	address.m_ip = "";
-	address.m_port = 0;
-	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddPPPConnector));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorPPPConnect));
-	thread->Start();
-#endif/*WIN32*/
-}
-
-void TunnelModule::CreatePPPListenThread()
-{
-#ifdef WIN32
-	if(m_pppListenThread)
-	{
-		m_pppListenThread->Stop();
-		ThreadManager::GetInstance().AddThread(m_pppListenThread);
-		m_pppListenThread = 0;
-	}
-
-	ListenAddress address;
-	address.m_id = m_clientIPCName;
-	address.m_localIP = "";
-	address.m_localPort = 0;
-	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(PPPLibrary::GetInstance().GetOwnId());
-	address.m_socketFactory = new PPPSecureSocketFactory("");
-	address.m_acceptCount = -1;
-	m_pppListenThread = new IPCListenThread(address);
-	m_pppListenThread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedPPPListener));
-	m_pppListenThread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorPPPListener));
-	m_pppListenThread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddPPPConnector));
-	m_pppListenThread->Start();
-#endif/*WIN32*/
 }
 
 void TunnelModule::CheckTunnels()

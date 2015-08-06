@@ -10,3 +10,6 @@ add_subdirectory(lib)
 add_subdirectory(external/udt4)
 add_subdirectory(twainet)
 add_subdirectory(test)
+add_custom_target(uninstall
+    COMMAND xargs rm < install_manifest.txt
+)

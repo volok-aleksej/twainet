@@ -22,8 +22,7 @@ public:
 		LOCAL_UDP,
 		EXTERNAL,
 		RELAY_TCP,
-		RELAY_UDP,
-		PPP
+		RELAY_UDP
 	};
 
 	TunnelConnector(AnySocket* socket, const IPCObjectName& moduleName);

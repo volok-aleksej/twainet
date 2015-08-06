@@ -99,6 +99,7 @@
 			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
+			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -193,11 +194,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\application\twainet.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\application\twainet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\twainet.rc"
 				>
 			</File>
 		</Filter>

@@ -54,3 +54,5 @@ message PeerData {
 	required string two_session_id			= 2;
 	optional TunnelType type				= 3;
 }
+
+option optimize_for = LITE_RUNTIME;

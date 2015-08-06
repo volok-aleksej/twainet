@@ -88,30 +88,4 @@ private:
 	int m_udpSocket;
 };
 
-#ifdef WIN32
-class PPPSocketFactory : public SocketFactory
-{
-public:
-	PPPSocketFactory(const std::string& m_sessionId);
-
-	AnySocket* CreateSocket();
-	AnySocket* CreateSocket(int socket);
-	SocketFactory* Clone();
-private:
-	std::string m_sessionId;
-};
-
-class PPPSecureSocketFactory : public SocketFactory
-{
-public:
-	PPPSecureSocketFactory(const std::string& m_sessionId);
-
-	AnySocket* CreateSocket();
-	AnySocket* CreateSocket(int socket);
-	SocketFactory* Clone();
-private:
-	std::string m_sessionId;
-};
-#endif/*WIN32*/
-
 #endif/*SOCKET_FACTORIES_H*/

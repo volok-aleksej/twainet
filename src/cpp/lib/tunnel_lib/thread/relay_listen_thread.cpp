@@ -119,7 +119,7 @@ void RelayListenThread::ThreadFunc()
 			for(std::map<std::string, Address>::iterator it = m_addresses.begin();
 				it != m_addresses.end(); it++)
 			{
-				CreatedServerListenerMessage msg(m_address.m_id, it->first, ip, it->second.m_localPort);
+				CreatedServerListenerMessage msg(m_address.m_id, it->first, it->second.m_localIP, it->second.m_localPort);
 				onSignal(msg);
 			}
 			break;

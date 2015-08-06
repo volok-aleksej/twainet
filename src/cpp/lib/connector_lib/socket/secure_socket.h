@@ -4,7 +4,6 @@
 #include <openssl/rsa.h>
 #include "udt_socket.h"
 #include "tcp_socket.h"
-#include "ppp_socket.h"
 
 class AnySocket;
 
@@ -61,21 +60,5 @@ protected:
 	virtual bool SendData(char* data, int len);
 	virtual bool RecvData(char* data, int len);
 };
-
-#ifdef WIN32
-class SecurePPPSocket : public SecureSocket, public PPPSocket
-{
-public:
-	explicit SecurePPPSocket(int socket);
-
-	virtual bool Connect(const std::string& host, int port);
-	virtual bool Send(char* data, int len);
-	virtual bool Recv(char* data, int len);
-protected:
-	virtual bool SendData(char* data, int len);
-	virtual bool RecvData(char* data, int len);
-};
-
-#endif/*WIN32*/
 
 #endif/*SECURE_SOCKET_H*/

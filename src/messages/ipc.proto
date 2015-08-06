@@ -62,3 +62,5 @@ message IPCMessage
 message Ping
 {
 }
+
+option optimize_for = LITE_RUNTIME;

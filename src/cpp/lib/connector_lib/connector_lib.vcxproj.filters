@@ -22,9 +22,6 @@
     <Filter Include="signal">
       <UniqueIdentifier>{77546135-f7d2-412d-b66d-d1de97ce3a13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ppp">
-      <UniqueIdentifier>{687cf751-2b55-48c8-9622-b54ff6102d6b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{7aed10ab-5f32-4110-9460-3f715f44370a}</UniqueIdentifier>
     </Filter>
@@ -77,12 +74,6 @@
     </ClCompile>
     <ClCompile Include="common\aes.cpp">
       <Filter>common</Filter>
-    </ClCompile>
-    <ClCompile Include="socket\ppp_socket.cpp">
-      <Filter>socket</Filter>
-    </ClCompile>
-    <ClCompile Include="ppp\ppp_library.cpp">
-      <Filter>ppp</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\common_func.cpp">
       <Filter>common</Filter>
@@ -185,20 +176,14 @@
     <ClInclude Include="common\aes.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="socket\ppp_socket.h">
-      <Filter>socket</Filter>
-    </ClInclude>
-    <ClInclude Include="ppp\ppp_library.h">
-      <Filter>ppp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\common_func.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="socket\proxy_socket.h">
-      <Filter>socket</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\utils\base64.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="socket\proxy_socket.h">
+      <Filter>socket</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

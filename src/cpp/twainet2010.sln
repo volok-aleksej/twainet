@@ -45,11 +45,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "twainet\twainet.
 		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libppp", "libppp\libppp.vcxproj", "{3A4A6A3C-23CF-49FE-B001-1DB673305562}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1F5FD41D-D68E-4830-91C7-EDA03898328D} = {1F5FD41D-D68E-4830-91C7-EDA03898328D}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_1|Win32 = Debug_1|Win32
