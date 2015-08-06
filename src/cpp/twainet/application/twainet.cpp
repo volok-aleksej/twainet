@@ -31,9 +31,9 @@ extern "C" void Twainet::FreeLibrary()
 	UDT::cleanup();
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator, bool isPPPListener)
+extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator)
 {
-	TwainetModule* module = Application::GetInstance().CreateModule(moduleName, isPPPListener);
+	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
 	return (Twainet::Module*)module;
 }

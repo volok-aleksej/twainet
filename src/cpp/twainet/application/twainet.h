@@ -59,8 +59,7 @@ extern "C"
 			LOCAL_UDP = 2,
 			EXTERNAL = 3,
 			RELAY_TCP = 4,
-			RELAY_UDP = 5,
-			PPP = 6
+			RELAY_UDP = 5
 		};
 
 		typedef void* Module;
@@ -95,7 +94,7 @@ extern "C"
 		// Coordinator - the main module to which all must be connected.
 		//               Only the coordinator knows what modules are available on the local machine
 		// All modules, when they was created, are only available on the local machine
-		TWAINET_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, bool isCoordinator, bool isPPPListener);
+		TWAINET_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, bool isCoordinator);
 
 		//Delete module
 		TWAINET_FUNC void DeleteModule(const Module module);
