@@ -131,6 +131,7 @@ void TunnelModule::OnNewConnector(Connector* connector)
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, PeerDataSignal, onPeerData)); //for server
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, TryConnectToMessage, onTryConnectTo)); //for client
 		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server
 	}
 
 	TunnelConnector* tunnelConnector = dynamic_cast<TunnelConnector*>(connector);
@@ -212,6 +213,22 @@ void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)
 
 void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 {
+	TunnelType type;
+	PeerType peerType;
+	peerType.set_one_session_id(msg.own_session_id());
+	peerType.set_two_session_id(msg.ext_session_id());
+	if(m_typePeers.GetObject(peerType, &peerType) && peerType.has_type())
+		type = peerType.type();
+	else
+		type = TUNNEL_ALL;
+	
+	peerType.set_type(type);
+	TunnelStep step(peerType);
+	if(!m_tunnelsStep.AddObject(step))
+	{
+		return;
+	}
+  
 	LOG_INFO("Send InitTunnelStarted message: from %s to %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str());
 	InitTunnelStarted itsMsg;
 	itsMsg.set_own_session_id(msg.own_session_id());
@@ -221,15 +238,6 @@ void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
 	itrSig.set_own_session_id(msg.ext_session_id());
 	itrSig.set_ext_session_id(msg.own_session_id());
 	onSignal(itrSig);
-
-	TunnelType type;
-	PeerType peerType;
-	peerType.set_one_session_id(msg.own_session_id());
-	peerType.set_two_session_id(msg.ext_session_id());
-	if(m_typePeers.GetObject(peerType, &peerType) && peerType.has_type())
-		type = peerType.type();
-	else
-		type = TUNNEL_ALL;
 
 	//--------local connection---------------------
 	if(type == TUNNEL_LOCAL_TCP || type == TUNNEL_ALL)
@@ -346,6 +354,14 @@ void TunnelModule::onInitTunnelStarted(const InitTunnelStartedMessage& msg)
 		tunnel = new TunnelConnect(msg.ext_session_id());
 		m_tunnels.insert(std::make_pair(msg.ext_session_id(), tunnel));
 	}
+}
+
+void TunnelModule::onInitTunnelComplete(const InitTunnelCompleteMessage& msg)
+{
+	TunnelStep step;
+	step.set_one_session_id(msg.own_session_id());
+	step.set_two_session_id(msg.ext_session_id());
+	m_tunnelsStep.RemoveObject(step);
 }
 
 void TunnelModule::onCreatedLocalListener(const CreatedListenerMessage& msg)
@@ -652,6 +668,11 @@ void TunnelModule::onModuleName(const ModuleNameMessage& msg)
 
 void TunnelModule::onConnected(const TunnelConnectedMessage& msg)
 {
+	InitTunnelComplete itcMsg;
+	itcMsg.set_own_session_id(m_ownSessionId);
+	itcMsg.set_ext_session_id(msg.m_id);
+	InitTunnelCompleteSignal itcSig(itcMsg);
+	onSignal(itcSig);
 	OnTunnelConnected(msg.m_id, msg.m_type);
 }
 
@@ -888,7 +909,7 @@ void TunnelModule::CheckTunnels()
 	for(std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.begin();
 		it != m_tunnels.end();)
 	{
-		if(curTime - it->second->m_creationTime > 60)//TODO: 60 second ?
+		if(curTime - it->second->m_creationTime > 60)//60 second
 		{
 			std::string sessionId = it->first;
 			delete it->second;
@@ -904,7 +925,7 @@ void TunnelModule::CheckTunnels()
 	for(std::map<std::string, TunnelServer*>::iterator it = m_servers.begin();
 		it != m_servers.end();)
 	{
-		if(curTime - it->second->m_creationTime > 60)//TODO: 60 second ?
+		if(curTime - it->second->m_creationTime > 60)//60 second
 		{
 			delete it->second;
 			m_servers.erase(it++); 
@@ -914,4 +935,18 @@ void TunnelModule::CheckTunnels()
 			it++;
 		}
 	}
+	
+	std::vector<TunnelStep> tunnelsStep = m_tunnelsStep.GetObjectList();
+	for(std::vector<TunnelStep>::iterator it = tunnelsStep.begin();
+	    it != tunnelsStep.end(); it++)
+	 {
+		if(curTime - it->m_creationTime > 60)//60 second
+		{
+			tunnelsStep.erase(it++); 
+		}
+		else
+		{
+			it++;
+		}
+	 }
 }

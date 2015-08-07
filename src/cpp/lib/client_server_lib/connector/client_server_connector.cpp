@@ -40,6 +40,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelMessage(this));
 	addMessage(new TryConnectToMessage(this));
 	addMessage(new InitTunnelStartedMessage(this));
+	addMessage(new InitTunnelCompleteMessage(this));
 	addMessage(new PeerDataMessage(this));
 	addMessage(new ProtoMessage<ModuleName, ClientServerConnector>(this));
 }
@@ -70,6 +71,7 @@ void ClientServerConnector::SubscribeModule(::SignalOwner* owner)
 {
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelSignal, onInitTunnelSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelStartedSignal, onInitTunnelStartedSignal));
+	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelCompleteSignal, onInitTunnelCompleteSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, PeerDataSignal, onPeerDataSignal));
 	IPCConnector::SubscribeModule(owner);
@@ -150,6 +152,16 @@ void ClientServerConnector::onInitTunnelSignal(const InitTunnelSignal& msg)
 	}
 }
 
+void ClientServerConnector::onInitTunnelCompleteSignal(const InitTunnelCompleteSignal& msg)
+{
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+	if(idName.module_name() == ClientServerModule::m_serverIPCName
+		&& msg.own_session_id() == m_ownSessionId)
+	{
+		InitTunnelCompleteMessage itrMsg(this, msg);
+		toMessage(itrMsg);
+	}
+}
 
 void ClientServerConnector::onInitTunnelStartedSignal(const InitTunnelStartedSignal& msg)
 {
@@ -300,6 +312,12 @@ void ClientServerConnector::onMessage(const PeerData& msg)
 	onSignal(pdSig);
 }
 
+void ClientServerConnector::onMessage(const InitTunnelComplete& msg)
+{
+	InitTunnelCompleteMessage itcMsg(this, msg);
+	onSignal(itcMsg);
+}
+	
 void ClientServerConnector::onMessage(const InitTunnel& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);

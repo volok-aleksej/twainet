@@ -16,10 +16,12 @@ typedef ProtoMessage<LoginResult, ClientServerConnector> LoginResultMessage;
 typedef ProtoMessage<InitTunnel, ClientServerConnector> InitTunnelMessage;
 typedef ProtoMessage<TryConnectTo, ClientServerConnector> TryConnectToMessage;
 typedef ProtoMessage<InitTunnelStarted, ClientServerConnector> InitTunnelStartedMessage;
+typedef ProtoMessage<InitTunnelComplete, ClientServerConnector> InitTunnelCompleteMessage;
 typedef ProtoMessage<PeerData, ClientServerConnector> PeerDataMessage;
 typedef SignalMessage<InitTunnel> InitTunnelSignal;
 typedef SignalMessage<TryConnectTo> TryConnectToSignal;
 typedef SignalMessage<InitTunnelStarted> InitTunnelStartedSignal;
+typedef SignalMessage<InitTunnelComplete> InitTunnelCompleteSignal;
 typedef SignalMessage<PeerData> PeerDataSignal;
 
 class ClientServerConnector : public IPCConnector
@@ -43,6 +45,7 @@ protected:
 	void onIPCMessage(const IPCProtoMessage& msg);
 	void onInitTunnelSignal(const InitTunnelSignal& msg);
 	void onInitTunnelStartedSignal(const InitTunnelStartedSignal& msg);
+	void onInitTunnelCompleteSignal(const InitTunnelCompleteSignal& msg);
 	void onTryConnectToMessage(const TryConnectToMessage& msg);
 	void onTryConnectToSignal(const TryConnectToSignal& msg);
 	void onPeerDataSignal(const PeerDataSignal& msg);
@@ -59,6 +62,7 @@ protected:
 	//Server Messages
 	void onMessage(const Login& msg);
 	void onMessage(const PeerData& msg);
+	void onMessage(const InitTunnelComplete& msg);
 
 	//Client and Server Messages
 	void onMessage(const InitTunnel& msg);

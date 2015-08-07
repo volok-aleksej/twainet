@@ -49,6 +49,11 @@ message InitTunnelStarted {
 	required string own_session_id			= 2;
 }
 
+message InitTunnelComplete {
+	required string ext_session_id			= 1;
+	required string own_session_id			= 2;
+}
+
 message PeerData {
 	required string one_session_id			= 1;
 	required string two_session_id			= 2;

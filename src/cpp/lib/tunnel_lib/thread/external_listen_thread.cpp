@@ -5,8 +5,6 @@
 #include "connector_lib/socket/socket_factories.h"
 #include "thread_lib/thread/thread_manager.h"
 
-//extern std::vector<std::string> GetLocalIps();
-
 ExternalListenThread::ExternalListenThread(const TunnelServerListenAddress& address)
 : m_address(address), m_recvThreadOne(0), m_recvThreadTwo(0)
 {
@@ -68,7 +66,6 @@ void ExternalListenThread::ThreadFunc()
 	}
 
 	udpSocket->GetIPPort(ip, port);
-//	ip = GetLocalIps()[0];//TODO: use external ip
 	CreatedServerListenerMessage clMsg(m_address.m_id, m_address.m_sessionIdOne, ip, port);
 	onSignal(clMsg);
 
@@ -87,7 +84,6 @@ void ExternalListenThread::ThreadFunc()
 	}
 
 	udpSocket->GetIPPort(ip, port);
-//	ip = GetLocalIps()[0];//TODO: use external ip
 	CreatedServerListenerMessage clMsg1(m_address.m_id, m_address.m_sessionIdTwo, ip, port);
 	onSignal(clMsg1);
 

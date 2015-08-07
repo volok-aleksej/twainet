@@ -47,6 +47,7 @@ protected:
 	//for server
 	void onInitTunnel(const InitTunnelSignal& msg);
 	void onPeerData(const PeerDataSignal& msg);
+	void onInitTunnelComplete(const InitTunnelCompleteMessage& msg);
 
 	void onCreatedExternalListener(const CreatedServerListenerMessage& msg);
 	void onGotExternalAddress(const GotExternalAddressMessage& msg);
@@ -72,6 +73,7 @@ private:
 	std::map<std::string, TunnelServer*> m_servers;
 	CriticalSection m_cs;
 	ObjectManager<PeerType> m_typePeers;
+	ObjectManager<TunnelStep> m_tunnelsStep;
 	TunnelCheckerThread* m_tunnelChecker;
 };
 

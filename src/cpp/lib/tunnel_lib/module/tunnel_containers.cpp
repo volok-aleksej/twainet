@@ -83,3 +83,23 @@ bool PeerType::operator < (const PeerType& peerType) const
 
 	return resVal < otherResVal;
 }
+
+TunnelStep::TunnelStep()
+{
+	time(&m_creationTime);
+}
+TunnelStep::TunnelStep(const TunnelStep& data)
+{
+	operator = (data);
+}
+TunnelStep::TunnelStep(const PeerData& data)
+{
+	PeerData::operator = (data);
+	time(&m_creationTime);
+}
+TunnelStep::~TunnelStep(){}
+void TunnelStep::operator = (const TunnelStep& step)
+{
+	PeerData::operator=(step);
+	m_creationTime = step.m_creationTime;
+}

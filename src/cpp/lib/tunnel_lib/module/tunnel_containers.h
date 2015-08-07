@@ -50,4 +50,17 @@ public:
 	bool operator < (const PeerType& peerType) const;
 };
 
+class TunnelStep : public PeerType
+{
+public:
+	TunnelStep();
+	TunnelStep(const TunnelStep& data);
+	TunnelStep(const PeerData& data);
+	virtual ~TunnelStep();
+	
+	void operator = (const TunnelStep& step);
+	
+	time_t m_creationTime;
+};
+
 #endif/*TUNNEL_CONTAINERS_H*/
