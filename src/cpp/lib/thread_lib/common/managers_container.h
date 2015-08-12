@@ -62,9 +62,8 @@ public:
 	void RemoveManager(IManager* manager);
 
 protected:
-	template<typename TClass, typename TFunc> friend class Reference;
-	bool RunManager(const IManager* manager);
 	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	bool RunManager(const std::vector<IManager*>& managers, const IManager* manager);
 	bool CheckManager(const std::vector<IManager*>& managers, const IManager* manager);
 protected:
 	virtual void ThreadFunc();
@@ -77,21 +76,21 @@ private:
 };
 
 template<class Object>
-class ManagerCreator : public Singleton<ManagerCreator<Object> >, public StaticManager
+class ManagerCreator : public Singleton<ManagerCreator<Object> >, public DynamicManager
 {
 	static Object* object;
 public:
 	static Object& GetInstance()
 	{
-		static Object _object;
-		object = &_object;
+		if(!object)
+			object = new Object;
 		ManagerCreator<Object>& object_ = Singleton<ManagerCreator<Object> >::GetInstance();
-		return _object;
+		return *object;
 	}
 
 	virtual bool IsDelete()	
 	{
-		return false;
+		return true;
 	}
 
 	virtual bool IsStop()
@@ -109,11 +108,6 @@ protected:
 	
 	virtual ~ManagerCreator()
 	{
-		if(object)
-		{
-			ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(object));
-			object = 0;
-		}
 	}
 
 protected:

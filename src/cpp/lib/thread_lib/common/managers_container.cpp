@@ -81,14 +81,20 @@ void ManagersContainer::RemoveManager(IManager* manager)
 	m_managers.RemoveObject(manager);
 }
 
-bool ManagersContainer::RunManager(const IManager* manager)
+bool ManagersContainer::RunManager(const std::vector<IManager*>& managers, const IManager* manager)
 {
-	const_cast<IManager*>(manager)->ManagerFunc();
-	if (const_cast<IManager*>(manager)->IsStop())
+	IManager* manager_ = const_cast<IManager*>(manager);
+	manager_->ManagerFunc();
+	if (manager_->IsStop())
 	{
-		const_cast<IManager*>(manager)->ManagerStop();
-		if(const_cast<IManager*>(manager)->IsDelete())
-			delete manager;
+		if(manager_->IsDelete())
+		{
+			const_cast<std::vector<IManager*>&>(managers).push_back(manager_);
+		}
+		else
+		{
+			manager_->ManagerStop();
+		}
 		return true;
 	}
 
@@ -113,7 +119,14 @@ void ManagersContainer::ThreadFunc()
 {
 	while(!m_isExit)
 	{
-		m_managers.CheckObjects(Ref(this, &ManagersContainer::RunManager));
+		std::vector<IManager*> managers;
+		m_managers.CheckObjects(Ref(this, &ManagersContainer::RunManager, managers));
+		for(std::vector<IManager*>::iterator it = managers.begin();
+			it != managers.end(); it++)
+		{
+			(*it)->ManagerStop();
+			delete (*it);
+		}
 		sleep(200);
 	}
 	

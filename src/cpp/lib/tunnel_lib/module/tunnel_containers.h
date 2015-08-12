@@ -45,8 +45,8 @@ public:
 	PeerType(const PeerData& data);
 	virtual ~PeerType();
 
-	bool operator == (const PeerType& peerType);
-	bool operator != (const PeerType& peerType);
+	bool operator == (const PeerType& peerType) const;
+	bool operator != (const PeerType& peerType) const;
 	bool operator < (const PeerType& peerType) const;
 };
 
