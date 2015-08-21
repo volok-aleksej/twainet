@@ -14,6 +14,7 @@ public:
 protected:
 	virtual void OnStart();
 	virtual void OnStop();
+	virtual bool SetModuleName(const IPCObjectName& moduleName);
 	virtual void ThreadFunc();
 protected:
 	friend class Signal;

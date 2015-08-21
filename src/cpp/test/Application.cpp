@@ -118,7 +118,7 @@ void ApplicationTest::ThreadFunc()
 #else
 	strcpy(m_moduleName.m_name, guid.c_str());
 #endif/*WIN32*/
-	m_module = Twainet::CreateModule(m_moduleName, true, false);
+	m_module = Twainet::CreateModule(m_moduleName, true);
 	/*
 	Twainet::ModuleName moduleName = {0};
 	strcpy_s(moduleName.m_name, MAX_NAME_LENGTH, CreateGUID().c_str());
@@ -129,7 +129,7 @@ void ApplicationTest::ThreadFunc()
 
 //	Twainet::UserPassword proxyuser = {"test", "test"};
 //	Twainet::UseProxy(m_module, "127.0.0.1", 8080, proxyuser);
-	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2p"};
+	Twainet::UserPassword user = {"rmmp2plogin", "rmmp2pacess"};
 	Twainet::ConnectToServer(m_module, "199.66.200.133", 1054, user);
 //	Twainet::ConnectToServer(m_module, "10.8.3.187", 1054, user);
 

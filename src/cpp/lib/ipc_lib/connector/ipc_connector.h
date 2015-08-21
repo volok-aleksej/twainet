@@ -14,7 +14,9 @@
 
 #pragma warning(disable:4244 4267)
 #include "../messages/ipc.pb.h"
+#include "../messages/interconn.pb.h"
 using namespace ipc;
+using namespace interconn;
 #pragma warning(default:4244 4267)
 
 typedef ProtoMessage<IPCMessage> IPCProtoMessage;
@@ -27,6 +29,10 @@ typedef ProtoMessage<IPCObjectList> IPCObjectListMessage;
 typedef ProtoMessage<ModuleState> ModuleStateMessage;
 typedef ProtoMessage<Ping> PingMessage;
 typedef SignalMessage<IPCMessage> IPCMessageSignal;
+
+typedef ProtoMessage<InitInternalConnection> InitInternalConnectionMessage;
+typedef ProtoMessage<InternalConnectionStatus> InternalConnectionStatusMessage;
+typedef ProtoMessage<InternalConnectionData> InternalConnectionDataMessage;
 
 class IPCConnector : public Connector, public SignalReceiver, protected SignalOwner
 {
@@ -59,6 +65,10 @@ protected:
 	void onMessage(const ChangeIPCName& msg);
 	void onMessage(const UpdateIPCObject& msg);
 	void onMessage(const Ping& msg);
+	
+	void onMessage(const InitInternalConnection& msg);
+	void onMessage(const InternalConnectionStatus& msg);
+	void onMessage(const InternalConnectionData& msg);
 
 	friend class IPCModule;
 	friend class PingThread;

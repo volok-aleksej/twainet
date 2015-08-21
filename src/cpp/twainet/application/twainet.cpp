@@ -161,6 +161,18 @@ extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module modu
 	return retName;
 }
 
+extern "C" void ChangeModuleName(const Twainet::Module module, const Twainet::ModuleName& moduleName)
+{
+	if(!module)
+	{
+		return;
+	}
+
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
+	twainetModule->UpdateModuleName(ipcModuleName);
+}
+		
 extern "C" const char* Twainet::GetSessionId(const Twainet::Module module)
 {
 	TwainetModule* twainetModule = (TwainetModule*)module;

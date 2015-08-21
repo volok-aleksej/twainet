@@ -53,6 +53,11 @@ void TunnelServerConnector::ThreadFunc()
 	}
 }
 
+bool TunnelServerConnector::SetModuleName(const IPCObjectName& moduleName)
+{
+	return false;
+}
+
 void TunnelServerConnector::onIPCMessageOne(const IPCMessageSignal& msg)
 {
 	IPCProtoMessage ipcMsg(this, msg);

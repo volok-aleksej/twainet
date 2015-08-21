@@ -135,6 +135,9 @@ extern "C"
 		//Get module name
 		TWAINET_FUNC ModuleName GetModuleName(const Module module);
 		
+		//Change Module name
+		TWAINET_FUNC void ChangeModuleName(const Module module, const ModuleName& moduleName);
+		
 		// Get session id(module name of client or server connection)
 		TWAINET_FUNC const char* GetSessionId(const Module module);
 		

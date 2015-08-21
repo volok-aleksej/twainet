@@ -1,0 +1,29 @@
+package interconn;
+
+enum ConnectionStatus
+{
+	CONN_OPEN	= 1;
+	CONN_CLOSE	= 2;
+	CONN_FAILED	= 3;
+}
+
+message InitInternalConnection
+{
+	required string id = 1;
+	required string ip = 2;
+	required int32 port = 3;
+}
+
+message InternalConnectionStatus
+{
+	required string id = 1;
+	required ConnectionStatus status = 2;
+}
+
+message InternalConnectionData
+{
+	required string id = 1;
+	optional bytes data = 2;
+}
+
+option optimize_for = LITE_RUNTIME;

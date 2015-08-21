@@ -27,6 +27,10 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 	addMessage(new ProtoMessage<UpdateIPCObject>(this));
 	addMessage(new ProtoMessage<ModuleState>(this));
 	addMessage(new ProtoMessage<Ping>(this));
+		
+	addMessage(new ProtoMessage<InitInternalConnection>(this));
+	addMessage(new ProtoMessage<InternalConnectionStatus>(this));
+	addMessage(new ProtoMessage<InternalConnectionData>(this));
 }
 
 IPCConnector::~IPCConnector()
@@ -281,6 +285,18 @@ void IPCConnector::onMessage(const Ping& msg)
 {
 }
 
+void IPCConnector::onMessage(const InitInternalConnection& msg)
+{
+}
+
+void IPCConnector::onMessage(const InternalConnectionStatus& msg)
+{
+}
+
+void IPCConnector::onMessage(const InternalConnectionData& msg)
+{
+}
+	
 void IPCConnector::onNewConnector(const Connector* connector)
 {
 	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
