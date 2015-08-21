@@ -17,6 +17,7 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 , m_isNotifyRemove(true), m_isSendIPCObjects(false)
 , m_checker(0), m_isExist(false), m_rand(CreateGUID())
 {
+	m_manager.addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, DisconnectedMessage, onDisconnected));
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
 	addMessage(new ProtoMessage<ModuleName>(this));
 	addMessage(new ProtoMessage<AddIPCObject>(this));
@@ -324,6 +325,7 @@ void IPCConnector::SubscribeModule(::SignalOwner* owner)
 {
 	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ChangeIPCNameMessage, onChangeIPCNameMessage));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, IPCMessageSignal, onIPCMessage));
+	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, InitInternalConnectionMessage, onInitInternalConnectionMessage));
 }
 
 IPCObjectName IPCConnector::GetModuleName() const
@@ -458,4 +460,13 @@ void IPCConnector::OnUpdateIPCObject(const std::string& oldModuleName, const std
 IPCObjectName IPCConnector::GetIPCName()
 {
 	return IPCObjectName::GetIPCName(GetId());
+}
+
+
+void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
+{
+}
+
+void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg)
+{
 }

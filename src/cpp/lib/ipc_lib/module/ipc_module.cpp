@@ -567,3 +567,14 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 
 	return retList;
 }
+
+
+void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
+{
+	InitInternalConnectionMessage iicMsg(0);
+	iicMsg.set_id(CreateGUID());
+	iicMsg.set_ip(ip);
+	iicMsg.set_port(port);
+	iicMsg.mutable_target()->CopyFrom(moduleName);
+	onSignal(iicMsg);
+}

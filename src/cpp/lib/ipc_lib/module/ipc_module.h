@@ -76,6 +76,7 @@ public:
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
 	void SendMsg(const IPCMessageSignal& msg);
+	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port);
 	const IPCObjectName& GetModuleName();
 	std::vector<IPCObjectName> GetIPCObjects();
 

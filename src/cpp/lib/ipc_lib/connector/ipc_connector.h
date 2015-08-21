@@ -2,6 +2,7 @@
 #define IPC_CONNECTOR_H
 
 #include "connector_lib/connector/connector.h"
+#include "connector_lib/connector/connector_manager.h"
 #include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/signal/signal_message.h"
@@ -54,6 +55,9 @@ protected:
 	void onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg);
 	void onChangeIPCNameMessage(const ChangeIPCNameMessage& msg);
 	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
+	
+	void onDisconnected(const DisconnectedMessage& msg);
+	void onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg);
 
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
 	void onMessage(const ModuleName& msg);
@@ -98,6 +102,9 @@ private:
 	Signal* m_ipcSignal;
 	bool m_isExist;
 	std::string m_rand;
+	
+	//for internal connections
+	ConnectorManager m_manager;
 };
 
 #endif/*IPC_CONNECTOR_H*/

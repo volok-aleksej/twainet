@@ -1,5 +1,7 @@
 package interconn;
 
+import "ipc.proto";
+
 enum ConnectionStatus
 {
 	CONN_OPEN	= 1;
@@ -12,12 +14,14 @@ message InitInternalConnection
 	required string id = 1;
 	required string ip = 2;
 	required int32 port = 3;
+	optional ipc.IPCName target = 4;
 }
 
 message InternalConnectionStatus
 {
 	required string id = 1;
 	required ConnectionStatus status = 2;
+	optional ipc.IPCName target = 3;
 }
 
 message InternalConnectionData
