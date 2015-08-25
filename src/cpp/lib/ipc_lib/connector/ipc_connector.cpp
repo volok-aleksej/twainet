@@ -42,6 +42,14 @@ IPCConnector::~IPCConnector()
 {
 	m_ipcSignal->removeOwner();
 	removeReceiver();
+
+	CSLocker locker(&m_cs);
+	for(std::map<std::string, ListenThread*>::iterator it = m_internalListener.begin();
+		it != m_internalListener.end(); it++)
+	{
+		it->second->Stop();
+		ThreadManager::GetInstance().AddThread(it->second);
+	}
 }
 
 void IPCConnector::ThreadFunc()
