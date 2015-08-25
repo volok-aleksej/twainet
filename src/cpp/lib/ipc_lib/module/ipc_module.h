@@ -76,7 +76,7 @@ public:
 	void Exit();
 	void UpdateModuleName(const IPCObjectName& moduleName);
 	void SendMsg(const IPCMessageSignal& msg);
-	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port);
+	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id);
 	const IPCObjectName& GetModuleName();
 	std::vector<IPCObjectName> GetIPCObjects();
 
@@ -106,6 +106,7 @@ protected:
 	virtual bool CheckFireConnector(const std::string& moduleName);
 	virtual void ModuleCreationFialed();
 	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
+	virtual void OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port);
 
 protected:
 	void Start(const std::string& ip, int port);

@@ -90,6 +90,12 @@ void TWAINET_CALL ApplicationTest::OnMessageRecv(Twainet::Module module, const T
 	ApplicationTest::GetInstance().onMessageRecv(module, msg);
 }
 
+void TWAINET_CALL ApplicationTest::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
+																	const char* id, Twainet::InternalConnectionStatus status, int port)
+{
+	ApplicationTest::GetInstance().OnInternalConnectionStatusChanged(module, moduleName, id, status, port);
+}
+
 ApplicationTest::ApplicationTest()
 	: m_isStop(false)
 {
@@ -263,4 +269,12 @@ void ApplicationTest::onMessageRecv(Twainet::Module module, const Twainet::Messa
     SetConsoleCursorPosition(hStdOut, csbi.dwCursorPosition);
 #endif
 	printf("datalen: %u", dataLen);
+}
+
+void ApplicationTest::onInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
+														const char* id, Twainet::InternalConnectionStatus status, int port)
+{
+	printf("internal connection (id - %s) status changed - %d\n", id, status);
+	if(status == Twainet::OPEN)
+		printf("external port available - %d\n", port);
 }

@@ -62,6 +62,13 @@ extern "C"
 			RELAY_UDP = 5
 		};
 
+		enum InternalConnectionStatus
+		{
+			OPEN = 1,
+			CLOSE = 2,
+			FAILED = 3
+		};
+
 		typedef void* Module;
 
 		struct TwainetCallback
@@ -81,6 +88,7 @@ extern "C"
 			void (TWAINET_CALL *OnTunnelDisconnected)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnTunnelCreationFailed)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnMessageRecv)(Module module, const Message& msg);
+			void (TWAINET_CALL *OnInternalConnectionStatusChanged)(Module module, const char* moduleName, const char* id, InternalConnectionStatus status, int port);
 		};
 
 		// Initialize library
@@ -153,14 +161,14 @@ extern "C"
 		// Use server and tunnel connections throw http proxy server
 		TWAINET_FUNC void UseProxy(const Module module, const char* host, int port, const UserPassword& userPassword);
 
-		// Use standart connections
+		// Use standard connections
 		TWAINET_FUNC void UseStandartConnections(const Module module);
 
 		// Use logger. Log data are written in file
 		TWAINET_FUNC void UseLog(char* logFileName);
 		
-		// Create Internal Connection throuth ipc connection(as proxy)
-		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port);
+		// Create Internal Connection through ipc connection(as proxy)
+		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port, const char* id);
 	}
 };
 

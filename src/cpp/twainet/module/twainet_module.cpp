@@ -77,3 +77,8 @@ void TwainetModule::ServerCreationFialed()
 	LOG_INFO("Server creation failed: moduleName - %s\n", const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str());
 	Application::GetInstance().AddNotifycationMessage(new CreationFailed(this, CreationFailed::SERVER));
 }
+
+void TwainetModule::OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port)
+{
+	Application::GetInstance().AddNotifycationMessage(new InternalConnectionStatusChanged(this, moduleName, id, status, port));	
+}

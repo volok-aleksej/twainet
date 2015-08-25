@@ -233,6 +233,10 @@ void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	}
 }
 
+void IPCModule::OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port)
+{
+}
+
 void IPCModule::ConnectToCoordinator()
 {
 	LOG_INFO("Try Connect with coordinator: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
@@ -403,6 +407,8 @@ void IPCModule::onConnected(const ConnectedMessage& msg)
 
 void IPCModule::onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg)
 {
+	IPCObjectName target(msg.target());
+	OnInternalConnection(target.GetModuleNameString(), msg.id(), msg.status(), msg.port());
 }
 
 void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
@@ -576,10 +582,10 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 }
 
 
-void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
+void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id)
 {
 	InitInternalConnectionMessage iicMsg(0);
-	iicMsg.set_id(CreateGUID());
+	iicMsg.set_id(id);
 	iicMsg.set_ip(ip);
 	iicMsg.set_port(port);
 	iicMsg.mutable_target()->CopyFrom(moduleName);

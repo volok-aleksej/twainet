@@ -276,3 +276,23 @@ void AuthFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	callbacks.OnClientAuthFailed(m_module);
 }
+
+/*******************************************************************************************/
+/*                           InternalConnectionStatusChanged                               */
+/*******************************************************************************************/
+InternalConnectionStatusChanged::InternalConnectionStatusChanged(Twainet::Module module, const std::string& moduleName,
+																const std::string& id, ConnectionStatus status, int port)
+	: NotificationMessage(module, INTERNAL_CONNECTION_STATUS), m_moduleName(moduleName)
+	, m_id(id), m_status(status), m_port(port)
+{
+}
+
+InternalConnectionStatusChanged::~InternalConnectionStatusChanged()
+{
+}
+
+void InternalConnectionStatusChanged::HandleMessage(Twainet::TwainetCallback callbacks)
+{
+	callbacks.OnInternalConnectionStatusChanged(m_module, m_moduleName.c_str(), m_id.c_str(),
+												(Twainet::InternalConnectionStatus)m_status, m_port);
+}

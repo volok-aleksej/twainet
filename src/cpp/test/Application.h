@@ -30,6 +30,8 @@ public:
 	static void TWAINET_CALL OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
 	static void TWAINET_CALL OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
 	static void TWAINET_CALL OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
+	static void TWAINET_CALL OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
+															   const char* id, Twainet::InternalConnectionStatus status, int port);
 protected:
 	void onModuleCreationFailed(Twainet::Module module);
 	void onServerCreationFailed(Twainet::Module module);
@@ -46,6 +48,8 @@ protected:
 	void onTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
 	void onTunnelDisconnected(Twainet::Module module, const char* sessionId);
 	void onMessageRecv(Twainet::Module module, const Twainet::Message& msg);
+	void onInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
+										   const char* id, Twainet::InternalConnectionStatus status, int port);
 private:
 	bool m_isStop;
 	Twainet::Module m_module;

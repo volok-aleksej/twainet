@@ -45,6 +45,9 @@ protected:
 	
 	// Server has not created
 	virtual void ServerCreationFialed();
+
+	// Changed internal connection status
+	virtual void OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port);
 };
 
 #endif/*TWAINET_MODULE_H*/
