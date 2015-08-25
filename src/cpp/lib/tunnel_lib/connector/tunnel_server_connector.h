@@ -22,6 +22,9 @@ protected:
 	void onIPCMessageTwo(const IPCMessageSignal& msg);
 	void onModuleState(const ModuleStateMessage& msg);
 	void onModuleName(const ModuleNameMessage& msg);
+	void onInternalConnectionData(const InternalConnectionDataMessage& msg);
+	void onInternalConnectionStatus(const InternalConnectionStatusMessage& msg);
+	void onInitInternalConnection(const InitInternalConnectionMessage& msg);
 private:
 	TunnelConnector* m_connectorOne;
 	TunnelConnector* m_connectorTwo;

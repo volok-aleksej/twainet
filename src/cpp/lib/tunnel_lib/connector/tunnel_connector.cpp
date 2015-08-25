@@ -9,6 +9,9 @@ TunnelConnector::TunnelConnector(AnySocket* socket, const IPCObjectName& moduleN
 {
 	addMessage(new ProtoMessage<ModuleName, TunnelConnector>(this));
 	addMessage(new ProtoMessage<ModuleState, TunnelConnector>(this));	
+	addMessage(new ProtoMessage<InternalConnectionData, TunnelConnector>(this));	
+	addMessage(new ProtoMessage<InternalConnectionStatus, TunnelConnector>(this));	
+	addMessage(new ProtoMessage<InitInternalConnection, TunnelConnector>(this));	
 }
 
 TunnelConnector::~TunnelConnector()
@@ -76,6 +79,48 @@ void TunnelConnector::onMessage(const ModuleState& msg)
 		ModuleStateMessage mnMsg(this, msg);
 		mnMsg.set_id(m_id);
 		onSignal(mnMsg);
+	}
+	else
+	{
+		IPCConnector::onMessage(msg);
+	}
+}
+
+void TunnelConnector::onMessage(const InternalConnectionData& msg)
+{
+	if(m_isServer)
+	{
+		InternalConnectionDataMessage icdMsg(this, msg);
+		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+		onSignal(icdMsg);
+	}
+	else
+	{
+		IPCConnector::onMessage(msg);
+	}
+}
+
+void TunnelConnector::onMessage(const InternalConnectionStatus& msg)
+{
+	if(m_isServer)
+	{
+		InternalConnectionStatusMessage icdMsg(this, msg);
+		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+		onSignal(icdMsg);
+	}
+	else
+	{
+		IPCConnector::onMessage(msg);
+	}
+}
+
+void TunnelConnector::onMessage(const InitInternalConnection& msg)
+{
+	if(m_isServer)
+	{
+		InitInternalConnectionMessage icdMsg(this, msg);
+		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+		onSignal(icdMsg);
 	}
 	else
 	{

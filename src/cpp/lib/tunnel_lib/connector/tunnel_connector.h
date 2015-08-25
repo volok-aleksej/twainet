@@ -41,6 +41,9 @@ protected:
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
 	void onMessage(const ModuleName& msg);
 	void onMessage(const ModuleState& msg);
+	void onMessage(const InternalConnectionData& msg);
+	void onMessage(const InternalConnectionStatus& msg);
+	void onMessage(const InitInternalConnection& msg);
 private:
 	bool m_isServer;
 	PingThread *m_pingThread;

@@ -523,6 +523,12 @@ IPCObjectName IPCConnector::GetIPCName()
 
 void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 {
+	InternalConnectionStatusMessage icsMsg(this);
+	icsMsg.set_id(msg.m_id);
+	icsMsg.set_status(CONN_CLOSE);
+	toMessage(icsMsg);
+	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+	onSignal(icsMsg);
 }
 
 void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)

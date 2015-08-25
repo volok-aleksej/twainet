@@ -45,6 +45,9 @@
     <ClCompile Include="..\..\common\tstring.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\messages\interconn.pb.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\ipc.pb.h">
@@ -77,9 +80,15 @@
     <ClInclude Include="..\..\common\tstring.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\messages\interconn.pb.h">
+      <Filter>messages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\messages\ipc.proto">
+      <Filter>messages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\messages\interconn.proto">
       <Filter>messages</Filter>
     </CustomBuild>
   </ItemGroup>

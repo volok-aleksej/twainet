@@ -29,6 +29,7 @@ message InternalConnectionData
 {
 	required string id = 1;
 	optional bytes data = 2;
+	optional ipc.IPCName target = 3;
 }
 
 option optimize_for = LITE_RUNTIME;

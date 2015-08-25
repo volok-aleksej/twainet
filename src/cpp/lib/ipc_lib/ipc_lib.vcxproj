@@ -92,6 +92,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\messages\interconn.pb.cc" />
     <ClCompile Include="..\..\..\messages\ipc.pb.cc" />
     <ClCompile Include="connector\ipc_connector.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
@@ -102,6 +103,7 @@
     <ClCompile Include="..\..\common\tstring.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\messages\interconn.pb.h" />
     <ClInclude Include="..\..\..\messages\ipc.pb.h" />
     <ClInclude Include="connector\ipc_connector.h" />
     <ClInclude Include="connector\ipc_connector_factory.h" />
@@ -132,6 +134,17 @@
       <Project>{1f5fd41d-d68e-4830-91c7-eda03898328d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\messages\interconn.proto">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SolutionDir)..\messages\protoc.exe" --proto_path="$(SolutionDir)..\messages" --cpp_out="$(SolutionDir)..\messages" "$(SolutionDir)..\messages\interconn.proto"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(SolutionDir)..\messages\protoc.exe" --proto_path="$(SolutionDir)..\messages" --cpp_out="$(SolutionDir)..\messages" "$(SolutionDir)..\messages\interconn.proto"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling  *.proto files</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling  *.proto files</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\messages\interconn.pb.cc;$(SolutionDir)..\messages\interconn.pb.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\messages\interconn.pb.cc;$(SolutionDir)..\messages\interconn.pb.h;%(Outputs)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
