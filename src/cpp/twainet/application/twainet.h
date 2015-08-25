@@ -158,6 +158,9 @@ extern "C"
 
 		// Use logger. Log data are written in file
 		TWAINET_FUNC void UseLog(char* logFileName);
+		
+		// Create Internal Connection throuth ipc connection(as proxy)
+		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port);
 	}
 };
 

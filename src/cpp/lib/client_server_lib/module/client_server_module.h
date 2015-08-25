@@ -99,7 +99,7 @@ private:
 
 
 	//for server
-	IPCListenThread* m_serverThread;
+	BaseListenThread* m_serverThread;
 	ObjectManager<UserPassword> m_userPasswords;
 };
 

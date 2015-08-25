@@ -39,6 +39,7 @@ public:
 	virtual bool Close() = 0;
 	virtual void GetIPPort(std::string& ip, int& port) = 0;
 	virtual int GetSocket() = 0;
+	virtual int GetMaxBufferSize() = 0;
 };
 
 #endif/*ANY_SOCKET_H*/

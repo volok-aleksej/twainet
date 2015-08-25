@@ -21,7 +21,8 @@ message InternalConnectionStatus
 {
 	required string id = 1;
 	required ConnectionStatus status = 2;
-	optional ipc.IPCName target = 3;
+	optional int32 port = 3;
+	optional ipc.IPCName target = 4;
 }
 
 message InternalConnectionData

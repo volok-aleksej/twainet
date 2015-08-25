@@ -696,7 +696,7 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
 	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_acceptCount = 1;
-	ListenThread* thread = new IPCListenThread(address);
+	ListenThread* thread = new BaseListenThread(address);
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorLocalListener));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalListener));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalTCPConnector));

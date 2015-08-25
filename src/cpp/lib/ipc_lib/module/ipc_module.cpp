@@ -179,7 +179,7 @@ void IPCModule::Start(const std::string& ip, int port)
 	address.m_connectorFactory = m_factory->Clone();
 	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;
-	m_listenThread = new IPCListenThread(address);
+	m_listenThread = new BaseListenThread(address);
 	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, CreatedListenerMessage, onCreatedListener));
 	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenErrorMessage, onErrorListener));
 	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectorMessage, onAddConnector));
@@ -342,6 +342,9 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenerParamMessage, getListenPort));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectedMessage, onConnected));
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCProtoMessage, onIPCMessage));
+		
+		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
+		
 		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
 		m_manager.AddConnection(msg.m_conn);
 	}
@@ -396,6 +399,10 @@ void IPCModule::onConnected(const ConnectedMessage& msg)
 		LOG_INFO("Module connected with coordinator: coordinator name - %s, m_moduleName - %s\n", m_coordinatorName.c_str(), m_moduleName.GetModuleNameString().c_str());
 		m_coordinatorName = msg.m_id;
 	}
+}
+
+void IPCModule::onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg)
+{
 }
 
 void IPCModule::onIPCMessage(const IPCProtoMessage& msg)

@@ -24,6 +24,7 @@ public:
 	virtual void GetIPPort(std::string& ip, int& port);
 	virtual bool Close();
 	virtual int GetSocket();
+	virtual int GetMaxBufferSize();
 protected:
 	void Initialize();
 private:

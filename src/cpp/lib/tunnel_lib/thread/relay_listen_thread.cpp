@@ -93,7 +93,7 @@ void RelayListenThread::ThreadFunc()
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_address.m_sessionIdTwo);
 	address.m_socketFactory = m_address.m_socketFactory->Clone();
 	address.m_acceptCount = 1;
-	m_listenThreadOne = new IPCListenThread(address);
+	m_listenThreadOne = new BaseListenThread(address);
 	m_listenThreadOne->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ListenErrorMessage, onListenErrorMessage));
 	m_listenThreadOne->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, CreatedListenerMessage, onCreatedListenerMessage));
 	m_listenThreadOne->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ConnectorMessage, onAddConnector));
@@ -102,7 +102,7 @@ void RelayListenThread::ThreadFunc()
 	address.m_id = m_address.m_sessionIdTwo;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_address.m_sessionIdOne);
 	address.m_socketFactory = m_address.m_socketFactory->Clone();
-	m_listenThreadTwo = new IPCListenThread(address);
+	m_listenThreadTwo = new BaseListenThread(address);
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ListenErrorMessage, onListenErrorMessage));
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, CreatedListenerMessage, onCreatedListenerMessage));
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ConnectorMessage, onAddConnector));

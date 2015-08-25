@@ -16,10 +16,10 @@
 #include <string>
 #include <stdarg.h>
 
-class IPCListenThread : public ListenThread
+class BaseListenThread : public ListenThread
 {
 public:
-	IPCListenThread(const ListenAddress& address)
+	BaseListenThread(const ListenAddress& address)
 		: ListenThread(address){}
 
 protected:
@@ -96,6 +96,7 @@ protected:
 	void onUpdateIPCObject(const UpdateIPCObjectMessage& msg);
 	void onIPCMessage(const IPCProtoMessage& msg);
 	void onConnected(const ConnectedMessage& msg);
+	void onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg);
 
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnFireConnector(const std::string& moduleName);
@@ -111,7 +112,7 @@ protected:
 	void ConnectToCoordinator();
 	void ipcSubscribe(IPCConnector* connector, IReceiverFunc* func);
 protected:
-	IPCListenThread* m_listenThread;
+	BaseListenThread* m_listenThread;
 	ConnectorFactory* m_factory;
 	IPCObjectName m_moduleName;
 	ObjectManager<IPCObject> m_ipcObject;

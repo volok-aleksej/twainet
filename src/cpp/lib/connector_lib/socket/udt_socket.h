@@ -21,6 +21,7 @@ public:
 	virtual bool Close();
 	virtual void GetIPPort(std::string& ip, int& port);
 	virtual int GetSocket();
+	virtual int GetMaxBufferSize();
 private:
 	int m_udpSocket;
 	int m_socket;

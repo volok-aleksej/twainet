@@ -204,3 +204,25 @@ bool UDPSocket::RecvFrom(char* data, int len, std::string& ip, int& port)
 
 	return true;
 }
+
+int UDPSocket::GetMaxBufferSize()
+{
+	if(m_socket == INVALID_SOCKET)
+	{
+		return 0;
+	}
+	
+	int sndsize, rcvsize;
+#ifdef WIN32
+	int len = sizeof(sndsize);
+#else
+	socklen_t len = sizeof(sndsize);
+#endif/*WIN32*/
+	if (getsockopt(m_socket, SOL_SOCKET, SO_SNDBUF, (char*)&sndsize, &len) != 0 ||
+	    getsockopt(m_socket, SOL_SOCKET, SO_RCVBUF, (char*)&rcvsize, &len) != 0)
+	{
+		return 0;
+	}
+	
+	return ((sndsize < rcvsize) ? sndsize : rcvsize);
+}

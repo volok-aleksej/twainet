@@ -172,7 +172,7 @@ void ClientServerModule::StartServer(int port)
 	address.m_socketFactory = new TCPSecureSocketFactory;
 //	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;
-	m_serverThread = new IPCListenThread(address);
+	m_serverThread = new BaseListenThread(address);
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, CreatedListenerMessage, onCreatedListener));
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ListenErrorMessage, onErrorListener));
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddConnector));

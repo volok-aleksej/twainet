@@ -221,3 +221,21 @@ int UDTSocket::GetSocket()
 {
 	return m_socket;
 }
+
+int UDTSocket::GetMaxBufferSize()
+{
+	if(m_socket == INVALID_SOCKET)
+	{
+		return 0;
+	}
+	
+	int sndsize, rcvsize;
+	int len = sizeof(sndsize);
+	if (UDT::getsockopt(m_socket, SOL_SOCKET, UDT_SNDBUF, (char*)&sndsize, &len) != 0 ||
+	    UDT::getsockopt(m_socket, SOL_SOCKET, UDT_RCVBUF, (char*)&rcvsize, &len) != 0)
+	{
+		return 0;
+	}
+	
+	return ((sndsize < rcvsize) ? sndsize : rcvsize);
+}

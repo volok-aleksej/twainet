@@ -21,6 +21,7 @@ public:
 	virtual void GetIPPort(std::string& ip, int& port);
 	virtual bool Close();
 	virtual int GetSocket();
+	virtual int GetMaxBufferSize();
 
 	bool RecvFrom(char* data, int len, std::string& ip, int& port);
 	void SetSendAddr(const std::string& host, int port);

@@ -34,6 +34,9 @@ typedef SignalMessage<IPCMessage> IPCMessageSignal;
 typedef ProtoMessage<InitInternalConnection> InitInternalConnectionMessage;
 typedef ProtoMessage<InternalConnectionStatus> InternalConnectionStatusMessage;
 typedef ProtoMessage<InternalConnectionData> InternalConnectionDataMessage;
+typedef SignalMessage<InternalConnectionData> InternalConnectionDataSignal;
+
+class ListenThread;
 
 class IPCConnector : public Connector, public SignalReceiver, protected SignalOwner
 {
@@ -57,7 +60,12 @@ protected:
 	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
 	
 	void onDisconnected(const DisconnectedMessage& msg);
+	void onCreatedListener(const CreatedListenerMessage& msg);
+	void onErrorListener(const ListenErrorMessage& msg);
+	void onErrorConnect(const ConnectErrorMessage& msg);
+	void onAddConnector(const ConnectorMessage& msg);
 	void onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg);
+	void onInternalConnectionDataSignal(const InternalConnectionDataSignal& msg);
 
 	template<typename TMessage, typename THandler> friend class ProtoMessage;
 	void onMessage(const ModuleName& msg);
@@ -105,6 +113,8 @@ private:
 	
 	//for internal connections
 	ConnectorManager m_manager;
+	std::map<std::string, ListenThread*> m_internalListener;
+	CriticalSection m_cs;
 };
 
 #endif/*IPC_CONNECTOR_H*/

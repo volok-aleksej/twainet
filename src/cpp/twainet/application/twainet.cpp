@@ -252,3 +252,13 @@ extern "C" void Twainet::UseLog(char* logFileName)
 {
 	Logger::GetInstance().SetLogFile(logFileName);
 }
+
+extern "C" void Twainet::CreateInternalConnection(const Twainet::Module module, const Twainet::ModuleName& moduleName, const char* ip, int port)
+{
+	if(!module)
+		return;
+	
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
+	twainetModule->CreateInternalConnection(ipcModuleName, ip, port);
+}
