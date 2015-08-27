@@ -25,11 +25,15 @@
 // All connections(server, client, tunnel) are also modules whose name is:
 //     server - ServerName.<sessionId>.
 //     client - ClientName.<sessionId>.
-//     tunnel - <sessionId>..
+//     tunnel - Tunnel.<sessionId>.
 extern "C"
 {
 	namespace Twainet
 	{
+		const char ServerModuleName[] = "ServerName";
+		const char ClentModuleName[] = "ClientName";
+		const char TunnelModuleName[] = "Tunnel";
+		
 		struct UserPassword
 		{
 			char m_user[MAX_NAME_LENGTH];

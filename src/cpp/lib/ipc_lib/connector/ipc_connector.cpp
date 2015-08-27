@@ -6,6 +6,7 @@
 
 #include "common/common_func.h"
 #include "common/logger.h"
+#include "common/user.h"
 #include "utils/utils.h"
 
 #include "connector_lib/message/connector_messages.h"
@@ -88,11 +89,13 @@ void IPCConnector::OnStart()
 	m_isCoordinator = msg.m_isCoordinator;
 	m_isNotifyRemove = m_isCoordinator;
 	m_isSendIPCObjects = m_isNotifyRemove;
+	m_accessId = GetUserName();
 
 	ProtoMessage<ModuleName> mnMsg(this);
 	*mnMsg.mutable_ipc_name() = m_moduleName;
 	mnMsg.set_ip(msg.m_ip);
 	mnMsg.set_port(msg.m_port);
+	mnMsg.set_access_id(m_accessId);
 	toMessage(mnMsg);
 }
 
@@ -125,7 +128,19 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		m_checker->Stop();
 		m_checker = 0;
 	}
-
+	
+	if(m_isCoordinator || m_id == IPCModule::m_baseAccessId)
+	{
+		m_accessId = IPCModule::m_baseAccessId;
+	}
+	
+	if(m_accessId != IPCModule::m_baseAccessId && m_accessId != msg.access_id())
+	{
+		LOG_INFO("access denied: m_id-%s, m_module-%s, module_access-%s, id_access-%s\n",
+			 m_id.c_str(), m_moduleName.GetModuleNameString().c_str(), m_accessId.c_str(), msg.access_id().c_str());
+		Stop();
+	}
+	
 	IPCObjectName ipcName(msg.ipc_name());
 	m_id = ipcName.GetModuleNameString();
 
@@ -134,12 +149,14 @@ void IPCConnector::onMessage(const ModuleName& msg)
 	AddIPCObjectMessage aoMsg(this);
 	aoMsg.set_ip(msg.ip());
 	aoMsg.set_port(msg.port());
+	m_isCoordinator ? aoMsg.set_access_id(msg.access_id()) : aoMsg.set_access_id(m_accessId);
 	*aoMsg.mutable_ipc_name() = msg.ipc_name();
 	onSignal(aoMsg);
 
 	ModuleNameMessage mnMsg(this, msg);
 	mnMsg.set_is_exist(false);
 	mnMsg.set_conn_id(m_connectorId);
+	m_isCoordinator ? mnMsg.set_access_id(msg.access_id()) : mnMsg.set_access_id(m_accessId);
 	onSignal(mnMsg);
 
 	m_isExist = mnMsg.is_exist();
@@ -399,6 +416,16 @@ IPCObjectName IPCConnector::GetModuleName() const
 	return m_moduleName;
 }
 
+void IPCConnector::SetAccessId(const std::string& accessId)
+{
+	m_accessId = accessId;
+}
+
+std::string IPCConnector::GetAccessId()
+{
+	return m_accessId;
+}
+	
 void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	if(msg.ipc_path_size() == 0)

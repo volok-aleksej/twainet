@@ -38,6 +38,7 @@ set (SRC_${PROJECT_NAME}
     ../../../messages/ipc.pb.cc
     ../../../messages/interconn.pb.cc
     ../../common/tstring.cpp
+    ../../common/user.cpp
     ../../utils/utils.cpp
     connector/ipc_connector.cpp
     connector/internal_connector.cpp

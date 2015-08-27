@@ -10,6 +10,7 @@ class TunnelModule : public ClientServerModule
 {
 public:
 	static const std::string m_tunnelIPCName;
+	static const std::string m_tunnelAccessId;
 public:
 	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
 	virtual ~TunnelModule();

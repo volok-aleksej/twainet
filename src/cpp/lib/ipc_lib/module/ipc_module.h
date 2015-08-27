@@ -31,13 +31,14 @@ class IPCModule : public SignalReceiver, protected SignalOwner
 {
 public:
 	static const std::string m_coordinatorIPCName;
+	static const std::string m_baseAccessId;
 	static const int m_maxTryConnectCount;
 protected:
 	class IPCObject
 	{
 	public:
 		IPCObject();
-		IPCObject(const IPCObjectName& ipcName, const std::string& ip = "127.0.0.1", int port = 0);
+		IPCObject(const IPCObjectName& ipcName, const std::string& ip = "127.0.0.1", int port = 0, const std::string& accessId = m_baseAccessId);
 		~IPCObject();
 
 		bool operator == (const IPCObject& ipcName);
@@ -48,6 +49,7 @@ protected:
 		IPCObjectName m_ipcName;
 		std::string m_ip;
 		int m_port;
+		std::string m_accessId;
 	};
 
 	class TryConnectCounter
@@ -116,8 +118,8 @@ protected:
 	BaseListenThread* m_listenThread;
 	ConnectorFactory* m_factory;
 	IPCObjectName m_moduleName;
-	ObjectManager<IPCObject> m_ipcObject;
-	ObjectManager<IPCObject> m_modules;
+	ObjectManager<IPCObject> m_ipcObject;		// available modules
+	ObjectManager<IPCObject> m_modules;		// connected modules
 	ConnectorManager m_manager;
 	bool m_isCoordinator;
 	std::string m_coordinatorName;

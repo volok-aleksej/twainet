@@ -12,6 +12,7 @@ message AddIPCObject
 	required IPCName ipc_name = 1;
 	required string ip = 2;
 	required int32 port	= 3;
+	required string access_id = 4;
 }
 
 message UpdateIPCObject
@@ -28,6 +29,7 @@ message ChangeIPCName
 message IPCObjectList
 {
 	repeated AddIPCObject ipc_object = 1;
+	optional string access_id = 2;
 }
 
 message ModuleName
@@ -35,8 +37,9 @@ message ModuleName
 	required IPCName ipc_name	= 1;
 	required string ip			= 2;	//for ipc communication in local computer only
 	required int32 port			= 3;	//for ipc communication in local computer only
-	optional bool is_exist		= 4;	//for internal usage
-	optional string conn_id		= 5;	//for internal usage
+	required string access_id		= 4;	//for ipc communication in local computer only
+	optional bool is_exist		= 5;	//for internal usage
+	optional string conn_id		= 6;	//for internal usage
 }
 
 message ModuleState

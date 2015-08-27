@@ -49,6 +49,7 @@ public:
 	virtual void SubscribeModule(::SignalOwner* owner);
 
 	IPCObjectName GetModuleName() const;
+	std::string GetAccessId();
 protected:
 	friend class Signal;
 	void onIPCMessage(const IPCProtoMessage& msg);
@@ -94,6 +95,7 @@ protected:
 	virtual bool SendData(char* data, int len);
 
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
+	virtual void SetAccessId(const std::string& accessId);
 	virtual void OnConnected();
 	virtual void OnDisconnected();
 	virtual void OnAddIPCObject(const std::string& moduleName);
@@ -107,6 +109,7 @@ protected:
 	bool m_isCoordinator;
 private:
 	IPCObjectName m_moduleName;
+	std::string m_accessId;
 	Signal* m_ipcSignal;
 	bool m_isExist;
 	std::string m_rand;

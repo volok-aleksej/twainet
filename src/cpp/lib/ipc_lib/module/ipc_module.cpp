@@ -12,6 +12,7 @@
 #include "thread_lib/thread/thread_manager.h"
 
 const std::string IPCModule::m_coordinatorIPCName = "IPCCoordinator";
+const std::string IPCModule::m_baseAccessId = "Coordinator";
 const int IPCModule::m_maxTryConnectCount = 10;
 
 /*******************************************************************************/
@@ -22,8 +23,8 @@ IPCModule::IPCObject::IPCObject()
 {
 }
 
-IPCModule::IPCObject::IPCObject(const IPCObjectName& ipcName, const std::string& ip, int port)
-: m_ipcName(ipcName), m_port(port), m_ip(ip)
+IPCModule::IPCObject::IPCObject(const IPCObjectName& ipcName, const std::string& ip, int port, const std::string& accessId)
+: m_ipcName(ipcName), m_port(port), m_ip(ip), m_accessId(accessId)
 {
 }
 
@@ -229,6 +230,7 @@ void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
 		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
 		ipcObject->set_ip(it->m_ip);
 		ipcObject->set_port(it->m_port);
+		ipcObject->set_access_id(it->m_accessId);
 		*ipcObject->mutable_ipc_name() = it->m_ipcName;
 	}
 }
@@ -424,7 +426,7 @@ void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
 
 void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)
 {
-	IPCObject object(msg.ipc_name(), msg.ip(), msg.port());
+	IPCObject object(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
 	LOG_INFO("Add IPC Object: ipc name - %s, m_moduleName - %s\n", object.m_ipcName.GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 	m_ipcObject.AddObject(object);
 }
@@ -485,7 +487,7 @@ void IPCModule::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
 
 void IPCModule::onModuleName(const ModuleNameMessage& msg)
 {
-	IPCObject module(msg.ipc_name(), msg.ip(), msg.port());
+	IPCObject module(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
 	const_cast<ModuleNameMessage&>(msg).set_is_exist(!m_modules.AddObject(module));
 
 	m_csConnectors.Enter();

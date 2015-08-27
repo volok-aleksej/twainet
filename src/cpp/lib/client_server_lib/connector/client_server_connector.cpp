@@ -212,11 +212,12 @@ void ClientServerConnector::onPeerDataSignal(const PeerDataSignal& msg)
 void ClientServerConnector::onIPCObjectListMessage(const IPCObjectListMessage& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
-	if(idName.module_name() == ClientServerModule::m_clientIPCName)
+	if(idName.module_name() == ClientServerModule::m_clientIPCName && msg.access_id() == GetAccessId())
 	{
 		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
 		ipcObject->set_ip("");
 		ipcObject->set_port(0);
+		ipcObject->set_access_id(GetAccessId());
 		*ipcObject->mutable_ipc_name() = idName;
 	}
 }
@@ -224,7 +225,7 @@ void ClientServerConnector::onIPCObjectListMessage(const IPCObjectListMessage& m
 void ClientServerConnector::onAddIPCObjectMessage(const AddIPCObjectMessage& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
-	if(idName.module_name() == ClientServerModule::m_clientIPCName)
+	if(idName.module_name() == ClientServerModule::m_clientIPCName && msg.access_id() == GetAccessId())
 	{
 		toMessage(msg);
 	}
@@ -254,6 +255,7 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 	}
 
 	m_ownSessionId = msg.own_session_id();
+	SetAccessId(m_userName);
 
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
@@ -265,6 +267,7 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
 	mnMsg.set_port(0);
+	mnMsg.set_access_id(m_userName);
 	toMessage(mnMsg);
 }
 
@@ -292,6 +295,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 	}
 
 	m_ownSessionId = loginResultMsg.own_session_id();
+	SetAccessId(msg.name());
 	
 	IPCObjectName name(GetId(), m_ownSessionId);
 	SetId(name.GetModuleNameString());
@@ -303,6 +307,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
 	mnMsg.set_port(0);
+	mnMsg.set_access_id(msg.name());
 	toMessage(mnMsg);
 }
 
@@ -342,12 +347,14 @@ void ClientServerConnector::onMessage(const ModuleName& msg)
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
 		IPCObjectListMessage ipcolMsg(this);
+		ipcolMsg.set_access_id(GetAccessId());
 		onIPCSignal(ipcolMsg);
 		toMessage(ipcolMsg);
 
 		AddIPCObjectMessage aipcoMsg(this);
 		aipcoMsg.set_ip("");
 		aipcoMsg.set_port(0);
+		aipcoMsg.set_access_id(GetAccessId());
 		*aipcoMsg.mutable_ipc_name() = idName;
 		onIPCSignal(aipcoMsg);
 	}

@@ -38,6 +38,7 @@ void TunnelConnector::OnStart()
 		*mnMsg.mutable_ipc_name() = GetModuleName();
 		mnMsg.set_ip("");
 		mnMsg.set_port(0);
+		mnMsg.set_access_id(TunnelModule::m_tunnelAccessId);
 		toMessage(mnMsg);
 	}
 }
