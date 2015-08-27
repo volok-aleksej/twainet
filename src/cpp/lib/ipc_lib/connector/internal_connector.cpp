@@ -22,7 +22,7 @@ void InternalConnector::ThreadFunc()
 	while(!IsStop())
 	{
 		int res = recv(m_socket->GetSocket(), data, sizedata, 0);
-		if (!res)
+		if (res <= 0)
 		{
 			break;
 		}

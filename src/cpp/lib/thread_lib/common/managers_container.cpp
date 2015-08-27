@@ -18,40 +18,9 @@ void DynamicManager::Stop()
 	m_isStop = true;
 }
 
-bool DynamicManager::IsDelete()
-{
-	return true;
-}
 bool DynamicManager::IsStop()
 {
 	return m_isStop;
-}
-
-/****************************************************************************************************************/
-/*                                               StaticManager                                                  */
-/****************************************************************************************************************/
-StaticManager::StaticManager()
-	: m_isStop(false)
-{
-}
-
-StaticManager::~StaticManager()
-{
-}
-
-bool StaticManager::IsDelete()
-{
-	return false;
-}
-
-bool StaticManager::IsStop()
-{
-	return m_isStop;
-}
-
-void StaticManager::Stop()
-{
-	m_isStop = true;
 }
 
 /****************************************************************************************************************/
@@ -87,14 +56,7 @@ bool ManagersContainer::RunManager(const std::vector<IManager*>& managers, const
 	manager_->ManagerFunc();
 	if (manager_->IsStop())
 	{
-		if(manager_->IsDelete())
-		{
-			const_cast<std::vector<IManager*>&>(managers).push_back(manager_);
-		}
-		else
-		{
-			manager_->ManagerStop();
-		}
+		const_cast<std::vector<IManager*>&>(managers).push_back(manager_);
 		return true;
 	}
 
@@ -104,14 +66,7 @@ bool ManagersContainer::RunManager(const std::vector<IManager*>& managers, const
 bool ManagersContainer::CheckManager(const std::vector<IManager*>& managers, const IManager* manager)
 {
 	IManager* manager_ = const_cast<IManager*>(manager);
-	if(manager_->IsDelete())
-	{
-		const_cast<std::vector<IManager*>&>(managers).push_back(manager_);
-	}
-	else
-	{
-		manager_->ManagerStop();
-	}
+	const_cast<std::vector<IManager*>&>(managers).push_back(manager_);
 	return true;
 }
 

@@ -84,7 +84,7 @@ void TunnelModule::InitNewTunnel(const std::string& extSessionId, TunnelConnecto
 void TunnelModule::DestroyTunnel(const std::string& extSessionId)
 {
 	LOG_INFO("Destroy tunnel: from %s to %s\n", m_ownSessionId.c_str(), extSessionId.c_str());
-	m_manager.StopConnection(extSessionId);
+	m_manager->StopConnection(extSessionId);
 }
 
 void TunnelModule::SetTypeTunnel(const std::string& oneSessionId, const std::string& twoSessionId, TunnelConnector::TypeConnection type)

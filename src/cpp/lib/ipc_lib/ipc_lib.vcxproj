@@ -94,6 +94,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\messages\interconn.pb.cc" />
     <ClCompile Include="..\..\..\messages\ipc.pb.cc" />
+    <ClCompile Include="..\..\common\user.cpp" />
+    <ClCompile Include="connector\internal_connector.cpp" />
     <ClCompile Include="connector\ipc_connector.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
     <ClCompile Include="module\ipc_object_name.cpp" />
@@ -105,6 +107,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\interconn.pb.h" />
     <ClInclude Include="..\..\..\messages\ipc.pb.h" />
+    <ClInclude Include="..\..\common\user.h" />
+    <ClInclude Include="connector\internal_connector.h" />
     <ClInclude Include="connector\ipc_connector.h" />
     <ClInclude Include="connector\ipc_connector_factory.h" />
     <ClInclude Include="connector\proto_message.h" />

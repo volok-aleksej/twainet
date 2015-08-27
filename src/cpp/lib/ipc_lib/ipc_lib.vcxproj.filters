@@ -48,6 +48,12 @@
     <ClCompile Include="..\..\..\messages\interconn.pb.cc">
       <Filter>messages</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\user.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="connector\internal_connector.cpp">
+      <Filter>connector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\ipc.pb.h">
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\messages\interconn.pb.h">
       <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\user.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="connector\internal_connector.h">
+      <Filter>connector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

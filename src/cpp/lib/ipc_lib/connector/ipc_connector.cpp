@@ -22,7 +22,8 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 , m_isNotifyRemove(true), m_isSendIPCObjects(false)
 , m_checker(0), m_isExist(false), m_rand(CreateGUID())
 {
-	m_manager.addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, DisconnectedMessage, onDisconnected));
+	m_manager = new ConnectorManager;
+	m_manager->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, DisconnectedMessage, onDisconnected));
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
 	addMessage(new ProtoMessage<ModuleName>(this));
 	addMessage(new ProtoMessage<AddIPCObject>(this));
@@ -355,7 +356,7 @@ void IPCConnector::onMessage(const InternalConnectionStatus& msg)
 		}
 		case CONN_CLOSE:
 		{
-			m_manager.StopConnection(msg.id());
+			m_manager->StopConnection(msg.id());
 			CSLocker locker(&m_cs);
 			std::map<std::string, ListenThread*>::iterator itListen = m_internalListener.find(msg.id());
 			if(itListen != m_internalListener.end())
@@ -492,6 +493,7 @@ void IPCConnector::onModuleNameMessage(const ModuleNameMessage& msg)
 	AddIPCObjectMessage aoMsg(this);
 	aoMsg.set_ip(msg.ip());
 	aoMsg.set_port(msg.port());
+	aoMsg.set_access_id(msg.access_id());
 	*aoMsg.mutable_ipc_name() = msg.ipc_name();
 	toMessage(aoMsg);
 }
@@ -625,7 +627,7 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 			
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, InternalConnectionDataSignal, onInternalConnectionDataSignal));
 		connector->SubscribeConnector(dynamic_cast<SignalOwner*>(this));
-		m_manager.AddConnection(msg.m_conn);
+		m_manager->AddConnection(msg.m_conn);
 	}
 	else
 	{

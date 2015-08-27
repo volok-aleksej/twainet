@@ -93,7 +93,8 @@ IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory)
 , m_isCoordinator(false), m_isExit(false), m_listenThread(0)
 , m_countListener(0), m_countConnect(0)
 {
-	m_manager.addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
+	m_manager = new ConnectorManager;
+	m_manager->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
 }
 
 IPCModule::~IPCModule()
@@ -161,7 +162,7 @@ void IPCModule::DisconnectModule(const IPCObjectName& moduleName)
 {
 	LOG_INFO("Try disconnect from %s: m_moduleName - %s\n", const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
 	IPCObjectName module(moduleName);
-	m_manager.StopConnection(module.GetModuleNameString());
+	m_manager->StopConnection(module.GetModuleNameString());
 }
 
 void IPCModule::Start(const std::string& ip, int port)
@@ -352,7 +353,7 @@ void IPCModule::onAddConnector(const ConnectorMessage& msg)
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
 		
 		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
-		m_manager.AddConnection(msg.m_conn);
+		m_manager->AddConnection(msg.m_conn);
 	}
 	else
 	{

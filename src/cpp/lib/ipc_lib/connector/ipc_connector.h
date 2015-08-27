@@ -115,7 +115,7 @@ private:
 	std::string m_rand;
 	
 	//for internal connections
-	ConnectorManager m_manager;
+	ConnectorManager *m_manager;
 	std::map<std::string, ListenThread*> m_internalListener;
 	CriticalSection m_cs;
 };

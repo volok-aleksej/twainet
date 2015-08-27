@@ -120,7 +120,7 @@ protected:
 	IPCObjectName m_moduleName;
 	ObjectManager<IPCObject> m_ipcObject;		// available modules
 	ObjectManager<IPCObject> m_modules;		// connected modules
-	ConnectorManager m_manager;
+	ConnectorManager *m_manager;
 	bool m_isCoordinator;
 	std::string m_coordinatorName;
 	bool m_isExit;

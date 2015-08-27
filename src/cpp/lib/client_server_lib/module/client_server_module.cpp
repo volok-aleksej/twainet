@@ -120,7 +120,7 @@ void ClientServerModule::Disconnect()
 {
 	LOG_INFO("Try client disconnect. sessionId %s\n", m_ownSessionId.c_str());
 	IPCObjectName ipcName(m_serverIPCName, m_ownSessionId);
-	m_manager.StopConnection(ipcName.GetModuleNameString());
+	m_manager->StopConnection(ipcName.GetModuleNameString());
 	m_isStopConnect = true;
 }
 
@@ -289,7 +289,7 @@ void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
 	}
 	else
 	{
-		m_manager.StopConnection(IPCObjectName(m_serverIPCName).GetModuleNameString());
+		m_manager->StopConnection(IPCObjectName(m_serverIPCName).GetModuleNameString());
 	}
 }
 

@@ -17,7 +17,6 @@ public:
 	virtual void ManagerFunc() = 0;
 	virtual void ManagerStart() = 0;
 	virtual void ManagerStop() = 0;
-	virtual bool IsDelete() = 0;
 	virtual bool IsStop() = 0;
 };
 
@@ -26,20 +25,6 @@ class DynamicManager : public IManager
 public:
 	DynamicManager();
 	virtual ~DynamicManager();
-	virtual bool IsDelete();
-	virtual bool IsStop();
-
-	void Stop();
-private:
-	bool m_isStop;
-};
-
-class StaticManager : public IManager
-{
-public:
-	StaticManager();
-	virtual ~StaticManager();
-	virtual bool IsDelete();
 	virtual bool IsStop();
 
 	void Stop();
@@ -108,6 +93,8 @@ protected:
 	
 	virtual ~ManagerCreator()
 	{
+		if(object)
+			object = 0;
 	}
 
 protected:

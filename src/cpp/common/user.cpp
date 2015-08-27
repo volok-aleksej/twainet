@@ -10,7 +10,7 @@ std::string GetUserName()
 	char user[250];
 #ifdef WIN32
 	DWORD len = sizeof(user);
-	::GetUserName(user, &len);
+	::GetUserNameA(user, &len);
 #else
 	getlogin_r(user, 250);
 #endif/*WIN32*/

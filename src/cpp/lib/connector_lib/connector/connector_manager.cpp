@@ -12,6 +12,14 @@ ConnectorManager::ConnectorManager()
 
 ConnectorManager::~ConnectorManager()
 {
+}
+
+void ConnectorManager::ManagerStart()
+{
+}
+
+void ConnectorManager::ManagerStop()
+{
 	std::map<std::string, std::string> disconnectedModules;
 	m_connectors.CheckObjects(Ref(this, &ConnectorManager::StopConnector, disconnectedModules));
 
@@ -21,16 +29,6 @@ ConnectorManager::~ConnectorManager()
 		DisconnectedMessage msg(it->second, it->first);
 		onSignal(msg);
 	}
-
-	ManagersContainer::GetInstance().RemoveManager(static_cast<IManager*>(this));
-}
-
-void ConnectorManager::ManagerStart()
-{
-}
-
-void ConnectorManager::ManagerStop()
-{
 }
 
 void ConnectorManager::ManagerFunc()
