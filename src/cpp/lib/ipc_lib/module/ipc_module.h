@@ -38,6 +38,7 @@ protected:
 	{
 	public:
 		IPCObject();
+		IPCObject(const IPCObject& object);
 		IPCObject(const IPCObjectName& ipcName, const std::string& ip = "127.0.0.1", int port = 0, const std::string& accessId = m_baseAccessId);
 		~IPCObject();
 

@@ -23,6 +23,12 @@ IPCModule::IPCObject::IPCObject()
 {
 }
 
+IPCModule::IPCObject::IPCObject(const IPCObject& object)
+	: m_ipcName("")
+{
+	operator = (object);
+}
+
 IPCModule::IPCObject::IPCObject(const IPCObjectName& ipcName, const std::string& ip, int port, const std::string& accessId)
 : m_ipcName(ipcName), m_port(port), m_ip(ip), m_accessId(accessId)
 {
@@ -36,6 +42,8 @@ void IPCModule::IPCObject::operator=(const IPCObject& object)
 {
 	m_ipcName = object.m_ipcName;
 	m_port = object.m_port;
+	m_ip = object.m_ip;
+	m_accessId = object.m_accessId;
 }
 
 bool IPCModule::IPCObject::operator != (const IPCObject& object)

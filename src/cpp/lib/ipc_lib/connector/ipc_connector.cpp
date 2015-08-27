@@ -130,11 +130,8 @@ void IPCConnector::onMessage(const ModuleName& msg)
 		m_checker = 0;
 	}
 	
-	if(m_isCoordinator || m_id == IPCModule::m_baseAccessId)
-	{
-		m_accessId = IPCModule::m_baseAccessId;
-	}
-	
+	bool isCoordinatorAccess = m_isCoordinator || m_id == IPCModule::m_coordinatorIPCName;
+	isCoordinatorAccess ? m_accessId = IPCModule::m_baseAccessId : static_cast<void>(m_accessId);	
 	if(m_accessId != IPCModule::m_baseAccessId && m_accessId != msg.access_id())
 	{
 		LOG_INFO("access denied: m_id-%s, m_module-%s, module_access-%s, id_access-%s\n",
