@@ -31,7 +31,7 @@ public:
 	static void TWAINET_CALL OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
 	static void TWAINET_CALL OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
 	static void TWAINET_CALL OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
-															   const char* id, Twainet::InternalConnectionStatus status, int port);
+								   const char* id, Twainet::InternalConnectionStatus status, int port);
 protected:
 	void onModuleCreationFailed(Twainet::Module module);
 	void onServerCreationFailed(Twainet::Module module);

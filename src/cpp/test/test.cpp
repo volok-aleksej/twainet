@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
 #else
 	getchar();
 #endif/*WIN32*/
+	ApplicationTest::GetInstance().Join();
 	Twainet::FreeLibrary();
 	return 0;
 }				

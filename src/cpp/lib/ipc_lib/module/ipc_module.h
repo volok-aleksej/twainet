@@ -82,8 +82,6 @@ public:
 	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id);
 	const IPCObjectName& GetModuleName();
 	std::vector<IPCObjectName> GetIPCObjects();
-
-	template<class Msg> void SendMsg(const Msg& msg, int countPath, ...);
 protected:
 	friend class Signal;
 	void getListenPort(const ListenerParamMessage& msg);
@@ -132,24 +130,4 @@ protected:
 	CriticalSection m_csConnectors;
 	std::map<std::string, std::vector<std::string> > m_connectors;
 };
-
-template<class Msg>
-void IPCModule::SendMsg(const Msg& msg, int countPath, ...)
-{
-	ProtoSendMessage<Msg> protoMsg(msg);
-
-	va_list argptr;
-	va_start(argptr, countPath);
-	for( ; countPath; countPath--)
-	{
-		IPCObjectName* ipcPath = (IPCObjectName*)va_arg(argptr, void*);
-		*protoMsg.add_ipc_path() = *ipcPath;
-	}
-	va_end(argptr);
-
-	protoMsg.createMessage();
-	IPCMessageSignal ipcMsg(static_cast<IPCMessage&>(protoMsg));
-	SendMsg(ipcMsg);
-}
-
 #endif/*IPC_MODULE_H*/

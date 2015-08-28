@@ -31,12 +31,14 @@ void ClientServerConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	std::string name;
 	if(m_type == SERVER_CONNECTED)
 	{
-		callbacks.OnServerConnected(m_module, m_sessionId.c_str());
+		if(callbacks.OnServerConnected)
+			callbacks.OnServerConnected(m_module, m_sessionId.c_str());
 		name = ClientServerModule::m_serverIPCName;
 	}
 	else
 	{
-		callbacks.OnClientConnected(m_module, m_sessionId.c_str());
+		if(callbacks.OnClientConnected)
+			callbacks.OnClientConnected(m_module, m_sessionId.c_str());
 		name = ClientServerModule::m_clientIPCName;
 	}
 	
@@ -76,7 +78,8 @@ void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	strcpy(retName.m_host, name.host_name().c_str());
 	strcpy(retName.m_suffix, name.suffix().c_str());
 #endif/*WIN32*/
-	callbacks.OnModuleConnected(m_module, retName);
+	if(callbacks.OnModuleConnected)
+		callbacks.OnModuleConnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -96,15 +99,18 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
-		callbacks.OnClientDisconnected(m_module, idName.host_name().c_str());
+		if(callbacks.OnClientDisconnected)
+			callbacks.OnClientDisconnected(m_module, idName.host_name().c_str());
 	}
 	else if(idName.module_name() == ClientServerModule::m_serverIPCName)
 	{
-		callbacks.OnServerDisconnected(m_module);
+		if(callbacks.OnServerDisconnected)
+			callbacks.OnServerDisconnected(m_module);
 	}
 	else if(idName.module_name() == TunnelModule::m_tunnelIPCName)
 	{
-		callbacks.OnTunnelDisconnected(m_module, idName.host_name().c_str());
+		if(callbacks.OnTunnelDisconnected)
+			callbacks.OnTunnelDisconnected(m_module, idName.host_name().c_str());
 	}
 
 	Twainet::ModuleName retName = {0};
@@ -117,7 +123,8 @@ void ModuleDisconnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	strcpy(retName.m_host, idName.host_name().c_str());
 	strcpy(retName.m_suffix, idName.suffix().c_str());
 #endif/*WIN32*/
-	callbacks.OnModuleDisconnected(m_module, retName);
+	if(callbacks.OnModuleDisconnected)
+		callbacks.OnModuleDisconnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -134,7 +141,8 @@ TunnelConnected::~TunnelConnected()
 
 void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
+	if(callbacks.OnTunnelConnected)
+		callbacks.OnTunnelConnected(m_module, m_sessionId.c_str(), (Twainet::TypeConnection)m_typeConnection);
 	Twainet::ModuleName retName = {0};
 #ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, TunnelModule::m_tunnelIPCName.c_str());
@@ -143,7 +151,8 @@ void TunnelConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 	strcpy(retName.m_name, TunnelModule::m_tunnelIPCName.c_str());
 	strcpy(retName.m_host, m_sessionId.c_str());
 #endif/*WIN32*/
-	callbacks.OnModuleConnected(m_module, retName);
+	if(callbacks.OnModuleConnected)
+		callbacks.OnModuleConnected(m_module, retName);
 }
 
 /*******************************************************************************************/
@@ -162,7 +171,8 @@ void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
 	if(m_id == ClientServerModule::m_serverIPCName)
 	{
-		callbacks.OnClientConnectionFailed(m_module);
+		if(callbacks.OnClientConnectionFailed)
+			callbacks.OnClientConnectionFailed(m_module);
 	}
 	else
 	{
@@ -177,7 +187,8 @@ void ConnectionFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 		strcpy(retName.m_host, idName.host_name().c_str());
 		strcpy(retName.m_suffix, idName.suffix().c_str());
 #endif/*WIN32*/
-		callbacks.OnModuleConnectionFailed(m_module, retName);
+		if(callbacks.OnModuleConnectionFailed)
+			callbacks.OnModuleConnectionFailed(m_module, retName);
 	}
 }
 
@@ -218,7 +229,8 @@ void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 		strcpy((char*)msg.m_path[it - m_path.begin()].m_suffix, idName.suffix().c_str());
 #endif/*WIN32*/
 	}
-	callbacks.OnMessageRecv(m_module, msg);
+	if(callbacks.OnMessageRecv)
+		callbacks.OnMessageRecv(m_module, msg);
 	delete msg.m_path;
 }
 
@@ -237,9 +249,9 @@ CreationFailed::~CreationFailed()
 
 void CreationFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	if(m_type == MODULE)
+	if(m_type == MODULE && callbacks.OnModuleCreationFailed)
 		callbacks.OnModuleCreationFailed(m_module);
-	if(m_type == SERVER)
+	if(m_type == SERVER && callbacks.OnServerCreationFailed)
 		callbacks.OnServerCreationFailed(m_module);
 }
 
@@ -257,7 +269,8 @@ TunnelCreationFailed::~TunnelCreationFailed()
 
 void TunnelCreationFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnTunnelCreationFailed(m_module, m_sessionId.c_str());
+	if(callbacks.OnTunnelCreationFailed)
+		callbacks.OnTunnelCreationFailed(m_module, m_sessionId.c_str());
 }
 
 /*******************************************************************************************/
@@ -274,14 +287,15 @@ AuthFailed::~AuthFailed()
 
 void AuthFailed::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnClientAuthFailed(m_module);
+	if(callbacks.OnClientAuthFailed)
+		callbacks.OnClientAuthFailed(m_module);
 }
 
 /*******************************************************************************************/
 /*                           InternalConnectionStatusChanged                               */
 /*******************************************************************************************/
 InternalConnectionStatusChanged::InternalConnectionStatusChanged(Twainet::Module module, const std::string& moduleName,
-																const std::string& id, ConnectionStatus status, int port)
+								const std::string& id, ConnectionStatus status, int port)
 	: NotificationMessage(module, INTERNAL_CONNECTION_STATUS), m_moduleName(moduleName)
 	, m_id(id), m_status(status), m_port(port)
 {
@@ -293,6 +307,7 @@ InternalConnectionStatusChanged::~InternalConnectionStatusChanged()
 
 void InternalConnectionStatusChanged::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	callbacks.OnInternalConnectionStatusChanged(m_module, m_moduleName.c_str(), m_id.c_str(),
-												(Twainet::InternalConnectionStatus)m_status, m_port);
+	if(callbacks.OnInternalConnectionStatusChanged)
+		callbacks.OnInternalConnectionStatusChanged(m_module, m_moduleName.c_str(), m_id.c_str(),
+							   (Twainet::InternalConnectionStatus)m_status, m_port);
 }
