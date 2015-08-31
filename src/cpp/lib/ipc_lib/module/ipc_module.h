@@ -27,12 +27,13 @@ protected:
 	void OnStop(){}
 };
 
-class IPCModule : public SignalReceiver, protected SignalOwner
+class IPCModule : public SignalReceiver, protected SignalOwner, public DynamicManager
 {
 public:
 	static const std::string m_coordinatorIPCName;
 	static const std::string m_baseAccessId;
 	static const int m_maxTryConnectCount;
+	static const int m_connectTimeout;
 protected:
 	class IPCObject
 	{
@@ -109,6 +110,9 @@ protected:
 	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
 	virtual void OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port);
 
+	virtual void ManagerFunc();
+	virtual void ManagerStart();
+	virtual void ManagerStop();
 protected:
 	void Start(const std::string& ip, int port);
 	void ConnectToCoordinator();
@@ -129,5 +133,9 @@ protected:
 	
 	CriticalSection m_csConnectors;
 	std::map<std::string, std::vector<std::string> > m_connectors;
+private:
+	CriticalSection m_csRequest;
+	bool m_bConnectToCoordinatorRequest;
+	time_t m_requestCreated;
 };
 #endif/*IPC_MODULE_H*/

@@ -33,7 +33,6 @@ void Application::ManagerStop()
 		for(std::vector<TwainetModule*>::iterator it = m_modules.begin(); it != m_modules.end();)
 		{
 			(*it)->Exit();
-			delete *it;
 			it = m_modules.erase(it);
 		}
 	}
@@ -68,7 +67,6 @@ void Application::DeleteModule(TwainetModule* module)
 		if(*it == module)
 		{
 			(*it)->Exit();
-			delete *it;
 			m_modules.erase(it);
 			return;
 		}

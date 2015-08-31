@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include "client_server_module.h"
 #include "connector_lib/thread/connect_thread.h"
 #include "connector_lib/socket/socket_factories.h"
@@ -12,7 +13,7 @@ const std::string ClientServerModule::m_clientIPCName = "Client";
 ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 : IPCModule(ipcName, factory)
 , m_isStopConnect(true), m_serverThread(0)
-, m_isUseProxy(false)
+, m_isUseProxy(false), m_bConnectToServerRequest(false)
 {
 }
 
@@ -67,7 +68,9 @@ void ClientServerModule::OnFireConnector(const std::string& moduleName)
 		!m_isStopConnect && !m_isExit)
 	{
 		m_ownSessionId.clear();
-		Connect(m_ip, m_port);
+		CSLocker locker(&m_csServerRequest);
+		m_bConnectToServerRequest = true;
+		time(&m_requestServerCreated);
 		return;
 	}
 	IPCModule::OnFireConnector(moduleName);
@@ -116,6 +119,19 @@ void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	}
 }
 
+void ClientServerModule::ManagerFunc()
+{
+	IPCModule::ManagerFunc();
+	CSLocker locker(&m_csServerRequest);
+	time_t t;
+	time(&t);
+	if(m_bConnectToServerRequest && t - m_requestServerCreated >= m_connectTimeout)
+	{
+		Connect(m_ip, m_port);
+		m_bConnectToServerRequest = false;
+	}
+}
+	
 void ClientServerModule::Disconnect()
 {
 	LOG_INFO("Try client disconnect. sessionId %s\n", m_ownSessionId.c_str());
@@ -246,7 +262,9 @@ void ClientServerModule::onErrorConnect(const ConnectErrorMessage& msg)
 {
 	if(!m_isStopConnect && !m_isExit)
 	{
-		Connect(m_ip, m_port);
+		CSLocker locker(&m_csServerRequest);
+		m_bConnectToServerRequest = true;
+		time(&m_requestServerCreated);
 	}
 	else
 	{

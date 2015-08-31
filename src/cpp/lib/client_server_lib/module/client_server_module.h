@@ -71,6 +71,8 @@ protected:
 	virtual void ServerCreationFailed();
 	virtual void OnAuthFailed();
 	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
+	
+	virtual void ManagerFunc();
 protected:
 	friend class Signal;
 	void onAddConnector(const ConnectorMessage& msg);
@@ -97,10 +99,13 @@ private:
 	bool m_isStopConnect;
 	UserPassword m_userPassword;
 
-
 	//for server
 	BaseListenThread* m_serverThread;
 	ObjectManager<UserPassword> m_userPasswords;
+	
+	CriticalSection m_csServerRequest;
+	bool m_bConnectToServerRequest;
+	time_t m_requestServerCreated;
 };
 
 

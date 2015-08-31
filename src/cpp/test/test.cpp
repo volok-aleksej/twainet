@@ -21,13 +21,8 @@ int main(int argc, char* argv[])
 #endif/*WIN32*/
 {
 	printf("begin\n");
-	Twainet::InitLibrary(tc);
-#ifdef DEBUG_1
-	std::string guid = CreateGUID();
-	Twainet::ModuleName moduleName = {"Coordinator", "", ""};
-	Twainet::Module module = Twainet::CreateModule(moduleName, true, false);
-#endif/*DEBUG_1*/
-	
+	Twainet::InitLibrary(tc);	
+	Twainet::UseLog("/home/avolokitin/twainet.log");
 	ApplicationTest::GetInstance();
 #ifdef WIN32
 	system("pause");

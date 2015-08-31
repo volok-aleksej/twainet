@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <algorithm>
 
 #include "ipc_module.h"
@@ -14,6 +15,7 @@
 const std::string IPCModule::m_coordinatorIPCName = "IPCCoordinator";
 const std::string IPCModule::m_baseAccessId = "Coordinator";
 const int IPCModule::m_maxTryConnectCount = 10;
+const int IPCModule::m_connectTimeout = 10;
 
 /*******************************************************************************/
 /*                               IPCObject                                     */
@@ -99,8 +101,9 @@ void IPCModule::TryConnectCounter::operator = (const TryConnectCounter& counter)
 IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory)
 : m_moduleName(moduleName), m_factory(factory)
 , m_isCoordinator(false), m_isExit(false), m_listenThread(0)
-, m_countListener(0), m_countConnect(0)
+, m_countListener(0), m_countConnect(0), m_bConnectToCoordinatorRequest(false)
 {
+	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 	m_manager = new ConnectorManager;
 	m_manager->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
 }
@@ -248,6 +251,26 @@ void IPCModule::OnInternalConnection(const std::string& moduleName, const std::s
 {
 }
 
+void IPCModule::ManagerFunc()
+{
+	CSLocker locker(&m_csRequest);
+	time_t t;
+	time(&t);
+	if(m_bConnectToCoordinatorRequest && t - m_requestCreated >= m_connectTimeout)
+	{
+		ConnectToCoordinator();
+		m_bConnectToCoordinatorRequest = false;
+	}
+}
+
+void IPCModule::ManagerStart()
+{
+}
+
+void IPCModule::ManagerStop()
+{
+}
+	
 void IPCModule::ConnectToCoordinator()
 {
 	LOG_INFO("Try Connect with coordinator: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
@@ -309,6 +332,7 @@ bool IPCModule::IsExit()
 void IPCModule::Exit()
 {
 	m_isExit = true;
+	Stop();
 }
 
 void IPCModule::onCreatedListener(const CreatedListenerMessage& msg)
@@ -382,7 +406,9 @@ void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
 			m_countConnect++;
 		}
 
-		ConnectToCoordinator();
+		CSLocker locker(&m_csRequest);
+		m_bConnectToCoordinatorRequest = true;
+		time(&m_requestCreated);
 	}
 	else
 	{
@@ -549,8 +575,9 @@ void IPCModule::onDisconnected(const DisconnectedMessage& msg)
 			m_countConnect++;
 		}
 
-		Thread::sleep(1000);
-		ConnectToCoordinator();
+		CSLocker locker(&m_csRequest);
+		m_bConnectToCoordinatorRequest = true;
+		time(&m_requestCreated);
 	}
 	
 	if(msg.m_id != m_coordinatorIPCName)
