@@ -33,13 +33,13 @@
     <ClCompile Include="application\twainet.cpp">
       <Filter>application</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\file.cpp">
+    <ClCompile Include="..\..\common\file.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\logger.cpp">
+    <ClCompile Include="..\..\common\logger.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\utils\path_parser.cpp">
+    <ClCompile Include="..\..\utils\path_parser.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,16 +59,16 @@
     <ClInclude Include="resource.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="..\version.h">
+    <ClInclude Include="..\..\version.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\file.h">
+    <ClInclude Include="..\..\common\file.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\logger.h">
+    <ClInclude Include="..\..\common\logger.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\utils\path_parser.h">
+    <ClInclude Include="..\..\utils\path_parser.h">
       <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
