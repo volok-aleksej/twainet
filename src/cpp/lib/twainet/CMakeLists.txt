@@ -13,16 +13,16 @@ set(TWAINET_VERSION_BUILD 1)
 set(TWAINET_VERSION_STRING ${TWAINET_VERSION_MAJOR}.${TWAINET_VERSION_MINOR})
 
 set (SRC_${PROJECT_NAME}
-        ../common/file.cpp
-        ../common/logger.cpp
-        ../utils/path_parser.cpp
+        ../../common/file.cpp
+        ../../common/logger.cpp
+        ../../utils/path_parser.cpp
 	application/application.cpp
 	application/twainet.cpp
 	message/NotificationMessages.cpp
 	module/twainet_module.cpp
 )
 
-set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/lib/${CMAKE_BUILD_TYPE})
+set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE})
 set(DEPENDENCY_LIBS udt
 		    thread_lib
 		    connector_lib
@@ -34,14 +34,14 @@ add_definitions(-fPIC)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../external/protobuf-2.5.0/src)
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
+		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
 		    
 add_library (${PROJECT_NAME} SHARED ${SRC_${PROJECT_NAME}})
-set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/${PROJECT_NAME})
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/work/${CMAKE_BUILD_TYPE})
+set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})
 
 set(EXTRA_LIBS pthread)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})	
