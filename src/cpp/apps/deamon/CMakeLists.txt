@@ -13,6 +13,7 @@ set (SRC_${PROJECT_NAME}
 	../../utils/utils.cpp
 	application/application.cpp 
 	application/main.cpp 
+	module/deamon_module.cpp 
     ) 
 
     set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE} 

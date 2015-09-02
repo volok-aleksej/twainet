@@ -6,6 +6,7 @@
 #include "common/singleton.h"
 #include "thread_lib/common/critical_section.h"
 #include "twainet/application/twainet.h"
+#include "module/module.h"
 
 class DeamonApplication : public Singleton<DeamonApplication>
 {
@@ -39,6 +40,7 @@ public:
 								   const char* id, Twainet::InternalConnectionStatus status, int port);
 private:
 	CriticalSection m_cs;
+	std::vector<Module*> m_modules;
 	bool m_isStop;
 };
 
