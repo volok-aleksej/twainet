@@ -4,69 +4,69 @@
 #	include <string.h>
 #endif/*WIN32*/
 
-Twainet::TwainetCallback tc = {&ServerApplication::OnServerConnected, &ServerApplication::OnServerDisconnected, &ServerApplication::OnServerCreationFailed,
-							   &ServerApplication::OnClientConnected, &ServerApplication::OnClientDisconnected, &ServerApplication::OnClientConnectionFailed,
-							   &ServerApplication::OnClientAuthFailed, &ServerApplication::OnModuleConnected, &ServerApplication::OnModuleDisconnected,
-							   &ServerApplication::OnModuleConnectionFailed, &ServerApplication::OnModuleCreationFailed, &ServerApplication::OnTunnelConnected,
-							   &ServerApplication::OnTunnelDisconnected, &ServerApplication::OnTunnelCreationFailed, &ServerApplication::OnMessageRecv};
+Twainet::TwainetCallback tc = {&DeamonApplication::OnServerConnected, &DeamonApplication::OnServerDisconnected, &DeamonApplication::OnServerCreationFailed,
+							   &DeamonApplication::OnClientConnected, &DeamonApplication::OnClientDisconnected, &DeamonApplication::OnClientConnectionFailed,
+							   &DeamonApplication::OnClientAuthFailed, &DeamonApplication::OnModuleConnected, &DeamonApplication::OnModuleDisconnected,
+							   &DeamonApplication::OnModuleConnectionFailed, &DeamonApplication::OnModuleCreationFailed, &DeamonApplication::OnTunnelConnected,
+							   &DeamonApplication::OnTunnelDisconnected, &DeamonApplication::OnTunnelCreationFailed, &DeamonApplication::OnMessageRecv};
 
-void TWAINET_CALL ServerApplication::OnModuleCreationFailed(Twainet::Module module)
+void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnServerCreationFailed(Twainet::Module module)
+void TWAINET_CALL DeamonApplication::OnServerCreationFailed(Twainet::Module module)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL DeamonApplication::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnServerConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL DeamonApplication::OnServerConnected(Twainet::Module module, const char* sessionId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnClientConnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL DeamonApplication::OnClientConnected(Twainet::Module module, const char* sessionId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnClientDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL DeamonApplication::OnClientDisconnected(Twainet::Module module, const char* sessionId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnClientConnectionFailed(Twainet::Module module)
+void TWAINET_CALL DeamonApplication::OnClientConnectionFailed(Twainet::Module module)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnClientAuthFailed(Twainet::Module module)
+void TWAINET_CALL DeamonApplication::OnClientAuthFailed(Twainet::Module module)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnServerDisconnected(Twainet::Module module)
+void TWAINET_CALL DeamonApplication::OnServerDisconnected(Twainet::Module module)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL DeamonApplication::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL DeamonApplication::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void TWAINET_CALL DeamonApplication::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+void TWAINET_CALL DeamonApplication::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
+void TWAINET_CALL DeamonApplication::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
 }
 
-void TWAINET_CALL ServerApplication::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+void TWAINET_CALL DeamonApplication::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
 		//ServerApplication& app = GetInstance();
 		//CSLocker locker(&GetInstance().m_cs);
@@ -81,16 +81,20 @@ void TWAINET_CALL ServerApplication::OnMessageRecv(Twainet::Module module, const
 		//}
 }
 
-ServerApplication::ServerApplication()
+void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, const char* id, Twainet::InternalConnectionStatus status, int port)
+{
+}
+
+DeamonApplication::DeamonApplication()
 : m_isStop(false)
 {
 }
 
-ServerApplication::~ServerApplication()
+DeamonApplication::~DeamonApplication()
 {
 }
 
-int ServerApplication::Run()
+int DeamonApplication::Run()
 {
 	Twainet::InitLibrary(tc);
 	Twainet::ModuleName moduleName = {0};
@@ -108,18 +112,18 @@ int ServerApplication::Run()
 	return 0;
 }
 
-int ServerApplication::Stop()
+int DeamonApplication::Stop()
 {
 	m_isStop = true;
 	return 0;
 }
 
-std::string ServerApplication::GetAppName()
+std::string DeamonApplication::GetAppName()
 {
 	return "TwainetDeamon";
 }
 
-std::string ServerApplication::GetDescription()
+std::string DeamonApplication::GetDescription()
 {
-	return "";
+	return "Twainet deamon application";
 }

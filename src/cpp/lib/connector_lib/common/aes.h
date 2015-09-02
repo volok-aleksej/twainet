@@ -3,7 +3,6 @@
 typedef unsigned char byte;
 
 #define MAX_BUFFER_LEN		8192
-#define MAX_DATA_LEN		8192*100
 
 //datalen must be less MAX_BUFFER_LEN
 //return -1 - incorrect input data

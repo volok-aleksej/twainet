@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(deamon)
+project(twndeamon)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -11,8 +11,8 @@ set (SRC_${PROJECT_NAME}
 	../../common/service_manager.cpp
 	../../utils/path_parser.cpp
 	../../utils/utils.cpp
-	#application/application.cpp 
-	#application/main.cpp 
+	application/application.cpp 
+	application/main.cpp 
     ) 
 
     set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE} 

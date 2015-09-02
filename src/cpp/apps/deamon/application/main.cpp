@@ -116,7 +116,7 @@ void signal_handler(int sig)
 		std::string pid_file = get_process_pid_filename();
 		File f(pid_file);
 		f.Delete();
-		ServerApplication::GetInstance().Stop();
+		DeamonApplication::GetInstance().Stop();
 		syslog(LOG_INFO, "Service %s Stopped.", pname.c_str());
 		exit(0);
 		break;
@@ -210,7 +210,7 @@ int run_process()
 	close(STDERR_FILENO);
 	
 	syslog(LOG_INFO, "entry child daemonizing process %s", app_name.c_str());
-	ServerApplication::GetInstance().Run();
+	DeamonApplication::GetInstance().Run();
 
 	f.Delete();
 	syslog(LOG_INFO, "exit child daemonizing process %s", app_name.c_str());
@@ -245,12 +245,12 @@ int  main(int argc, char* argv[])
 	{
 		full_name.insert(0, "\"");
 		full_name.append("\"");
-		ServiceManager manager(ServerApplication::GetAppName());
-		manager.Install(ServerApplication::GetDescription(), full_name);
+		ServiceManager manager(DeamonApplication::GetAppName());
+		manager.Install(DeamonApplication::GetDescription(), full_name);
 	}
 	else if (param == "-uninstall" || param == "uninstall")
 	{
-		ServiceManager manager(ServerApplication::GetAppName());
+		ServiceManager manager(DeamonApplication::GetAppName());
 		manager.Remove();
 	}
 	else if (param == "-start" || param == "start")
@@ -264,12 +264,12 @@ int  main(int argc, char* argv[])
 	}
 	else if (param == "-stop" || param == "stop")
 	{
-		ServiceManager manager(ServerApplication::GetAppName());
+		ServiceManager manager(DeamonApplication::GetAppName());
 		manager.Stop();
 	}
 	else if(param == "-debug" || param == "debug")
 	{
-		return ServerApplication::GetInstance().Run();
+		return DeamonApplication::GetInstance().Run();
 	}
 	else if (param.empty())
 	{

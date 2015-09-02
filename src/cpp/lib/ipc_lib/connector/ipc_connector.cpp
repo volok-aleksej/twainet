@@ -16,6 +16,8 @@
 
 #pragma warning(disable: 4355)
 
+#define MAX_DATA_LEN		1024*1024
+
 IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 : Connector(socket), m_moduleName(moduleName)
 , m_bConnected(false), m_isCoordinator(false)
@@ -64,7 +66,7 @@ void IPCConnector::ThreadFunc()
 			break;
 		}
 
-		if(len < 0 || len > 0xffff)
+		if(len < 0 || len > MAX_DATA_LEN)
 		{
 			break;
 		}

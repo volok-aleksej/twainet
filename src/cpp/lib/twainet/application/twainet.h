@@ -26,6 +26,8 @@
 //     server - ServerName.<sessionId>.
 //     client - ClientName.<sessionId>.
 //     tunnel - Tunnel.<sessionId>.
+
+
 extern "C"
 {
 	namespace Twainet
@@ -47,6 +49,7 @@ extern "C"
 			char m_suffix[MAX_NAME_LENGTH];
 		};
 
+		// recomended data len 8192
 		struct Message
 		{	
 			const ModuleName* m_path;
@@ -142,6 +145,7 @@ extern "C"
 		// Send message to other module
 		// msg - message
 		// message has path. Path is a chain of modules through which will pass a message.
+		// recomended data len 8192
 		TWAINET_FUNC void SendMessage(const Module module, const Message& msg);
 		
 		//Get module name

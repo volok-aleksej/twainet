@@ -44,7 +44,7 @@ int AESEncrypt(byte* key, int keylength,
 	{
 		return -1;
 	}
-	else if(realDataLen > MAX_DATA_LEN || !data || realDataLen == 0)
+	else if(realDataLen > MAX_BUFFER_LEN || !data || realDataLen == 0)
 	{
 		return -2;
 	}
@@ -53,8 +53,8 @@ int AESEncrypt(byte* key, int keylength,
 		return -3;
 	}
 
-	unsigned char tempdata[MAX_DATA_LEN] = {0};
-	memset(tempdata, 0, MAX_DATA_LEN);
+	unsigned char tempdata[MAX_BUFFER_LEN] = {0};
+	memset(tempdata, 0, MAX_BUFFER_LEN);
 	memcpy(tempdata, data, datalen);
 
 	unsigned char iv[16] = "123456789abcdef";
@@ -78,7 +78,7 @@ int AESDecrypt(byte* key, int keylength,
 	{
 		return -1;
 	}
-	else if(datalen > MAX_DATA_LEN || !data || datalen%AES_BLOCK_SIZE != 0)
+	else if(datalen > MAX_BUFFER_LEN || !data || datalen%AES_BLOCK_SIZE != 0)
 	{
 		return -2;
 	}
@@ -99,7 +99,7 @@ int AESDecrypt(byte* key, int keylength,
 		return 0;
 	}
 
-	char decryptData[MAX_DATA_LEN] = {0};
+	char decryptData[MAX_BUFFER_LEN] = {0};
 	AES_cbc_encrypt((unsigned char*)data, (unsigned char*)decryptData, datalen, &aesKey, iv, AES_DECRYPT);
 	memcpy(decryptedData, decryptData, decryptedDataLen);
 

@@ -115,36 +115,34 @@ bool SecureSocket::PerformSslVerify()
 bool SecureSocket::Recv(char* data, int len)
 {
 	int recvlen = 0;
-	if(GetData(data, len))
+	while(!GetData(data, len))
 	{
-		return true;
-	}
+		if(!RecvData((char*)&recvlen, sizeof(int)))
+		{
+			return false;
+		}
 
-	if(!RecvData((char*)&recvlen, sizeof(int)))
-	{
-		return false;
-	}
+		int realDataLen = GetEncriptedDataLen(recvlen);
+		unsigned char* recvdata = new unsigned char[realDataLen];
+		if(!RecvData((char*)recvdata, realDataLen))
+		{
+			return false;
+		}
+		
+		unsigned char* decriptedData = new unsigned char[recvlen];
+		int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, realDataLen, (byte*)decriptedData, recvlen);
+		if(decriptedLen == -1)
+		{
+			return false;
+		}
 
-	int realDataLen = GetEncriptedDataLen(recvlen);
-	unsigned char* recvdata = new unsigned char[realDataLen];
-	if(!RecvData((char*)recvdata, realDataLen))
-	{
-		return false;
+		delete recvdata;
+		int newsize = m_recvdata.size() + decriptedLen;
+		m_recvdata.resize(newsize, 0);
+		memcpy((char*)m_recvdata.c_str() + newsize - decriptedLen, decriptedData, decriptedLen);
+		delete decriptedData;
 	}
-	
-	unsigned char* decriptedData = new unsigned char[recvlen];
-	int decriptedLen = AESDecrypt(m_keyOwn, sizeof(m_keyOwn), recvdata, realDataLen, (byte*)decriptedData, recvlen);
-	if(decriptedLen == -1)
-	{
-		return false;
-	}
-
-	delete recvdata;
-	int newsize = m_recvdata.size() + decriptedLen;
-	m_recvdata.resize(newsize, 0);
-	memcpy((char*)m_recvdata.c_str() + newsize - decriptedLen, decriptedData, decriptedLen);
-	delete decriptedData;
-	return GetData(data, len);
+	return true;
 }
 
 bool SecureSocket::GetData(char* data, int len)
@@ -165,8 +163,23 @@ bool SecureSocket::GetData(char* data, int len)
 
 bool SecureSocket::Send(char* data, int len)
 {
-	unsigned char* encriptedData = new unsigned char[MAX_DATA_LEN];
-	int sendLen = AESEncrypt(m_keyOther, sizeof(m_keyOther), (byte*)data, len, encriptedData, MAX_DATA_LEN);
+	if(len > MAX_BUFFER_LEN)
+	{
+		int pos = 0, newlen = MAX_BUFFER_LEN;
+		while(pos < len)
+		{
+			if(!Send(data + pos, newlen))
+			{
+				return false;
+			}
+			pos += newlen;
+			(len - pos > MAX_BUFFER_LEN) ? (newlen = MAX_BUFFER_LEN) : (newlen = len - pos);
+		}
+		return true;
+	}
+	
+	unsigned char* encriptedData = new unsigned char[MAX_BUFFER_LEN];
+	int sendLen = AESEncrypt(m_keyOther, sizeof(m_keyOther), (byte*)data, len, encriptedData, MAX_BUFFER_LEN);
 	if(sendLen <= 0)
 	{
 		return false;
