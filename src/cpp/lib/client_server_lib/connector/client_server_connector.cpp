@@ -263,7 +263,7 @@ void ClientServerConnector::onMessage(const LoginResult& msg)
 	
 	LOG_INFO("Login succesful: m_id - %s, m_moduleName - %s\n", name.GetModuleNameString().c_str(), GetModuleName().GetModuleNameString().c_str());
 
-	ProtoMessage<ModuleName> mnMsg(this);
+	ProtoMessage<ModuleName> mnMsg(&m_handler);
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
 	mnMsg.set_port(0);
@@ -303,7 +303,7 @@ void ClientServerConnector::onMessage(const Login& msg)
 	
 	LOG_INFO("Login succesful: m_id - %s, m_moduleName - %s\n", name.GetModuleNameString().c_str(), GetModuleName().GetModuleNameString().c_str());
 
-	ProtoMessage<ModuleName> mnMsg(this);
+	ProtoMessage<ModuleName> mnMsg(&m_handler);
 	*mnMsg.mutable_ipc_name() = GetModuleName();
 	mnMsg.set_ip("");
 	mnMsg.set_port(0);
@@ -341,17 +341,17 @@ void ClientServerConnector::onMessage(const InitTunnel& msg)
 
 void ClientServerConnector::onMessage(const ModuleName& msg)
 {
-	IPCConnector::onMessage(msg);
+	m_handler.onMessage(msg);
 	
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
 	if(idName.module_name() == ClientServerModule::m_clientIPCName)
 	{
-		IPCObjectListMessage ipcolMsg(this);
+		IPCObjectListMessage ipcolMsg(&m_handler);
 		ipcolMsg.set_access_id(GetAccessId());
 		onIPCSignal(ipcolMsg);
 		toMessage(ipcolMsg);
 
-		AddIPCObjectMessage aipcoMsg(this);
+		AddIPCObjectMessage aipcoMsg(&m_handler);
 		aipcoMsg.set_ip("");
 		aipcoMsg.set_port(0);
 		aipcoMsg.set_access_id(GetAccessId());

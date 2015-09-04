@@ -34,7 +34,7 @@ void TunnelConnector::OnStart()
 		IPCConnector::SetModuleName(IPCObjectName(TunnelModule::m_tunnelIPCName, GetModuleName().module_name()));
 		SetId(TunnelModule::m_tunnelIPCName + "." + GetId());
 
-		ProtoMessage<ModuleName> mnMsg(this);
+		ProtoMessage<ModuleName> mnMsg(&m_handler);
 		*mnMsg.mutable_ipc_name() = GetModuleName();
 		mnMsg.set_ip("");
 		mnMsg.set_port(0);
@@ -63,12 +63,12 @@ void TunnelConnector::onMessage(const ModuleName& msg)
 	if(m_isServer)
 	{
 		LOG_INFO("ModuleName message: m_id-%s, m_module-%s\n", m_id.c_str(), GetModuleName().GetModuleNameString().c_str());
-		ModuleNameMessage mnMsg(this, msg);
+		ModuleNameMessage mnMsg(&m_handler, msg);
 		onSignal(mnMsg);
 	}
 	else
 	{
-		IPCConnector::onMessage(msg);
+		m_handler.onMessage(msg);
 	}
 }
 
@@ -77,13 +77,13 @@ void TunnelConnector::onMessage(const ModuleState& msg)
 	if(m_isServer)
 	{
 		LOG_INFO("ModuleState message: m_id-%s, m_module-%s, exist - %d\n", m_id.c_str(), GetModuleName().GetModuleNameString().c_str(), msg.exist());
-		ModuleStateMessage mnMsg(this, msg);
+		ModuleStateMessage mnMsg(&m_handler, msg);
 		mnMsg.set_id(m_id);
 		onSignal(mnMsg);
 	}
 	else
 	{
-		IPCConnector::onMessage(msg);
+		m_handler.onMessage(msg);
 	}
 }
 
@@ -91,13 +91,13 @@ void TunnelConnector::onMessage(const InternalConnectionData& msg)
 {
 	if(m_isServer)
 	{
-		InternalConnectionDataMessage icdMsg(this, msg);
+		InternalConnectionDataMessage icdMsg(&m_handler, msg);
 		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
 		onSignal(icdMsg);
 	}
 	else
 	{
-		IPCConnector::onMessage(msg);
+		m_handler.onMessage(msg);
 	}
 }
 
@@ -105,13 +105,13 @@ void TunnelConnector::onMessage(const InternalConnectionStatus& msg)
 {
 	if(m_isServer)
 	{
-		InternalConnectionStatusMessage icdMsg(this, msg);
+		InternalConnectionStatusMessage icdMsg(&m_handler, msg);
 		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
 		onSignal(icdMsg);
 	}
 	else
 	{
-		IPCConnector::onMessage(msg);
+		m_handler.onMessage(msg);
 	}
 }
 
@@ -119,13 +119,13 @@ void TunnelConnector::onMessage(const InitInternalConnection& msg)
 {
 	if(m_isServer)
 	{
-		InitInternalConnectionMessage icdMsg(this, msg);
+		InitInternalConnectionMessage icdMsg(&m_handler, msg);
 		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
 		onSignal(icdMsg);
 	}
 	else
 	{
-		IPCConnector::onMessage(msg);
+		m_handler.onMessage(msg);
 	}
 }
 

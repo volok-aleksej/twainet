@@ -41,6 +41,7 @@ set (SRC_${PROJECT_NAME}
     ../../common/user.cpp
     ../../utils/utils.cpp
     connector/ipc_connector.cpp
+    connector/ipc_handler.cpp
     connector/internal_connector.cpp
     module/ipc_module.cpp
     module/ipc_object_name.cpp

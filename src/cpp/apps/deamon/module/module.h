@@ -1,7 +1,10 @@
 #ifndef MODULE_H
 #define MODULE_H
 
+#include <map>
 #include "twainet/application/twainet.h"
+#include "connector_lib/handler/data_message.h"
+#include "deamon_message.h"
 
 class Module
 {
@@ -28,8 +31,35 @@ public:
 	virtual void OnMessageRecv(const Twainet::Message& msg){}
 	virtual void OnInternalConnectionStatusChanged(const char* moduleName, const char* id,
 						       Twainet::InternalConnectionStatus status, int port){}
+
+protected:
+	void AddMessage(DataMessage* msg)
+	{
+		m_messages[msg->GetName()] = msg;
+	}
+	
+	bool onData(const std::string& type, const std::vector<Twainet::ModuleName>& path, char* data, int len)
+	{
+		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);
+		if (it != m_messages.end())
+		{
+			if (len >= 0)
+			{
+				it->second->serialize(data, len);
+				MessageAttr* attr = dynamic_cast<MessageAttr*>(it->second);
+				if(attr)
+				{
+				    attr->SetPath(path);
+				    it->second->onMessage();
+				    return true;
+				}
+			}
+		}
+		return false;
+	}
 private:
 	Twainet::Module m_module;
+	std::map<std::string, DataMessage*> m_messages;
 };
 
 #endif/*MODULE_H*/

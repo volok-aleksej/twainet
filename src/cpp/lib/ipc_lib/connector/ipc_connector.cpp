@@ -9,9 +9,6 @@
 #include "common/user.h"
 #include "utils/utils.h"
 
-#include "connector_lib/message/connector_messages.h"
-#include "connector_lib/socket/socket_factories.h"
-#include "connector_lib/thread/connect_thread.h"
 #include "thread_lib/thread/thread_manager.h"
 
 #pragma warning(disable: 4355)
@@ -19,7 +16,7 @@
 #define MAX_DATA_LEN		1024*1024
 
 IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
-: Connector(socket), m_moduleName(moduleName)
+: Connector(socket), m_handler(this), m_moduleName(moduleName)
 , m_bConnected(false), m_isCoordinator(false)
 , m_isNotifyRemove(true), m_isSendIPCObjects(false)
 , m_checker(0), m_isExist(false), m_rand(CreateGUID())
@@ -27,19 +24,19 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 	m_manager = new ConnectorManager;
 	m_manager->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, DisconnectedMessage, onDisconnected));
 	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
-	addMessage(new ProtoMessage<ModuleName>(this));
-	addMessage(new ProtoMessage<AddIPCObject>(this));
-	addMessage(new ProtoMessage<RemoveIPCObject>(this));
-	addMessage(new ProtoMessage<IPCMessage>(this));
-	addMessage(new ProtoMessage<IPCObjectList>(this));
-	addMessage(new ProtoMessage<ChangeIPCName>(this));
-	addMessage(new ProtoMessage<UpdateIPCObject>(this));
-	addMessage(new ProtoMessage<ModuleState>(this));
-	addMessage(new ProtoMessage<Ping>(this));
+	addMessage(new ProtoMessage<ModuleName>(&m_handler));
+	addMessage(new ProtoMessage<AddIPCObject>(&m_handler));
+	addMessage(new ProtoMessage<RemoveIPCObject>(&m_handler));
+	addMessage(new ProtoMessage<IPCMessage>(&m_handler));
+	addMessage(new ProtoMessage<IPCObjectList>(&m_handler));
+	addMessage(new ProtoMessage<ChangeIPCName>(&m_handler));
+	addMessage(new ProtoMessage<UpdateIPCObject>(&m_handler));
+	addMessage(new ProtoMessage<ModuleState>(&m_handler));
+	addMessage(new ProtoMessage<Ping>(&m_handler));
 		
-	addMessage(new ProtoMessage<InitInternalConnection>(this));
-	addMessage(new ProtoMessage<InternalConnectionStatus>(this));
-	addMessage(new ProtoMessage<InternalConnectionData>(this));
+	addMessage(new ProtoMessage<InitInternalConnection>(&m_handler));
+	addMessage(new ProtoMessage<InternalConnectionStatus>(&m_handler));
+	addMessage(new ProtoMessage<InternalConnectionData>(&m_handler));
 }
 
 IPCConnector::~IPCConnector()
@@ -94,7 +91,7 @@ void IPCConnector::OnStart()
 	m_isSendIPCObjects = m_isNotifyRemove;
 	m_accessId = GetUserName();
 
-	ProtoMessage<ModuleName> mnMsg(this);
+	ProtoMessage<ModuleName> mnMsg(&m_handler);
 	*mnMsg.mutable_ipc_name() = m_moduleName;
 	mnMsg.set_ip(msg.m_ip);
 	mnMsg.set_port(msg.m_port);
@@ -111,7 +108,7 @@ void IPCConnector::OnStop()
 	
 	if(m_isNotifyRemove)
 	{
-		RemoveIPCObjectMessage msg(this);
+		RemoveIPCObjectMessage msg(&m_handler);
 		msg.set_ipc_name(m_id);
 		onSignal(msg);
 		onIPCSignal(msg);
@@ -121,281 +118,6 @@ void IPCConnector::OnStop()
 	{
 		m_checker->Stop();
 		m_checker = 0;
-	}
-}
-
-void IPCConnector::onMessage(const ModuleName& msg)
-{
-	if(m_checker)
-	{
-		m_checker->Stop();
-		m_checker = 0;
-	}
-	
-	bool isCoordinatorAccess = m_isCoordinator || m_id == IPCModule::m_coordinatorIPCName;
-	m_isCoordinator ? m_accessId = IPCModule::m_baseAccessId : m_accessId;	
-	if(!isCoordinatorAccess && m_accessId != msg.access_id())
-	{
-		LOG_INFO("access denied: m_id-%s, m_module-%s, module_access-%s, id_access-%s\n",
-			 m_id.c_str(), m_moduleName.GetModuleNameString().c_str(), m_accessId.c_str(), msg.access_id().c_str());
-		Stop();
-	}
-	
-	IPCObjectName ipcName(msg.ipc_name());
-	m_id = ipcName.GetModuleNameString();
-
-	LOG_INFO("ModuleName message: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-
-	AddIPCObjectMessage aoMsg(this);
-	aoMsg.set_ip(msg.ip());
-	aoMsg.set_port(msg.port());
-	m_isCoordinator ? aoMsg.set_access_id(msg.access_id()) : aoMsg.set_access_id(m_accessId);
-	*aoMsg.mutable_ipc_name() = msg.ipc_name();
-	onSignal(aoMsg);
-
-	ModuleNameMessage mnMsg(this, msg);
-	mnMsg.set_is_exist(false);
-	mnMsg.set_conn_id(m_connectorId);
-	m_isCoordinator ? mnMsg.set_access_id(msg.access_id()) : mnMsg.set_access_id(m_accessId);
-	onSignal(mnMsg);
-
-	m_isExist = mnMsg.is_exist();
-	ModuleStateMessage msMsg(this);
-	msMsg.set_rndval("");
-	msMsg.set_exist(m_isExist);
-	msMsg.set_rndval(m_rand);
-	toMessage(msMsg);
-
-	if(m_isExist)
-	{
-		LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-		return;
-	}
-
-	if(m_isSendIPCObjects)
-	{
-		IPCObjectListMessage ipcolMsg(this);
-		onSignal(ipcolMsg);
-		toMessage(ipcolMsg);
-
-		onIPCSignal(mnMsg);
-	}
-	OnConnected();
-}
-
-void IPCConnector::onMessage(const ModuleState& msg)
-{
-	if(msg.exist() && m_isExist)
-	{
-		LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-		Stop();
-	}
-	else if(msg.exist() && !m_isExist)
-	{
-		ModuleStateMessage msMsg(this, msg);
-		msMsg.set_exist(false);
-		msMsg.set_id(m_id);
-		onIPCSignal(msMsg);
-
-		if (msMsg.exist() && m_rand > msMsg.rndval()
-			|| !msMsg.exist())
-		{
-			LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-			Stop();
-		}
-		else if(msMsg.exist() && m_rand == msMsg.rndval())
-		{
-			LOG_WARNING("Random values is equal: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-		}
-		else
-		{
-			OnConnected();
-		}
-	}
-}
-
-void IPCConnector::onMessage(const AddIPCObject& msg)
-{
-	AddIPCObjectMessage aoMsg(this, msg);
-	onSignal(aoMsg);
-
-	IPCObjectName ipcName(msg.ipc_name());
-	OnAddIPCObject(ipcName.GetModuleNameString());
-}
-
-void IPCConnector::onMessage(const RemoveIPCObject& msg)
-{
-	RemoveIPCObjectMessage roMsg(this, msg);
-	onSignal(roMsg);
-}
-
-void IPCConnector::onMessage(const IPCMessage& msg)
-{
-	if(!m_bConnected)
-	{
-		return;
-	}
-	
-	bool isTarget = (msg.ipc_path_size() == 0);
-
-	IPCMessage newMsg(msg);
-	newMsg.clear_ipc_path();
-	if(!isTarget)
-	{
-		IPCObjectName newPath(msg.ipc_path(0));
-		if(newPath == m_moduleName)
-		{
-			for(int i = 1; i < msg.ipc_path_size(); i++)
-			{
-				*newMsg.add_ipc_path() = msg.ipc_path(i);
-			}
-		}
-		*newMsg.add_ipc_sender() = GetIPCName();
-		isTarget = (newPath == m_moduleName && !newMsg.ipc_path_size());
-	}
-
-	if(isTarget && (newMsg.access_id() == m_accessId || m_isCoordinator))
-	{
-		if(!onData(msg.message_name(), (char*)msg.message().c_str(), msg.message().size()) && !m_isCoordinator)
-		{
-			IPCProtoMessage protoMsg(this, newMsg);
-			onSignal(protoMsg);
-		}
-	}
-	else if(newMsg.ipc_path_size())
-	{
-		IPCProtoMessage protoMsg(this, newMsg);
-		onIPCSignal(protoMsg);
-	}
-}
-
-void IPCConnector::onMessage(const IPCObjectList& msg)
-{
-	for(int i = 0; i < msg.ipc_object_size(); i++)
-	{
-		AddIPCObjectMessage aoMsg(this, msg.ipc_object(i));
-		onSignal(aoMsg);
-		
-		IPCObjectName ipcName(msg.ipc_object(i).ipc_name());
-		OnAddIPCObject(ipcName.GetModuleNameString());
-	}
-}
-
-void IPCConnector::onMessage(const ChangeIPCName& msg)
-{
-	UpdateIPCObjectMessage uioMsg(this);
-	*uioMsg.mutable_ipc_new_name() = msg.ipc_name();
-	*uioMsg.mutable_ipc_old_name() = IPCObjectName::GetIPCName(m_id);
-	onSignal(uioMsg);
-
-	if(m_isCoordinator)
-	{
-		onIPCSignal(uioMsg);
-	}
-
-	IPCObjectName ipcName(msg.ipc_name());
-	m_id = ipcName.GetModuleNameString();
-	
-	LOG_INFO("Change connector id: m_id-%s, m_module-%s\n", m_id.c_str(), m_moduleName.GetModuleNameString().c_str());
-}
-
-void IPCConnector::onMessage(const UpdateIPCObject& msg)
-{
-	UpdateIPCObjectMessage uioMsg(this, msg);
-	onSignal(uioMsg);
-
-	IPCObjectName ipcNameOld(msg.ipc_old_name());
-	IPCObjectName ipcNameNew(msg.ipc_new_name());
-	OnUpdateIPCObject(ipcNameOld.GetModuleNameString(), ipcNameNew.GetModuleNameString());
-}
-
-void IPCConnector::onMessage(const Ping& msg)
-{
-}
-
-void IPCConnector::onMessage(const InitInternalConnection& msg)
-{
-	if(m_isCoordinator)
-	{
-		InternalConnectionStatusMessage icsMsg(this);
-		icsMsg.set_id(msg.id());
-		icsMsg.set_status(CONN_FAILED);
-		toMessage(icsMsg);
-	}
-	else
-	{	
-		ConnectAddress address;
-		address.m_localIP = "";
-		address.m_localPort = 0;
-		address.m_moduleName = address.m_id = msg.id();
-		address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
-		address.m_socketFactory = new TCPSocketFactory;
-		address.m_ip = msg.ip();
-		address.m_port = msg.port();
-		ConnectThread* thread = new ConnectThread(address);
-		thread->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ConnectorMessage, onAddConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ConnectErrorMessage, onErrorConnect));
-		thread->Start();
-	}
-}
-
-void IPCConnector::onMessage(const InternalConnectionStatus& msg)
-{
-	switch(msg.status())
-	{
-		case CONN_OPEN:
-		{
-			ListenAddress address;
-			address.m_id = msg.id();
-			address.m_localIP = "127.0.0.1";
-			address.m_localPort = 0;
-			address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
-			address.m_socketFactory = new TCPSocketFactory;
-			address.m_acceptCount = 1;
-			BaseListenThread *listenThread = new BaseListenThread(address);
-			listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, CreatedListenerMessage, onCreatedListener));
-			listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ListenErrorMessage, onErrorListener));
-			listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ConnectorMessage, onAddConnector));
-			listenThread->Start();
-			CSLocker locker(&m_cs);
-			m_internalListener.insert(std::make_pair(msg.id(), listenThread));
-			break;
-		}
-		case CONN_CLOSE:
-		{
-			m_manager->StopConnection(msg.id());
-			CSLocker locker(&m_cs);
-			std::map<std::string, ListenThread*>::iterator itListen = m_internalListener.find(msg.id());
-			if(itListen != m_internalListener.end())
-			{
-				itListen->second->Stop();
-				ThreadManager::GetInstance().AddThread(itListen->second);
-				m_internalListener.erase(itListen);
-			}
-		}
-		case CONN_FAILED:
-		{
-			InternalConnectionStatusMessage icsMsg(this, msg);
-			*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
-			onSignal(icsMsg);
-			break;
-		}
-	}
-}
-
-void IPCConnector::onMessage(const InternalConnectionData& msg)
-{
-	InternalConnectionDataMessage icdMsg(this, msg);
-	onSignal(icdMsg);
-}
-	
-void IPCConnector::onNewConnector(const Connector* connector)
-{
-	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
-	if(conn)
-	{
-		SubscribeConnector(conn);
-		conn->SubscribeConnector(this);
 	}
 }
 
@@ -485,7 +207,7 @@ void IPCConnector::onIPCMessage(const IPCMessageSignal& msg)
 	if (msg.ipc_path_size() == 0 ||
 		ipcName == IPCObjectName::GetIPCName(GetId()))
 	{
-		IPCProtoMessage ipcMsg(this, static_cast<const IPCMessage&>(msg));
+		IPCProtoMessage ipcMsg(&m_handler, static_cast<const IPCMessage&>(msg));
 		ipcMsg.set_access_id(m_accessId);
 		toMessage(ipcMsg);
 	}
@@ -498,7 +220,7 @@ void IPCConnector::onModuleNameMessage(const ModuleNameMessage& msg)
 		return;
 	}
 
-	AddIPCObjectMessage aoMsg(this);
+	AddIPCObjectMessage aoMsg(&m_handler);
 	aoMsg.set_ip(msg.ip());
 	aoMsg.set_port(msg.port());
 	aoMsg.set_access_id(msg.access_id());
@@ -515,6 +237,16 @@ void IPCConnector::onModuleStateMessage(const ModuleStateMessage& msg)
 		{
 			const_cast<ModuleStateMessage&>(msg).set_rndval(m_rand);
 		}
+	}
+}
+
+void IPCConnector::onNewConnector(const Connector* connector)
+{
+	IPCConnector* conn = const_cast<IPCConnector*>(static_cast<const IPCConnector*>(connector));
+	if(conn)
+	{
+		SubscribeConnector(conn);
+		conn->SubscribeConnector(this);
 	}
 }
 
@@ -568,7 +300,7 @@ IPCObjectName IPCConnector::GetIPCName()
 
 void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(this);
+	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
@@ -578,7 +310,7 @@ void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 
 void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(this);
+	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_id(msg.m_id);
 	icsMsg.set_status(CONN_OPEN);
 	icsMsg.set_port(msg.m_port);
@@ -588,7 +320,7 @@ void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)
 
 void IPCConnector::onErrorListener(const ListenErrorMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(this);
+	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
@@ -599,7 +331,7 @@ void IPCConnector::onErrorListener(const ListenErrorMessage& msg)
 
 void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(this);
+	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_id(msg.m_moduleName);
 	icsMsg.set_status(CONN_FAILED);
 	toMessage(icsMsg);
@@ -607,7 +339,7 @@ void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 	
 void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(this);
+	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_id(msg.m_conn->GetId());
 	icsMsg.set_status(CONN_OPEN);
 	
@@ -650,7 +382,7 @@ void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionM
 	{
 		if(m_isCoordinator)
 		{
-			InternalConnectionStatusMessage icsMsg(this);
+			InternalConnectionStatusMessage icsMsg(&m_handler);
 			icsMsg.set_id(msg.id());
 			icsMsg.set_status(CONN_FAILED);
 			*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
@@ -665,6 +397,6 @@ void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionM
 
 void IPCConnector::onInternalConnectionDataSignal(const InternalConnectionDataSignal& msg)
 {
-	InternalConnectionDataMessage icdMsg(this, msg);
+	InternalConnectionDataMessage icdMsg(&m_handler, msg);
 	toMessage(icdMsg);
 }

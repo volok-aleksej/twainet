@@ -66,13 +66,13 @@ bool TunnelServerConnector::SetModuleName(const IPCObjectName& moduleName)
 
 void TunnelServerConnector::onIPCMessageOne(const IPCMessageSignal& msg)
 {
-	IPCProtoMessage ipcMsg(this, msg);
+	IPCProtoMessage ipcMsg(&m_handler, msg);
 	m_connectorTwo->toMessage(ipcMsg);
 }
 
 void TunnelServerConnector::onIPCMessageTwo(const IPCMessageSignal& msg)
 {
-	IPCProtoMessage ipcMsg(this, msg);
+	IPCProtoMessage ipcMsg(&m_handler, msg);
 	m_connectorOne->toMessage(ipcMsg);
 }
 

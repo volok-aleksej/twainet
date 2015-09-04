@@ -3,9 +3,9 @@
 
 #include "connector_lib/handler/data_message.h"
 
-class IPCConnector;
+class IPCHandler;
 
-template<typename TMessage, typename THandler = IPCConnector>
+template<typename TMessage, typename THandler = IPCHandler>
 class ProtoMessage : public DataMessage, public TMessage
 {
 public:

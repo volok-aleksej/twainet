@@ -11,30 +11,8 @@
 #include "../thread/ipc_checker_thread.h"
 #include "../module/ipc_object_name.h"
 
+#include "ipc_handler.h"
 #include "proto_message.h"
-
-#pragma warning(disable:4244 4267)
-#include "../messages/ipc.pb.h"
-#include "../messages/interconn.pb.h"
-using namespace ipc;
-using namespace interconn;
-#pragma warning(default:4244 4267)
-
-typedef ProtoMessage<IPCMessage> IPCProtoMessage;
-typedef ProtoMessage<ModuleName> ModuleNameMessage;
-typedef ProtoMessage<AddIPCObject> AddIPCObjectMessage;
-typedef ProtoMessage<UpdateIPCObject> UpdateIPCObjectMessage;
-typedef ProtoMessage<ChangeIPCName> ChangeIPCNameMessage;
-typedef ProtoMessage<RemoveIPCObject> RemoveIPCObjectMessage;
-typedef ProtoMessage<IPCObjectList> IPCObjectListMessage;
-typedef ProtoMessage<ModuleState> ModuleStateMessage;
-typedef ProtoMessage<Ping> PingMessage;
-typedef SignalMessage<IPCMessage> IPCMessageSignal;
-
-typedef ProtoMessage<InitInternalConnection> InitInternalConnectionMessage;
-typedef ProtoMessage<InternalConnectionStatus> InternalConnectionStatusMessage;
-typedef ProtoMessage<InternalConnectionData> InternalConnectionDataMessage;
-typedef SignalMessage<InternalConnectionData> InternalConnectionDataSignal;
 
 class ListenThread;
 
@@ -68,23 +46,9 @@ protected:
 	void onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg);
 	void onInternalConnectionDataSignal(const InternalConnectionDataSignal& msg);
 
-	template<typename TMessage, typename THandler> friend class ProtoMessage;
-	void onMessage(const ModuleName& msg);
-	void onMessage(const ModuleState& msg);
-	void onMessage(const AddIPCObject& msg);
-	void onMessage(const RemoveIPCObject& msg);
-	void onMessage(const IPCMessage& msg);
-	void onMessage(const IPCObjectList& msg);
-	void onMessage(const ChangeIPCName& msg);
-	void onMessage(const UpdateIPCObject& msg);
-	void onMessage(const Ping& msg);
-	
-	void onMessage(const InitInternalConnection& msg);
-	void onMessage(const InternalConnectionStatus& msg);
-	void onMessage(const InternalConnectionData& msg);
-
 	friend class IPCModule;
 	friend class PingThread;
+	friend class IPCHandler;
 	void onIPCSignal(const DataMessage& msg);
 	void addIPCSubscriber(SignalReceiver* receiver, IReceiverFunc* func);
 	void ipcSubscribe(IPCConnector* connector, IReceiverFunc* func);
@@ -102,6 +66,7 @@ protected:
 	virtual void OnUpdateIPCObject(const std::string& oldModuleName, const std::string& newModuleName);
 	virtual IPCObjectName GetIPCName();
 protected:
+	IPCHandler m_handler;
 	IPCCheckerThread *m_checker;
 	bool m_bConnected;
 	bool m_isNotifyRemove;
