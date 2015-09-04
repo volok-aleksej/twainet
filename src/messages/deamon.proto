@@ -1,0 +1,8 @@
+package deamon;
+
+message LocalServerAttributes
+{
+	required int32 port		= 1;
+	required string username	= 2;
+	required string password	= 3;
+}

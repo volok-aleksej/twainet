@@ -256,13 +256,7 @@ void IPCConnector::onMessage(const IPCMessage& msg)
 
 	if(isTarget && (newMsg.access_id() == m_accessId || m_isCoordinator))
 	{
-		std::string data;
-		data.resize(sizeof(int));
-		int sizeName = (int)msg.message_name().size();
-		memcpy((char*)data.c_str(), &sizeName, sizeof(int));
-		data.append(msg.message_name());
-		data.append(msg.message().c_str(), msg.message().size());
-		if(!onData((char*)data.c_str(), (int)data.size()) && !m_isCoordinator)
+		if(!onData(msg.message_name(), (char*)msg.message().c_str(), msg.message().size()) && !m_isCoordinator)
 		{
 			IPCProtoMessage protoMsg(this, newMsg);
 			onSignal(protoMsg);

@@ -5,6 +5,8 @@
 #	include <string.h>
 #endif/*WIN32*/
 
+#define COORDINATOR_NAME	"twndeamon"
+
 Twainet::TwainetCallback tc = {&DeamonApplication::OnServerConnected, &DeamonApplication::OnServerDisconnected, &DeamonApplication::OnServerCreationFailed,
 			       &DeamonApplication::OnClientConnected, &DeamonApplication::OnClientDisconnected, &DeamonApplication::OnClientConnectionFailed,
 			       &DeamonApplication::OnClientAuthFailed, &DeamonApplication::OnModuleConnected, &DeamonApplication::OnModuleDisconnected,
@@ -14,6 +16,10 @@ Twainet::TwainetCallback tc = {&DeamonApplication::OnServerConnected, &DeamonApp
 
 void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
 {
+	if(strcmp(Twainet::GetModuleName(module).m_name, COORDINATOR_NAME) == 0)
+	{
+		DeamonApplication::GetInstance().Stop();
+	}
 }
 
 void TWAINET_CALL DeamonApplication::OnServerCreationFailed(Twainet::Module module)
@@ -243,7 +249,7 @@ int DeamonApplication::Run()
 {
 	Twainet::InitLibrary(tc);
 	Twainet::ModuleName moduleName = {0};
-	strcpy(moduleName.m_name, "twndeamon");
+	strcpy(moduleName.m_name, COORDINATOR_NAME);
 	{
 		CSLocker locker(&GetInstance().m_cs);
 		m_modules.push_back(new DeamonModule(Twainet::CreateModule(moduleName, true)));

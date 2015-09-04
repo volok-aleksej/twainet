@@ -175,6 +175,7 @@ int run_process()
 
 	if (pid > 0)
 	{
+		f.CreateDir();
 		syslog(LOG_INFO, "fork process %d on starting the daemonizing process %s", pid, app_name.c_str());
 		std::ofstream om(pid_file.c_str(), std::ios::out | std::ios::binary);
 		om << pid;

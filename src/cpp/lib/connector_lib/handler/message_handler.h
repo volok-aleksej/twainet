@@ -22,6 +22,7 @@ protected:
 	void addMessage(DataMessage* msg);
 	bool deserialize(const DataMessage& msg, char* data, int& len);
 
+	bool onData(const std::string& type, char* data, int len);
 private:
 	std::map<std::string, DataMessage*> m_messages;
 };

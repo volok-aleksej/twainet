@@ -174,7 +174,7 @@ bool ServiceManager::Stop()
 	File f(pid_file);
 	if(!f.IsExist())
 		return 0;
-
+	
 	std::ifstream om(pid_file.c_str(), std::ios::in | std::ios::binary);
 	om >> pid;
 	f.Delete();
@@ -271,7 +271,7 @@ std::string get_process_pid_filename()
 	{
 		struct  passwd* pw = getpwuid(getuid());
 		pid_file = pw->pw_dir;
-		pid_file += "/";
+		pid_file += "/.local/run/";
 	}
 	pid_file.append(app_name);
 	pid_file.append(".pid");
