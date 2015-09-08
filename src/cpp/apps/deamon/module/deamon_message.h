@@ -38,7 +38,7 @@ public:
 	virtual void onMessage()
 	{
 		TMessage* msg = static_cast<TMessage*>(this);
-		m_handler->onMessage(*msg, m_path);
+		m_handler->onMessage(*msg, GetPath());
 	}
 	
 	virtual bool serialize(char* data, int len)

@@ -57,6 +57,30 @@ protected:
 		}
 		return false;
 	}
+	
+	bool toMessage(const DataMessage& msg, const Twainet::ModuleName* path, int pathsize)
+	{
+		bool ret = false;
+		char* data = 0;
+		int datalen = 0;
+		const_cast<DataMessage&>(msg).deserialize(data, datalen);
+		data = new char[datalen];
+		if(const_cast<DataMessage&>(msg).deserialize(data, datalen))
+		{
+		      std::string typeMessage = msg.GetName();
+		      Twainet::Message message;
+		      message.m_data = data;
+		      message.m_dataLen = datalen;
+		      message.m_path = path;
+		      message.m_pathLen = pathsize;
+		      message.m_typeMessage = typeMessage.c_str();
+		      Twainet::SendMessage(m_module, message);
+		      ret = true;
+		}
+		
+		delete data;
+		return ret;
+	}
 private:
 	Twainet::Module m_module;
 	std::map<std::string, DataMessage*> m_messages;

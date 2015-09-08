@@ -24,6 +24,10 @@ void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module modu
 
 void TWAINET_CALL DeamonApplication::OnServerCreationFailed(Twainet::Module module)
 {
+	if(strcmp(Twainet::GetModuleName(module).m_name, COORDINATOR_NAME) == 0)
+	{
+		DeamonApplication::GetInstance().Stop();
+	}
 }
 
 void TWAINET_CALL DeamonApplication::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)

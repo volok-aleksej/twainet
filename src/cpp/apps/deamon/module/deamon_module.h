@@ -24,6 +24,8 @@ protected:
 protected:
 	template<class TMessage, class THandler> friend class DeamonMessage;
 	void onMessage(const LocalServerAttributes& msg, const std::vector<Twainet::ModuleName>& path);
+private:
+	Twainet::UserPassword m_userPassword;
 };
 
 #endif/*DEAMON_MODULE_H*/
