@@ -17,7 +17,7 @@ public:
 
 	int Run();
 	int Stop();
-
+	
 	static std::string GetAppName();
 	static std::string GetDescription();
 public:

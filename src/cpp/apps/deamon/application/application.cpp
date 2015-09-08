@@ -243,6 +243,12 @@ DeamonApplication::DeamonApplication()
 
 DeamonApplication::~DeamonApplication()
 {
+	CSLocker locker(&GetInstance().m_cs);
+	for(std::vector<Module*>::iterator it = m_modules.begin();
+	    it != m_modules.end(); it++)
+	{
+		delete *it;
+	}
 }
 
 int DeamonApplication::Run()
