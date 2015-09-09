@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="twainet"
-	ProjectGUID="{F613D49A-D0EE-4F3C-B860-B6A76260519E}"
-	RootNamespace="twainet"
+	Name="deamon"
+	ProjectGUID="{75FFBE76-8454-4214-9D15-83444B14A75A}"
+	RootNamespace="deamon"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,9 +18,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			ConfigurationType="2"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -61,14 +61,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
-				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
-				SubSystem="2"
-				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,11 +93,10 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			ConfigurationType="2"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			ConfigurationType="1"
 			CharacterSet="1"
-			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -122,7 +119,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -140,16 +137,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
-				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -190,35 +185,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\application\dllmain.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\application\twainet.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\application\twainet.h"
-				>
-			</File>
-			<File
-				RelativePath=".\twainet.rc"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="message"
-			>
-			<File
-				RelativePath=".\message\NotificationMessages.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\message\NotificationMessages.h"
+				RelativePath=".\application\main.cpp"
 				>
 			</File>
 		</Filter>
@@ -226,11 +193,19 @@
 			Name="module"
 			>
 			<File
-				RelativePath=".\module\twainet_module.cpp"
+				RelativePath=".\module\deamon_message.h"
 				>
 			</File>
 			<File
-				RelativePath=".\module\twainet_module.h"
+				RelativePath=".\module\deamon_module.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\deamon_module.h"
+				>
+			</File>
+			<File
+				RelativePath=".\module\module.h"
 				>
 			</File>
 		</Filter>
@@ -238,19 +213,35 @@
 			Name="common"
 			>
 			<File
-				RelativePath="..\..\common\file.cpp"
+				RelativePath="..\..\common\common_func.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\file.h"
+				RelativePath="..\..\common\common_func.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\logger.cpp"
+				RelativePath="..\..\common\process.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\logger.h"
+				RelativePath="..\..\common\process.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\service_manager.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\service_manager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\tstring.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\tstring.h"
 				>
 			</File>
 		</Filter>
