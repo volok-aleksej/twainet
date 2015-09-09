@@ -34,10 +34,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client_server_lib", "lib\cl
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "twainet", "lib\twainet\twainet.vcproj", "{F613D49A-D0EE-4F3C-B860-B6A76260519E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FA5C42D5-3735-46CA-8740-F2547CAF8972} = {FA5C42D5-3735-46CA-8740-F2547CAF8972}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{2E482B4B-C58E-4289-9BFD-0927F87063FD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "deamon", "apps\deamon\deamon.vcproj", "{75FFBE76-8454-4214-9D15-83444B14A75A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3E283F37-A4ED-41B7-A3E6-A2D89D131A30} = {3E283F37-A4ED-41B7-A3E6-A2D89D131A30}
+		{B3C8E858-F756-45AF-A957-1AA8C4FA1A9A} = {B3C8E858-F756-45AF-A957-1AA8C4FA1A9A}
+		{F613D49A-D0EE-4F3C-B860-B6A76260519E} = {F613D49A-D0EE-4F3C-B860-B6A76260519E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

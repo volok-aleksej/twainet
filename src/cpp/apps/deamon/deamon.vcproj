@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib libprotobuf.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib tunnel_lib.lib libprotobuf.lib"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
 				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
@@ -255,6 +255,50 @@
 			<File
 				RelativePath="..\..\utils\path_parser.h"
 				>
+			</File>
+			<File
+				RelativePath="..\..\utils\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="messages"
+			>
+			<File
+				RelativePath="..\..\..\messages\deamon.pb.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\messages\deamon.pb.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\messages\deamon.proto"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;"
+						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

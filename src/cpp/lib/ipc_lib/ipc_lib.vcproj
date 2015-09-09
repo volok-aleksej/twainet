@@ -158,38 +158,6 @@
 			Name="messages"
 			>
 			<File
-				RelativePath="..\..\..\messages\ipc.pb.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\messages\ipc.pb.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\messages\ipc.proto"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
-						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
-						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\..\messages\interconn.pb.cc"
 				>
 			</File>
@@ -221,10 +189,50 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\..\messages\ipc.pb.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\messages\ipc.pb.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\messages\ipc.proto"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\ipc.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\ipc.pb.cc;$(SolutionDir)..\messages\ipc.pb.h"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<Filter
 			Name="connector"
 			>
+			<File
+				RelativePath=".\connector\internal_connector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\connector\internal_connector.h"
+				>
+			</File>
 			<File
 				RelativePath=".\connector\ipc_connector.cpp"
 				>
@@ -235,6 +243,14 @@
 			</File>
 			<File
 				RelativePath=".\connector\ipc_connector_factory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\connector\ipc_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\connector\ipc_handler.h"
 				>
 			</File>
 			<File
@@ -303,6 +319,14 @@
 			</File>
 			<File
 				RelativePath="..\..\common\tstring.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\user.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\user.h"
 				>
 			</File>
 		</Filter>
