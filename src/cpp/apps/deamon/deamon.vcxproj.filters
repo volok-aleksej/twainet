@@ -10,6 +10,12 @@
     <Filter Include="utils">
       <UniqueIdentifier>{453b2477-bf2f-436e-9e1d-d7c4ea51debf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="module">
+      <UniqueIdentifier>{0f88bbf5-f7bb-485f-8896-df924011f231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="messages">
+      <UniqueIdentifier>{5bdd8123-63dc-42b7-b8e2-22d8e1fec404}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\application.cpp">
@@ -33,6 +39,18 @@
     <ClCompile Include="..\..\utils\utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="module\deamon_module.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\messages\deamon.pb.cc">
+      <Filter>messages</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\common_func.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\tstring.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">
@@ -53,5 +71,28 @@
     <ClInclude Include="..\..\utils\utils.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="module\deamon_message.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\deamon_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\messages\deamon.pb.h">
+      <Filter>messages</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\common_func.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\tstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\messages\deamon.proto">
+      <Filter>messages</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

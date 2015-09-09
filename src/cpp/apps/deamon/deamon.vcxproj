@@ -11,21 +11,42 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\messages\deamon.pb.cc" />
+    <ClCompile Include="..\..\common\common_func.cpp" />
     <ClCompile Include="..\..\common\file.cpp" />
     <ClCompile Include="..\..\common\process.cpp" />
     <ClCompile Include="..\..\common\service_manager.cpp" />
+    <ClCompile Include="..\..\common\tstring.cpp" />
     <ClCompile Include="..\..\utils\path_parser.cpp" />
     <ClCompile Include="..\..\utils\utils.cpp" />
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\main.cpp" />
+    <ClCompile Include="module\deamon_module.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\messages\deamon.pb.h" />
+    <ClInclude Include="..\..\common\common_func.h" />
     <ClInclude Include="..\..\common\file.h" />
     <ClInclude Include="..\..\common\process.h" />
     <ClInclude Include="..\..\common\service_manager.h" />
+    <ClInclude Include="..\..\common\tstring.h" />
     <ClInclude Include="..\..\utils\path_parser.h" />
     <ClInclude Include="..\..\utils\utils.h" />
     <ClInclude Include="application\application.h" />
+    <ClInclude Include="module\deamon_message.h" />
+    <ClInclude Include="module\deamon_module.h" />
+    <ClInclude Include="module\module.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\messages\deamon.proto">
+      <FileType>Document</FileType>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling  *.proto files</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling  *.proto files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SolutionDir)..\messages\protoc.exe" --proto_path="$(SolutionDir)..\messages" --cpp_out="$(SolutionDir)..\messages" "$(SolutionDir)..\messages\deamon.proto"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(SolutionDir)..\messages\protoc.exe" --proto_path="$(SolutionDir)..\messages" --cpp_out="$(SolutionDir)..\messages" "$(SolutionDir)..\messages\deamon.proto"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h;%(Outputs)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D5574768-C019-4179-B10E-C9CCF9530D48}</ProjectGuid>
@@ -58,11 +79,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\output\deamon\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\output\deamon\$(Configuration)\</IntDir>
+    <TargetName>twndeamon</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\output\deamon\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\..\output\deamon\$(Configuration)\</IntDir>
+    <TargetName>twndeamon</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -72,13 +95,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <OutputFile>$(SolutionDir)..\..\output\work\$(Configuration)\$(ProjectName).exe</OutputFile>
+      <OutputFile>$(SolutionDir)..\..\output\work\$(Configuration)\$(TargetName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;thread_lib.lib;twainet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;libprotobuf.lib;thread_lib.lib;twainet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,15 +119,16 @@
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <OutputFile>$(SolutionDir)..\..\output\work\$(Configuration)\$(ProjectName).exe</OutputFile>
+      <OutputFile>$(SolutionDir)..\..\output\work\$(Configuration)\$(TargetName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;thread_lib.lib;twainet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;libprotobuf.lib;thread_lib.lib;twainet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

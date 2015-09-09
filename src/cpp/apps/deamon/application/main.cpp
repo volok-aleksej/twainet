@@ -54,7 +54,7 @@ void service_control_handler(DWORD request)
     case SERVICE_CONTROL_SHUTDOWN:
         {
             // TODO stopping
-			ServiceStatus.dwWin32ExitCode = ServerApplication::GetInstance().Stop();
+			ServiceStatus.dwWin32ExitCode = DeamonApplication::GetInstance().Stop();
             ServiceStatus.dwCurrentState = SERVICE_STOPPED;
             ::SetServiceStatus (hStatus, &ServiceStatus);
             return;
@@ -78,7 +78,7 @@ VOID WINAPI service_main(DWORD dwNumServicesArgs, LPSTR *lpServiceArgVectors)
     ServiceStatus.dwServiceSpecificExitCode = 0;
     ServiceStatus.dwCheckPoint = 0;
     ServiceStatus.dwWaitHint = 0;
-    hStatus = RegisterServiceCtrlHandlerA(ServerApplication::GetInstance().GetAppName().c_str(), (LPHANDLER_FUNCTION)service_control_handler);
+    hStatus = RegisterServiceCtrlHandlerA(DeamonApplication::GetInstance().GetAppName().c_str(), (LPHANDLER_FUNCTION)service_control_handler);
     if (hStatus == (SERVICE_STATUS_HANDLE)0)
     {
         // Registering Control Handler failed
@@ -90,7 +90,7 @@ VOID WINAPI service_main(DWORD dwNumServicesArgs, LPSTR *lpServiceArgVectors)
     SetServiceStatus (hStatus, &ServiceStatus);
 
     // run Service
-    error = ServerApplication::GetInstance().Run();
+    error = DeamonApplication::GetInstance().Run();
 
     ServiceStatus.dwCurrentState = SERVICE_STOPPED;
     ServiceStatus.dwWin32ExitCode = error;
@@ -132,7 +132,7 @@ int run_process()
 {
 #ifdef WIN32
 	SERVICE_TABLE_ENTRYA ServiceTable[2];
-	ServiceTable[0].lpServiceName = const_cast<LPSTR>(ServerApplication::GetAppName().c_str());
+	ServiceTable[0].lpServiceName = const_cast<LPSTR>(DeamonApplication::GetAppName().c_str());
 	ServiceTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONA)service_main;
 	ServiceTable[1].lpServiceName = NULL;
 	ServiceTable[1].lpServiceProc = NULL;
@@ -257,7 +257,7 @@ int  main(int argc, char* argv[])
 	else if (param == "-start" || param == "start")
 	{
 #ifdef WIN32
-		ServiceManager manager(ServerApplication::GetAppName());
+		ServiceManager manager(DeamonApplication::GetAppName());
 		manager.Start();
 #else
 		return run_process();

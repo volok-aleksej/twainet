@@ -103,6 +103,7 @@
     <ClCompile Include="..\..\common\user.cpp" />
     <ClCompile Include="connector\internal_connector.cpp" />
     <ClCompile Include="connector\ipc_connector.cpp" />
+    <ClCompile Include="connector\ipc_handler.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
     <ClCompile Include="module\ipc_object_name.cpp" />
     <ClCompile Include="thread\ipc_checker_thread.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="connector\internal_connector.h" />
     <ClInclude Include="connector\ipc_connector.h" />
     <ClInclude Include="connector\ipc_connector_factory.h" />
+    <ClInclude Include="connector\ipc_handler.h" />
     <ClInclude Include="connector\proto_message.h" />
     <ClInclude Include="module\ipc_module.h" />
     <ClInclude Include="module\ipc_object_name.h" />
