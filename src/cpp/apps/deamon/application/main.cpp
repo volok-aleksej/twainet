@@ -247,7 +247,9 @@ int  main(int argc, char* argv[])
 		full_name.insert(0, "\"");
 		full_name.append("\"");
 		ServiceManager manager(DeamonApplication::GetAppName());
-		manager.Install(DeamonApplication::GetDescription(), full_name);
+		char tmp[MAX_PATH*2] = {0};
+		::GetModuleFileNameA(NULL, tmp, MAX_PATH*2);
+		manager.Install(DeamonApplication::GetDescription(), tmp);
 	}
 	else if (param == "-uninstall" || param == "uninstall")
 	{
