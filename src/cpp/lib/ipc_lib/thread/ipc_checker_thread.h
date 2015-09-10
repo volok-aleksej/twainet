@@ -16,6 +16,7 @@ protected:
 	void ManagerStop(){};
 private:
 	IPCConnector* m_connector;
+	int m_count;
 };
 
 #endif/*IPC_CHECKER_THREAD_H*/

@@ -111,7 +111,6 @@ void signal_handler(int sig)
 		break;
 	case SIGTERM:
 	case SIGQUIT:
-	case SIGKILL:
 		std::string app_name = app_self_name();
 		std::string pid_file = get_process_pid_filename();
 		File f(pid_file);

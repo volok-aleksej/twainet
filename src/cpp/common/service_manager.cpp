@@ -177,13 +177,12 @@ bool ServiceManager::Stop()
 	
 	std::ifstream om(pid_file.c_str(), std::ios::in | std::ios::binary);
 	om >> pid;
-	f.Delete();
+//	f.Delete();
 	if(pid == 0)
 		return 0;
 
 	syslog(LOG_INFO, "Stopping daemonizing process %s", app_name.c_str());	
 	kill(pid, SIGTERM);
-	kill(pid, SIGKILL);
 
 	return 0;
 #endif/*WIN32*/

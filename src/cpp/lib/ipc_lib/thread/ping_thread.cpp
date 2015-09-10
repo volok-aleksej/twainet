@@ -13,6 +13,9 @@ PingThread::~PingThread()
 
 void PingThread::ManagerFunc()
 {
-	PingMessage msg(&m_connector->m_handler);
-	m_connector->toMessage(msg);
+	if(!m_isStop)
+	{
+		PingMessage msg(&m_connector->m_handler);
+		m_connector->toMessage(msg);
+	}
 }

@@ -13,6 +13,9 @@ TunnelCheckerThread::~TunnelCheckerThread()
 
 void TunnelCheckerThread::ManagerFunc()
 {
-	m_module->CheckTunnels();
+	if(!IsStop())
+	{
+		m_module->CheckTunnels();
+	}
 }
 
