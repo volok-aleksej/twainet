@@ -7,6 +7,8 @@
 #	include <sys/stat.h>
 #	include <stdlib.h>
 #	include <stdio.h>
+#	include <string.h>
+#	define MAX_PATH 255
 #endif/*WIN32*/
 
 #include "application.h"
@@ -247,7 +249,11 @@ int  main(int argc, char* argv[])
 		full_name.append("\"");
 		ServiceManager manager(DeamonApplication::GetAppName());
 		char tmp[MAX_PATH*2] = {0};
+#ifdef WIN32
 		::GetModuleFileNameA(NULL, tmp, MAX_PATH*2);
+#else
+		strcpy(tmp, full_name.c_str());
+#endif
 		manager.Install(DeamonApplication::GetDescription(), tmp);
 	}
 	else if (param == "-uninstall" || param == "uninstall")

@@ -13,7 +13,7 @@ PingThread::~PingThread()
 
 void PingThread::ManagerFunc()
 {
-	if(!m_isStop)
+	if(!IsStop())
 	{
 		PingMessage msg(&m_connector->m_handler);
 		m_connector->toMessage(msg);
