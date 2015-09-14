@@ -1,6 +1,8 @@
 #include "logger.h"
 #include <stdarg.h>
 #include <string.h>
+#include <time.h>
+#include "utils/utils.h"
 
 Logger::Logger()
 	: m_logFile(0)
@@ -27,6 +29,10 @@ void Logger::Log(TypeLog type, const char* prototype, ...)
 	vsnprintf(printdata, 1024, prototype, argptr);
 	va_end(argptr);
 	std::string strtype = GetStringType(type);
+	time_t t;
+	time(&t);
+	std::string time_ = CommonUtils::FormatTime(t);
+	m_logFile->Write(time_.c_str(), time_.size());
 	m_logFile->Write(strtype.c_str(), strtype.size());
 	m_logFile->Write(printdata, strlen(printdata));
 }
@@ -46,11 +52,11 @@ std::string Logger::GetStringType(TypeLog type)
 	switch(type)
 	{
 	case LOG_WARNING:
-		return "LOG_WARNING:\t";
+		return " LOG_WARNING:\t";
 	case LOG_ERROR:
-		return "LOG_ERROR:\t\t";
+		return " LOG_ERROR:\t\t";
 	case LOG_INFO:
-		return "LOG_INFO:\t\t";
+		return " LOG_INFO:\t\t";
 	}
 
 	return "";
