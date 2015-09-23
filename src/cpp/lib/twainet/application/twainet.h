@@ -20,13 +20,14 @@
 
 #define MAX_NAME_LENGTH 255
 
-// ModuleName cannot have symbol '.'
+// ModuleName cannot have strings ".", "->"
 // String version of ModuleName has the form: name.host.suffix
 // All connections(server, client, tunnel) are also modules whose name is:
-//     server - ServerName.<sessionId>.
-//     client - ClientName.<sessionId>.
-//     tunnel - Tunnel.<sessionId>.
-
+//     server - ServerName.<sessionId>
+//     client - ClientName.<sessionId>
+//     tunnel - Tunnel.<sessionId>
+// For internal connection string version has the form: name.host.suffix->identificator
+//     sample - Tunnel.1234567->65776543
 
 extern "C"
 {
@@ -49,6 +50,12 @@ extern "C"
 			char m_suffix[MAX_NAME_LENGTH];
 		};
 
+		struct InternalConnection
+		{
+			ModuleName m_moduleName;
+			char m_id[MAX_NAME_LENGTH];
+		};
+		
 		// recomended data len 8192
 		struct Message
 		{	
@@ -177,6 +184,9 @@ extern "C"
 		
 		// Create Internal Connection through ipc connection(as proxy)
 		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port, const char* id);
+		
+		// Get list of existing internal connections that is available in current module
+		TWAINET_FUNC int GetInternalConnections(const Module module, InternalConnection* connections, int& sizeConnections);
 	}
 };
 

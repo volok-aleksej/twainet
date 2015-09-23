@@ -86,7 +86,7 @@ if(PROTOBUF_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARY})
 endif(PROTOBUF_LIBRARY)
 
-find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH} /usr/lib/x86_64-linux-gnu)
+find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH})
 if(NTLM_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${NTLM_LIBRARY})
 endif(NTLM_LIBRARY)

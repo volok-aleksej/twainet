@@ -2,7 +2,8 @@
 #define TUNNEL_MODULE_H
 
 #include "tunnel_containers.h"
-#include "../message/tunnel_messages.h"
+#include "client_signal_handler.h"
+#include "server_signal_handler.h"
 #include "../thread/tunnel_checker_thread.h"
 #include "client_server_lib/module/client_server_module.h"
 
@@ -23,43 +24,9 @@ protected:
 	virtual void OnTunnelConnectFailed(const std::string& sessionId);
 	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
 	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
-protected:
-	//for client
-	void onInitTunnel(const InitTunnelMessage& msg);
-	void onTryConnectTo(const TryConnectToMessage& msg);
-	void onInitTunnelStarted(const InitTunnelStartedMessage& msg);
-
-	void onCreatedLocalListener(const CreatedListenerMessage& msg);
-	void onErrorLocalListener(const ListenErrorMessage& msg);
-	void onErrorLocalTCPConnect(const ConnectErrorMessage& msg);
-	void onErrorLocalUDPConnect(const ConnectErrorMessage& msg);
-	void onAddLocalTCPConnector(const ConnectorMessage& msg);
-	void onAddLocalUDPConnector(const ConnectorMessage& msg);
-	void onErrorExternalConnect(const ConnectErrorMessage& msg);
-	void onAddExternalConnector(const ConnectorMessage& msg);
-	void onAddRelayTCPConnector(const ConnectorMessage& msg);
-	void onAddRelayUDPConnector(const ConnectorMessage& msg);
-	void onErrorRelayTCPConnect(const ConnectErrorMessage& msg);
-	void onErrorRelayUDPConnect(const ConnectErrorMessage& msg);
-	
-	void onModuleName(const ModuleNameMessage& msg);
-	void onConnected(const TunnelConnectedMessage& msg);
-
-	//for server
-	void onInitTunnel(const InitTunnelSignal& msg);
-	void onPeerData(const PeerDataSignal& msg);
-	void onInitTunnelComplete(const InitTunnelCompleteMessage& msg);
-
-	void onCreatedExternalListener(const CreatedServerListenerMessage& msg);
-	void onGotExternalAddress(const GotExternalAddressMessage& msg);
-	void onErrorExternalListener(const ListenErrorMessage& msg);
-	void onCreatedRelayTCPListener(const CreatedServerListenerMessage& msg);
-	void onErrorRelayListener(const ListenErrorMessage& msg);
-	void onAddRelayServerConnector(const ConnectorMessage& msg);
-	void onCreatedRelayUDPListener(const CreatedServerListenerMessage& msg);
-	void onAddRelayUDPServerConnector(const ConnectorMessage& msg);
-
 private:
+	friend class ClientSignalHandler;
+	friend class ServerSignalHandler;
 	void CreateLocalListenThread(const std::string& extSessionId);
 	void CreateLocalUDPSocket(const std::string& extSessionId);
 	void CreateLocalConnectThread(const std::string& extSessionId, const std::string& ip, int port, bool isTCP);
@@ -76,6 +43,8 @@ private:
 	ObjectManager<PeerType> m_typePeers;
 	ObjectManager<TunnelStep> m_tunnelsStep;
 	TunnelCheckerThread* m_tunnelChecker;
+	ClientSignalHandler m_clientSignalHandler;
+	ServerSignalHandler m_serverSignalHandler;
 };
 
 #endif/*TUNNEL_MODULE_H*/

@@ -11,6 +11,8 @@ set (SRC_${PROJECT_NAME}
 	connector/tunnel_connector.cpp
 	connector/tunnel_server_connector.cpp
 	message/tunnel_messages.cpp
+	module/client_signal_handler.cpp
+	module/server_signal_handler.cpp
 	module/tunnel_containers.cpp
 	module/tunnel_module.cpp
 	thread/external_connect_thread.cpp

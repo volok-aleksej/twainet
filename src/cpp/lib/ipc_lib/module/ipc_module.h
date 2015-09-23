@@ -83,6 +83,7 @@ public:
 	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id);
 	const IPCObjectName& GetModuleName();
 	std::vector<IPCObjectName> GetIPCObjects();
+	std::vector<IPCObjectName> GetInternalConnections();
 protected:
 	friend class Signal;
 	void getListenPort(const ListenerParamMessage& msg);
@@ -123,6 +124,7 @@ protected:
 	IPCObjectName m_moduleName;
 	ObjectManager<IPCObject> m_ipcObject;		// available modules
 	ObjectManager<IPCObject> m_modules;		// connected modules
+	ObjectManager<IPCObject> m_internalConn;	// internal connections
 	ConnectorManager *m_manager;
 	bool m_isCoordinator;
 	std::string m_coordinatorName;

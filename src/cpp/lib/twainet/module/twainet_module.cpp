@@ -80,5 +80,7 @@ void TwainetModule::ServerCreationFialed()
 
 void TwainetModule::OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port)
 {
+	LOG_INFO("internal connection status: moduleName - %s, id - %s, status - %d, port - %d\n",
+		 const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str(), id.c_str(), status, port);
 	Application::GetInstance().AddNotifycationMessage(new InternalConnectionStatusChanged(this, moduleName, id, status, port));	
 }

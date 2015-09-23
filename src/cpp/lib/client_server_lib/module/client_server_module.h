@@ -75,7 +75,7 @@ protected:
 	virtual void ManagerFunc();
 protected:
 	friend class Signal;
-	void onAddConnector(const ConnectorMessage& msg);
+	void onAddClientServerConnector(const ConnectorMessage& msg);
 	void onErrorConnect(const ConnectErrorMessage& msg);
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);

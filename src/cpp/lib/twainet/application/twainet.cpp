@@ -262,3 +262,35 @@ extern "C" void Twainet::CreateInternalConnection(const Twainet::Module module, 
 	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
 	twainetModule->CreateInternalConnection(ipcModuleName, ip, port, id);
 }
+
+extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twainet::InternalConnection* connections, int& sizeConnections)
+{
+	if(!module)
+		return 0;
+
+	TwainetModule* twainetModule = (TwainetModule*)module;
+	std::vector<IPCObjectName> objects = twainetModule->GetInternalConnections();
+	if(sizeConnections < (int)objects.size())
+	{
+		sizeConnections = objects.size();
+		return 0;
+	}
+
+	int i = 0;
+	for(std::vector<IPCObjectName>::iterator it = objects.begin();
+		it != objects.end(); it++, i++)
+	{
+#ifdef WIN32
+		strcpy_s(connections[i].m_moduleName.m_name, MAX_NAME_LENGTH, it->module_name().c_str());
+		strcpy_s(connections[i].m_moduleName.m_host, MAX_NAME_LENGTH, it->host_name().c_str());
+		strcpy_s(connections[i].m_moduleName.m_suffix, MAX_NAME_LENGTH, it->suffix().c_str());
+		strcpy_s(connections[i].m_id, MAX_NAME_LENGTH, it->internal().c_str());
+#else
+		strcpy(connections[i].m_moduleName.m_name, it->module_name().c_str());
+		strcpy(connections[i].m_moduleName.m_host, it->host_name().c_str());
+		strcpy(connections[i].m_moduleName.m_suffix, it->suffix().c_str());
+		strcpy(connections[i].m_id, it->internal().c_str());
+#endif/*WIN32*/
+	}
+	return objects.size();
+}

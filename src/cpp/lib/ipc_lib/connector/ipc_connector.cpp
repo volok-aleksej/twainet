@@ -119,6 +119,7 @@ void IPCConnector::OnStop()
 		m_checker->Stop();
 		m_checker = 0;
 	}
+	m_manager->Stop();
 }
 
 void IPCConnector::SubscribeConnector(const IPCConnector* connector)

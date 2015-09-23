@@ -35,7 +35,6 @@ public:
 	IPCHandler(IPCConnector* connector);
 	virtual ~IPCHandler();
 	
-	template<typename TMessage, typename THandler> friend class ProtoMessage;
 	void onMessage(const ModuleName& msg);
 	void onMessage(const ModuleState& msg);
 	void onMessage(const AddIPCObject& msg);

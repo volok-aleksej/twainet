@@ -56,7 +56,7 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddConnector));
+	thread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddClientServerConnector));
 	thread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectErrorMessage, onErrorConnect));
 	thread->Start();
 }
@@ -192,7 +192,7 @@ void ClientServerModule::StartServer(int port)
 	m_serverThread = new BaseListenThread(address);
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, CreatedListenerMessage, onCreatedListener));
 	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ListenErrorMessage, onErrorListener));
-	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddConnector));
+	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddClientServerConnector));
 	m_serverThread->Start();
 }
 
@@ -243,7 +243,7 @@ void ClientServerModule::SetProxyPassword(const std::string& password)
 	m_proxyUserPassword.m_password = password;
 }
 
-void ClientServerModule::onAddConnector(const ConnectorMessage& msg)
+void ClientServerModule::onAddClientServerConnector(const ConnectorMessage& msg)
 {
 	ClientServerConnector* conn = static_cast<ClientServerConnector*>(msg.m_conn);
 	if(conn)

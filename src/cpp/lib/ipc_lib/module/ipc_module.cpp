@@ -269,6 +269,7 @@ void IPCModule::ManagerStart()
 
 void IPCModule::ManagerStop()
 {
+	m_manager->Stop();
 }
 	
 void IPCModule::ConnectToCoordinator()
@@ -445,6 +446,16 @@ void IPCModule::onConnected(const ConnectedMessage& msg)
 void IPCModule::onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg)
 {
 	IPCObjectName target(msg.target());
+	IPCObjectName internalConn(msg.target());
+	internalConn.set_internal(msg.id());
+	if(msg.status() == interconn::CONN_OPEN)
+	{
+		m_internalConn.AddObject(internalConn);
+	}
+	if(msg.status() == interconn::CONN_CLOSE)
+	{
+		m_internalConn.RemoveObject(internalConn);
+	}
 	OnInternalConnection(target.GetModuleNameString(), msg.id(), msg.status(), msg.port());
 }
 
@@ -619,6 +630,18 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 	return retList;
 }
 
+std::vector<IPCObjectName> IPCModule::GetInternalConnections()
+{
+	std::vector<IPCObjectName> retList;
+	std::vector<IPCObject> list = m_internalConn.GetObjectList();
+	std::vector<IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		retList.push_back(IPCObjectName(it->m_ipcName));
+	}
+
+	return retList;
+}
 
 void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id)
 {

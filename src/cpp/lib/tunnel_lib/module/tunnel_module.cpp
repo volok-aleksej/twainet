@@ -1,15 +1,11 @@
 #include <time.h>
 #include <stdio.h>
 #include "tunnel_module.h"
-#include "connector/tunnel_connector.h"
-#include "../thread/external_listen_thread.h"
 #include "../thread/external_connect_thread.h"
-#include "../thread/relay_listen_thread.h"
 #include "thread_lib/thread/thread_manager.h"
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "connector_lib/socket/udp_socket.h"
-#include "common/common_func.h"
 #include "common/logger.h"
 
 extern std::vector<std::string> GetLocalIps();
@@ -19,12 +15,15 @@ const std::string TunnelModule::m_tunnelAccessId = TunnelModule::m_tunnelIPCName
 
 TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 	: ClientServerModule(ipcName, factory)
+	, m_clientSignalHandler(this), m_serverSignalHandler(this)
 {
 	m_tunnelChecker = new TunnelCheckerThread(this);
 }
 
 TunnelModule::~TunnelModule()
 {
+	m_clientSignalHandler.removeReceiver();
+	m_serverSignalHandler.removeReceiver();
 	removeReceiver();
 
 	m_tunnelChecker->Stop();
@@ -127,19 +126,19 @@ void TunnelModule::OnNewConnector(Connector* connector)
 	ClientServerConnector* clientServerConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
 	if(clientServerConn)
 	{
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelMessage, onInitTunnel)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelSignal, onInitTunnel)); //for server
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, PeerDataSignal, onPeerData)); //for server
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, TryConnectToMessage, onTryConnectTo)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(this, TunnelModule, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelMessage, onInitTunnel)); //for client
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelSignal, onInitTunnel)); //for server
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, PeerDataSignal, onPeerData)); //for server
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TryConnectToMessage, onTryConnectTo)); //for client
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
+		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server
 	}
 
 	TunnelConnector* tunnelConnector = dynamic_cast<TunnelConnector*>(connector);
 	if(tunnelConnector)
 	{
-		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, ModuleNameMessage, onModuleName));
-		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(this, TunnelModule, TunnelConnectedMessage, onConnected));
+		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ModuleNameMessage, onModuleName));
+		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TunnelConnectedMessage, onConnected));
 	}
 }
 
@@ -172,512 +171,6 @@ void TunnelModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	}
 }
 
-void TunnelModule::onPeerData(const PeerDataSignal& msg)
-{
-	LOG_INFO("Set tunnel Type: between %s %s type %d\n", const_cast<PeerDataSignal&>(msg).one_session_id().c_str(),
-														const_cast<PeerDataSignal&>(msg).two_session_id().c_str(),
-														const_cast<PeerDataSignal&>(msg).type());
-	PeerType peerData(msg);
-	if(!m_typePeers.AddObject(peerData))
-	{
-		m_typePeers.UpdateObject(peerData);
-	}
-}
-
-void TunnelModule::onInitTunnel(const InitTunnelMessage& msg)
-{
-	if(!msg.has_type())
-	{
-		return;
-	}
-
-	if(msg.type() == TUNNEL_LOCAL_TCP)
-	{
-		CreateLocalListenThread(msg.ext_session_id());
-	}
-	else if(msg.type() == TUNNEL_LOCAL_UDP)
-	{
-		CreateLocalUDPSocket(msg.ext_session_id());
-	}
-	else if(msg.type() == TUNNEL_EXTERNAL)
-	{
-		InitExternalConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port());
-	}
-	else if(msg.type() == TUNNEL_RELAY_TCP)
-	{
-		CreateRelayConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port(), true);
-	}
-	else if(msg.type() == TUNNEL_RELAY_UDP)
-	{
-		CreateRelayConnectThread(msg.ext_session_id(), /*msg.address().ip()*/m_ip, msg.address().port(), false);
-	}
-}
-
-void TunnelModule::onInitTunnel(const InitTunnelSignal& msg)
-{
-	TunnelType type;
-	PeerType peerType;
-	peerType.set_one_session_id(msg.own_session_id());
-	peerType.set_two_session_id(msg.ext_session_id());
-	if(m_typePeers.GetObject(peerType, &peerType) && peerType.has_type())
-		type = peerType.type();
-	else
-		type = TUNNEL_ALL;
-	
-	peerType.set_type(type);
-	TunnelStep step(peerType);
-	if(!m_tunnelsStep.AddObject(step))
-	{
-		return;
-	}
-  
-	LOG_INFO("Send InitTunnelStarted message: from %s to %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str());
-	InitTunnelStarted itsMsg;
-	itsMsg.set_own_session_id(msg.own_session_id());
-	itsMsg.set_ext_session_id(msg.ext_session_id());
-	InitTunnelStartedSignal itrSig(itsMsg);
-	onSignal(itrSig);
-	itrSig.set_own_session_id(msg.ext_session_id());
-	itrSig.set_ext_session_id(msg.own_session_id());
-	onSignal(itrSig);
-
-	//--------local connection---------------------
-	if(type == TUNNEL_LOCAL_TCP || type == TUNNEL_ALL)
-	{
-		LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), TUNNEL_LOCAL_TCP);
-		InitTunnelSignal itMsg(msg);
-		itMsg.set_type(TUNNEL_LOCAL_TCP);
-		onSignal(itMsg);
-		itMsg.set_own_session_id(msg.ext_session_id());
-		itMsg.set_ext_session_id(msg.own_session_id());
-		onSignal(itMsg);
-	}
-	
-	if(type == TUNNEL_LOCAL_UDP)
-	{
-		LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), TUNNEL_LOCAL_UDP);
-		InitTunnelSignal itMsg(msg);
-		itMsg.set_type(TUNNEL_LOCAL_UDP);
-		onSignal(itMsg);
-		itMsg.set_own_session_id(msg.ext_session_id());
-		itMsg.set_ext_session_id(msg.own_session_id());
-		onSignal(itMsg);
-	}
-	
-	//----------------external connection-----------
-	if(type == TUNNEL_EXTERNAL || type == TUNNEL_ALL)
-	{
-		TunnelServerListenAddress address;
-		address.m_localIP = msg.has_address() ? msg.address().ip() : "";
-		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
-		address.m_sessionIdOne = msg.own_session_id();
-		address.m_sessionIdTwo = msg.ext_session_id();
-		address.m_id = CreateGUID();
-		address.m_socketFactory = new UDPSocketFactory;
-		TunnelServer* external = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
-		external->m_thread = new ExternalListenThread(address);
-		m_servers.insert(std::make_pair(address.m_id, external));
-		SignalOwner* threadOwner = dynamic_cast<SignalOwner*>(external->m_thread);
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedExternalListener));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, GotExternalAddressMessage, onGotExternalAddress));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorExternalListener));
-		external->m_thread->Start();
-		LOG_INFO("Start external listen thread: from %s to %s, id - %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), address.m_id.c_str());
-	}
-	
-	//-----------relay connection-------------------
-	if(type == TUNNEL_RELAY_TCP || type == TUNNEL_ALL)
-	{
-		TunnelServerListenAddress address;
-		address.m_localIP = msg.has_address() ? msg.address().ip() : "";
-		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
-		address.m_sessionIdOne = msg.own_session_id();
-		address.m_sessionIdTwo = msg.ext_session_id();
-		address.m_id = CreateGUID();
-		address.m_socketFactory = new TCPSecureSocketFactory;
-		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
-		relay->m_thread = new RelayListenThread(address);
-		m_servers.insert(std::make_pair(address.m_id, relay));
-		SignalOwner* threadOwner = dynamic_cast<SignalOwner*>(relay->m_thread);
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedRelayTCPListener));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorRelayListener));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayServerConnector));
-		relay->m_thread->Start();
-		LOG_INFO("Start relay tcp listen thread: from %s to %s, id - %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), address.m_id.c_str());
-	}
-
-	if(type == TUNNEL_RELAY_UDP)
-	{
-		TunnelServerListenAddress address;
-		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps()[0]/*TODO: use external ip*/;
-		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
-		address.m_sessionIdOne = msg.own_session_id();
-		address.m_sessionIdTwo = msg.ext_session_id();
-		address.m_id = CreateGUID();
-		address.m_socketFactory = new UDTSecureSocketFactory;
-		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
-		relay->m_thread = new RelayListenThread(address);
-		m_servers.insert(std::make_pair(address.m_id, relay));
-		SignalOwner* threadOwner = dynamic_cast<SignalOwner*>(relay->m_thread);
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedServerListenerMessage, onCreatedRelayUDPListener));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorRelayListener));
-		threadOwner->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayServerConnector));
-		relay->m_thread->Start();
-		LOG_INFO("Start relay udp listen thread: from %s to %s, id - %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), address.m_id.c_str());
-	}
-}
-
-void TunnelModule::onTryConnectTo(const TryConnectToMessage& msg)
-{
-	if(msg.type() == TUNNEL_LOCAL_TCP || msg.type() == TUNNEL_LOCAL_UDP)
-	{
-		for(int i = 0; i < msg.adresses_size(); i++)
-		{
-			CreateLocalConnectThread(msg.ext_session_id(), msg.adresses(i).ip(), msg.adresses(i).port(), msg.type() == TUNNEL_LOCAL_TCP);
-		}
-	}
-	else if(msg.type() == TUNNEL_EXTERNAL)
-	{
-		for(int i = 0; i < msg.adresses_size(); i++)
-		{
-			CreateExternalConnectThread(msg.ext_session_id(), msg.adresses(i).ip(), msg.adresses(i).port());
-		}
-	}
-}
-
-void TunnelModule::onInitTunnelStarted(const InitTunnelStartedMessage& msg)
-{
-	LOG_INFO("InitTunnelStarted Message: from %s to %s\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str());
-	CSLocker lock(&m_cs);
-	TunnelConnect* tunnel;
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(msg.ext_session_id());
-	if(it == m_tunnels.end())
-	{
-		tunnel = new TunnelConnect(msg.ext_session_id());
-		m_tunnels.insert(std::make_pair(msg.ext_session_id(), tunnel));
-	}
-}
-
-void TunnelModule::onInitTunnelComplete(const InitTunnelCompleteMessage& msg)
-{
-	TunnelStep step;
-	step.set_one_session_id(msg.own_session_id());
-	step.set_two_session_id(msg.ext_session_id());
-	m_tunnelsStep.RemoveObject(step);
-}
-
-void TunnelModule::onCreatedLocalListener(const CreatedListenerMessage& msg)
-{
-	LOG_INFO("Send TryConnectTo message: from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_id.c_str(), TUNNEL_LOCAL_TCP);
-	TryConnectTo tctMsg;
-	tctMsg.set_type(TUNNEL_LOCAL_TCP);
-	tctMsg.set_own_session_id(m_ownSessionId);
-	tctMsg.set_ext_session_id(msg.m_id);
-	std::vector<std::string> ips = GetLocalIps();
-	for(size_t i = 0; i < ips.size(); i++)
-	{
-		TunnelConnectAddress* address = tctMsg.add_adresses();
-		address->set_ip(ips[i]);
-		address->set_port(msg.m_port);
-	}
-
-	TryConnectToSignal tctSig(tctMsg);
-	onSignal(tctSig);
-}
-
-void TunnelModule::onErrorLocalListener(const ListenErrorMessage& msg)
-{
-	LOG_INFO("Error in local listen thread(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_id.c_str(), TUNNEL_LOCAL_TCP);
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(msg.m_id);
-	if(it != m_tunnels.end())
-	{
-		it->second->m_localListenThread->Stop();
-		ThreadManager::GetInstance().AddThread(it->second->m_localListenThread);
-		it->second->m_localListenThread = 0;
-	}
-}
-
-void TunnelModule::onErrorLocalTCPConnect(const ConnectErrorMessage& msg)
-{
-	LOG_INFO("Connection failed(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_moduleName.c_str(), TUNNEL_LOCAL_TCP);
-}
-
-void TunnelModule::onErrorLocalUDPConnect(const ConnectErrorMessage& msg)
-{
-	LOG_INFO("Connection failed(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_moduleName.c_str(), TUNNEL_LOCAL_UDP);
-}
-
-void TunnelModule::onAddLocalTCPConnector(const ConnectorMessage& msg)
-{
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::LOCAL_TCP);
-	}
-	IPCModule::onAddConnector(msg);
-}
-
-void TunnelModule::onAddLocalUDPConnector(const ConnectorMessage& msg)
-{
-	{
-		CSLocker lock(&m_cs);
-		IPCObjectName sessionId(msg.m_conn->GetId());
-		std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(sessionId.module_name());
-		if(it != m_tunnels.end())
-		{
-			it->second->m_localUdpSocket = 0;
-		}
-	}
-
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::LOCAL_UDP);
-
-	}
-	IPCModule::onAddConnector(msg);
-}
-
-void TunnelModule::onErrorExternalConnect(const ConnectErrorMessage& msg)
-{
-	LOG_INFO("Connection failed(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_moduleName.c_str(), TUNNEL_EXTERNAL);
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(msg.m_moduleName);
-	if(it != m_tunnels.end())
-	{
-		if(it->second->m_externalConnectThread)
-		{
-			it->second->m_externalConnectThread->Stop();
-			ThreadManager::GetInstance().AddThread(it->second->m_externalConnectThread);
-		}
-		it->second->m_externalConnectThread = 0;
-	}
-}
-
-void TunnelModule::onAddExternalConnector(const ConnectorMessage& msg)
-{
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::EXTERNAL);
-	}
-	IPCModule::onAddConnector(msg);
-}
-
-void TunnelModule::onCreatedExternalListener(const CreatedServerListenerMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it == m_servers.end())
-	{
-		LOG_WARNING("Not found tunnel: id - %s\n", msg.m_id.c_str());
-		return;
-	}
-
-	InitTunnel itMsg;
-	itMsg.set_type(TUNNEL_EXTERNAL);
-	if(msg.m_sessionId == it->second->m_sessionIdOne)
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdOne);
-		itMsg.set_ext_session_id(it->second->m_sessionIdTwo);
-	}
-	else
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdTwo);
-		itMsg.set_ext_session_id(it->second->m_sessionIdOne);
-	}
-	LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", it->second->m_sessionIdOne.c_str(), it->second->m_sessionIdTwo.c_str(), TUNNEL_EXTERNAL);
-	TunnelConnectAddress* address = itMsg.mutable_address();
-	address->set_ip(msg.m_ip);
-	address->set_port(msg.m_port);
-	InitTunnelSignal itSig(itMsg);
-	onSignal(itSig);
-
-}
-
-void TunnelModule::onGotExternalAddress(const GotExternalAddressMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it == m_servers.end())
-	{
-		LOG_WARNING("Not found tunnel: id - %s\n", msg.m_id.c_str());
-		return;
-	}
-	
-	TryConnectTo tctMsg;
-	tctMsg.set_type(TUNNEL_EXTERNAL);
-	if(msg.m_sessionId != it->second->m_sessionIdOne)
-	{
-		tctMsg.set_own_session_id(it->second->m_sessionIdOne);
-		tctMsg.set_ext_session_id(it->second->m_sessionIdTwo);
-	}
-	else
-	{
-		tctMsg.set_own_session_id(it->second->m_sessionIdTwo);
-		tctMsg.set_ext_session_id(it->second->m_sessionIdOne);
-	}
-	LOG_INFO("Send TryConnectTo message: from %s to %s, type %d\n", it->second->m_sessionIdOne.c_str(), it->second->m_sessionIdTwo.c_str(), TUNNEL_EXTERNAL);
-	TunnelConnectAddress* address = tctMsg.add_adresses();
-	address->set_ip(msg.m_ip);
-	address->set_port(msg.m_port);
-	TryConnectToSignal tctSig(tctMsg);
-	onSignal(tctSig);
-}
-
-void TunnelModule::onErrorExternalListener(const ListenErrorMessage& msg)
-{
-	LOG_INFO("Error in external listen thread(tunnel connection): id - %s\n", msg.m_id.c_str());
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it != m_servers.end())
-	{
-		delete it->second;
-		m_servers.erase(it);
-	}	
-}
-
-void TunnelModule::onCreatedRelayTCPListener(const CreatedServerListenerMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it == m_servers.end())
-	{
-		LOG_WARNING("Not found tunnel: id - %s\n", msg.m_id.c_str());
-		return;
-	}
-
-	InitTunnel itMsg;
-	itMsg.set_type(TUNNEL_RELAY_TCP);
-	if(msg.m_sessionId == it->second->m_sessionIdOne)
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdOne);
-		itMsg.set_ext_session_id(it->second->m_sessionIdTwo);
-	}
-	else
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdTwo);
-		itMsg.set_ext_session_id(it->second->m_sessionIdOne);
-	}
-	LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", it->second->m_sessionIdOne.c_str(), it->second->m_sessionIdTwo.c_str(), TUNNEL_RELAY_TCP);
-	TunnelConnectAddress* address = itMsg.mutable_address();
-	address->set_ip(msg.m_ip);
-	address->set_port(msg.m_port);
-	InitTunnelSignal itSig(itMsg);
-	onSignal(itSig);
-}
-
-void TunnelModule::onCreatedRelayUDPListener(const CreatedServerListenerMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it == m_servers.end())
-	{
-		LOG_WARNING("Not found tunnel: id - %s\n", msg.m_id.c_str());
-		return;
-	}
-
-	InitTunnel itMsg;
-	itMsg.set_type(TUNNEL_RELAY_UDP);
-	if(msg.m_sessionId == it->second->m_sessionIdOne)
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdOne);
-		itMsg.set_ext_session_id(it->second->m_sessionIdTwo);
-	}
-	else
-	{
-		itMsg.set_own_session_id(it->second->m_sessionIdTwo);
-		itMsg.set_ext_session_id(it->second->m_sessionIdOne);
-	}
-	LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", it->second->m_sessionIdOne.c_str(), it->second->m_sessionIdTwo.c_str(), TUNNEL_RELAY_UDP);
-	TunnelConnectAddress* address = itMsg.mutable_address();
-	address->set_ip(msg.m_ip);
-	address->set_port(msg.m_port);
-	InitTunnelSignal itSig(itMsg);
-	onSignal(itSig);
-}
-
-void TunnelModule::onErrorRelayListener(const ListenErrorMessage& msg)
-{
-	LOG_INFO("Error in relay listen thread(tunnel connection): id - %s\n", msg.m_id.c_str());
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_id);
-	if(it != m_servers.end())
-	{
-		delete it->second;
-		m_servers.erase(it);
-	}
-}
-
-void TunnelModule::onAddRelayServerConnector(const ConnectorMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	std::map<std::string, TunnelServer*>::iterator it = m_servers.find(msg.m_conn->GetId());
-	if(it != m_servers.end())
-	{
-		delete it->second;
-		m_servers.erase(it);
-	}
-
-	ThreadManager::GetInstance().AddThread(msg.m_conn);
-	msg.m_conn->Start();
-}
-
-void TunnelModule::onErrorRelayTCPConnect(const ConnectErrorMessage& msg)
-{
-	LOG_INFO("Connection failed(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_moduleName.c_str(), TUNNEL_RELAY_TCP);
-}
-
-void TunnelModule::onErrorRelayUDPConnect(const ConnectErrorMessage& msg)
-{
-	LOG_INFO("Connection failed(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), msg.m_moduleName.c_str(), TUNNEL_RELAY_UDP);
-}
-
-void TunnelModule::onAddRelayTCPConnector(const ConnectorMessage& msg)
-{
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::RELAY_TCP);
-	}
-
-	IPCModule::onAddConnector(msg);
-}
-
-void TunnelModule::onAddRelayUDPConnector(const ConnectorMessage& msg)
-{
-	TunnelConnector* connector = dynamic_cast<TunnelConnector*>(msg.m_conn);
-	if(connector)
-	{
-		connector->SetTypeConnection(TunnelConnector::RELAY_UDP);
-	}
-
-	IPCModule::onAddConnector(msg);
-}
-
-void TunnelModule::onModuleName(const ModuleNameMessage& msg)
-{
-	CSLocker lock(&m_cs);
-	IPCObjectName sessionId(msg.ipc_name());
-	std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.find(sessionId.host_name());
-	if(it != m_tunnels.end())
-	{
-		delete it->second;
-		m_tunnels.erase(it);
-	}
-}
-
-void TunnelModule::onConnected(const TunnelConnectedMessage& msg)
-{
-	InitTunnelComplete itcMsg;
-	itcMsg.set_own_session_id(m_ownSessionId);
-	itcMsg.set_ext_session_id(msg.m_id);
-	InitTunnelCompleteSignal itcSig(itcMsg);
-	onSignal(itcSig);
-	OnTunnelConnected(msg.m_id, msg.m_type);
-}
-
 void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 {
 	LOG_INFO("Start listen thread(tunnel connection): from %s to %s, type %d\n", m_ownSessionId.c_str(), extSessionId.c_str(), TUNNEL_LOCAL_TCP);
@@ -699,9 +192,9 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	address.m_socketFactory = new TCPSecureSocketFactory;
 	address.m_acceptCount = 1;
 	ListenThread* thread = new BaseListenThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ListenErrorMessage, onErrorLocalListener));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, CreatedListenerMessage, onCreatedLocalListener));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalTCPConnector));
+	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ListenErrorMessage, onErrorLocalListener));
+	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, CreatedListenerMessage, onCreatedLocalListener));
+	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddLocalTCPConnector));
 
 	if(tunnel->m_localListenThread)
 	{
@@ -789,13 +282,13 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	ConnectThread* thread = new ConnectThread(address);
 	if(isTCP)
 	{
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalTCPConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorLocalTCPConnect));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddLocalTCPConnector));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectErrorMessage, onErrorLocalTCPConnect));
 	}
 	else
 	{
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddLocalUDPConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorLocalUDPConnect));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddLocalUDPConnector));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectErrorMessage, onErrorLocalUDPConnect));
 	}
 	thread->Start();
 }
@@ -823,8 +316,8 @@ void TunnelModule::InitExternalConnectThread(const std::string& extSessionId, co
 	address.m_ip = ip;
 	address.m_port = port;
 	ExternalConnectThread* thread = new ExternalConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddExternalConnector));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorExternalConnect));
+	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddExternalConnector));
+	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectErrorMessage, onErrorExternalConnect));
 	
 	if(tunnel->m_externalConnectThread)
 	{
@@ -892,13 +385,13 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	ConnectThread* thread = new ConnectThread(address);
 	if(isTCP)
 	{
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayTCPConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorRelayTCPConnect));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddRelayTCPConnector));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectErrorMessage, onErrorRelayTCPConnect));
 	}
 	else
 	{
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectorMessage, onAddRelayUDPConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, TunnelModule, ConnectErrorMessage, onErrorRelayUDPConnect));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectorMessage, onAddRelayUDPConnector));
+		thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ConnectErrorMessage, onErrorRelayUDPConnect));
 	}
 	thread->Start();
 }
