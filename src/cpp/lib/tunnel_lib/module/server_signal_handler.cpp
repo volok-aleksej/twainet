@@ -17,6 +17,7 @@ ServerSignalHandler::ServerSignalHandler(TunnelModule* module)
 
 ServerSignalHandler::~ServerSignalHandler()
 {
+	removeReceiver();
 }
 	
 void ServerSignalHandler::onPeerData(const PeerDataSignal& msg)

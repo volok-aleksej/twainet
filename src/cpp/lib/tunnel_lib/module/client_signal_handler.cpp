@@ -13,6 +13,7 @@ ClientSignalHandler::ClientSignalHandler(TunnelModule* module)
 
 ClientSignalHandler::~ClientSignalHandler()
 {
+	removeReceiver();
 }
 	
 void ClientSignalHandler::onInitTunnel(const InitTunnelMessage& msg)
@@ -124,7 +125,7 @@ void ClientSignalHandler::onAddLocalTCPConnector(const ConnectorMessage& msg)
 	{
 		connector->SetTypeConnection(TunnelConnector::LOCAL_TCP);
 	}
-	m_module->onAddConnector(msg);
+	m_module->AddConnector(msg.m_conn);
 }
 
 void ClientSignalHandler::onAddLocalUDPConnector(const ConnectorMessage& msg)
@@ -145,7 +146,7 @@ void ClientSignalHandler::onAddLocalUDPConnector(const ConnectorMessage& msg)
 		connector->SetTypeConnection(TunnelConnector::LOCAL_UDP);
 
 	}
-	m_module->onAddConnector(msg);
+	m_module->AddConnector(msg.m_conn);
 }
 
 void ClientSignalHandler::onErrorExternalConnect(const ConnectErrorMessage& msg)
@@ -171,7 +172,7 @@ void ClientSignalHandler::onAddExternalConnector(const ConnectorMessage& msg)
 	{
 		connector->SetTypeConnection(TunnelConnector::EXTERNAL);
 	}
-	m_module->onAddConnector(msg);
+	m_module->AddConnector(msg.m_conn);
 }
 
 void ClientSignalHandler::onAddRelayTCPConnector(const ConnectorMessage& msg)
@@ -182,7 +183,7 @@ void ClientSignalHandler::onAddRelayTCPConnector(const ConnectorMessage& msg)
 		connector->SetTypeConnection(TunnelConnector::RELAY_TCP);
 	}
 
-	m_module->onAddConnector(msg);
+	m_module->AddConnector(msg.m_conn);
 }
 
 void ClientSignalHandler::onAddRelayUDPConnector(const ConnectorMessage& msg)
@@ -193,7 +194,7 @@ void ClientSignalHandler::onAddRelayUDPConnector(const ConnectorMessage& msg)
 		connector->SetTypeConnection(TunnelConnector::RELAY_UDP);
 	}
 
-	m_module->onAddConnector(msg);
+	m_module->AddConnector(msg.m_conn);
 }
 
 void ClientSignalHandler::onErrorRelayTCPConnect(const ConnectErrorMessage& msg)

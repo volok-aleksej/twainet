@@ -22,10 +22,6 @@ TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* facto
 
 TunnelModule::~TunnelModule()
 {
-	m_clientSignalHandler.removeReceiver();
-	m_serverSignalHandler.removeReceiver();
-	removeReceiver();
-
 	m_tunnelChecker->Stop();
 	
 	CSLocker lock(&m_cs);
@@ -126,19 +122,19 @@ void TunnelModule::OnNewConnector(Connector* connector)
 	ClientServerConnector* clientServerConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
 	if(clientServerConn)
 	{
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelMessage, onInitTunnel)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelSignal, onInitTunnel)); //for server
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, PeerDataSignal, onPeerData)); //for server
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TryConnectToMessage, onTryConnectTo)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
-		ipcSubscribe(clientServerConn, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server
+		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelMessage, onInitTunnel)); //for client
+		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelSignal, onInitTunnel)); //for server
+		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, PeerDataSignal, onPeerData)); //for server
+		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TryConnectToMessage, onTryConnectTo)); //for client
+		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
+		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server
 	}
 
 	TunnelConnector* tunnelConnector = dynamic_cast<TunnelConnector*>(connector);
 	if(tunnelConnector)
 	{
-		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ModuleNameMessage, onModuleName));
-		ipcSubscribe(tunnelConnector, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TunnelConnectedMessage, onConnected));
+		ipcSubscribe(tunnelConnector, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ModuleNameMessage, onModuleName));
+		ipcSubscribe(tunnelConnector, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TunnelConnectedMessage, onConnected));
 	}
 }
 

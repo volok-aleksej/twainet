@@ -45,6 +45,7 @@ set (SRC_${PROJECT_NAME}
     connector/internal_connector.cpp
     module/ipc_module.cpp
     module/ipc_object_name.cpp
+    module/ipc_signal_handler.cpp
     thread/ipc_checker_thread.cpp
     thread/ping_thread.cpp
 )

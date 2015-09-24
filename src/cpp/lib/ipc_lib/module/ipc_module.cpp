@@ -99,19 +99,18 @@ void IPCModule::TryConnectCounter::operator = (const TryConnectCounter& counter)
 /*                               IPCModule                                     */
 /*******************************************************************************/
 IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory)
-: m_moduleName(moduleName), m_factory(factory)
+: m_moduleName(moduleName), m_factory(factory), m_ipcSignalHandler(this)
 , m_isCoordinator(false), m_isExit(false), m_listenThread(0)
 , m_countListener(0), m_countConnect(0), m_bConnectToCoordinatorRequest(false)
 {
 	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 	m_manager = new ConnectorManager;
-	m_manager->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, DisconnectedMessage, onDisconnected));
+	m_manager->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, DisconnectedMessage, onDisconnected));
 }
 
 IPCModule::~IPCModule()
 {
 	m_isExit = true;
-	removeReceiver();
 
 	if(m_listenThread)
 	{
@@ -158,8 +157,8 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 		address.m_ip = "127.0.0.1";
 		address.m_port = object.m_port;
 		ConnectThread* thread = new ConnectThread(address);
-		thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectorMessage, onAddConnector));
-		thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectErrorMessage, onErrorConnect));
+		thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectorMessage, onAddConnector));
+		thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectErrorMessage, onErrorConnect));
 		m_tryConnectCounters.AddObject(counter);
 		thread->Start();
 	}
@@ -193,9 +192,9 @@ void IPCModule::Start(const std::string& ip, int port)
 	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;
 	m_listenThread = new BaseListenThread(address);
-	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, CreatedListenerMessage, onCreatedListener));
-	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenErrorMessage, onErrorListener));
-	m_listenThread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectorMessage, onAddConnector));
+	m_listenThread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, CreatedListenerMessage, onCreatedListener));
+	m_listenThread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ListenErrorMessage, onErrorListener));
+	m_listenThread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectorMessage, onAddConnector));
 	m_listenThread->Start();
 }
 
@@ -289,22 +288,52 @@ void IPCModule::ConnectToCoordinator()
 	address.m_ip = "127.0.0.1";
 	address.m_port = g_ipcCoordinatorPorts[m_countConnect];
 	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectorMessage, onAddConnector));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectErrorMessage, onErrorConnect));
+	thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectorMessage, onAddConnector));
+	thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectErrorMessage, onErrorConnect));
 	thread->Start();
 }
 
-void IPCModule::ipcSubscribe(IPCConnector* connector, IReceiverFunc* func)
+void IPCModule::ipcSubscribe(IPCConnector* connector, SignalReceiver* receiver, IReceiverFunc* func)
 {
-	connector->addSubscriber(this, func);
+	connector->addSubscriber(receiver, func);
 }
 
+void IPCModule::AddConnector(Connector* conn)
+{
+	IPCConnector* connector = dynamic_cast<IPCConnector*>(conn);
+	if(connector && !m_isExit)
+	{
+		connector->SetModuleName(m_moduleName);
+		connector->SetConnectorId(CreateGUID());
+
+		OnNewConnector(conn);
+
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, AddIPCObjectMessage, onAddIPCObject));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, UpdateIPCObjectMessage, onUpdateIPCObject));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ModuleNameMessage, onModuleName));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, RemoveIPCObjectMessage, onRemoveIPCObject));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCObjectListMessage, onIPCObjectList));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ListenerParamMessage, getListenPort));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectedMessage, onConnected));
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCProtoMessage, onIPCMessage));
+		
+		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
+		
+		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
+		m_manager->AddConnection(conn);
+	}
+	else
+	{
+		delete conn;
+	}
+}
+	
 void IPCModule::UpdateModuleName(const IPCObjectName& moduleName)
 {
 	UpdateIPCObjectMessage uioMsg(0);
 	*uioMsg.mutable_ipc_old_name() = m_moduleName;
 	*uioMsg.mutable_ipc_new_name() = moduleName;
-	onUpdateIPCObject(uioMsg);
+	m_ipcSignalHandler.onUpdateIPCObject(uioMsg);
 
 	LOG_INFO("Update ipc name: old - %s, new - %s\n", m_moduleName.GetModuleNameString().c_str(), const_cast<IPCObjectName&>(moduleName).GetModuleNameString().c_str());
 	m_moduleName = moduleName;
@@ -334,287 +363,6 @@ void IPCModule::Exit()
 {
 	m_isExit = true;
 	Stop();
-}
-
-void IPCModule::onCreatedListener(const CreatedListenerMessage& msg)
-{
-	IPCObject object(IPCObjectName::GetIPCName(msg.m_id), msg.m_ip, msg.m_port);
-	m_ipcObject.AddObject(object);
-	if(!m_isCoordinator)
-	{
-		ConnectToCoordinator();
-	}
-
-	LOG_INFO("Module created: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
-}
-
-void IPCModule::onErrorListener(const ListenErrorMessage& msg)
-{
-	if(m_isCoordinator && m_countListener + 1 < g_ipcCoordinatorPortCount)
-	{
-		m_countListener++;
-		StartAsCoordinator();
-	}
-	else
-	{
-		ThreadManager::GetInstance().AddThread(m_listenThread);
-		m_listenThread = 0;
-		m_isExit = true;
-		ModuleCreationFialed();
-	}
-}
-
-void IPCModule::onAddConnector(const ConnectorMessage& msg)
-{
-	IPCConnector* connector = dynamic_cast<IPCConnector*>(msg.m_conn);
-	if(connector && !m_isExit)
-	{
-		connector->SetModuleName(m_moduleName);
-		connector->SetConnectorId(CreateGUID());
-	
-		OnNewConnector(msg.m_conn);
-
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, AddIPCObjectMessage, onAddIPCObject));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, UpdateIPCObjectMessage, onUpdateIPCObject));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ModuleNameMessage, onModuleName));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, RemoveIPCObjectMessage, onRemoveIPCObject));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCObjectListMessage, onIPCObjectList));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ListenerParamMessage, getListenPort));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, ConnectedMessage, onConnected));
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, IPCProtoMessage, onIPCMessage));
-		
-		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCModule, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
-		
-		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
-		m_manager->AddConnection(msg.m_conn);
-	}
-	else
-	{
-		delete msg.m_conn;
-	}
-}
-
-void IPCModule::onErrorConnect(const ConnectErrorMessage& msg)
-{
-	if(msg.m_moduleName == m_coordinatorIPCName && !m_isExit)
-	{
-		if(m_countConnect + 1 == g_ipcCoordinatorPortCount)
-		{
-			m_countConnect = 0;
-		}
-		else
-		{
-			m_countConnect++;
-		}
-
-		CSLocker locker(&m_csRequest);
-		m_bConnectToCoordinatorRequest = true;
-		time(&m_requestCreated);
-	}
-	else
-	{
-		TryConnectCounter counter(msg.m_moduleName);
-		if(!m_tryConnectCounters.GetObject(counter, &counter))
-		{
-			OnConnectFailed(msg.m_moduleName);
-		}
-
-		if(counter.m_count < m_maxTryConnectCount && !m_isExit)
-		{
-			ConnectTo(IPCObjectName::GetIPCName(msg.m_moduleName));
-			counter.m_count++;
-			m_tryConnectCounters.UpdateObject(counter);
-		}
-		else
-		{
-			OnConnectFailed(msg.m_moduleName);
-			m_tryConnectCounters.RemoveObject(counter);
-		}
-	}
-}
-
-void IPCModule::onConnected(const ConnectedMessage& msg)
-{
-	OnConnected(msg.m_id);
-	if(msg.m_bWithCoordinator)
-	{
-		LOG_INFO("Module connected with coordinator: coordinator name - %s, m_moduleName - %s\n", m_coordinatorName.c_str(), m_moduleName.GetModuleNameString().c_str());
-		m_coordinatorName = msg.m_id;
-	}
-}
-
-void IPCModule::onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg)
-{
-	IPCObjectName target(msg.target());
-	IPCObjectName internalConn(msg.target());
-	internalConn.set_internal(msg.id());
-	if(msg.status() == interconn::CONN_OPEN)
-	{
-		m_internalConn.AddObject(internalConn);
-	}
-	if(msg.status() == interconn::CONN_CLOSE)
-	{
-		m_internalConn.RemoveObject(internalConn);
-	}
-	OnInternalConnection(target.GetModuleNameString(), msg.id(), msg.status(), msg.port());
-}
-
-void IPCModule::onIPCMessage(const IPCProtoMessage& msg)
-{
-	std::vector<std::string> path;
-	for(int i = 0; i < msg.ipc_sender_size(); i++)
-	{
-		IPCObjectName sender(msg.ipc_sender(i));
-		path.push_back(sender.GetModuleNameString());
-	}
-	OnMessage(msg.message_name(), path, msg.message());
-}
-
-void IPCModule::onAddIPCObject(const AddIPCObjectMessage& msg)
-{
-	IPCObject object(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
-	LOG_INFO("Add IPC Object: ipc name - %s, m_moduleName - %s\n", object.m_ipcName.GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
-	m_ipcObject.AddObject(object);
-}
-
-void IPCModule::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
-{
-	IPCObject object(msg.ipc_old_name());
-	m_ipcObject.GetObject(object, &object);
-	m_ipcObject.RemoveObject(object);
-	bool update = false;
-	if(m_modules.RemoveObject(object))
-	{
-		update = true;
-	}
-
-	m_csConnectors.Enter();
-	std::map<std::string, std::vector<std::string> >::iterator it = m_connectors.find(object.m_ipcName.GetModuleNameString());
-	if(it != m_connectors.end())
-	{
-		IPCObjectName newName(msg.ipc_new_name());
-		std::vector<std::string> connectors = it->second;
-		m_connectors.erase(it);
-		m_connectors.insert(std::make_pair(newName.GetModuleNameString(), connectors));
-	}
-	m_csConnectors.Leave();
-
-	TryConnectCounter counter(object.m_ipcName.GetModuleNameString());
-	if(m_tryConnectCounters.GetObject(counter, &counter))
-	{
-		m_tryConnectCounters.RemoveObject(counter);
-		IPCObjectName ipcName(msg.ipc_new_name());
-		counter.m_moduleName = ipcName.GetModuleNameString();
-		m_tryConnectCounters.AddObject(counter);
-	}
-
-	object.m_ipcName = msg.ipc_new_name();
-
-	m_ipcObject.AddObject(object);
-	if(update)
-	{
-		m_modules.AddObject(object);
-	}
-
-	IPCObjectName ipcNameNew(msg.ipc_new_name());
-	IPCObjectName ipcNameOld(msg.ipc_old_name());
-	LOG_INFO("Update IPC Object: ipc name old - %s, ipc name new - %s, m_moduleName - %s\n",
-			ipcNameOld.GetModuleNameString().c_str(),
-			ipcNameNew.GetModuleNameString().c_str(),
-			m_moduleName.GetModuleNameString().c_str());
-}
-
-void IPCModule::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
-{
-	IPCObject object(IPCObjectName::GetIPCName(msg.ipc_name()));
-	m_ipcObject.RemoveObject(object);
-	LOG_INFO("Remove IPC Object: ipc name - %s, m_moduleName - %s\n", object.m_ipcName.GetModuleNameString().c_str(), m_moduleName.GetModuleNameString().c_str());
-}
-
-void IPCModule::onModuleName(const ModuleNameMessage& msg)
-{
-	IPCObject module(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
-	const_cast<ModuleNameMessage&>(msg).set_is_exist(!m_modules.AddObject(module));
-
-	m_csConnectors.Enter();
-	m_connectors[module.m_ipcName.GetModuleNameString()].push_back(msg.conn_id());
-	m_csConnectors.Leave();
-	
-	TryConnectCounter counter(module.m_ipcName.GetModuleNameString());
-	m_tryConnectCounters.RemoveObject(counter);
-}
-
-void IPCModule::onDisconnected(const DisconnectedMessage& msg)
-{
-	bool isModuleDelete = false;
-	m_csConnectors.Enter();
-	std::map<std::string, std::vector<std::string> >::iterator it = m_connectors.find(msg.m_id);
-	if(it != m_connectors.end())
-	{
-		std::vector<std::string>::iterator it1 = std::find(it->second.begin(), it->second.end(), msg.m_connId);
-		if(it1 != it->second.end())
-		{
-			it->second.erase(it1);
-		}
-
-		if(it->second.empty())
-		{
-			isModuleDelete = true;
-			m_connectors.erase(it);
-		}
-	}
-	m_csConnectors.Leave();
-
-	if(!isModuleDelete && !CheckFireConnector(msg.m_id))
-	{
-		return;
-	}
-
-	IPCObject module = IPCObjectName::GetIPCName(msg.m_id);
-	m_modules.RemoveObject(module);
-
-	if (msg.m_id == m_coordinatorIPCName ||
-		!m_coordinatorName.empty() && msg.m_id == m_coordinatorName)
-	{
-		m_ipcObject.Clear();
-		if(m_countConnect + 1 == g_ipcCoordinatorPortCount)
-		{
-			m_countConnect = 0;
-		}
-		else
-		{
-			m_countConnect++;
-		}
-
-		CSLocker locker(&m_csRequest);
-		m_bConnectToCoordinatorRequest = true;
-		time(&m_requestCreated);
-	}
-	
-	if(msg.m_id != m_coordinatorIPCName)
-	{
-		OnFireConnector(msg.m_id);
-	}
-}
-
-void IPCModule::getListenPort(const ListenerParamMessage& msg)
-{
-	IPCObject object = IPCObjectName::GetIPCName(msg.m_moduleName);
-	if(!m_ipcObject.GetObject(object, &object))
-	{
-		object = m_moduleName;
-		m_ipcObject.GetObject(object, &object);
-	}
-
-	const_cast<ListenerParamMessage&>(msg).m_moduleName = object.m_ipcName.GetModuleNameString();
-	const_cast<ListenerParamMessage&>(msg).m_port = object.m_port;
-	const_cast<ListenerParamMessage&>(msg).m_ip = object.m_ip;
-	const_cast<ListenerParamMessage&>(msg).m_isCoordinator = (object.m_ipcName.GetModuleNameString() == m_coordinatorName);
-}
-
-void IPCModule::onIPCObjectList(const IPCObjectListMessage& msg)
-{
-	FillIPCObjectList(const_cast<IPCObjectListMessage&>(msg));
 }
 
 std::vector<IPCObjectName> IPCModule::GetIPCObjects()

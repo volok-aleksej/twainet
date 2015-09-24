@@ -3,12 +3,11 @@
 
 #include "ipc_lib/connector/ipc_connector.h"
 #include "ipc_lib/module/ipc_object_name.h"
+#include "ipc_lib/module/ipc_signal_handler.h"
 
 #include "connector_lib/connector/connector_factory.h"
 #include "connector_lib/connector/connector_manager.h"
-#include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/signal/signal_owner.h"
-#include "connector_lib/message/connector_messages.h"
 #include "connector_lib/thread/listen_thread.h"
 
 #include "thread_lib/common/object_manager.h"
@@ -27,7 +26,7 @@ protected:
 	void OnStop(){}
 };
 
-class IPCModule : public SignalReceiver, protected SignalOwner, public DynamicManager
+class IPCModule : protected SignalOwner, public DynamicManager
 {
 public:
 	static const std::string m_coordinatorIPCName;
@@ -35,6 +34,7 @@ public:
 	static const int m_maxTryConnectCount;
 	static const int m_connectTimeout;
 protected:
+	friend class IPCSignalHandler;
 	class IPCObject
 	{
 	public:
@@ -85,22 +85,6 @@ public:
 	std::vector<IPCObjectName> GetIPCObjects();
 	std::vector<IPCObjectName> GetInternalConnections();
 protected:
-	friend class Signal;
-	void getListenPort(const ListenerParamMessage& msg);
-	void onCreatedListener(const CreatedListenerMessage& msg);
-	void onErrorListener(const ListenErrorMessage& msg);
-	void onAddConnector(const ConnectorMessage& msg);
-	void onErrorConnect(const ConnectErrorMessage& msg);
-	void onModuleName(const ModuleNameMessage& msg);
-	void onAddIPCObject(const AddIPCObjectMessage& msg);
-	void onRemoveIPCObject(const RemoveIPCObjectMessage& msg);
-	void onDisconnected(const DisconnectedMessage& msg);
-	void onIPCObjectList(const IPCObjectListMessage& msg);
-	void onUpdateIPCObject(const UpdateIPCObjectMessage& msg);
-	void onIPCMessage(const IPCProtoMessage& msg);
-	void onConnected(const ConnectedMessage& msg);
-	void onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg);
-
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual void OnConnected(const std::string& moduleName);
@@ -117,7 +101,8 @@ protected:
 protected:
 	void Start(const std::string& ip, int port);
 	void ConnectToCoordinator();
-	void ipcSubscribe(IPCConnector* connector, IReceiverFunc* func);
+	void ipcSubscribe(IPCConnector* connector, SignalReceiver* receiver, IReceiverFunc* func);
+	void AddConnector(Connector* connector);
 protected:
 	BaseListenThread* m_listenThread;
 	ConnectorFactory* m_factory;
@@ -139,5 +124,6 @@ private:
 	CriticalSection m_csRequest;
 	bool m_bConnectToCoordinatorRequest;
 	time_t m_requestCreated;
+	IPCSignalHandler m_ipcSignalHandler;
 };
 #endif/*IPC_MODULE_H*/

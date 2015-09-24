@@ -12,7 +12,7 @@ const std::string ClientServerModule::m_clientIPCName = "Client";
 
 ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
 : IPCModule(ipcName, factory)
-, m_isStopConnect(true), m_serverThread(0)
+, m_isStopConnect(true), m_serverThread(0), m_signalHandler(this)
 , m_isUseProxy(false), m_bConnectToServerRequest(false)
 {
 }
@@ -20,7 +20,6 @@ ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFa
 ClientServerModule::~ClientServerModule()
 {
 	m_isStopConnect = true;
-	removeReceiver();
 
 	if(m_serverThread)
 	{
@@ -56,8 +55,8 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	address.m_ip = ip;
 	address.m_port = port;
 	ConnectThread* thread = new ConnectThread(address);
-	thread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddClientServerConnector));
-	thread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectErrorMessage, onErrorConnect));
+	thread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, ConnectorMessage, onAddClientServerConnector));
+	thread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, ConnectErrorMessage, onErrorConnect));
 	thread->Start();
 }
 
@@ -190,9 +189,9 @@ void ClientServerModule::StartServer(int port)
 //	address.m_socketFactory = new TCPSocketFactory;
 	address.m_acceptCount = -1;
 	m_serverThread = new BaseListenThread(address);
-	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, CreatedListenerMessage, onCreatedListener));
-	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ListenErrorMessage, onErrorListener));
-	m_serverThread->addSubscriber(this, SIGNAL_FUNC(this, ClientServerModule, ConnectorMessage, onAddClientServerConnector));
+	m_serverThread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, CreatedListenerMessage, onCreatedListener));
+	m_serverThread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, ListenErrorMessage, onErrorListener));
+	m_serverThread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, ConnectorMessage, onAddClientServerConnector));
 	m_serverThread->Start();
 }
 
@@ -241,85 +240,4 @@ void ClientServerModule::SetProxyUserName(const std::string& userName)
 void ClientServerModule::SetProxyPassword(const std::string& password)
 {
 	m_proxyUserPassword.m_password = password;
-}
-
-void ClientServerModule::onAddClientServerConnector(const ConnectorMessage& msg)
-{
-	ClientServerConnector* conn = static_cast<ClientServerConnector*>(msg.m_conn);
-	if(conn)
-	{
-		conn->SetUserName(m_userPassword.m_userName);
-		conn->SetPassword(m_userPassword.m_password);
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginMessage, onLogin));
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, LoginResultMessage, onLoginResult));
-		ipcSubscribe(conn, SIGNAL_FUNC(this, ClientServerModule, ClientServerConnectedMessage, onConnected));
-	}
-
-	IPCModule::onAddConnector(msg);
-}
-
-void ClientServerModule::onErrorConnect(const ConnectErrorMessage& msg)
-{
-	if(!m_isStopConnect && !m_isExit)
-	{
-		CSLocker locker(&m_csServerRequest);
-		m_bConnectToServerRequest = true;
-		time(&m_requestServerCreated);
-	}
-	else
-	{
-		OnConnectFailed(msg.m_moduleName);
-	}
-}
-
-void ClientServerModule::onCreatedListener(const CreatedListenerMessage& msg)
-{
-	LOG_INFO("Server created: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
-}
-
-void ClientServerModule::onErrorListener(const ListenErrorMessage& msg)
-{
-	ThreadManager::GetInstance().AddThread(m_serverThread);
-	m_serverThread = 0;
-	m_isExit = true;
-	ServerCreationFailed();
-}
-
-void ClientServerModule::onLogin(const LoginMessage& msg)
-{
-	UserPassword user(msg.name());
-	if(m_userPasswords.GetObject(user, &user) && user.m_password == msg.password())
-		const_cast<LoginMessage&>(msg).set_login_result(LOGIN_SUCCESS);
-	else
-		const_cast<LoginMessage&>(msg).set_login_result(LOGIN_FAILURE);
-}
-
-void ClientServerModule::onLoginResult(const LoginResultMessage& msg)
-{
-	if(msg.login_result() == LOGIN_FAILURE)
-	{
-		OnAuthFailed();
-		m_isStopConnect = true;
-	}
-	else if(m_ownSessionId.empty())
-	{
-		m_ownSessionId = msg.own_session_id();
-	}
-	else
-	{
-		m_manager->StopConnection(IPCObjectName(m_serverIPCName).GetModuleNameString());
-	}
-}
-
-void ClientServerModule::onConnected(const ClientServerConnectedMessage& msg)
-{
-	IPCObjectName idName = IPCObjectName::GetIPCName(msg.m_id);
-	if(idName.module_name() == m_serverIPCName)
-	{
-		OnServerConnected();
-	}
-	else if(idName.module_name() == m_clientIPCName)
-	{
-		OnClientConnector(idName.host_name());
-	}
 }

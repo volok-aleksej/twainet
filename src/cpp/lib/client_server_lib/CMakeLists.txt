@@ -25,6 +25,7 @@ set (SRC_${PROJECT_NAME}
     connector/client_server_connector.cpp
     message/client_server_messages.cpp
     module/client_server_module.cpp
+    module/client_server_signal_handler.cpp
 )
 
 add_definitions(-fPIC)	

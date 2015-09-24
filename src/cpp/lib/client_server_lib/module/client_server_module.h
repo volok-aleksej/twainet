@@ -1,16 +1,14 @@
 #ifndef CLIENT_MODULE_H
 #define CLIENT_MODULE_H
 
-#include "client_server_lib/connector/client_server_connector.h"
+#include "client_server_lib/module/client_server_signal_handler.h"
 #include "ipc_lib/module/ipc_module.h"
-#include "connector_lib/message/connector_messages.h"
-#include "client_server_lib/message/client_server_messages.h"
 
 class ClientServerModule : public IPCModule
 {
 	class UserPassword
 	{
-public:
+	public:
 		UserPassword(std::string userName = "", std::string password = "")
 			: m_userName(userName), m_password(password){}
 		
@@ -64,6 +62,7 @@ public:
 
 	const std::string& GetSessionId();
 protected:
+	friend class ClientServerSignalHandler;
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual bool CheckFireConnector(const std::string& moduleName);
 	virtual void OnServerConnected();
@@ -74,16 +73,6 @@ protected:
 	
 	virtual void ManagerFunc();
 protected:
-	friend class Signal;
-	void onAddClientServerConnector(const ConnectorMessage& msg);
-	void onErrorConnect(const ConnectErrorMessage& msg);
-	void onCreatedListener(const CreatedListenerMessage& msg);
-	void onErrorListener(const ListenErrorMessage& msg);
-	void onConnected(const ClientServerConnectedMessage& msg);
-
-	void onLogin(const LoginMessage& msg);
-	void onLoginResult(const LoginResultMessage& msg);
-
 	//for client
 	std::string m_ownSessionId;
 	std::string m_ip;
@@ -106,6 +95,7 @@ private:
 	CriticalSection m_csServerRequest;
 	bool m_bConnectToServerRequest;
 	time_t m_requestServerCreated;
+	ClientServerSignalHandler m_signalHandler;
 };
 
 

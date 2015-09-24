@@ -56,7 +56,7 @@ void service_control_handler(DWORD request)
     case SERVICE_CONTROL_SHUTDOWN:
         {
             // TODO stopping
-			ServiceStatus.dwWin32ExitCode = DeamonApplication::GetInstance().Stop();
+	    ServiceStatus.dwWin32ExitCode = DeamonApplication::GetInstance().Stop();
             ServiceStatus.dwCurrentState = SERVICE_STOPPED;
             ::SetServiceStatus (hStatus, &ServiceStatus);
             return;
