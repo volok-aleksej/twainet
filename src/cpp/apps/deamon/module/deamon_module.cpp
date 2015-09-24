@@ -5,6 +5,8 @@
 DeamonModule::DeamonModule(const Twainet::Module& module)
 : Module(module)
 {
+	AddMessage(new LocalServerAttributesMessage(this));
+	
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
 	Twainet::SetUsersList(module, &m_userPassword, 1);
