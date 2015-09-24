@@ -71,7 +71,7 @@ bool File::Read(char* data, unsigned int* len)
 	if(*len != readlen)
 	{
 		*len = (unsigned int)readlen;
-		return false;
+		return true;
 	}
 
 	return true;

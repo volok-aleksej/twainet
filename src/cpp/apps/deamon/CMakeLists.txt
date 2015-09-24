@@ -24,6 +24,7 @@ set (SRC_${PROJECT_NAME}
 	../../common/file.cpp
 	../../common/process.cpp
 	../../common/service_manager.cpp
+	../../common/dir.cpp
 	../../utils/path_parser.cpp
 	../../utils/utils.cpp
 	../../../messages/deamon.pb.cc

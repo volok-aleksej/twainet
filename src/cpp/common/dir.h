@@ -9,6 +9,7 @@ public:
 	static std::string GetCurrentDir();
 	static std::string GetProcessDir();
 	static std::string GetCommonDir();
+	static std::string GetConfigDir();
 };
 
 #endif/*DIR_H*/

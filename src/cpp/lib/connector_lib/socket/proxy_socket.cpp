@@ -272,7 +272,7 @@ bool ProxySocket::performDigestProxyAuthentication(const std::string& proxyRespo
 	
 	struct DigestType
 	{
-		char* name;
+		char name[10];
 		std::string* var;
 	} digestTypes[6] = {{"realm", &realm}, {"domain", &domain}, {"nonce", &nonce},
 	{"algorithm", &algorithm}, {"opaque", &opaque}, {"qop", &digestAuthTypeStr}};
