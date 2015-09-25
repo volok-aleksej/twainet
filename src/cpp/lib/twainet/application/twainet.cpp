@@ -46,13 +46,13 @@ extern "C" void Twainet::DeleteModule(const Twainet::Module module)
 	Application::GetInstance().DeleteModule((TwainetModule*)module);
 }
 
-extern "C" void Twainet::CreateServer(const Twainet::Module module, int port)
+extern "C" void Twainet::CreateServer(const Twainet::Module module, int port, bool local)
 {
 	if(!module)
 		return;
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->StartServer(port);
+	twainetModule->StartServer(port, local);
 }
 
 extern "C" void Twainet::ConnectToServer(const Twainet::Module module, const char* host, int port, const UserPassword& userPassword)
@@ -293,4 +293,21 @@ extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twa
 #endif/*WIN32*/
 	}
 	return objects.size();
+}
+
+extern "C" int Twainet::GetModuleNameString(const ModuleName& moduleName, char* str, int& strlen)
+{
+	IPCObjectName name(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
+	std::string strModuleName = name.GetModuleNameString();
+	if(strlen < (int)strModuleName.size())
+	{
+		strlen = strModuleName.size();
+		return 0;
+	}
+	
+#ifdef WIN32
+		strcpy_s(str, strlen, strModuleName.c_str());
+#else
+		strcpy(str, strModuleName.c_str());
+#endif/*WIN32*/
 }

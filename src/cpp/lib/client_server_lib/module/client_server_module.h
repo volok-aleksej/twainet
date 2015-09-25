@@ -56,7 +56,7 @@ public:
 	void SetProxyUserName(const std::string& userName);
 	void SetProxyPassword(const std::string& password);
 
-	void StartServer(int port);
+	void StartServer(int port, bool local);
 	bool IsStopServer();
 	void StopServer();
 

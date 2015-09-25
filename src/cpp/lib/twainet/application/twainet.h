@@ -122,7 +122,7 @@ extern "C"
 		TWAINET_FUNC void DeleteModule(const Module module);
 		
 		// Create server that is available outside machine
-		TWAINET_FUNC void CreateServer(const Module module, int port);
+		TWAINET_FUNC void CreateServer(const Module module, int port, bool local = false);
 		
 		// Connect to server. If connection is successful will be created server module
 		TWAINET_FUNC void ConnectToServer(const Module module, const char* host, int port, const UserPassword& userPassword);
@@ -187,6 +187,9 @@ extern "C"
 		
 		// Get list of existing internal connections that is available in current module
 		TWAINET_FUNC int GetInternalConnections(const Module module, InternalConnection* connections, int& sizeConnections);
+		
+		// Get string version of module name
+		TWAINET_FUNC int GetModuleNameString(const ModuleName& moduleName, char* str, int& strlen);
 	}
 };
 

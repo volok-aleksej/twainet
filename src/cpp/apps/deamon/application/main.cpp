@@ -119,7 +119,7 @@ void signal_handler(int sig)
 		f.Delete();
 		DeamonApplication::GetInstance().Stop();
 		syslog(LOG_INFO, "Service %s Stopped.", pname.c_str());
-		exit(0);
+//		exit(0);
 		break;
 	}
 

@@ -170,7 +170,7 @@ void ClientServerModule::ClearUsers()
 	m_userPasswords.Clear();
 }
 
-void ClientServerModule::StartServer(int port)
+void ClientServerModule::StartServer(int port, bool local)
 {
 	LOG_INFO("Try start server on port %d: m_moduleName - %s\n", port, m_moduleName.GetModuleNameString().c_str());
 	if(m_serverThread)
@@ -182,7 +182,7 @@ void ClientServerModule::StartServer(int port)
 
 	ListenAddress address;
 	address.m_id = m_clientIPCName;
-	address.m_localIP = "";
+	address.m_localIP = local ? "127.0.0.1" : "";
 	address.m_localPort = port;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_serverIPCName);
 	address.m_socketFactory = new TCPSecureSocketFactory;

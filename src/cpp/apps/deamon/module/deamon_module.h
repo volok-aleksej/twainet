@@ -23,7 +23,7 @@ protected:
 	virtual void OnMessageRecv(const Twainet::Message& message);
 protected:
 	template<class TMessage, class THandler> friend class DeamonMessage;
-	void onMessage(const LocalServerAttributes& msg, const std::vector<Twainet::ModuleName>& path);
+	void onMessage(const LocalServerAttributes& msg, const std::vector<Twainet::ModuleName>& path){}
 private:
 	void ReadConfig();
 private:

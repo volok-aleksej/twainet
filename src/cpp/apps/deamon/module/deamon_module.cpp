@@ -12,12 +12,10 @@ DeamonModule::DeamonModule(const Twainet::Module& module)
 {
 	ReadConfig();
 	
-	AddMessage(new LocalServerAttributesMessage(this));
-	
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
 	Twainet::SetUsersList(module, &m_userPassword, 1);
-	Twainet::CreateServer(module, g_localServerPort);
+	Twainet::CreateServer(module, g_localServerPort, true);
 }
 
 DeamonModule::~DeamonModule()
@@ -27,12 +25,24 @@ DeamonModule::~DeamonModule()
 
 void DeamonModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 {
-	//TODO: Create read trusted modules from file. Send This Message only if module is trusted
-	LocalServerAttributesMessage msg(this);
-	msg.set_port(g_localServerPort);
-	msg.set_username(m_userPassword.m_user);
-	msg.set_password(m_userPassword.m_pass);
-	toMessage(msg, &moduleName, 1);
+	int sizeName = 0;
+	Twainet::GetModuleNameString(moduleName, 0, sizeName);
+	std::string strModuleName(sizeName, 0);
+	Twainet::GetModuleNameString(moduleName, (char*)strModuleName.c_str(), sizeName);
+	
+	for(std::vector<std::string>::iterator it = m_trustedModules.begin();
+	    it != m_trustedModules.end(); it++)
+	{
+		if(*it == strModuleName)
+		{
+			LocalServerAttributesMessage msg(this);
+			msg.set_port(g_localServerPort);
+			msg.set_username(m_userPassword.m_user);
+			msg.set_password(m_userPassword.m_pass);
+			toMessage(msg, &moduleName, 1);
+			break;
+		}
+	}
 }
 
 void DeamonModule::OnMessageRecv(const Twainet::Message& message)
@@ -43,10 +53,6 @@ void DeamonModule::OnMessageRecv(const Twainet::Message& message)
 		path.push_back(message.m_path[i]);
 	}
 	onData(message.m_typeMessage, path, (char*)message.m_data, message.m_dataLen);
-}
-
-void DeamonModule::onMessage(const LocalServerAttributes& msg, const std::vector<Twainet::ModuleName>& path)
-{
 }
 
 void DeamonModule::ReadConfig()
@@ -61,8 +67,9 @@ void DeamonModule::ReadConfig()
 	char* data = new char[MAX_BUFFER_LEN];
 	char* dataPos = data;
 	while(filepos < filesize)
-	{		
+	{
 		unsigned int size = MAX_BUFFER_LEN - (unsigned int)(dataPos - data) ;
+		memset(dataPos, 0, size);
 		if(!configFile.Read(dataPos, &size))
 		{
 			break;
@@ -89,9 +96,11 @@ void DeamonModule::ReadConfig()
 		memcpy(data, tempData, templen);
 		delete tempData;
 		dataPos = data + templen;
-		memset(dataPos, 0, MAX_BUFFER_LEN - templen);
 	}
 	
-	m_trustedModules.push_back(std::string(data, dataPos - data));
+	if(dataPos - data)
+	{
+		m_trustedModules.push_back(std::string(data, dataPos - data));
+	}
 	delete data;
 }
