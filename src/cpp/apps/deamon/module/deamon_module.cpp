@@ -80,6 +80,7 @@ void DeamonModule::ReadConfig()
 		int pos = 0;
 		for(int i = 0; i < lines.size() - 1; i++)
 		{
+			pos += lines[i].size() + 1;
 			std::string line = lines[i];
 			if(line[line.size() - 1] == '\r')
 				line.erase(line.size() - 1, 1);
@@ -87,7 +88,6 @@ void DeamonModule::ReadConfig()
 				continue;
 			
 			m_trustedModules.push_back(line);
-			pos += lines[i].size() + 1;
 		}
 		
 		int templen = filepos - pos;
