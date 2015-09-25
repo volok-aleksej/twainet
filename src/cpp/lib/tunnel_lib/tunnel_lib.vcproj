@@ -170,6 +170,22 @@
 				RelativePath=".\module\tunnel_module.h"
 				>
 			</File>
+			<File
+				RelativePath=".\module\client_signal_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\client_signal_handler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\module\server_signal_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\server_signal_handler.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="connector"

@@ -24,6 +24,12 @@
     <ClCompile Include="module\tunnel_module.cpp">
       <Filter>module</Filter>
     </ClCompile>
+    <ClCompile Include="module\client_signal_handler.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
+    <ClCompile Include="module\server_signal_handler.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
     <ClCompile Include="connector\tunnel_connector.cpp">
       <Filter>connector</Filter>
     </ClCompile>
@@ -57,6 +63,12 @@
       <Filter>module</Filter>
     </ClInclude>
     <ClInclude Include="module\tunnel_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\client_signal_handler.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\server_signal_handler.h">
       <Filter>module</Filter>
     </ClInclude>
     <ClInclude Include="connector\tunnel_connector.h">

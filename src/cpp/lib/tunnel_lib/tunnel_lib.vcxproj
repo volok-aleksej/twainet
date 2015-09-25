@@ -89,6 +89,8 @@
   <ItemGroup>
     <ClCompile Include="module\tunnel_containers.cpp" />
     <ClCompile Include="module\tunnel_module.cpp" />
+    <ClCompile Include="module\client_signal_handler.cpp" />
+    <ClCompile Include="module\server_signal_handler.cpp" />
     <ClCompile Include="connector\tunnel_connector.cpp" />
     <ClCompile Include="connector\tunnel_server_connector.cpp" />
     <ClCompile Include="..\..\common\network.cpp" />
@@ -102,6 +104,8 @@
   <ItemGroup>
     <ClInclude Include="module\tunnel_containers.h" />
     <ClInclude Include="module\tunnel_module.h" />
+    <ClInclude Include="module\client_signal_handler.h" />
+    <ClInclude Include="module\server_signal_handler.h" />
     <ClInclude Include="connector\tunnel_connector.h" />
     <ClInclude Include="connector\tunnel_server_connector.h" />
     <ClInclude Include="thread\external_connect_thread.h" />

@@ -164,6 +164,14 @@
 				RelativePath=".\module\client_server_module.h"
 				>
 			</File>
+			<File
+				RelativePath=".\module\client_server_signal_handler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\module\client_server_signal_handler.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="connector"

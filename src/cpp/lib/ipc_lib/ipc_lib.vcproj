@@ -277,6 +277,14 @@
 				RelativePath=".\module\ipc_object_name.h"
 				>
 			</File>
+			<File
+				RelativePath=".\module\ipc_signal_handler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\module\ipc_signal_handler.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="thread"

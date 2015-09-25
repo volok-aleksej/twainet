@@ -106,6 +106,7 @@
     <ClCompile Include="connector\ipc_handler.cpp" />
     <ClCompile Include="module\ipc_module.cpp" />
     <ClCompile Include="module\ipc_object_name.cpp" />
+    <ClCompile Include="module\ipc_signal_handler.cpp" />
     <ClCompile Include="thread\ipc_checker_thread.cpp" />
     <ClCompile Include="thread\ping_thread.cpp" />
     <ClCompile Include="..\..\utils\utils.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="connector\proto_message.h" />
     <ClInclude Include="module\ipc_module.h" />
     <ClInclude Include="module\ipc_object_name.h" />
+    <ClInclude Include="module\ipc_signal_handler.h" />
     <ClInclude Include="thread\ipc_checker_thread.h" />
     <ClInclude Include="thread\ping_thread.h" />
     <ClInclude Include="..\..\utils\utils.h" />

@@ -18,6 +18,9 @@
     <ClCompile Include="module\client_server_module.cpp">
       <Filter>module</Filter>
     </ClCompile>
+    <ClCompile Include="module\client_server_signal_handler.cpp">
+      <Filter>module</Filter>
+    </ClCompile>
     <ClCompile Include="connector\client_server_connector.cpp">
       <Filter>connector</Filter>
     </ClCompile>
@@ -30,6 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="module\client_server_module.h">
+      <Filter>module</Filter>
+    </ClInclude>
+    <ClInclude Include="module\client_server_signal_handler.h">
       <Filter>module</Filter>
     </ClInclude>
     <ClInclude Include="connector\client_server_connector.h">

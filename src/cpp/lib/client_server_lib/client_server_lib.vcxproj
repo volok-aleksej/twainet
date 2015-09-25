@@ -91,12 +91,14 @@
   <ItemGroup>
     <ClCompile Include="message\client_server_messages.cpp" />
     <ClCompile Include="module\client_server_module.cpp" />
+    <ClCompile Include="module\client_server_signal_handler.cpp" />
     <ClCompile Include="connector\client_server_connector.cpp" />
     <ClCompile Include="..\..\..\messages\client_server.pb.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="message\client_server_messages.h" />
     <ClInclude Include="module\client_server_module.h" />
+    <ClInclude Include="module\client_server_signal_handler.h" />
     <ClInclude Include="connector\client_server_connector.h" />
     <ClInclude Include="..\..\..\messages\client_server.pb.h" />
   </ItemGroup>
