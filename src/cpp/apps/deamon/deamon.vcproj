@@ -229,6 +229,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\common\file.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\file.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\process.cpp"
 				>
 			</File>

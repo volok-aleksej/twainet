@@ -165,7 +165,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\module\client_server_signal_handler.h"
+				RelativePath=".\module\client_server_signal_handler.cpp"
 				>
 			</File>
 			<File
