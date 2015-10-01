@@ -4,6 +4,7 @@
 #include <map>
 #include "tunnel_lib/thread/tunnel_server_listen_address.h"
 #include "thread_lib/thread/thread_impl.h"
+#include "thread_lib/common/semafor.h"
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/message/connector_messages.h"
@@ -22,8 +23,6 @@ protected:
 	virtual void OnStop(){}
 	virtual void ThreadFunc();
 
-	bool CheckGetAddresses();
-	bool CheckConnect();
 	void SignalError();
 protected:
 	friend class Signal;
@@ -38,6 +37,8 @@ private:
 	Connector* m_connectorTwo;
 	std::map<std::string, Address> m_addresses;
 	CriticalSection m_cs;
+	Semaphore m_addrSemafor;
+	Semaphore m_connectSemafor;
 };
 
 #endif/*RELAY_LISTEN_THREAD_H*/

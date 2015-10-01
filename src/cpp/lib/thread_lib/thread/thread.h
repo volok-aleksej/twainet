@@ -2,6 +2,7 @@
 #define THREAD_H
 
 #include "../common/critical_section.h"
+#include "../common/semafor.h"
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -38,6 +39,8 @@ public:
 	bool IsRunning();
 	bool IsStopped() const;
 	bool IsStop();
+	bool WaitStop(int timeout);
+	bool WaitRun(int timeout);
 
 	static void sleep(unsigned long millisec);
 
@@ -61,6 +64,8 @@ private:
     typedef pthread_t ThreadHandle;
 #endif
     ThreadHandle m_handle;
+    Semaphore m_startSemaphore;
+    Semaphore m_stopSemaphore;
     ThreadState m_state;
 	CriticalSection m_cs;
 };

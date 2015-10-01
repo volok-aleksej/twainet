@@ -2,7 +2,7 @@
 #include "common/file.h"
 #include "common/process.h"
 
-extern int run_process();
+extern int run_process(bool isDeamon);
 
 ServiceManager::ServiceManager(const std::string& serviceName)
 : m_serviceName(serviceName)
@@ -93,7 +93,7 @@ bool ServiceManager::Start()
 		}
 	}
 #else
-	run_process();
+	run_process(true);
 	return true;
 #endif/*WIN32*/
 	return false;

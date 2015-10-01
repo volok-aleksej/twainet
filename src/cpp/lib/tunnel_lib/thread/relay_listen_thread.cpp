@@ -108,36 +108,26 @@ void RelayListenThread::ThreadFunc()
 	m_listenThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, RelayListenThread, ConnectorMessage, onAddConnector));
 	m_listenThreadTwo->Start();
 
-	while(!IsStop())
+	if(m_addrSemafor.Wait(INFINITE) == Semaphore::SUCCESS)
 	{
-		if(CheckGetAddresses())
+		std::string ip;
+		for(std::map<std::string, Address>::iterator it = m_addresses.begin();
+			it != m_addresses.end(); it++)
 		{
-			std::string ip;
-			for(std::map<std::string, Address>::iterator it = m_addresses.begin();
-				it != m_addresses.end(); it++)
-			{
-				CreatedServerListenerMessage msg(m_address.m_id, it->first, it->second.m_localIP, it->second.m_localPort);
-				onSignal(msg);
-			}
-			break;
+			CreatedServerListenerMessage msg(m_address.m_id, it->first, it->second.m_localIP, it->second.m_localPort);
+			onSignal(msg);
 		}
-		sleep(100);
 	}
 
-	while(!IsStop())
+	if(m_connectSemafor.Wait(INFINITE) == Semaphore::SUCCESS)
 	{
-		if(CheckConnect())
-		{
-			CSLocker lock(&m_cs);
-			Connector* conn = new TunnelServerConnector((TunnelConnector*)m_connectorOne, (TunnelConnector*)m_connectorTwo);
-			conn->SetId(m_address.m_id);
-			m_connectorOne = 0;
-			m_connectorTwo = 0;
-			ConnectorMessage msg(conn);
-			onSignal(msg);
-			break;
-		}
-		sleep(100);
+		CSLocker lock(&m_cs);
+		Connector* conn = new TunnelServerConnector((TunnelConnector*)m_connectorOne, (TunnelConnector*)m_connectorTwo);
+		conn->SetId(m_address.m_id);
+		m_connectorOne = 0;
+		m_connectorTwo = 0;
+		ConnectorMessage msg(conn);
+		onSignal(msg);
 	}
 }
 
@@ -169,6 +159,10 @@ void RelayListenThread::onCreatedListenerMessage(const CreatedListenerMessage& m
 	addr.m_localIP = msg.m_ip;
 	addr.m_localPort = msg.m_port;
 	m_addresses[msg.m_id] = addr;
+	if(m_addresses.size() == 2)
+	{
+		m_addrSemafor.Set();
+	}
 }
 
 void RelayListenThread::onAddConnector(const ConnectorMessage& msg)
@@ -182,17 +176,10 @@ void RelayListenThread::onAddConnector(const ConnectorMessage& msg)
 	{
 		m_connectorTwo = msg.m_conn;
 	}
-}
-
-bool RelayListenThread::CheckGetAddresses()
-{
-	return m_addresses.size() == 2;
-}
-
-bool RelayListenThread::CheckConnect()
-{
-	CSLocker lock(&m_cs);
-	return m_connectorOne && m_connectorTwo;
+	if(m_connectorOne && m_connectorTwo)
+	{
+		m_connectSemafor.Set();
+	}
 }
 
 void RelayListenThread::SignalError()

@@ -50,6 +50,7 @@ Semaphore::WaitStatus Semaphore::Wait(int timeout)
 	case WAIT_TIMEOUT:
 		return TIMEOUT;
 	case WAIT_OBJECT_0:
+		ReleaseSemaphore(m_semafor, 1, NULL);
 		return SUCCESS;
 	}
 #else
@@ -69,6 +70,7 @@ Semaphore::WaitStatus Semaphore::Wait(int timeout)
 	}
 	else if(!ret)
 	{
+		sem_post(&m_semafor);
 		return SUCCESS;
 	}
 #endif/*WIN32*/

@@ -43,6 +43,8 @@ bool Thread::Start()
 			return false;
 		}
 		m_state = THREAD_START_PENDING;
+		m_startSemaphore.Release();
+		m_stopSemaphore.Release();
 	}
 
 #ifdef WIN32
@@ -117,6 +119,7 @@ void* Thread::ThreadProc(void* arg)
 	{
 		CSLocker locker(&thread->m_cs);
 		thread->m_state = THREAD_RUNNING;
+		thread->m_startSemaphore.Set();
 	}
 
 	thread->OnStart();
@@ -126,6 +129,7 @@ void* Thread::ThreadProc(void* arg)
 	{
 		CSLocker locker(&thread->m_cs);
 		thread->m_state = THREAD_STOPPED;
+		thread->m_stopSemaphore.Set();
 	}
 
 #ifdef WIN32
@@ -142,6 +146,22 @@ bool Thread::IsStopped() const
 bool Thread::IsStop()
 {
 	return m_state == THREAD_STOP_PENDING;
+}
+
+bool Thread::WaitStop(int timeout)
+{
+	if(!IsStopped())
+	{
+		m_stopSemaphore.Wait(timeout) == Semaphore::SUCCESS;
+	}
+}
+	
+bool Thread::WaitRun(int timeout)
+{
+	if(!IsRunning())
+	{
+		m_startSemaphore.Wait(timeout) == Semaphore::SUCCESS;
+	}
 }
 
 bool Thread::IsRunning()

@@ -129,23 +129,24 @@ void signal_handler(int sig)
 
 #endif/*WIN32*/
 
-int run_process()
+int run_process(bool isDeamon)
 {
 #ifdef WIN32
-	SERVICE_TABLE_ENTRYA ServiceTable[2];
-	ServiceTable[0].lpServiceName = const_cast<LPSTR>(DeamonApplication::GetAppName().c_str());
-	ServiceTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONA)service_main;
-	ServiceTable[1].lpServiceName = NULL;
-	ServiceTable[1].lpServiceProc = NULL;
-	// Start the control dispatcher thread for our service
-	StartServiceCtrlDispatcherA(ServiceTable);
+	if(isDeamon)
+	{
+		SERVICE_TABLE_ENTRYA ServiceTable[2];
+		ServiceTable[0].lpServiceName = const_cast<LPSTR>(DeamonApplication::GetAppName().c_str());
+		ServiceTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTIONA)service_main;
+		ServiceTable[1].lpServiceName = NULL;
+		ServiceTable[1].lpServiceProc = NULL;
+		// Start the control dispatcher thread for our service
+		StartServiceCtrlDispatcherA(ServiceTable);
+	}
+	else
+	{
+		DeamonApplication::GetInstance().Run();
+	}
 #else
-	old_sig_handler = signal(SIGHUP, signal_handler);
-	signal(SIGTERM, signal_handler);
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, signal_handler);
-	signal(SIGPIPE, signal_handler);
-
 	std::string app_name = app_self_name();
 	pid_t pid = 0, sid;
 	std::string pid_file = get_process_pid_filename();
@@ -157,65 +158,84 @@ int run_process()
 		if(pid != 0)
 		{	
 			// check process is running 
-			syslog(LOG_INFO, "Daemonizing process %s already running with pid %d.", app_name.c_str(), pid);
+			syslog(LOG_INFO, "Process %s already running with pid %d.", app_name.c_str(), pid);
 			exit(EXIT_SUCCESS);
 		}
 
 		f.Delete();
 	}
 
-	syslog(LOG_INFO, "starting the daemonizing process %s", app_name.c_str());
-
-	/* Fork off the parent process */
-	pid = fork();
-	if (pid < 0)
+	if(isDeamon)
 	{
-		syslog(LOG_INFO, "fork failed on starting the daemonizing process %s", app_name.c_str());
-		exit(EXIT_FAILURE);
+		syslog(LOG_INFO, "Starting the daemonizing process %s", app_name.c_str());
+
+		/* Fork off the parent process */
+		pid = fork();
+		if (pid < 0)
+		{
+			syslog(LOG_INFO, "Fork failed on starting the daemonizing process %s", app_name.c_str());
+			exit(EXIT_FAILURE);
+		}
+
+		if (pid > 0)
+		{
+			f.CreateDir();
+			syslog(LOG_INFO, "Fork process %d on starting the daemonizing process %s", pid, app_name.c_str());
+			std::ofstream om(pid_file.c_str(), std::ios::out | std::ios::binary);
+			om << pid;
+			om.flush();
+			exit(EXIT_SUCCESS);
+		}
+
+		/* Change the file mode mask */
+		umask(0);
+
+		/* Create a new SID for the child process */
+		sid = setsid();
+		if (sid < 0)
+		{
+			/* Log the failure */
+			syslog(LOG_INFO, "Fork failed on starting the daemonizing process %s. ", app_name.c_str());
+			f.Delete();
+			exit(EXIT_FAILURE);
+		}
+
+		/* Change the current working directory */
+		if ((chdir("/")) < 0)
+		{
+			/* Log the failure */
+			syslog(LOG_INFO, "Change to / failed on starting the daemonizing process %s. ", app_name.c_str());
+			f.Delete();
+			exit(EXIT_FAILURE);
+		}
+
+		/* Close out the standard file descriptors */
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
+		close(STDERR_FILENO);
+		
+		syslog(LOG_INFO, "Entry child daemonizing process %s", app_name.c_str());
 	}
-
-	if (pid > 0)
+	else
 	{
+		pid = getpid();
 		f.CreateDir();
-		syslog(LOG_INFO, "fork process %d on starting the daemonizing process %s", pid, app_name.c_str());
+		syslog(LOG_INFO, "Process %d starting", pid);
 		std::ofstream om(pid_file.c_str(), std::ios::out | std::ios::binary);
 		om << pid;
 		om.flush();
-		exit(EXIT_SUCCESS);
 	}
-
-	/* Change the file mode mask */
-	umask(0);
-
-	/* Create a new SID for the child process */
-	sid = setsid();
-	if (sid < 0)
-	{
-		/* Log the failure */
-		syslog(LOG_INFO, "fork failed on starting the daemonizing process %s. ", app_name.c_str());
-		f.Delete();
-		exit(EXIT_FAILURE);
-	}
-
-	/* Change the current working directory */
-	if ((chdir("/")) < 0)
-	{
-		/* Log the failure */
-		syslog(LOG_INFO, "change to / failed on starting the daemonizing process %s. ", app_name.c_str());
-		f.Delete();
-		exit(EXIT_FAILURE);
-	}
-
-	/* Close out the standard file descriptors */
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
 	
-	syslog(LOG_INFO, "entry child daemonizing process %s", app_name.c_str());
+	old_sig_handler = signal(SIGHUP, signal_handler);
+	signal(SIGTERM, signal_handler);
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, signal_handler);
+	signal(SIGPIPE, signal_handler);
+	
 	DeamonApplication::GetInstance().Run();
 
 	f.Delete();
-	syslog(LOG_INFO, "exit child daemonizing process %s", app_name.c_str());
+	syslog(LOG_INFO, "exit process %s", app_name.c_str());
 #endif/*WIN32*/
 
 	return 0;
@@ -263,12 +283,8 @@ int  main(int argc, char* argv[])
 	}
 	else if (param == "-start" || param == "start")
 	{
-#ifdef WIN32
 		ServiceManager manager(DeamonApplication::GetAppName());
 		manager.Start();
-#else
-		return run_process();
-#endif/*WIN32*/
 	}
 	else if (param == "-stop" || param == "stop")
 	{
@@ -277,11 +293,11 @@ int  main(int argc, char* argv[])
 	}
 	else if(param == "-debug" || param == "debug")
 	{
-		return DeamonApplication::GetInstance().Run();
+		return run_process(false);
 	}
 	else if (param.empty())
 	{
-		return run_process();
+		return run_process(true);
 	}
     
 	return 0;

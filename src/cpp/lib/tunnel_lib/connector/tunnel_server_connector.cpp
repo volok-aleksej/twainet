@@ -50,10 +50,9 @@ void TunnelServerConnector::ThreadFunc()
 {
 	while(!IsStop())
 	{
-		if (m_connectorOne->IsStopped() ||
-			m_connectorTwo->IsStopped())
+		if (m_connectorOne->WaitStop(50) ||
+			m_connectorTwo->WaitStop(50))
 		{
-			sleep(100);
 			break;
 		}
 	}
