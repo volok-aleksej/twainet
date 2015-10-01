@@ -221,6 +221,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\common\dir.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\dir.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\process.cpp"
 				>
 			</File>
@@ -285,7 +293,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;&#x0D;&#x0A;"
 						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
 					/>
 				</FileConfiguration>
@@ -295,7 +303,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Compiling  *.proto files"
-						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;&#x0D;&#x0A;"
 						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
 					/>
 				</FileConfiguration>
