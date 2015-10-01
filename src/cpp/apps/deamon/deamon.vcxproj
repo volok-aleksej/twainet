@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\messages\deamon.pb.cc" />
     <ClCompile Include="..\..\common\common_func.cpp" />
+    <ClCompile Include="..\..\common\dir.cpp" />
     <ClCompile Include="..\..\common\file.cpp" />
     <ClCompile Include="..\..\common\process.cpp" />
     <ClCompile Include="..\..\common\service_manager.cpp" />
@@ -26,6 +27,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\deamon.pb.h" />
     <ClInclude Include="..\..\common\common_func.h" />
+    <ClInclude Include="..\..\common\dir.h" />
     <ClInclude Include="..\..\common\file.h" />
     <ClInclude Include="..\..\common\process.h" />
     <ClInclude Include="..\..\common\service_manager.h" />

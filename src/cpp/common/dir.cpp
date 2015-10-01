@@ -52,7 +52,7 @@ std::string Dir::GetConfigDir()
 	char pszPath[MAX_PATH + 1] = {0};
 	HRESULT res = SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, pszPath);
 	configDir = pszPath;
-	configDir += "\\twainet"
+	configDir += "\\twainet";
 #else
 	if(geteuid() == 0)
 	{

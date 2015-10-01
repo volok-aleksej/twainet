@@ -16,6 +16,8 @@ DeamonModule::DeamonModule(const Twainet::Module& module)
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
 	Twainet::SetUsersList(module, &m_userPassword, 1);
 	Twainet::CreateServer(module, g_localServerPort, true);
+	Twainet::UserPassword userPassword = {"rmmp2plogin", "rmmp2paccess"};
+	Twainet::ConnectToServer(module, "199.66.200.133", 1054, userPassword);
 }
 
 DeamonModule::~DeamonModule()

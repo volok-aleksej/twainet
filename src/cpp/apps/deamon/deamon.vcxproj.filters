@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\common\tstring.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\common\dir.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">
@@ -87,6 +90,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\tstring.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\dir.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
