@@ -92,25 +92,15 @@ void ExternalListenThread::ThreadFunc()
 	m_recvThreadTwo->addSubscriber(this, SIGNAL_FUNC(this, ExternalListenThread, CreatedListenerMessage, onCreatedListenerMessage));
 	m_recvThreadTwo->Start();
 
-	while(!IsStop())
+	if(m_semafor.Wait(INFINITE) == Semaphore::SUCCESS)
 	{
-		if(CheckGetSession())
+		for(std::map<std::string, Address>::iterator it = m_addresses.begin();
+			it != m_addresses.end(); it++)
 		{
-			for(std::map<std::string, Address>::iterator it = m_addresses.begin();
-				it != m_addresses.end(); it++)
-			{
-				GotExternalAddressMessage msg(m_address.m_id, it->first, it->second.m_localIP, it->second.m_localPort);
-				onSignal(msg);
-			}
-			break;
+			GotExternalAddressMessage msg(m_address.m_id, it->first, it->second.m_localIP, it->second.m_localPort);
+			onSignal(msg);
 		}
-		sleep(100);
 	}
-}
-
-bool ExternalListenThread::CheckGetSession()
-{
-	return m_addresses.size() == 2;
 }
 
 void ExternalListenThread::SignalError()
@@ -147,4 +137,8 @@ void ExternalListenThread::onCreatedListenerMessage(const CreatedListenerMessage
 	addr.m_localIP = msg.m_ip;
 	addr.m_localPort = msg.m_port;
 	m_addresses[msg.m_id] = addr;
+	if(m_addresses.size() == 2)
+	{
+		m_semafor.Set();
+	}
 }

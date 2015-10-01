@@ -8,6 +8,7 @@
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/message/connector_messages.h"
+#include "thread_lib/common/semafor.h"
 
 class UDPSocket;
 
@@ -23,7 +24,6 @@ protected:
 	virtual void OnStop(){}
 	virtual void ThreadFunc();
 
-	bool CheckGetSession();
 	void SignalError();
 protected:
 	friend class Signal;
@@ -35,6 +35,7 @@ private:
 	ExternalRecvThread* m_recvThreadTwo;
 	std::map<std::string, Address> m_addresses;
 	CriticalSection m_cs;
+	Semaphore m_semafor;
 };
 
 #endif/*EXTERNAL_LISTEN_THREAD_H*/
