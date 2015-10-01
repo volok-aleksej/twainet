@@ -220,6 +220,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\common\semafor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\common\semafor.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\singleton.h"
 				>
 			</File>

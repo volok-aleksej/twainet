@@ -152,7 +152,7 @@ bool Thread::WaitStop(int timeout)
 {
 	if(!IsStopped())
 	{
-		m_stopSemaphore.Wait(timeout) == Semaphore::SUCCESS;
+		return m_stopSemaphore.Wait(timeout) == Semaphore::SUCCESS;
 	}
 }
 	
@@ -160,7 +160,7 @@ bool Thread::WaitRun(int timeout)
 {
 	if(!IsRunning())
 	{
-		m_startSemaphore.Wait(timeout) == Semaphore::SUCCESS;
+		return m_startSemaphore.Wait(timeout) == Semaphore::SUCCESS;
 	}
 }
 

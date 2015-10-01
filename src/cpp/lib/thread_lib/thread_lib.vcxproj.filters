@@ -24,6 +24,9 @@
     <ClCompile Include="common\managers_container.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="common\semafor.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="thread\thread.h">
@@ -48,6 +51,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="common\managers_container.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\semafor.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
