@@ -1,0 +1,11 @@
+[Unit]
+Description=twainet deamon
+After=syslog.target
+
+[Service]
+ExecStart=/usr/bin/twndeamon -start
+Type=forking
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
