@@ -310,4 +310,5 @@ extern "C" int Twainet::GetModuleNameString(const ModuleName& moduleName, char* 
 #else
 		strcpy(str, strModuleName.c_str());
 #endif/*WIN32*/
+	return strlen;
 }
