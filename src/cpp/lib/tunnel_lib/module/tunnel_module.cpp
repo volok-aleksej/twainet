@@ -394,36 +394,38 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 
 void TunnelModule::CheckTunnels()
 {
-	CSLocker lock(&m_cs);
 	time_t curTime;
 	time(&curTime);
-	for(std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.begin();
-		it != m_tunnels.end();)
 	{
-		if(curTime - it->second->m_creationTime > 60)//60 second
+		CSLocker lock(&m_cs);
+		for(std::map<std::string, TunnelConnect*>::iterator it = m_tunnels.begin();
+			it != m_tunnels.end();)
 		{
-			std::string sessionId = it->first;
-			delete it->second;
-			m_tunnels.erase(it++); 
-			OnTunnelConnectFailed(sessionId);
+			if(curTime - it->second->m_creationTime > 60)//60 second
+			{
+				std::string sessionId = it->first;
+				delete it->second;
+				m_tunnels.erase(it++); 
+				OnTunnelConnectFailed(sessionId);
+			}
+			else
+			{
+				it++;
+			}
 		}
-		else
-		{
-			it++;
-		}
-	}
 
-	for(std::map<std::string, TunnelServer*>::iterator it = m_servers.begin();
-		it != m_servers.end();)
-	{
-		if(curTime - it->second->m_creationTime > 60)//60 second
+		for(std::map<std::string, TunnelServer*>::iterator it = m_servers.begin();
+			it != m_servers.end();)
 		{
-			delete it->second;
-			m_servers.erase(it++); 
-		}
-		else
-		{
-			it++;
+			if(curTime - it->second->m_creationTime > 60)//60 second
+			{
+				delete it->second;
+				m_servers.erase(it++); 
+			}
+			else
+			{
+				it++;
+			}
 		}
 	}
 	
@@ -433,11 +435,7 @@ void TunnelModule::CheckTunnels()
 	 {
 		if(curTime - it->m_creationTime > 60)//60 second
 		{
-			tunnelsStep.erase(it++); 
-		}
-		else
-		{
-			it++;
+			m_tunnelsStep.RemoveObject(*it);
 		}
 	 }
 }

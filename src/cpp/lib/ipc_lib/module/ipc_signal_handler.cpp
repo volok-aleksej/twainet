@@ -5,6 +5,7 @@
 #include "thread_lib/thread/thread_manager.h"
 #include "common/common.h"
 #include "common/logger.h"
+#include "common/user.h"
 
 IPCSignalHandler::IPCSignalHandler(IPCModule* module)
 : m_module(module)
@@ -18,7 +19,8 @@ IPCSignalHandler::~IPCSignalHandler()
 
 void IPCSignalHandler::onCreatedListener(const CreatedListenerMessage& msg)
 {
-	IPCModule::IPCObject object(IPCObjectName::GetIPCName(msg.m_id), msg.m_ip, msg.m_port);
+	IPCModule::IPCObject object(IPCObjectName::GetIPCName(msg.m_id), msg.m_ip,
+				    msg.m_port, m_module->m_isCoordinator ? IPCModule::m_baseAccessId : GetUserName());
 	m_module->m_ipcObject.AddObject(object);
 	if(!m_module->m_isCoordinator)
 	{

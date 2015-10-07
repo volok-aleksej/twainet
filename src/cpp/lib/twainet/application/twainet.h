@@ -33,8 +33,8 @@ extern "C"
 {
 	namespace Twainet
 	{
-		const char ServerModuleName[] = "ServerName";
-		const char ClentModuleName[] = "ClientName";
+		const char ServerModuleName[] = "Server";
+		const char ClentModuleName[] = "Client";
 		const char TunnelModuleName[] = "Tunnel";
 		
 		struct UserPassword
