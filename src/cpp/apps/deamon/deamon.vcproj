@@ -12,14 +12,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\x86\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\x86\$(ConfigurationName)\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -62,9 +65,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x86;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -93,8 +96,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\$(ConfigurationName)\"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\x86\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\x86$(ConfigurationName)\"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -138,14 +141,169 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\twndeamon.exe"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\twndeamon.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x86;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\x64\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\x64\$(ConfigurationName)\"
+			ConfigurationType="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x64\$(ConfigurationName)\twndeamon.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x64;"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\deamon\x64\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\deamon\x64\$(ConfigurationName)\"
+			ConfigurationType="1"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x64\$(ConfigurationName)\twndeamon.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x64;"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -307,6 +465,26 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\deamon.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\deamon.pb.cc;$(SolutionDir)..\messages\deamon.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"

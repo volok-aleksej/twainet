@@ -12,14 +12,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\x86\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\x86\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -62,13 +65,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x86;"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,8 +98,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
-			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\$(ConfigurationName)\"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\x86\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\x86\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			ManagedExtensions="0"
@@ -141,16 +144,176 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).dll"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\$(ProjectName).dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\$(ConfigurationName);$(SolutionDir)external\openssl\lib;"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x86;"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(SolutionDir)..\..\output\lib\$(ConfigurationName)\$(TargetName).lib"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\x64\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\x64\$(ConfigurationName)\"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x64\$(ConfigurationName)\$(ProjectName).dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x64;"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)\$(TargetName).lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\twainet\x64\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)..\..\output\twainet\x64\$(ConfigurationName)\"
+			ConfigurationType="2"
+			CharacterSet="1"
+			ManagedExtensions="0"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external\protobuf-2.5.0\src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TWAINET_EXPORT"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib Iphlpapi.lib ssleay32.lib libeay32.lib tunnel_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x64\$(ConfigurationName)\$(ProjectName).dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName);$(SolutionDir)external\openssl\lib\x64;"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)\$(TargetName).lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"

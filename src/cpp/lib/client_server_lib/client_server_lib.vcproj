@@ -12,14 +12,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\x86\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -63,8 +66,8 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ipc_lib.lib"
-				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
-				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
+				OutputFile="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -84,8 +87,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\x86\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -130,8 +133,143 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ipc_lib.lib"
-				OutputFile="$(OutDir)\..\..\lib\$(ConfigurationName)\$(ProjectName).lib"
-				AdditionalLibraryDirectories="$(OutDir)\..\..\lib\$(ConfigurationName)"
+				OutputFile="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x86\$(ConfigurationName)"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\x64\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\x64\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="ipc_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)..\..\output\client_lib\x64\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\client_lib\x64\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external\openssl&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="ipc_lib.lib"
+				OutputFile="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)\$(ProjectName).lib"
+				AdditionalLibraryDirectories="$(SolutionDir)..\..\output\lib\x64\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -211,6 +349,26 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\client_server.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\client_server.pb.cc;$(SolutionDir)..\messages\client_server.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling  *.proto files"
+						CommandLine="&quot;$(SolutionDir)..\messages\protoc.exe&quot; --proto_path=&quot;$(SolutionDir)..\messages&quot; --cpp_out=&quot;$(SolutionDir)..\messages&quot; &quot;$(SolutionDir)..\messages\client_server.proto&quot;&#x0D;&#x0A;"
+						Outputs="$(SolutionDir)..\messages\client_server.pb.cc;$(SolutionDir)..\messages\client_server.pb.h"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
