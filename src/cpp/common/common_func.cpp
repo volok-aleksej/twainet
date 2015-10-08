@@ -17,7 +17,7 @@ std::string CreateGUID()
 	guidWStr.resize(50);
 	GUID guid;
 	CoCreateGuid(&guid);
-	StringFromGUID2(guid, (wchar_t*)guidWStr.c_str(), guidWStr.size());
+	StringFromGUID2(guid, (wchar_t*)guidWStr.c_str(), (int)guidWStr.size());
 	g_wcstombs(guidStr, guidWStr);
 #else
 	uuid_t out;

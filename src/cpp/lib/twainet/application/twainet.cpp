@@ -25,7 +25,7 @@ extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 #endif/*WIN32*/
 }
 
-extern "C" void Twainet::FreeLibrary()
+extern "C" void Twainet::CloseLibrary()
 {
 	ManagersContainer::GetInstance().Join();
 	UDT::cleanup();

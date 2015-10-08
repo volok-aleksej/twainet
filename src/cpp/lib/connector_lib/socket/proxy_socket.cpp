@@ -120,7 +120,7 @@ bool ProxySocket::sendConnectCmd(const std::string& httpheaders)
 	sprintf_s(portBuffer, 6, "%d", m_targetPort);
 	std::string resultString("CONNECT ");
 	resultString += m_targetIp + ":" + portBuffer + " HTTP/1.1\r\n" + httpheaders + "\r\n";
-	return SendData((char*)resultString.c_str(), resultString.size());
+	return SendData((char*)resultString.c_str(), (int)resultString.size());
 }
 
 bool ProxySocket::recvProxyResponse(int& responseCode, std::string& proxyResponse)

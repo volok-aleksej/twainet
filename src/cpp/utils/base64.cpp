@@ -149,7 +149,7 @@ int base64_ntop(unsigned char const *src, size_t srclength, char *target, size_t
 	if (0 != srclength) {
 		/* Get what's left. */
 		input[0] = input[1] = input[2] = '\0';
-		for (i = 0; i < srclength; i++)
+		for (i = 0; i < (int)srclength; i++)
 			input[i] = *src++;
 	
 		output[0] = input[0] >> 2;
@@ -197,7 +197,7 @@ int base64_pton(char const *src, unsigned char *target, size_t targsize)
 		switch (state) {
 		case 0:
 			if (target) {
-				if (tarindex >= targsize)
+				if (tarindex >= (int)targsize)
 					return (-1);
 				target[tarindex] = (pos - base64_chars.c_str()) << 2;
 			}
@@ -205,7 +205,7 @@ int base64_pton(char const *src, unsigned char *target, size_t targsize)
 			break;
 		case 1:
 			if (target) {
-				if (tarindex + 1 >= targsize)
+				if (tarindex + 1 >= (int)targsize)
 					return (-1);
 				target[tarindex]   |=  (pos - base64_chars.c_str()) >> 4;
 				target[tarindex+1]  = ((pos - base64_chars.c_str()) & 0x0f)
@@ -216,7 +216,7 @@ int base64_pton(char const *src, unsigned char *target, size_t targsize)
 			break;
 		case 2:
 			if (target) {
-				if (tarindex + 1 >= targsize)
+				if (tarindex + 1 >= (int)targsize)
 					return (-1);
 				target[tarindex]   |=  (pos - base64_chars.c_str()) >> 2;
 				target[tarindex+1]  = ((pos - base64_chars.c_str()) & 0x03)
@@ -227,7 +227,7 @@ int base64_pton(char const *src, unsigned char *target, size_t targsize)
 			break;
 		case 3:
 			if (target) {
-				if (tarindex >= targsize)
+				if (tarindex >= (int)targsize)
 					return (-1);
 				target[tarindex] |= (pos - base64_chars.c_str());
 			}

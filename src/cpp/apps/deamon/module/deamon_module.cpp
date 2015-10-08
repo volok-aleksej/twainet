@@ -78,7 +78,7 @@ void DeamonModule::ReadConfig()
 		
 		std::vector<std::string> lines = CommonUtils::DelimitString(data, "\n");
 		int pos = 0;
-		for(int i = 0; i < lines.size() - 1; i++)
+		for(int i = 0; i < (int)lines.size() - 1; i++)
 		{
 			pos += lines[i].size() + 1;
 			std::string line = lines[i];

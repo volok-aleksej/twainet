@@ -69,7 +69,7 @@ bool PeerType::operator != (const PeerType& peerType) const
 }
 bool PeerType::operator < (const PeerType& peerType) const
 {
-	for(int i = 0; ; i++)
+	for(size_t i = 0; ; i++)
 	{
 		if(one_session_id().size() <= i || two_session_id().size() <= i ||
 		  peerType.one_session_id().size() <= i || peerType.two_session_id().size() <= i)
@@ -81,7 +81,7 @@ bool PeerType::operator < (const PeerType& peerType) const
 		std::string otherTwo(peerType.two_session_id().c_str(), i + 1);
 		
 		int resVal = 0, otherResVal = 0;
-		for(int j = 0 ; j < one.size(); j++)
+		for(int j = 0 ; j < (int)one.size(); j++)
 		{
 			resVal += one[j] + two[j];
 			otherResVal += otherOne[j] + otherTwo[j];

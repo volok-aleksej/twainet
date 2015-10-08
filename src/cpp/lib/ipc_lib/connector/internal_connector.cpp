@@ -49,7 +49,7 @@ void InternalConnector::onInternalConnectionDataMessage(const InternalConnection
 {
 	if(msg.id() == GetId())
 	{
-		if(!m_socket->Send((char*)msg.data().c_str(), msg.data().size()))
+		if(!m_socket->Send((char*)msg.data().c_str(), (int)msg.data().size()))
 		{
 			Stop();
 		}

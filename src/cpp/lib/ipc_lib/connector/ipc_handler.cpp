@@ -153,7 +153,7 @@ void IPCHandler::onMessage(const IPCMessage& msg)
 
 	if(isTarget && (newMsg.access_id() == m_connector->m_accessId || m_connector->m_isCoordinator))
 	{
-		if(!m_connector->onData(msg.message_name(), (char*)msg.message().c_str(), msg.message().size()) && !m_connector->m_isCoordinator)
+		if(!m_connector->onData(msg.message_name(), (char*)msg.message().c_str(), (int)msg.message().size()) && !m_connector->m_isCoordinator)
 		{
 			IPCProtoMessage protoMsg(this, newMsg);
 			m_connector->onSignal(protoMsg);

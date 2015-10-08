@@ -137,7 +137,7 @@ bool SecureSocket::Recv(char* data, int len)
 		}
 
 		delete recvdata;
-		int newsize = m_recvdata.size() + decriptedLen;
+		int newsize = (int)m_recvdata.size() + decriptedLen;
 		m_recvdata.resize(newsize, 0);
 		memcpy((char*)m_recvdata.c_str() + newsize - decriptedLen, decriptedData, decriptedLen);
 		delete decriptedData;

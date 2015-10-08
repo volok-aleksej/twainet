@@ -269,7 +269,7 @@ int DeamonApplication::Run()
 		Thread::sleep(200);
 	}
 
-	Twainet::FreeLibrary();
+	Twainet::CloseLibrary();
 	return 0;
 }
 

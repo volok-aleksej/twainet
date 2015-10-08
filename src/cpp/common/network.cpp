@@ -117,7 +117,7 @@ std::string getMAC(sockaddr_in* addr)
 				continue;
 			}
 
-			sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+			sprintf_s(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
 				pAdapterInfo->Address[0], pAdapterInfo->Address[1],
 				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
 				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
@@ -151,7 +151,7 @@ std::string getMAC(const std::string& name)
 				continue;
 			}
 
-			sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+			sprintf_s(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
 				pAdapterInfo->Address[0], pAdapterInfo->Address[1],
 				pAdapterInfo->Address[2], pAdapterInfo->Address[3],
 				pAdapterInfo->Address[4], pAdapterInfo->Address[5]);

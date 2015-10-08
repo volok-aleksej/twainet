@@ -109,7 +109,7 @@ extern "C"
 		TWAINET_FUNC void InitLibrary(const TwainetCallback& twainet);
 
 		//Free Library
-		TWAINET_FUNC void FreeLibrary();
+		TWAINET_FUNC void CloseLibrary();
 
 		// Create new module
 		// isCoordinator - type of module
