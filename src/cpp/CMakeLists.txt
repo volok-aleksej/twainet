@@ -13,3 +13,7 @@ add_subdirectory(apps)
 add_custom_target(uninstall
     COMMAND xargs rm < install_manifest.txt
 )
+
+add_custom_target(clean-all
+    COMMAND rm -r *
+)

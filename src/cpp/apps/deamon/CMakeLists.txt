@@ -69,3 +69,9 @@ target_link_libraries(${PROJECT_NAME} pthread)
 
 install(TARGETS twndeamon
 	RUNTIME DESTINATION /usr/bin)
+install(FILES twndeamon
+	PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE
+	DESTINATION /etc/init.d)
+install(FILES twndeamon.service
+	DESTINATION /lib/systemd/system)
+#install(CODE "call systemctl daemon-reload" CONFIGURATION ...)
