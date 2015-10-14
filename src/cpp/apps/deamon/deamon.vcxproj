@@ -146,7 +146,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <OutputFile>$(SolutionDir)..\..\output\work\x86\$(Configuration)\$(TargetName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\x86\$(Configuration);$(SolutionDir)external\openssl\lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\output\lib\x86\$(Configuration);$(SolutionDir)external\openssl\lib\x86;</AdditionalLibraryDirectories>
       <AdditionalDependencies>Ws2_32.lib;Iphlpapi.lib;ssleay32.lib;libeay32.lib;libprotobuf.lib;thread_lib.lib;twainet.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
