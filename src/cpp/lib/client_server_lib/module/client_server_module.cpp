@@ -182,11 +182,10 @@ void ClientServerModule::StartServer(int port, int ipv, bool local)
 
 	ListenAddress address;
 	address.m_id = m_clientIPCName;
-	address.m_localIP = local ? "127.0.0.1" : "";
+	address.m_localIP = local ? "localhost" : "";
 	address.m_localPort = port;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_serverIPCName);
-	address.m_socketFactory = new TCPSecureSocketFactory(AF_INET);
-//	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory(m_ipv);
 	address.m_acceptCount = -1;
 	m_serverThread = new BaseListenThread(address);
 	m_serverThread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, CreatedListenerMessage, onCreatedListener));
