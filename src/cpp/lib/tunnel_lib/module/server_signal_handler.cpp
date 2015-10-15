@@ -92,7 +92,7 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
-		address.m_socketFactory = new UDPSocketFactory;
+		address.m_socketFactory = new UDPSocketFactory(AF_INET);
 		TunnelServer* external = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
 		external->m_thread = new ExternalListenThread(address);
 		m_module->m_servers.insert(std::make_pair(address.m_id, external));
@@ -113,7 +113,7 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
-		address.m_socketFactory = new TCPSecureSocketFactory;
+		address.m_socketFactory = new TCPSecureSocketFactory(AF_INET);
 		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
 		relay->m_thread = new RelayListenThread(address);
 		m_module->m_servers.insert(std::make_pair(address.m_id, relay));

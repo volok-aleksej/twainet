@@ -31,9 +31,9 @@ extern "C" void Twainet::CloseLibrary()
 	UDT::cleanup();
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, bool isCoordinator)
+extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, IPVersion ipv, bool isCoordinator)
 {
-	TwainetModule* module = Application::GetInstance().CreateModule(moduleName);
+	TwainetModule* module = Application::GetInstance().CreateModule(moduleName, ipv);
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
 	return (Twainet::Module*)module;
 }
@@ -46,13 +46,13 @@ extern "C" void Twainet::DeleteModule(const Twainet::Module module)
 	Application::GetInstance().DeleteModule((TwainetModule*)module);
 }
 
-extern "C" void Twainet::CreateServer(const Twainet::Module module, int port, bool local)
+extern "C" void Twainet::CreateServer(const Twainet::Module module, int port, IPVersion ipv, bool local)
 {
 	if(!module)
 		return;
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->StartServer(port, local);
+	twainetModule->StartServer(port, (int)ipv, local);
 }
 
 extern "C" void Twainet::ConnectToServer(const Twainet::Module module, const char* host, int port, const UserPassword& userPassword)

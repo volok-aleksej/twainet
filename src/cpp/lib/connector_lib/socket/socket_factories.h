@@ -7,15 +7,18 @@
 class TCPSocketFactory : public SocketFactory
 {
 public:
+	TCPSocketFactory(int ipv);
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);	
 	SocketFactory* Clone();
+private:
+	int m_ipv;
 };
 
 class TCPProxySocketFactory : public SocketFactory
 {
 public:
-	TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass);
+	TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass, int ipv);
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
@@ -26,20 +29,24 @@ private:
 	int m_port;
 	const std::string& m_user;
 	const std::string& m_pass;
+	int m_ipv;
 };
 
 class TCPSecureSocketFactory : public SocketFactory
 {
 public:
+	TCPSecureSocketFactory(int ipv);
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
 	SocketFactory* Clone();
+private:
+	int m_ipv;
 };
 
 class TCPSecureProxySocketFactory : public SocketFactory
 {
 public:
-	TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass);
+	TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass, int ipv);
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
@@ -50,14 +57,18 @@ private:
 	int m_port;
 	const std::string& m_user;
 	const std::string& m_pass;
+	int m_ipv;
 };
 
 class UDPSocketFactory : public SocketFactory
 {
 public:
+	UDPSocketFactory(int ipv);
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
 	SocketFactory* Clone();
+private:
+	int m_ipv;
 };
 
 class UDTSocketFactory : public SocketFactory

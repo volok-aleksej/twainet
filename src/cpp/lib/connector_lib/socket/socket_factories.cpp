@@ -10,6 +10,9 @@
 /*******************************************************************************************************/
 /*                                          TCPSocketFactory                                           */
 /*******************************************************************************************************/
+TCPSocketFactory::TCPSocketFactory(int ipv)
+: m_ipv(ipv){}
+
 AnySocket* TCPSocketFactory::CreateSocket()
 {
 	return new TCPSocket();
@@ -22,14 +25,14 @@ AnySocket* TCPSocketFactory::CreateSocket(int socket)
 
 SocketFactory* TCPSocketFactory::Clone()
 {
-	return new TCPSocketFactory;
+	return new TCPSocketFactory(m_ipv);
 }
 
 /*******************************************************************************************************/
 /*                                      TCPProxySocketFactory                                          */
 /*******************************************************************************************************/
-TCPProxySocketFactory::TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
-: m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
+TCPProxySocketFactory::TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass, int ipv)
+: m_ip(ip), m_port(port), m_user(user), m_pass(pass), m_ipv(ipv){}
 
 AnySocket* TCPProxySocketFactory::CreateSocket()
 {
@@ -49,12 +52,15 @@ AnySocket* TCPProxySocketFactory::CreateSocket(int socket)
 
 SocketFactory* TCPProxySocketFactory::Clone()
 {
-	return new TCPProxySocketFactory(m_ip, m_port, m_user, m_pass);
+	return new TCPProxySocketFactory(m_ip, m_port, m_user, m_pass, m_ipv);
 }
 
 /*******************************************************************************************************/
 /*                                      TCPSecureSocketFactory                                         */
 /*******************************************************************************************************/
+TCPSecureSocketFactory::TCPSecureSocketFactory(int ipv)
+: m_ipv(ipv){}
+
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
 	return new SecureTCPSocket();
@@ -67,14 +73,14 @@ AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
 
 SocketFactory* TCPSecureSocketFactory::Clone()
 {
-	return new TCPSecureSocketFactory;
+	return new TCPSecureSocketFactory(m_ipv);
 }
 
 /*******************************************************************************************************/
 /*                                  TCPSecureProxySocketFactory                                        */
 /*******************************************************************************************************/
-TCPSecureProxySocketFactory::TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
-: m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
+TCPSecureProxySocketFactory::TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass, int ipv)
+: m_ip(ip), m_port(port), m_user(user), m_pass(pass), m_ipv(ipv){}
 
 AnySocket* TCPSecureProxySocketFactory::CreateSocket()
 {
@@ -94,12 +100,15 @@ AnySocket* TCPSecureProxySocketFactory::CreateSocket(int socket)
 
 SocketFactory* TCPSecureProxySocketFactory::Clone()
 {
-	return new TCPSecureProxySocketFactory(m_ip, m_port, m_user, m_pass);
+	return new TCPSecureProxySocketFactory(m_ip, m_port, m_user, m_pass, m_ipv);
 }
 
 /*******************************************************************************************************/
 /*                                         UDPSocketFactory                                            */
 /*******************************************************************************************************/
+UDPSocketFactory::UDPSocketFactory(int ipv)
+: m_ipv(ipv){}
+
 AnySocket* UDPSocketFactory::CreateSocket()
 {
 	return new UDPSocket;
@@ -112,7 +121,7 @@ AnySocket* UDPSocketFactory::CreateSocket(int socket)
 
 SocketFactory* UDPSocketFactory::Clone()
 {
-	return new UDPSocketFactory;
+	return new UDPSocketFactory(m_ipv);
 }
 
 /*******************************************************************************************************/

@@ -6,7 +6,7 @@
 class TwainetModule : public TunnelModule
 {
 public:
-	TwainetModule(const IPCObjectName& ipcName);
+	TwainetModule(const IPCObjectName& ipcName, int ipv);
 	~TwainetModule();
 protected:
 	// Tunnel with other computer was not created

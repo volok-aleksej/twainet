@@ -13,7 +13,7 @@ public:
 	static const std::string m_tunnelIPCName;
 	static const std::string m_tunnelAccessId;
 public:
-	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
+	TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory, int ipv);
 	virtual ~TunnelModule();
 public:
 	void InitNewTunnel(const std::string& extSessionId, TunnelConnector::TypeConnection type);

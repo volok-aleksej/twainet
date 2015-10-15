@@ -3,8 +3,8 @@
 #include "application/application.h"
 #include "common/logger.h"
 
-TwainetModule::TwainetModule(const IPCObjectName& ipcName)
-	: TunnelModule(ipcName, new IPCConnectorFactory<IPCConnector>(ipcName))
+TwainetModule::TwainetModule(const IPCObjectName& ipcName, int ipv)
+	: TunnelModule(ipcName, new IPCConnectorFactory<IPCConnector>(ipcName), ipv)
 {
 }
 
