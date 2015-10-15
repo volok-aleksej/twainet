@@ -74,4 +74,3 @@ install(FILES twndeamon
 	DESTINATION /etc/init.d)
 install(FILES twndeamon.service
 	DESTINATION /lib/systemd/system)
-#install(CODE "call systemctl daemon-reload" CONFIGURATION ...)

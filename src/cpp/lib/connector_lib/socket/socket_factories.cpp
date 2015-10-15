@@ -26,7 +26,7 @@ SocketFactory* TCPSocketFactory::Clone()
 }
 
 /*******************************************************************************************************/
-/*                                      TCPSecureSocketFactory                                         */
+/*                                      TCPProxySocketFactory                                          */
 /*******************************************************************************************************/
 TCPProxySocketFactory::TCPProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
 : m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
@@ -71,7 +71,7 @@ SocketFactory* TCPSecureSocketFactory::Clone()
 }
 
 /*******************************************************************************************************/
-/*                                      TCPSecureSocketFactory                                         */
+/*                                  TCPSecureProxySocketFactory                                        */
 /*******************************************************************************************************/
 TCPSecureProxySocketFactory::TCPSecureProxySocketFactory(const std::string& ip, int port, const std::string& user, const std::string& pass)
 : m_ip(ip), m_port(port), m_user(user), m_pass(pass){}
