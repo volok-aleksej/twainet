@@ -60,18 +60,24 @@ void IPCHandler::onMessage(const ModuleName& msg)
 	msMsg.set_rndval(m_connector->m_rand);
 	m_connector->toMessage(msMsg);
 
+	if(m_connector->m_isSendIPCObjects)
+	{
+		IPCObjectListMessage ipcolMsg(this);
+		m_connector->onSignal(ipcolMsg);
+		m_connector->toMessage(ipcolMsg);
+	}
+	
 	if(m_connector->m_isExist)
 	{
 		LOG_INFO("Module exists: m_id-%s, m_module-%s\n", m_connector->m_id.c_str(), m_connector->m_moduleName.GetModuleNameString().c_str());
 		return;
 	}
 
+	//TODO: fix problem:
+	//	if two modules with same names is trying to connect in same time to coordinator,
+	//	another modules cann't get correct creadentials of new module.
 	if(m_connector->m_isSendIPCObjects)
 	{
-		IPCObjectListMessage ipcolMsg(this);
-		m_connector->onSignal(ipcolMsg);
-		m_connector->toMessage(ipcolMsg);
-
 		m_connector->onIPCSignal(mnMsg);
 	}
 	m_connector->OnConnected();
