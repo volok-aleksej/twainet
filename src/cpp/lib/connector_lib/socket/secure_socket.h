@@ -50,7 +50,7 @@ protected:
 class SecureTCPSocket : public SecureSocket, public TCPSocket
 {
 public:
-	SecureTCPSocket();
+	SecureTCPSocket(IPVersion ipv);
 	explicit SecureTCPSocket(int socket);
 
 	virtual bool Connect(const std::string& host, int port);

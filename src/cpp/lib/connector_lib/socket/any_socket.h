@@ -6,6 +6,7 @@
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -27,6 +28,12 @@
 class AnySocket
 {
 public:
+	enum IPVersion
+	{
+		IPV4 = AF_INET,
+		IPV6 = AF_INET6
+	};
+
 	AnySocket(){}
 	virtual ~AnySocket(){}
 public:

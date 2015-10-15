@@ -11,7 +11,7 @@
 class TCPSocket : public AnySocket
 {
 public:
-	TCPSocket();
+	TCPSocket(IPVersion ipv);
 	explicit TCPSocket(int socket);
 	virtual ~TCPSocket();
 
@@ -30,6 +30,7 @@ protected:
 private:
 	int m_socket;
 	CriticalSection m_cs;
+	IPVersion m_ipv;
 };
 
 #endif/*TCP_SOCKET_H*/

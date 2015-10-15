@@ -1,8 +1,9 @@
 #include "tcp_socket.h"
 
-TCPSocket::TCPSocket()
+TCPSocket::TCPSocket(IPVersion ipv)
+: m_ipv(ipv)
 {
-	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	Initialize();
 }
 
 TCPSocket::TCPSocket(int socket)
@@ -22,28 +23,41 @@ bool TCPSocket::Bind(const std::string& host, int port)
 		return false;
 	}
 
-	sockaddr_in si;
+	sockaddr_storage si;
 	if(host.empty())
 	{
-		si.sin_addr.s_addr = INADDR_ANY;
+		if(m_ipv == IPV4)
+			((sockaddr_in&)si).sin_addr.s_addr = INADDR_ANY;
+		else
+			((sockaddr_in6&)si).sin6_addr = in6addr_any;
 	}
 	else
 	{
-		hostent* h = gethostbyname(host.c_str());
-		if(h)
+		char portstr[10] = {0};
+#ifdef WIN32
+		_itoa_s(port, portstr, 10, 10);
+#else
+		itoa(port, portstr, 10);
+#endif/*WIN32*/
+		addrinfo hints = {0}, *result;
+		hints.ai_family = m_ipv;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		int ret = getaddrinfo(host.c_str(), portstr, &hints, &result);
+		if(!ret)
 		{
-			si.sin_addr.s_addr = *(u_long*)h->h_addr;
+			for(addrinfo *addr = result; addr != 0; addr = addr->ai_next)
+			{
+				if(addr->ai_family == m_ipv)
+				{
+					memcpy(&si, addr->ai_addr, addr->ai_addrlen);
+				}
+			}
 		}
-		else
-		{
-			si.sin_addr.s_addr = inet_addr(host.c_str());
-		}
+		freeaddrinfo(result);
 	}
-
-	si.sin_port = htons(port);
-	si.sin_family = AF_INET;
 	
-	return bind(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+	return bind(m_socket, (sockaddr*)&si, m_ipv == IPV4 ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 }
 
 bool TCPSocket::Listen(int limit)
@@ -63,15 +77,32 @@ int TCPSocket::Accept(std::string& ip, int& port)
 		return INVALID_SOCKET;
 	}
 
-	sockaddr_in si;
+	sockaddr_storage si;
 #ifdef WIN32
-		int len = sizeof(si);
+	int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
 #else
-		unsigned int len = sizeof(si);
+	unsigned int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
 #endif/*WIN32*/
 	int sock = (int)accept(m_socket, (sockaddr*)&si, &len);
-	ip = inet_ntoa(si.sin_addr);
-	port = si.sin_port;
+	size_t lenaddr = 0;
+	void* paddr = 0;
+	if(m_ipv == IPV4)
+	{
+		paddr = &((sockaddr_in&)si).sin_addr;
+		len = INET_ADDRSTRLEN;
+		port = ntohs(((sockaddr_in&)si).sin_port);
+	}
+	else
+	{
+		paddr = &((sockaddr_in6&)si).sin6_addr;
+		len = INET6_ADDRSTRLEN;
+		port = ntohs(((sockaddr_in6&)si).sin6_port);
+	}
+
+	char *ipinput = new char[len];
+	inet_ntop(m_ipv, paddr, ipinput, lenaddr);
+	ip = ipinput;
+	delete ipinput;
 	return sock;
 }
 
@@ -82,19 +113,29 @@ bool TCPSocket::Connect(const std::string& host, int port)
 		return false;
 	}
 
-	sockaddr_in si;
-	hostent* h = gethostbyname(host.c_str());
-	if(h)
+	sockaddr_storage si;
+	char portstr[10] = {0};
+#ifdef WIN32
+	_itoa_s(port, portstr, 10, 10);
+#else
+	itoa(port, portstr, 10);
+#endif/*WIN32*/
+	addrinfo hints = {0}, *result;
+	hints.ai_family = m_ipv;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	int ret = getaddrinfo(host.c_str(), portstr, &hints, &result);
+	if(!ret)
 	{
-		si.sin_addr.s_addr = *(u_long*)h->h_addr;
+		for(addrinfo *addr = result; addr != 0; addr = addr->ai_next)
+		{
+			if(addr->ai_family == m_ipv)
+			{
+				memcpy(&si, addr->ai_addr, addr->ai_addrlen);
+			}
+		}
 	}
-	else
-	{
-		si.sin_addr.s_addr = inet_addr(host.c_str());
-	}
-
-	si.sin_port = htons(port);
-	si.sin_family = AF_INET;
+	freeaddrinfo(result);
 
 	return connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
 }
@@ -161,16 +202,33 @@ bool TCPSocket::Close()
 
 void TCPSocket::GetIPPort(std::string& ip, int& port)
 {
-	sockaddr_in addr = {0};
+	sockaddr_storage addr = {0};
 #ifdef WIN32
-		int len = sizeof(addr);
+		int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
 #else
-		unsigned int len = sizeof(addr);
+		unsigned int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
 #endif/*WIN32*/
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{
-		ip = inet_ntoa(addr.sin_addr);
-		port = ntohs(addr.sin_port);
+		size_t len = 0;
+		void* paddr = 0;
+		if(m_ipv == IPV4)
+		{
+			paddr = &((sockaddr_in&)addr).sin_addr;
+			len = INET_ADDRSTRLEN;
+			port = ntohs(((sockaddr_in&)addr).sin_port);
+		}
+		else
+		{
+			paddr = &((sockaddr_in6&)addr).sin6_addr;
+			len = INET6_ADDRSTRLEN;
+			port = ntohs(((sockaddr_in6&)addr).sin6_port);
+		}
+
+		char *ipinput = new char[len];
+		inet_ntop(m_ipv, paddr, ipinput, len);
+		ip = ipinput;
+		delete ipinput;
 	}
 }
 
@@ -181,7 +239,14 @@ int TCPSocket::GetSocket()
 
 void TCPSocket::Initialize()
 {
-	m_socket = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	m_socket = (int)socket(m_ipv, SOCK_STREAM, IPPROTO_TCP);
+	int opt = 0;
+#ifdef WIN32
+	int len = sizeof(opt);
+#else
+	socklen_t len = sizeof(opt);
+#endif/*WIN32*/
+	getsockopt(m_socket, SOL_SOCKET, IPV6_V6ONLY, (char*)&opt, &len);
 }
 
 int TCPSocket::GetMaxBufferSize()

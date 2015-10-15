@@ -265,7 +265,8 @@ bool SecureUDTSocket::RecvData(char* data, int len)
 /*********************************************************************************/
 /*                              SecureTCPSocket                                  */
 /*********************************************************************************/
-SecureTCPSocket::SecureTCPSocket()
+SecureTCPSocket::SecureTCPSocket(IPVersion ipv)
+: TCPSocket(ipv)
 {
 }
 

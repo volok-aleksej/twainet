@@ -15,7 +15,7 @@ TCPSocketFactory::TCPSocketFactory(int ipv)
 
 AnySocket* TCPSocketFactory::CreateSocket()
 {
-	return new TCPSocket();
+	return new TCPSocket((AnySocket::IPVersion)m_ipv);
 }
 
 AnySocket* TCPSocketFactory::CreateSocket(int socket)
@@ -36,7 +36,7 @@ TCPProxySocketFactory::TCPProxySocketFactory(const std::string& ip, int port, co
 
 AnySocket* TCPProxySocketFactory::CreateSocket()
 {
-	ProxyTCPSocket* socket = new ProxyTCPSocket(m_ip, m_port);
+	ProxyTCPSocket* socket = new ProxyTCPSocket(m_ip, m_port, (AnySocket::IPVersion)m_ipv);
 	socket->SetUserName(m_user);
 	socket->SetPassword(m_pass);
 	return socket;
@@ -63,7 +63,7 @@ TCPSecureSocketFactory::TCPSecureSocketFactory(int ipv)
 
 AnySocket* TCPSecureSocketFactory::CreateSocket()
 {
-	return new SecureTCPSocket();
+	return new SecureTCPSocket((AnySocket::IPVersion)m_ipv);
 }
 
 AnySocket* TCPSecureSocketFactory::CreateSocket(int socket)
@@ -84,7 +84,7 @@ TCPSecureProxySocketFactory::TCPSecureProxySocketFactory(const std::string& ip, 
 
 AnySocket* TCPSecureProxySocketFactory::CreateSocket()
 {
-	SecureProxyTCPSocket* socket = new SecureProxyTCPSocket(m_ip, m_port);
+	SecureProxyTCPSocket* socket = new SecureProxyTCPSocket(m_ip, m_port, (AnySocket::IPVersion)m_ipv);
 	socket->SetUserName(m_user);
 	socket->SetPassword(m_pass);
 	return socket;

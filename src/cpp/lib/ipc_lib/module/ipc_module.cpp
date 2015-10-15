@@ -124,14 +124,14 @@ IPCModule::~IPCModule()
 void IPCModule::Start()
 {
 	m_isCoordinator = false;
-	Start("127.0.0.1", 0);
+	Start("localhost", 0);
 }
 
 void IPCModule::StartAsCoordinator()
 {
 	m_isCoordinator = true;
 	m_coordinatorName = m_moduleName.GetModuleNameString();
-	Start("127.0.0.1", g_ipcCoordinatorPorts[m_countListener]);
+	Start("localhost", g_ipcCoordinatorPorts[m_countListener]);
 }
 
 void IPCModule::ConnectTo(const IPCObjectName& moduleName)
@@ -149,12 +149,12 @@ void IPCModule::ConnectTo(const IPCObjectName& moduleName)
 	if(m_ipcObject.GetObject(object, &object) && !m_modules.GetObject(object, &object))
 	{
 		ConnectAddress address;
-		address.m_localIP = "127.0.0.1";
+		address.m_localIP = "localhost";
 		address.m_localPort = 0;
 		address.m_moduleName = address.m_id = object.m_ipcName.GetModuleNameString();
 		address.m_connectorFactory = m_factory->Clone();
 		address.m_socketFactory = new TCPSocketFactory(m_ipv);
-		address.m_ip = "127.0.0.1";
+		address.m_ip = "localhost";
 		address.m_port = object.m_port;
 		ConnectThread* thread = new ConnectThread(address);
 		thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectorMessage, onAddConnector));
@@ -280,12 +280,12 @@ void IPCModule::ConnectToCoordinator()
 	}
 
 	ConnectAddress address;
-	address.m_localIP = "127.0.0.1";
+	address.m_localIP = "localhost";
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = m_coordinatorIPCName;
 	address.m_connectorFactory = m_factory->Clone();
 	address.m_socketFactory = new TCPSocketFactory(m_ipv);
-	address.m_ip = "127.0.0.1";
+	address.m_ip = "localhost";
 	address.m_port = g_ipcCoordinatorPorts[m_countConnect];
 	ConnectThread* thread = new ConnectThread(address);
 	thread->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectorMessage, onAddConnector));
