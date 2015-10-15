@@ -42,9 +42,9 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 
 	SocketFactory* factory;
 	if(m_isUseProxy)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, AF_INET);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else
-		factory = new TCPSecureSocketFactory(AF_INET);
+		factory = new TCPSecureSocketFactory(m_ipv);
 
 	ConnectAddress address;
 	address.m_localIP = "";
