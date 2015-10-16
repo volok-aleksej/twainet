@@ -185,7 +185,7 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSecureSocketFactory(AF_INET);
+	address.m_socketFactory = new TCPSecureSocketFactory(m_ipv);
 	address.m_acceptCount = 1;
 	ListenThread* thread = new BaseListenThread(address);
 	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ListenErrorMessage, onErrorLocalListener));
@@ -258,12 +258,12 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	
 	SocketFactory* factory;
 	if(m_isUseProxy && isTCP)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, AF_INET);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else if(isTCP)
-		factory = new TCPSecureSocketFactory(AF_INET);
+		factory = new TCPSecureSocketFactory(m_ipv);
 	else
 	{
-		UDTSecureSocketFactory *udtFactory = new UDTSecureSocketFactory;
+		UDTSecureSocketFactory *udtFactory = new UDTSecureSocketFactory(m_ipv);
 		udtFactory->SetUdpSocket(tunnel->m_localUdpSocket->GetSocket());
 		factory = udtFactory;
 	}
@@ -308,7 +308,7 @@ void TunnelModule::InitExternalConnectThread(const std::string& extSessionId, co
 	address.m_moduleName = m_ownSessionId;
 	address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new UDPSocketFactory(AF_INET);
+	address.m_socketFactory = new UDPSocketFactory(m_ipv);
 	address.m_ip = ip;
 	address.m_port = port;
 	ExternalConnectThread* thread = new ExternalConnectThread(address);
@@ -343,7 +343,7 @@ void TunnelModule::CreateExternalConnectThread(const std::string& extSessionId, 
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new UDTSecureSocketFactory;
+	address.m_socketFactory = new UDTSecureSocketFactory(m_ipv);
 	address.m_ip = ip;
 	address.m_port = port;
 	tunnel->m_externalConnectThread->ChangeConnectAddress(address);
@@ -364,11 +364,11 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	
 	SocketFactory* factory;
 	if(m_isUseProxy && isTCP)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, AF_INET);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else if(isTCP)
-		factory = new TCPSecureSocketFactory(AF_INET);
+		factory = new TCPSecureSocketFactory(m_ipv);
 	else
-		factory = new UDTSecureSocketFactory;
+		factory = new UDTSecureSocketFactory(m_ipv);
 
 	ConnectAddress address;
 	address.m_localIP = "";

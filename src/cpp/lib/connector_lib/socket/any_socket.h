@@ -36,6 +36,7 @@ public:
 	};
 
 	AnySocket(){}
+	AnySocket(IPVersion ipv) : m_ipv(ipv){}
 	virtual ~AnySocket(){}
 public:
 	virtual bool Bind(const std::string& host, int port) = 0;
@@ -48,6 +49,8 @@ public:
 	virtual void GetIPPort(std::string& ip, int& port) = 0;
 	virtual int GetSocket() = 0;
 	virtual int GetMaxBufferSize() = 0;
+
+	IPVersion m_ipv;
 };
 
 #endif/*ANY_SOCKET_H*/

@@ -127,18 +127,18 @@ SocketFactory* UDPSocketFactory::Clone()
 /*******************************************************************************************************/
 /*                                         UDTSocketFactory                                            */
 /*******************************************************************************************************/
-UDTSocketFactory::UDTSocketFactory()
-: m_udpSocket(INVALID_SOCKET) {}
+UDTSocketFactory::UDTSocketFactory(int ipv)
+: m_udpSocket(INVALID_SOCKET), m_ipv(ipv) {}
 
 AnySocket* UDTSocketFactory::CreateSocket()
 {
 	if(m_udpSocket != INVALID_SOCKET)
 	{
-		return new UDTSocket();
+		return new UDTSocket((AnySocket::IPVersion)m_ipv);
 	}
 	else
 	{
-		return new UDTSocket(m_udpSocket, true);
+		return new UDTSocket(m_udpSocket, (AnySocket::IPVersion)m_ipv, true);
 	}
 }
 
@@ -146,7 +146,7 @@ AnySocket* UDTSocketFactory::CreateSocket(int socket)
 {
 	if(m_udpSocket != INVALID_SOCKET)
 	{
-		return new UDTSocket(socket, false);
+		return new UDTSocket(socket, (AnySocket::IPVersion)m_ipv, false);
 	}
 	else
 	{
@@ -161,7 +161,7 @@ void UDTSocketFactory::SetUdpSocket(int udpSocket)
 
 SocketFactory* UDTSocketFactory::Clone()
 {
-	UDTSocketFactory* factory = new UDTSocketFactory;
+	UDTSocketFactory* factory = new UDTSocketFactory(m_ipv);
 	if(m_udpSocket != INVALID_SOCKET)
 		factory->SetUdpSocket(m_udpSocket);
 	return factory;
@@ -170,18 +170,18 @@ SocketFactory* UDTSocketFactory::Clone()
 /*******************************************************************************************************/
 /*                                      UDTSecureSocketFactory                                         */
 /*******************************************************************************************************/
-UDTSecureSocketFactory::UDTSecureSocketFactory()
-: m_udpSocket(INVALID_SOCKET) {}
+UDTSecureSocketFactory::UDTSecureSocketFactory(int ipv)
+: m_udpSocket(INVALID_SOCKET), m_ipv(ipv){}
 
 AnySocket* UDTSecureSocketFactory::CreateSocket()
 {
 	if(m_udpSocket == INVALID_SOCKET)
 	{
-		return new SecureUDTSocket();
+		return new SecureUDTSocket((AnySocket::IPVersion)m_ipv);
 	}
 	else
 	{
-		return new SecureUDTSocket(m_udpSocket, true);
+		return new SecureUDTSocket(m_udpSocket, (AnySocket::IPVersion)m_ipv, true);
 	}
 }
 
@@ -189,7 +189,7 @@ AnySocket* UDTSecureSocketFactory::CreateSocket(int socket)
 {
 	if(m_udpSocket == INVALID_SOCKET)
 	{
-		return new SecureUDTSocket(socket, false);
+		return new SecureUDTSocket(socket, (AnySocket::IPVersion)m_ipv, false);
 	}
 	else
 	{
@@ -204,7 +204,7 @@ void UDTSecureSocketFactory::SetUdpSocket(int udpSocket)
 
 SocketFactory* UDTSecureSocketFactory::Clone()
 {
-	UDTSecureSocketFactory* factory = new UDTSecureSocketFactory;
+	UDTSecureSocketFactory* factory = new UDTSecureSocketFactory(m_ipv);
 	if(m_udpSocket != INVALID_SOCKET)
 		factory->SetUdpSocket(m_udpSocket);
 	return factory;

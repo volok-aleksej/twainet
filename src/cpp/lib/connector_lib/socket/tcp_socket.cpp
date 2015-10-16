@@ -1,7 +1,7 @@
 #include "tcp_socket.h"
 
 TCPSocket::TCPSocket(IPVersion ipv)
-: m_ipv(ipv)
+: AnySocket(ipv)
 {
 	Initialize();
 }

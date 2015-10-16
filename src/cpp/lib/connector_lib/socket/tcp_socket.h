@@ -30,7 +30,6 @@ protected:
 private:
 	int m_socket;
 	CriticalSection m_cs;
-	IPVersion m_ipv;
 };
 
 #endif/*TCP_SOCKET_H*/

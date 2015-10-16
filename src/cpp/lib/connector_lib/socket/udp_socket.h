@@ -29,7 +29,6 @@ protected:
 	int m_socket;
 	std::string m_host;
 	int m_port;
-	int m_ipv;
 	CriticalSection m_cs;
 };
 

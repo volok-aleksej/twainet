@@ -74,7 +74,7 @@ private:
 class UDTSocketFactory : public SocketFactory
 {
 public:
-	UDTSocketFactory();
+	UDTSocketFactory(int ipv);
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
@@ -83,12 +83,13 @@ public:
 	void SetUdpSocket(int udpSocket);
 private:
 	int m_udpSocket;
+	int m_ipv;
 };
 
 class UDTSecureSocketFactory : public SocketFactory
 {
 public:
-	UDTSecureSocketFactory();
+	UDTSecureSocketFactory(int ipv);
 
 	AnySocket* CreateSocket();
 	AnySocket* CreateSocket(int socket);
@@ -97,6 +98,7 @@ public:
 	void SetUdpSocket(int udpSocket);
 private:
 	int m_udpSocket;
+	int m_ipv;
 };
 
 #endif/*SOCKET_FACTORIES_H*/

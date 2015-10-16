@@ -2,7 +2,7 @@
 #include <string.h>
 
 UDPSocket::UDPSocket(IPVersion ipv)
-: m_ipv(ipv)
+: AnySocket(ipv)
 {
 	m_socket = (int)socket(ipv, SOCK_DGRAM, IPPROTO_UDP);
 }
@@ -100,7 +100,7 @@ bool UDPSocket::Send(char* data, int len)
 	{
 		char portstr[10] = {0};
 #ifdef WIN32
-		_itoa_s(port, portstr, 10, 10);
+		_itoa_s(m_port, portstr, 10, 10);
 #else
 		sprintf(portstr, "%d", m_port);
 #endif/*WIN32*/
