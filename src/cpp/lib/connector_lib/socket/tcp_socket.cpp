@@ -31,7 +31,7 @@ bool TCPSocket::Bind(const std::string& host, int port)
 		return false;
 	}
 
-	sockaddr_storage si;
+	sockaddr_storage si = {0};
 	if(host.empty())
 	{
 		if(m_ipv == IPV4)
@@ -146,7 +146,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 	}
 	freeaddrinfo(result);
 
-	return connect(m_socket, (sockaddr*)&si, (m_ipv = IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
+	return connect(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 }
 
 bool TCPSocket::Send(char* data, int len)

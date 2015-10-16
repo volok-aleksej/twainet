@@ -53,7 +53,7 @@ bool UDTSocket::Bind(const std::string& host, int port)
 
 	if(m_udpSocket == INVALID_SOCKET)
 	{
-		sockaddr_storage si;
+		sockaddr_storage si = {0};
 		if(host.empty())
 		{
 			if(m_ipv == IPV4)

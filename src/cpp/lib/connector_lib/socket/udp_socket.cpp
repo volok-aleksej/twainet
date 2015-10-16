@@ -32,13 +32,14 @@ bool UDPSocket::Bind(const std::string& host, int port)
 		return false;
 	}
 
-	sockaddr_storage si;
+	sockaddr_storage si = {0};
 	if(host.empty())
 	{
 		if(m_ipv == IPV4)
 			((sockaddr_in&)si).sin_addr.s_addr = INADDR_ANY;
 		else
 			((sockaddr_in6&)si).sin6_addr = in6addr_any;
+
 	}
 	else
 	{
