@@ -37,7 +37,7 @@ bool TCPSocket::Bind(const std::string& host, int port)
 #ifdef WIN32
 		_itoa_s(port, portstr, 10, 10);
 #else
-		itoa(port, portstr, 10);
+		sprintf(portstr, "%d", port);
 #endif/*WIN32*/
 		addrinfo hints = {0}, *result;
 		hints.ai_family = m_ipv;
@@ -118,7 +118,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 #ifdef WIN32
 	_itoa_s(port, portstr, 10, 10);
 #else
-	itoa(port, portstr, 10);
+	sprintf(portstr, "%d", port);
 #endif/*WIN32*/
 	addrinfo hints = {0}, *result;
 	hints.ai_family = AF_UNSPEC;

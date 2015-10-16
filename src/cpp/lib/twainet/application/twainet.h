@@ -10,6 +10,7 @@
 #		define TWAINET_FUNC __declspec(dllimport) 
 #	endif // TWAINET_EXPORT
 #else
+#	include <sys/socket.h>
 #	define TWAINET_CALL
 #	define TWAINET_FUNC extern
 #endif/*WIN32*/
