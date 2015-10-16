@@ -9,6 +9,14 @@ TCPSocket::TCPSocket(IPVersion ipv)
 TCPSocket::TCPSocket(int socket)
 : m_socket(socket)
 {
+	sockaddr_storage si;
+#ifdef WIN32
+	int len = sizeof(si);
+#else
+	unsigned int len = sizeof(si);
+#endif/*WIN32*/
+	getsockname(m_socket, (sockaddr*)&si, &len);
+	m_ipv = (IPVersion)si.ss_family;
 }
 
 TCPSocket::~TCPSocket()

@@ -215,7 +215,7 @@ void TunnelModule::CreateLocalUDPSocket(const std::string& extSessionId)
 	}
 
 	tunnel = it->second;
-	tunnel->m_localUdpSocket = new UDPSocket;
+	tunnel->m_localUdpSocket = new UDPSocket(m_ipv);
 	if(!tunnel->m_localUdpSocket->Bind("", 0))
 	{
 		LOG_WARNING("Failed bind upd socket(tunnel connection): from %s to %s\n", m_ownSessionId.c_str(), extSessionId.c_str());

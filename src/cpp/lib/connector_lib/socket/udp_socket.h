@@ -8,7 +8,7 @@
 class UDPSocket : public AnySocket
 {
 public:
-	UDPSocket();
+	UDPSocket(IPVersion ipv);
 	explicit UDPSocket(int socket);
 	virtual ~UDPSocket();
 	
@@ -29,6 +29,7 @@ protected:
 	int m_socket;
 	std::string m_host;
 	int m_port;
+	int m_ipv;
 	CriticalSection m_cs;
 };
 

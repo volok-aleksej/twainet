@@ -111,7 +111,7 @@ UDPSocketFactory::UDPSocketFactory(int ipv)
 
 AnySocket* UDPSocketFactory::CreateSocket()
 {
-	return new UDPSocket;
+	return new UDPSocket((AnySocket::IPVersion)m_ipv);
 }
 
 AnySocket* UDPSocketFactory::CreateSocket(int socket)
