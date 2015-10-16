@@ -32,6 +32,7 @@ bool TCPSocket::Bind(const std::string& host, int port)
 	}
 
 	sockaddr_storage si = {0};
+	si.ss_family = m_ipv;
 	if(host.empty())
 	{
 		if(m_ipv == IPV4)
@@ -87,9 +88,9 @@ int TCPSocket::Accept(std::string& ip, int& port)
 
 	sockaddr_storage si;
 #ifdef WIN32
-	int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+	int len = sizeof(si);
 #else
-	unsigned int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+	unsigned int len = sizeof(si);
 #endif/*WIN32*/
 	int sock = (int)accept(m_socket, (sockaddr*)&si, &len);
 	size_t lenaddr = 0;
@@ -122,6 +123,7 @@ bool TCPSocket::Connect(const std::string& host, int port)
 	}
 
 	sockaddr_storage si;
+	si.ss_family = m_ipv;
 	char portstr[10] = {0};
 #ifdef WIN32
 	_itoa_s(port, portstr, 10, 10);
@@ -213,9 +215,9 @@ void TCPSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_storage addr = {0};
 #ifdef WIN32
-		int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+		int len = sizeof(addr);
 #else
-		unsigned int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+		unsigned int len = sizeof(addr);
 #endif/*WIN32*/
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{

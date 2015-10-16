@@ -33,6 +33,7 @@ bool UDPSocket::Bind(const std::string& host, int port)
 	}
 
 	sockaddr_storage si = {0};
+	si.ss_family = m_ipv;
 	if(host.empty())
 	{
 		if(m_ipv == IPV4)
@@ -93,6 +94,7 @@ bool UDPSocket::Send(char* data, int len)
 	}
 
 	sockaddr_storage si;
+	si.ss_family = m_ipv;
 	if(m_host.empty())
 	{
 		return false;
@@ -171,9 +173,9 @@ void UDPSocket::GetIPPort(std::string& ip, int& port)
 {
 	sockaddr_storage addr = {0};
 #ifdef WIN32
-		int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+		int len = sizeof(addr);
 #else
-		unsigned int len = (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6);
+		unsigned int len = sizeof(addr);
 #endif/*WIN32*/
 	if (!getsockname(m_socket, (sockaddr*)&addr, &len))
 	{
