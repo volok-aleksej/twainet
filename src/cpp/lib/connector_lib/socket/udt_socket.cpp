@@ -88,7 +88,7 @@ bool UDTSocket::Bind(const std::string& host, int port)
 			freeaddrinfo(result);
 		}
 
-		return UDT::bind(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+		return UDT::bind(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 	}
 	else
 	{
@@ -126,11 +126,7 @@ int UDTSocket::Accept(std::string& ip, int& port)
 	}
 
 	sockaddr_storage si;
-#ifdef WIN32
 	int len = sizeof(si);
-#else
-	unsigned int len = sizeof(si);
-#endif/*WIN32*/
 	int sock = UDT::accept(m_socket, (sockaddr*)&si, &len);
 	size_t lenaddr = 0;
 	void* paddr = 0;
@@ -187,7 +183,7 @@ bool UDTSocket::Connect(const std::string& host, int port)
 	}
 	freeaddrinfo(result);
 
-	return UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+	return UDT::connect(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 }
 
 bool UDTSocket::Send(char* data, int len)
