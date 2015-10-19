@@ -8,7 +8,7 @@
 #include "common/common_func.h"
 #include "common/logger.h"
 
-extern std::vector<std::string> GetLocalIps();
+extern std::vector<std::string> GetLocalIps(int ipv);
 
 ServerSignalHandler::ServerSignalHandler(TunnelModule* module)
 : m_module(module)
@@ -128,7 +128,7 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 	if(type == TUNNEL_RELAY_UDP)
 	{
 		TunnelServerListenAddress address;
-		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps()[0]/*TODO: use external ip*/;
+		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps(m_module->m_ipv)[0]/*TODO: use external ip*/;
 		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();

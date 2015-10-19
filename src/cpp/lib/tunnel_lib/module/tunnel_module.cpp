@@ -8,7 +8,7 @@
 #include "connector_lib/socket/udp_socket.h"
 #include "common/logger.h"
 
-extern std::vector<std::string> GetLocalIps();
+extern std::vector<std::string> GetLocalIps(int ipv);
 
 const std::string TunnelModule::m_tunnelIPCName = "Tunnel";
 const std::string TunnelModule::m_tunnelAccessId = TunnelModule::m_tunnelIPCName;
@@ -215,7 +215,7 @@ void TunnelModule::CreateLocalUDPSocket(const std::string& extSessionId)
 	}
 
 	tunnel = it->second;
-	tunnel->m_localUdpSocket = new UDPSocket(m_ipv);
+	tunnel->m_localUdpSocket = new UDPSocket((AnySocket::IPVersion)m_ipv);
 	if(!tunnel->m_localUdpSocket->Bind("", 0))
 	{
 		LOG_WARNING("Failed bind upd socket(tunnel connection): from %s to %s\n", m_ownSessionId.c_str(), extSessionId.c_str());
@@ -230,7 +230,7 @@ void TunnelModule::CreateLocalUDPSocket(const std::string& extSessionId)
 	tctMsg.set_type(TUNNEL_LOCAL_UDP);
 	tctMsg.set_own_session_id(m_ownSessionId);
 	tctMsg.set_ext_session_id(extSessionId);
-	std::vector<std::string> ips = GetLocalIps();
+	std::vector<std::string> ips = GetLocalIps(m_ipv);
 	for(size_t i = 0; i < ips.size(); i++)
 	{
 		TunnelConnectAddress* address = tctMsg.add_adresses();

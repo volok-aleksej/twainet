@@ -27,7 +27,7 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> GetLocalIps()
+std::vector<std::string> GetLocalIps(int ipv)
 {
 	std::vector<std::string> ips;
 #ifdef WIN32
@@ -63,7 +63,7 @@ std::vector<std::string> GetLocalIps()
 		family = ifa->ifa_addr->sa_family;
 		/* For an AF_INET* interface address, display the address */
 
-		if (family == AF_INET /*|| family == AF_INET6*/) {
+		if (family == ipv) {
 			s = getnameinfo(ifa->ifa_addr,
 				(family == AF_INET) ? sizeof(struct sockaddr_in) :
 				sizeof(struct sockaddr_in6),

@@ -4,7 +4,7 @@
 #include "thread/external_connect_thread.h"
 #include "common/logger.h"
 
-extern std::vector<std::string> GetLocalIps();
+extern std::vector<std::string> GetLocalIps(int ipv);
 
 ClientSignalHandler::ClientSignalHandler(TunnelModule* module)
 : m_module(module)
@@ -83,7 +83,7 @@ void ClientSignalHandler::onCreatedLocalListener(const CreatedListenerMessage& m
 	tctMsg.set_type(TUNNEL_LOCAL_TCP);
 	tctMsg.set_own_session_id(m_module->m_ownSessionId);
 	tctMsg.set_ext_session_id(msg.m_id);
-	std::vector<std::string> ips = GetLocalIps();
+	std::vector<std::string> ips = GetLocalIps(m_module->m_ipv);
 	for(size_t i = 0; i < ips.size(); i++)
 	{
 		TunnelConnectAddress* address = tctMsg.add_adresses();
