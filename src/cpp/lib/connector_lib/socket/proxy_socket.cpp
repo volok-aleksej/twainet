@@ -525,8 +525,8 @@ const std::string ProxySocket::generateStandartHeaders()
 /*********************************************************************************/
 /*                               ProxyTCPSocket                                  */
 /*********************************************************************************/
-ProxyTCPSocket::ProxyTCPSocket(const std::string& ip, int port)
-	: ProxySocket(ip, port){}
+ProxyTCPSocket::ProxyTCPSocket(const std::string& ip, int port, IPVersion ipv)
+	: ProxySocket(ip, port), TCPSocket(ipv){}
 
 ProxyTCPSocket::ProxyTCPSocket(int socket, const std::string& ip, int port)
 	: ProxySocket(ip, port), TCPSocket(socket) {}
@@ -560,10 +560,10 @@ bool ProxyTCPSocket::ReConnect()
 }
 
 /*********************************************************************************/
-/*                               ProxyTCPSocket                                  */
+/*                               SecureProxyTCPSocket                            */
 /*********************************************************************************/
-SecureProxyTCPSocket::SecureProxyTCPSocket(const std::string& ip, int port)
-	: ProxySocket(ip, port) {}
+SecureProxyTCPSocket::SecureProxyTCPSocket(const std::string& ip, int port, IPVersion ipv)
+	: ProxySocket(ip, port), SecureTCPSocket(ipv) {}
 
 SecureProxyTCPSocket::SecureProxyTCPSocket(int socket, const std::string& ip, int port)
 	: ProxySocket(ip, port), SecureTCPSocket(socket){}

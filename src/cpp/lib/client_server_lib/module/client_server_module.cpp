@@ -10,8 +10,8 @@
 const std::string ClientServerModule::m_serverIPCName = "Server";
 const std::string ClientServerModule::m_clientIPCName = "Client";
 
-ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
-: IPCModule(ipcName, factory)
+ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory, int ipv)
+: IPCModule(ipcName, factory, ipv)
 , m_isStopConnect(true), m_serverThread(0), m_signalHandler(this)
 , m_isUseProxy(false), m_bConnectToServerRequest(false)
 {
@@ -42,9 +42,9 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 
 	SocketFactory* factory;
 	if(m_isUseProxy)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else
-		factory = new TCPSecureSocketFactory;
+		factory = new TCPSecureSocketFactory(m_ipv);
 
 	ConnectAddress address;
 	address.m_localIP = "";
@@ -170,7 +170,7 @@ void ClientServerModule::ClearUsers()
 	m_userPasswords.Clear();
 }
 
-void ClientServerModule::StartServer(int port, bool local)
+void ClientServerModule::StartServer(int port, int ipv, bool local)
 {
 	LOG_INFO("Try start server on port %d: m_moduleName - %s\n", port, m_moduleName.GetModuleNameString().c_str());
 	if(m_serverThread)
@@ -182,11 +182,10 @@ void ClientServerModule::StartServer(int port, bool local)
 
 	ListenAddress address;
 	address.m_id = m_clientIPCName;
-	address.m_localIP = local ? "127.0.0.1" : "";
+	address.m_localIP = local ? "localhost" : "";
 	address.m_localPort = port;
 	address.m_connectorFactory = new IPCConnectorFactory<ClientServerConnector>(m_serverIPCName);
-	address.m_socketFactory = new TCPSecureSocketFactory;
-//	address.m_socketFactory = new TCPSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory(m_ipv);
 	address.m_acceptCount = -1;
 	m_serverThread = new BaseListenThread(address);
 	m_serverThread->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, CreatedListenerMessage, onCreatedListener));

@@ -4,19 +4,19 @@
 #include "udt.h"
 #pragma warning(default:4251)
 
-UDTSocket::UDTSocket()
-: m_udpSocket(INVALID_SOCKET)
+UDTSocket::UDTSocket(IPVersion ipv)
+: AnySocket(ipv), m_udpSocket(INVALID_SOCKET)
 {
-	m_socket = UDT::socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
+	m_socket = UDT::socket(ipv, SOCK_STREAM, IPPROTO_UDP);
 }
 
-UDTSocket::UDTSocket(int socket, bool isUdp)
-: m_udpSocket(INVALID_SOCKET)
+UDTSocket::UDTSocket(int socket, IPVersion ipv, bool isUdp)
+: AnySocket(ipv), m_udpSocket(INVALID_SOCKET)
 {
 	if(isUdp)
 	{
 		m_udpSocket = socket;
-		m_socket = UDT::socket(AF_INET, SOCK_STREAM, IPPROTO_UDP);
+		m_socket = UDT::socket(ipv, SOCK_STREAM, IPPROTO_UDP);
 	}
 	else
 	{
@@ -28,6 +28,15 @@ UDTSocket::UDTSocket(int udpSocket, int socket)
 : m_socket(socket)
 , m_udpSocket(udpSocket)
 {
+	sockaddr_storage si;
+#ifdef WIN32
+	int len = sizeof(si);
+#else
+	unsigned int len = sizeof(si);
+#endif/*WIN32*/
+	getsockname(udpSocket, (sockaddr*)&si, &len);
+	m_ipv = (IPVersion)si.ss_family;
+
 }
 
 UDTSocket::~UDTSocket()
@@ -44,27 +53,42 @@ bool UDTSocket::Bind(const std::string& host, int port)
 
 	if(m_udpSocket == INVALID_SOCKET)
 	{
-		sockaddr_in si;
+		sockaddr_storage si = {0};
+		si.ss_family = m_ipv;
 		if(host.empty())
 		{
-			si.sin_addr.s_addr = INADDR_ANY;
+			if(m_ipv == IPV4)
+				((sockaddr_in&)si).sin_addr.s_addr = INADDR_ANY;
+			else
+				((sockaddr_in6&)si).sin6_addr = in6addr_any;
 		}
 		else
 		{
-			hostent* h = gethostbyname(host.c_str());
-			if(h)
+			char portstr[10] = {0};
+#ifdef WIN32
+			_itoa_s(port, portstr, 10, 10);
+#else
+			sprintf(portstr, "%d", port);
+#endif/*WIN32*/
+			addrinfo hints = {0}, *result;
+			hints.ai_family = m_ipv;
+			hints.ai_socktype = SOCK_STREAM;
+			hints.ai_protocol = IPPROTO_TCP;
+			int ret = getaddrinfo(host.c_str(), portstr, &hints, &result);
+			if(!ret)
 			{
-				si.sin_addr.s_addr = *(u_long*)h->h_addr;
+				for(addrinfo *addr = result; addr != 0; addr = addr->ai_next)
+				{
+					if(addr->ai_family == m_ipv)
+					{
+						memcpy(&si, addr->ai_addr, addr->ai_addrlen);
+					}
+				}
 			}
-			else
-			{
-				si.sin_addr.s_addr = inet_addr(host.c_str());
-			}
+			freeaddrinfo(result);
 		}
 
-		si.sin_port = htons(port);
-		si.sin_family = AF_INET;
-		return UDT::bind(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+		return UDT::bind(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 	}
 	else
 	{
@@ -101,11 +125,28 @@ int UDTSocket::Accept(std::string& ip, int& port)
 		return 0;
 	}
 
-	sockaddr_in si;
+	sockaddr_storage si;
 	int len = sizeof(si);
 	int sock = UDT::accept(m_socket, (sockaddr*)&si, &len);
-	ip = inet_ntoa(si.sin_addr);
-	port = si.sin_port;
+	size_t lenaddr = 0;
+	void* paddr = 0;
+	if(m_ipv == IPV4)
+	{
+		paddr = &((sockaddr_in&)si).sin_addr;
+		len = INET_ADDRSTRLEN;
+		port = ntohs(((sockaddr_in&)si).sin_port);
+	}
+	else
+	{
+		paddr = &((sockaddr_in6&)si).sin6_addr;
+		len = INET6_ADDRSTRLEN;
+		port = ntohs(((sockaddr_in6&)si).sin6_port);
+	}
+
+	char *ipinput = new char[len];
+	inet_ntop(m_ipv, paddr, ipinput, lenaddr);
+	ip = ipinput;
+	delete ipinput;
 	return sock;
 }
 
@@ -116,21 +157,33 @@ bool UDTSocket::Connect(const std::string& host, int port)
 		return false;
 	}
 
-	sockaddr_in si;
-	hostent* h = gethostbyname(host.c_str());
-	if(h)
+	sockaddr_storage si;
+	si.ss_family = m_ipv;
+	char portstr[10] = {0};
+#ifdef WIN32
+	_itoa_s(port, portstr, 10, 10);
+#else
+	sprintf(portstr, "%d", port);
+#endif/*WIN32*/
+	addrinfo hints = {0}, *result;
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	int ret = getaddrinfo(host.c_str(), portstr, &hints, &result);
+	if(!ret)
 	{
-		si.sin_addr.s_addr = *(u_long*)h->h_addr;
+		for(addrinfo *addr = result; addr != 0; addr = addr->ai_next)
+		{
+			if(addr->ai_family == m_ipv)
+			{
+				memcpy(&si, addr->ai_addr, addr->ai_addrlen);
+			}
+		}
+		//TODO: if ip version 6 and host ip version 4, convert ip4 to ip6
 	}
-	else
-	{
-		si.sin_addr.s_addr = inet_addr(host.c_str());
-	}
+	freeaddrinfo(result);
 
-	si.sin_port = htons(port);
-	si.sin_family = AF_INET;
-
-	return UDT::connect(m_socket, (sockaddr*)&si, sizeof(si)) == 0;
+	return UDT::connect(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 }
 
 bool UDTSocket::Send(char* data, int len)
@@ -200,19 +253,36 @@ bool UDTSocket::Close()
 
 void UDTSocket::GetIPPort(std::string& ip, int& port)
 {
-	sockaddr_in addr = {0};
+	sockaddr_storage addr = {0};
 #ifdef WIN32
-		int len = sizeof(addr);
+	int len = sizeof(addr);
 #else
-		unsigned int len = sizeof(addr);
+	unsigned int len = sizeof(addr);
 #endif/*WIN32*/
 	if(m_socket != INVALID_SOCKET)
 	{
 		if ((m_udpSocket != INVALID_SOCKET && !getsockname(m_udpSocket, (sockaddr*)&addr, &len)) ||
 			!UDT::getsockname(m_socket, (sockaddr*)&addr, (int*)&len))
 		{
-			ip = inet_ntoa(addr.sin_addr);
-			port = ntohs(addr.sin_port);
+			size_t len = 0;
+			void* paddr = 0;
+			if(m_ipv == IPV4)
+			{
+				paddr = &((sockaddr_in&)addr).sin_addr;
+				len = INET_ADDRSTRLEN;
+				port = ntohs(((sockaddr_in&)addr).sin_port);
+			}
+			else
+			{
+				paddr = &((sockaddr_in6&)addr).sin6_addr;
+				len = INET6_ADDRSTRLEN;
+				port = ntohs(((sockaddr_in6&)addr).sin6_port);
+			}
+
+			char *ipinput = new char[len];
+			inet_ntop(m_ipv, paddr, ipinput, len);
+			ip = ipinput;
+			delete ipinput;
 		}
 	}
 }

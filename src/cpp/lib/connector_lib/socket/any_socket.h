@@ -6,6 +6,7 @@
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -14,6 +15,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <stdio.h>
+#include <string.h>
 #define SD_BOTH SHUT_RDWR
 #endif/*WIN32*/
 
@@ -27,7 +30,14 @@
 class AnySocket
 {
 public:
+	enum IPVersion
+	{
+		IPV4 = AF_INET,
+		IPV6 = AF_INET6
+	};
+
 	AnySocket(){}
+	AnySocket(IPVersion ipv) : m_ipv(ipv){}
 	virtual ~AnySocket(){}
 public:
 	virtual bool Bind(const std::string& host, int port) = 0;
@@ -40,6 +50,8 @@ public:
 	virtual void GetIPPort(std::string& ip, int& port) = 0;
 	virtual int GetSocket() = 0;
 	virtual int GetMaxBufferSize() = 0;
+
+	IPVersion m_ipv;
 };
 
 #endif/*ANY_SOCKET_H*/

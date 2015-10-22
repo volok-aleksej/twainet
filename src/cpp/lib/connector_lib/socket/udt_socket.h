@@ -7,8 +7,8 @@
 class UDTSocket : public AnySocket
 {
 public:
-	UDTSocket();
-	explicit UDTSocket(int socket, bool isUdp);
+	UDTSocket(IPVersion ipv);
+	explicit UDTSocket(int socket, IPVersion ipv, bool isUdp);
 	explicit UDTSocket(int udpSocket, int socket);
 	virtual ~UDTSocket();
 	

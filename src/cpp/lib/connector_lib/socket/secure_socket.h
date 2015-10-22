@@ -35,8 +35,8 @@ public:
 class SecureUDTSocket : public SecureSocket, public UDTSocket
 {
 public:
-	SecureUDTSocket();
-	explicit SecureUDTSocket(int socket, bool isUdp);
+	SecureUDTSocket(IPVersion ipv);
+	explicit SecureUDTSocket(int socket, IPVersion ipv, bool isUdp);
 	explicit SecureUDTSocket(int udpSocket, int socket);
 
 	virtual bool Connect(const std::string& host, int port);
@@ -50,7 +50,7 @@ protected:
 class SecureTCPSocket : public SecureSocket, public TCPSocket
 {
 public:
-	SecureTCPSocket();
+	SecureTCPSocket(IPVersion ipv);
 	explicit SecureTCPSocket(int socket);
 
 	virtual bool Connect(const std::string& host, int port);

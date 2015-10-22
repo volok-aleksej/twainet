@@ -53,7 +53,7 @@ private:
 class ProxyTCPSocket : public ProxySocket, public TCPSocket
 {
 public:
-	ProxyTCPSocket(const std::string& ip, int port);
+	ProxyTCPSocket(const std::string& ip, int port, IPVersion ipv);
 	ProxyTCPSocket(int socket, const std::string& ip, int port);
 
 	bool Connect(const std::string& ip, int port);
@@ -67,7 +67,7 @@ protected:
 class SecureProxyTCPSocket : public ProxySocket, public SecureTCPSocket
 {
 public:
-	SecureProxyTCPSocket(const std::string& ip, int port);
+	SecureProxyTCPSocket(const std::string& ip, int port, IPVersion ipv);
 	SecureProxyTCPSocket(int socket, const std::string& ip, int port);
 
 	bool Connect(const std::string& ip, int port);

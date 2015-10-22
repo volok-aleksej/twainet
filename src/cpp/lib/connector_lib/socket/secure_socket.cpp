@@ -198,12 +198,13 @@ bool SecureSocket::Send(char* data, int len)
 /*********************************************************************************/
 /*                              SecureUDTSocket                                  */
 /*********************************************************************************/
-SecureUDTSocket::SecureUDTSocket()
+SecureUDTSocket::SecureUDTSocket(IPVersion ipv)
+	: UDTSocket(ipv)
 {
 }
 
-SecureUDTSocket::SecureUDTSocket(int socket, bool isUdp)
-	: UDTSocket(socket, isUdp)
+SecureUDTSocket::SecureUDTSocket(int socket, IPVersion ipv, bool isUdp)
+	: UDTSocket(socket, ipv, isUdp)
 {
 	if(!isUdp)
 	{
@@ -265,7 +266,8 @@ bool SecureUDTSocket::RecvData(char* data, int len)
 /*********************************************************************************/
 /*                              SecureTCPSocket                                  */
 /*********************************************************************************/
-SecureTCPSocket::SecureTCPSocket()
+SecureTCPSocket::SecureTCPSocket(IPVersion ipv)
+: TCPSocket(ipv)
 {
 }
 

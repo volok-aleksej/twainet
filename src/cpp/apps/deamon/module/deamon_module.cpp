@@ -15,7 +15,7 @@ DeamonModule::DeamonModule(const Twainet::Module& module)
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
 	Twainet::SetUsersList(module, &m_userPassword, 1);
-	Twainet::CreateServer(module, g_localServerPort, true);
+	Twainet::CreateServer(module, g_localServerPort, Twainet::IPV6, true);
 }
 
 DeamonModule::~DeamonModule()

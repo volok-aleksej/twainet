@@ -8,7 +8,7 @@
 class UDPSocket : public AnySocket
 {
 public:
-	UDPSocket();
+	UDPSocket(IPVersion ipv);
 	explicit UDPSocket(int socket);
 	virtual ~UDPSocket();
 	

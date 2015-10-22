@@ -11,7 +11,7 @@
 class TCPSocket : public AnySocket
 {
 public:
-	TCPSocket();
+	TCPSocket(IPVersion ipv);
 	explicit TCPSocket(int socket);
 	virtual ~TCPSocket();
 

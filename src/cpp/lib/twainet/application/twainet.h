@@ -1,11 +1,8 @@
 #ifndef TWAINET_H
 #define TWAINET_H
 
-#ifdef SendMessage
-#undef SendMessage
-#endif/*SendMessage*/
-
 #ifdef WIN32
+#	include <winsock2.h>
 #	define TWAINET_CALL __stdcall
 #	ifdef TWAINET_EXPORT
 #		define TWAINET_FUNC __declspec(dllexport)
@@ -13,10 +10,14 @@
 #		define TWAINET_FUNC __declspec(dllimport) 
 #	endif // TWAINET_EXPORT
 #else
+#	include <sys/socket.h>
 #	define TWAINET_CALL
 #	define TWAINET_FUNC extern
 #endif/*WIN32*/
 
+#ifdef SendMessage
+#undef SendMessage
+#endif/*SendMessage*/
 
 #define MAX_NAME_LENGTH 255
 
@@ -83,6 +84,12 @@ extern "C"
 			FAILED = 3
 		};
 
+		enum IPVersion
+		{
+			IPV4 = AF_INET,
+			IPV6 = AF_INET6
+		};
+
 		typedef void* Module;
 
 		struct TwainetCallback
@@ -116,13 +123,13 @@ extern "C"
 		// Coordinator - the main module to which all must be connected.
 		//               Only the coordinator knows what modules are available on the local machine
 		// All modules, when they was created, are only available on the local machine
-		TWAINET_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, bool isCoordinator);
+		TWAINET_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, IPVersion ipv, bool isCoordinator);
 
 		//Delete module
 		TWAINET_FUNC void DeleteModule(const Module module);
 		
 		// Create server that is available outside machine
-		TWAINET_FUNC void CreateServer(const Module module, int port, bool local = false);
+		TWAINET_FUNC void CreateServer(const Module module, int port, IPVersion ipv, bool local = false);
 		
 		// Connect to server. If connection is successful will be created server module
 		TWAINET_FUNC void ConnectToServer(const Module module, const char* host, int port, const UserPassword& userPassword);

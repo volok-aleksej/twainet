@@ -8,7 +8,7 @@
 #include "common/common_func.h"
 #include "common/logger.h"
 
-extern std::vector<std::string> GetLocalIps();
+extern std::vector<std::string> GetLocalIps(int ipv);
 
 ServerSignalHandler::ServerSignalHandler(TunnelModule* module)
 : m_module(module)
@@ -92,7 +92,7 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
-		address.m_socketFactory = new UDPSocketFactory;
+		address.m_socketFactory = new UDPSocketFactory(m_module->m_ipv);
 		TunnelServer* external = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
 		external->m_thread = new ExternalListenThread(address);
 		m_module->m_servers.insert(std::make_pair(address.m_id, external));
@@ -113,7 +113,7 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
-		address.m_socketFactory = new TCPSecureSocketFactory;
+		address.m_socketFactory = new TCPSecureSocketFactory(m_module->m_ipv);
 		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
 		relay->m_thread = new RelayListenThread(address);
 		m_module->m_servers.insert(std::make_pair(address.m_id, relay));
@@ -128,12 +128,12 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 	if(type == TUNNEL_RELAY_UDP)
 	{
 		TunnelServerListenAddress address;
-		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps()[0]/*TODO: use external ip*/;
+		address.m_localIP = msg.has_address() ? msg.address().ip() : GetLocalIps(m_module->m_ipv)[0]/*TODO: use external ip*/;
 		address.m_localPort = msg.has_address() ? msg.address().port() : 0;
 		address.m_sessionIdOne = msg.own_session_id();
 		address.m_sessionIdTwo = msg.ext_session_id();
 		address.m_id = CreateGUID();
-		address.m_socketFactory = new UDTSecureSocketFactory;
+		address.m_socketFactory = new UDTSecureSocketFactory(m_module->m_ipv);
 		TunnelServer* relay = new TunnelServer(msg.own_session_id(), msg.ext_session_id());
 		relay->m_thread = new RelayListenThread(address);
 		m_module->m_servers.insert(std::make_pair(address.m_id, relay));

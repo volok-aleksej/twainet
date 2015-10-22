@@ -69,7 +69,7 @@ protected:
 		std::string m_moduleName;
 	};
 public:
-	IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory);
+	IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory, int ipv);
 	virtual ~IPCModule();
 
 	void Start();
@@ -116,6 +116,7 @@ protected:
 	bool m_isExit;
 	int m_countListener;
 	int m_countConnect;
+	int m_ipv;
 	ObjectManager<TryConnectCounter> m_tryConnectCounters;
 	
 	CriticalSection m_csConnectors;

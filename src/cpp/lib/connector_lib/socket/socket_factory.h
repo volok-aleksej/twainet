@@ -6,6 +6,7 @@ class AnySocket;
 class SocketFactory
 {
 public:
+	virtual ~SocketFactory(){}
 	virtual AnySocket* CreateSocket() = 0;
 	virtual AnySocket* CreateSocket(int socket) = 0;
 	virtual SocketFactory* Clone() = 0;

@@ -41,7 +41,7 @@ public:
 	static const std::string m_clientIPCName;
 
 public:
-	ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory);
+	ClientServerModule(const IPCObjectName& ipcName, ConnectorFactory* factory, int ipv);
 	virtual ~ClientServerModule();
 public:
 	void Connect(const std::string& ip, int port);
@@ -56,7 +56,7 @@ public:
 	void SetProxyUserName(const std::string& userName);
 	void SetProxyPassword(const std::string& password);
 
-	void StartServer(int port, bool local);
+	void StartServer(int port, int ipv, bool local);
 	bool IsStopServer();
 	void StopServer();
 

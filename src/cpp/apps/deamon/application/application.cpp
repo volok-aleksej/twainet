@@ -262,7 +262,7 @@ int DeamonApplication::Run()
 	strcpy(moduleName.m_name, COORDINATOR_NAME);
 	{
 		CSLocker locker(&GetInstance().m_cs);
-		m_modules.push_back(new DeamonModule(Twainet::CreateModule(moduleName, true)));
+		m_modules.push_back(new DeamonModule(Twainet::CreateModule(moduleName, Twainet::IPV6, true)));
 	}
 	while(!m_isStop)
 	{

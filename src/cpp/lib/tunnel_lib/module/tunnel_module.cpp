@@ -8,13 +8,13 @@
 #include "connector_lib/socket/udp_socket.h"
 #include "common/logger.h"
 
-extern std::vector<std::string> GetLocalIps();
+extern std::vector<std::string> GetLocalIps(int ipv);
 
 const std::string TunnelModule::m_tunnelIPCName = "Tunnel";
 const std::string TunnelModule::m_tunnelAccessId = TunnelModule::m_tunnelIPCName;
 
-TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory)
-	: ClientServerModule(ipcName, factory)
+TunnelModule::TunnelModule(const IPCObjectName& ipcName, ConnectorFactory* factory, int ipv)
+	: ClientServerModule(ipcName, factory, ipv)
 	, m_clientSignalHandler(this), m_serverSignalHandler(this)
 {
 	m_tunnelChecker = new TunnelCheckerThread(this);
@@ -185,7 +185,7 @@ void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)
 	address.m_localIP = "";
 	address.m_localPort = 0;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new TCPSecureSocketFactory;
+	address.m_socketFactory = new TCPSecureSocketFactory(m_ipv);
 	address.m_acceptCount = 1;
 	ListenThread* thread = new BaseListenThread(address);
 	thread->addSubscriber(&m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, ListenErrorMessage, onErrorLocalListener));
@@ -215,7 +215,7 @@ void TunnelModule::CreateLocalUDPSocket(const std::string& extSessionId)
 	}
 
 	tunnel = it->second;
-	tunnel->m_localUdpSocket = new UDPSocket;
+	tunnel->m_localUdpSocket = new UDPSocket((AnySocket::IPVersion)m_ipv);
 	if(!tunnel->m_localUdpSocket->Bind("", 0))
 	{
 		LOG_WARNING("Failed bind upd socket(tunnel connection): from %s to %s\n", m_ownSessionId.c_str(), extSessionId.c_str());
@@ -230,7 +230,7 @@ void TunnelModule::CreateLocalUDPSocket(const std::string& extSessionId)
 	tctMsg.set_type(TUNNEL_LOCAL_UDP);
 	tctMsg.set_own_session_id(m_ownSessionId);
 	tctMsg.set_ext_session_id(extSessionId);
-	std::vector<std::string> ips = GetLocalIps();
+	std::vector<std::string> ips = GetLocalIps(m_ipv);
 	for(size_t i = 0; i < ips.size(); i++)
 	{
 		TunnelConnectAddress* address = tctMsg.add_adresses();
@@ -258,12 +258,12 @@ void TunnelModule::CreateLocalConnectThread(const std::string& extSessionId, con
 	
 	SocketFactory* factory;
 	if(m_isUseProxy && isTCP)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else if(isTCP)
-		factory = new TCPSecureSocketFactory;
+		factory = new TCPSecureSocketFactory(m_ipv);
 	else
 	{
-		UDTSecureSocketFactory *udtFactory = new UDTSecureSocketFactory;
+		UDTSecureSocketFactory *udtFactory = new UDTSecureSocketFactory(m_ipv);
 		udtFactory->SetUdpSocket(tunnel->m_localUdpSocket->GetSocket());
 		factory = udtFactory;
 	}
@@ -308,7 +308,7 @@ void TunnelModule::InitExternalConnectThread(const std::string& extSessionId, co
 	address.m_moduleName = m_ownSessionId;
 	address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new UDPSocketFactory;
+	address.m_socketFactory = new UDPSocketFactory(m_ipv);
 	address.m_ip = ip;
 	address.m_port = port;
 	ExternalConnectThread* thread = new ExternalConnectThread(address);
@@ -343,7 +343,7 @@ void TunnelModule::CreateExternalConnectThread(const std::string& extSessionId, 
 	address.m_localPort = 0;
 	address.m_moduleName = address.m_id = extSessionId;
 	address.m_connectorFactory = new IPCConnectorFactory<TunnelConnector>(m_ownSessionId);
-	address.m_socketFactory = new UDTSecureSocketFactory;
+	address.m_socketFactory = new UDTSecureSocketFactory(m_ipv);
 	address.m_ip = ip;
 	address.m_port = port;
 	tunnel->m_externalConnectThread->ChangeConnectAddress(address);
@@ -364,11 +364,11 @@ void TunnelModule::CreateRelayConnectThread(const std::string& extSessionId, con
 	
 	SocketFactory* factory;
 	if(m_isUseProxy && isTCP)
-		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password);
+		factory = new TCPSecureProxySocketFactory(m_proxyIp, m_proxyPort, m_proxyUserPassword.m_userName, m_proxyUserPassword.m_password, m_ipv);
 	else if(isTCP)
-		factory = new TCPSecureSocketFactory;
+		factory = new TCPSecureSocketFactory(m_ipv);
 	else
-		factory = new UDTSecureSocketFactory;
+		factory = new UDTSecureSocketFactory(m_ipv);
 
 	ConnectAddress address;
 	address.m_localIP = "";

@@ -1,6 +1,7 @@
 #ifdef WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include <winsock2.h>
+	#include <WS2tcpip.h>
 	#include <Iphlpapi.h>
 #else
 	#include <netdb.h>
@@ -27,27 +28,39 @@
 #include <vector>
 #include <string>
 
-std::vector<std::string> GetLocalIps()
+std::vector<std::string> GetLocalIps(int ipv)
 {
 	std::vector<std::string> ips;
 #ifdef WIN32
-	char chInfo[64];
-	if (!gethostname(chInfo, sizeof(chInfo)))
-	{
-		hostent *sh;
-		sh = gethostbyname((char*)&chInfo);
-		if (sh != NULL)
-		{
-			int nAdapter = 0;
-			while (sh->h_addr_list[nAdapter])
-			{
-				struct sockaddr_in addr;
-				memcpy(&addr.sin_addr, sh->h_addr_list[nAdapter], sh->h_length);
-				nAdapter++;
-				ips.push_back(inet_ntoa(addr.sin_addr));
+	DWORD rv, size;
+	PIP_ADAPTER_ADDRESSES adapter_addresses, aa;
+	PIP_ADAPTER_UNICAST_ADDRESS ua;
+
+	rv = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, NULL, &size);
+	if (rv != ERROR_BUFFER_OVERFLOW)
+		return ips;
+
+	adapter_addresses = (PIP_ADAPTER_ADDRESSES)malloc(size);
+
+	rv = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, adapter_addresses, &size);
+	if (rv != ERROR_SUCCESS) {
+		free(adapter_addresses);
+		return ips;
+	}
+
+	for (aa = adapter_addresses; aa != NULL; aa = aa->Next) {
+		for (ua = aa->FirstUnicastAddress; ua != NULL; ua = ua->Next) {
+			char buf[BUFSIZ] = {0};
+
+			if(ua->Address.lpSockaddr->sa_family == ipv) {
+				memset(buf, 0, BUFSIZ);
+				getnameinfo(ua->Address.lpSockaddr, ua->Address.iSockaddrLength, buf, sizeof(buf), NULL, 0, NI_NUMERICHOST);
+				ips.push_back(buf);
 			}
 		}
 	}
+
+	free(adapter_addresses);
 #else
 	struct ifaddrs *ifaddr, *ifa;
 	int family, s;
@@ -63,7 +76,7 @@ std::vector<std::string> GetLocalIps()
 		family = ifa->ifa_addr->sa_family;
 		/* For an AF_INET* interface address, display the address */
 
-		if (family == AF_INET /*|| family == AF_INET6*/) {
+		if (family == ipv) {
 			s = getnameinfo(ifa->ifa_addr,
 				(family == AF_INET) ? sizeof(struct sockaddr_in) :
 				sizeof(struct sockaddr_in6),

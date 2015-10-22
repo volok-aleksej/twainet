@@ -232,7 +232,7 @@ void IPCHandler::onMessage(const InitInternalConnection& msg)
 		address.m_localPort = 0;
 		address.m_moduleName = address.m_id = msg.id();
 		address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
-		address.m_socketFactory = new TCPSocketFactory;
+		address.m_socketFactory = new TCPSocketFactory(m_connector->m_socket->m_ipv);
 		address.m_ip = msg.ip();
 		address.m_port = msg.port();
 		ConnectThread* thread = new ConnectThread(address);
@@ -253,7 +253,7 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 			address.m_localIP = "127.0.0.1";
 			address.m_localPort = 0;
 			address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
-			address.m_socketFactory = new TCPSocketFactory;
+			address.m_socketFactory = new TCPSocketFactory(m_connector->m_socket->m_ipv);
 			address.m_acceptCount = 1;
 			BaseListenThread *listenThread = new BaseListenThread(address);
 			listenThread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, CreatedListenerMessage, onCreatedListener));
