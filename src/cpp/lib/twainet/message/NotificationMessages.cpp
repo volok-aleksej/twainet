@@ -310,4 +310,23 @@ void InternalConnectionStatusChanged::HandleMessage(Twainet::TwainetCallback cal
 	if(callbacks.OnInternalConnectionStatusChanged)
 		callbacks.OnInternalConnectionStatusChanged(m_module, m_moduleName.c_str(),
 							   (Twainet::InternalConnectionStatus)m_status, m_port);
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_moduleName);
+	Twainet::ModuleName retName = {0};
+#ifdef WIN32
+	strcpy_s(retName.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+	strcpy_s(retName.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+	strcpy_s(retName.m_connId, MAX_NAME_LENGTH, idName.conn_id().c_str());
+#else
+	strcpy(retName.m_name, idName.module_name().c_str());
+	strcpy(retName.m_host, idName.host_name().c_str());
+	strcpy(retName.m_connId, idName.conn_id().c_str());
+#endif/*WIN32*/
+	if((Twainet::InternalConnectionStatus)m_status == Twainet::OPEN && callbacks.OnModuleConnected)
+	{    
+		callbacks.OnModuleConnected(m_module, retName);
+	}
+	else if((Twainet::InternalConnectionStatus)m_status == Twainet::CLOSE && callbacks.OnModuleDisconnected)
+	{
+		callbacks.OnModuleDisconnected(m_module, retName);
+	}
 }

@@ -268,7 +268,6 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 		}
 		case CONN_CLOSE:
 		{
-			m_connector->m_manager->StopConnection(msg.target().conn_id());
 			CSLocker locker(&m_connector->m_cs);
 			std::map<std::string, ListenThread*>::iterator itListen = m_connector->m_internalListener.find(msg.target().conn_id());
 			if(itListen != m_connector->m_internalListener.end())
@@ -276,6 +275,12 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 				itListen->second->Stop();
 				ThreadManager::GetInstance().AddThread(itListen->second);
 				m_connector->m_internalListener.erase(itListen);
+				m_connector->m_internalConnections.RemoveObject(msg.target().conn_id());
+			}
+			else
+			{
+				m_connector->m_manager->StopConnection(msg.target().conn_id());
+				break;
 			}
 		}
 		case CONN_FAILED:

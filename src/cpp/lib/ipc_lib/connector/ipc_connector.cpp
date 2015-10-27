@@ -364,13 +364,6 @@ void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 	
 void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 {
-	InternalConnectionStatusMessage icsMsg(&m_handler);
-	IPCName *name = icsMsg.mutable_target();
-	*name = IPCObjectName::GetIPCName(GetId());
-	name->set_conn_id(msg.m_conn->GetId());
-	onSignal(icsMsg);
-	m_internalConnections.AddObject(msg.m_conn->GetId());
-	icsMsg.set_status(CONN_OPEN);
 	{
 		CSLocker locker(&m_cs);
 		std::map<std::string, ListenThread*>::iterator itListen = m_internalListener.find(msg.m_conn->GetId());
@@ -382,9 +375,16 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 		}
 		else
 		{
+			InternalConnectionStatusMessage icsMsg(&m_handler);
+			IPCName *name = icsMsg.mutable_target();
+			*name = IPCObjectName::GetIPCName(GetId());
+			name->set_conn_id(msg.m_conn->GetId());
+			icsMsg.set_status(CONN_OPEN);
+			onSignal(icsMsg);
 			*name = GetModuleName();
 			name->set_conn_id(msg.m_conn->GetId());
 			toMessage(icsMsg);
+			m_internalConnections.AddObject(msg.m_conn->GetId());
 		}
 	}	
 		
