@@ -221,7 +221,9 @@ void IPCHandler::onMessage(const InitInternalConnection& msg)
 	if(m_connector->m_isCoordinator)
 	{
 		InternalConnectionStatusMessage icsMsg(this);
-		icsMsg.set_id(msg.id());
+		IPCName* name = icsMsg.mutable_target();
+		*name = m_connector->GetModuleName();
+		name->set_conn_id(msg.target().conn_id());
 		icsMsg.set_status(CONN_FAILED);
 		m_connector->toMessage(icsMsg);
 	}
@@ -230,7 +232,7 @@ void IPCHandler::onMessage(const InitInternalConnection& msg)
 		ConnectAddress address;
 		address.m_localIP = "";
 		address.m_localPort = 0;
-		address.m_moduleName = address.m_id = msg.id();
+		address.m_moduleName = address.m_id = msg.target().conn_id();
 		address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
 		address.m_socketFactory = new TCPSocketFactory(m_connector->m_socket->m_ipv);
 		address.m_ip = msg.ip();
@@ -249,7 +251,7 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 		case CONN_OPEN:
 		{
 			ListenAddress address;
-			address.m_id = msg.id();
+			address.m_id = msg.target().conn_id();
 			address.m_localIP = "127.0.0.1";
 			address.m_localPort = 0;
 			address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
@@ -261,14 +263,14 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 			listenThread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectorMessage, onAddConnector));
 			listenThread->Start();
 			CSLocker locker(&m_connector->m_cs);
-			m_connector->m_internalListener.insert(std::make_pair(msg.id(), listenThread));
+			m_connector->m_internalListener.insert(std::make_pair(msg.target().conn_id(), listenThread));
 			break;
 		}
 		case CONN_CLOSE:
 		{
-			m_connector->m_manager->StopConnection(msg.id());
+			m_connector->m_manager->StopConnection(msg.target().conn_id());
 			CSLocker locker(&m_connector->m_cs);
-			std::map<std::string, ListenThread*>::iterator itListen = m_connector->m_internalListener.find(msg.id());
+			std::map<std::string, ListenThread*>::iterator itListen = m_connector->m_internalListener.find(msg.target().conn_id());
 			if(itListen != m_connector->m_internalListener.end())
 			{
 				itListen->second->Stop();
@@ -280,6 +282,7 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 		{
 			InternalConnectionStatusMessage icsMsg(this, msg);
 			*icsMsg.mutable_target() = IPCObjectName::GetIPCName(m_connector->GetId());
+			const_cast<IPCName&>(icsMsg.target()).set_conn_id(msg.target().conn_id());
 			m_connector->onSignal(icsMsg);
 			break;
 		}

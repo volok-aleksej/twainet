@@ -14,6 +14,7 @@
 
 const std::string IPCModule::m_coordinatorIPCName = "IPCCoordinator";
 const std::string IPCModule::m_baseAccessId = "Coordinator";
+const std::string IPCModule::m_internalAccessId = "Internal";
 const int IPCModule::m_maxTryConnectCount = 10;
 const int IPCModule::m_connectTimeout = 10;
 
@@ -246,7 +247,7 @@ void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	}
 }
 
-void IPCModule::OnInternalConnection(const std::string& moduleName, const std::string& id, ConnectionStatus status, int port)
+void IPCModule::OnInternalConnection(const std::string& moduleName, ConnectionStatus status, int port)
 {
 }
 
@@ -381,20 +382,22 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 {
 	std::vector<IPCObjectName> retList;
-	std::vector<IPCObject> list = m_internalConn.GetObjectList();
+	std::vector<IPCObject> list = m_modules.GetObjectList();
 	std::vector<IPCObject>::iterator it;
 	for(it = list.begin(); it != list.end(); it++)
 	{
-		retList.push_back(IPCObjectName(it->m_ipcName));
+		if(!it->m_ipcName.conn_id().empty())
+		{
+			retList.push_back(IPCObjectName(it->m_ipcName));
+		}
 	}
 
 	return retList;
 }
 
-void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port, const std::string& id)
+void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
 {
 	InitInternalConnectionMessage iicMsg(0);
-	iicMsg.set_id(id);
 	iicMsg.set_ip(ip);
 	iicMsg.set_port(port);
 	iicMsg.mutable_target()->CopyFrom(moduleName);

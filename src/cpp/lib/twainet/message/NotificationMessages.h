@@ -145,13 +145,12 @@ class InternalConnectionStatusChanged : public NotificationMessage
 {
 
 public:
-	InternalConnectionStatusChanged(Twainet::Module module, const std::string& moduleName, const std::string& id, ConnectionStatus status, int port);
+	InternalConnectionStatusChanged(Twainet::Module module, const std::string& moduleName, ConnectionStatus status, int port);
 	virtual ~InternalConnectionStatusChanged();
 
 	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
 private:
 	std::string m_moduleName;
-	std::string m_id;
 	ConnectionStatus m_status;
 	int m_port;
 };

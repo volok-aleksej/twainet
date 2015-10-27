@@ -17,7 +17,7 @@ protected:
 public:
 
 	void Init(const Twainet::TwainetCallback& callback);
-	TwainetModule* CreateModule(const Twainet::ModuleName& moduleName, int ipv);
+	TwainetModule* CreateModule(const char* moduleName, int ipv);
 	void DeleteModule(TwainetModule* module);
 protected:
 	friend class TwainetModule;

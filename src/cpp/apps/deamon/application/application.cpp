@@ -225,7 +225,7 @@ void TWAINET_CALL DeamonApplication::OnMessageRecv(Twainet::Module module, const
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, const char* id, Twainet::InternalConnectionStatus status, int port)
+void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -234,7 +234,7 @@ void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::
 	{
 		if(module == *it)
 		{
-			(*it)->OnInternalConnectionStatusChanged(moduleName, id, status, port);
+			(*it)->OnInternalConnectionStatusChanged(moduleName, status, port);
 			break;
 		}
 	}
@@ -258,11 +258,9 @@ DeamonApplication::~DeamonApplication()
 int DeamonApplication::Run()
 {
 	Twainet::InitLibrary(tc);
-	Twainet::ModuleName moduleName = {0};
-	strcpy(moduleName.m_name, COORDINATOR_NAME);
 	{
 		CSLocker locker(&GetInstance().m_cs);
-		m_modules.push_back(new DeamonModule(Twainet::CreateModule(moduleName, Twainet::IPV6, true)));
+		m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
 	}
 	while(!m_isStop)
 	{

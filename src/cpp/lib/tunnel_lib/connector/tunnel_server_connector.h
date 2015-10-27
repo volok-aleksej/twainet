@@ -22,7 +22,8 @@ protected:
 	void onIPCMessageTwo(const IPCMessageSignal& msg);
 	void onModuleState(const ModuleStateMessage& msg);
 	void onModuleName(const ModuleNameMessage& msg);
-	void onInternalConnectionData(const InternalConnectionDataMessage& msg);
+	void onInternalConnectionDataOne(const InternalConnectionDataMessage& msg);
+	void onInternalConnectionDataTwo(const InternalConnectionDataMessage& msg);
 	void onInternalConnectionStatus(const InternalConnectionStatusMessage& msg);
 	void onInitInternalConnection(const InitInternalConnectionMessage& msg);
 private:

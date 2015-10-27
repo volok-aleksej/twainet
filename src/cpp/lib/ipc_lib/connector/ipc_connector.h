@@ -81,8 +81,9 @@ private:
 	
 	//for internal connections
 	ConnectorManager *m_manager;
-	std::map<std::string, ListenThread*> m_internalListener;
 	CriticalSection m_cs;
+	std::map<std::string, ListenThread*> m_internalListener;
+	ObjectManager<std::string> m_internalConnections;
 };
 
 #endif/*IPC_CONNECTOR_H*/

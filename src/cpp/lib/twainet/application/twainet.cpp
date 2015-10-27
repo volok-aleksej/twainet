@@ -31,7 +31,7 @@ extern "C" void Twainet::CloseLibrary()
 	UDT::cleanup();
 }
 
-extern "C" Twainet::Module Twainet::CreateModule(const Twainet::ModuleName& moduleName, IPVersion ipv, bool isCoordinator)
+extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, IPVersion ipv, bool isCoordinator)
 {
 	TwainetModule* module = Application::GetInstance().CreateModule(moduleName, ipv);
 	isCoordinator ?  module->StartAsCoordinator() : module->Start();
@@ -84,22 +84,22 @@ extern "C" void Twainet::DisconnectFromClient(const Twainet::Module module, cons
 	twainetModule->DisconnectModule(IPCObjectName(ClientServerModule::m_clientIPCName, sessionId));
 }
 
-extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
+extern "C" void Twainet::ConnectToModule(const Twainet::Module module, const char* moduleName)
 {
 	if(!module)
 		return;
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->ConnectTo(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
+	twainetModule->ConnectTo(IPCObjectName(moduleName));
 }
 
-extern "C" void DisconnectFromModule(const Twainet::Module module, const Twainet::ModuleName& moduleName)
+extern "C" void DisconnectFromModule(const Twainet::Module module, const char* moduleName)
 {
 	if(!module)
 		return;
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	twainetModule->DisconnectModule(IPCObjectName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix));
+	twainetModule->DisconnectModule(IPCObjectName(moduleName));
 }
 
 extern "C" void Twainet::CreateTunnel(const Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
@@ -131,7 +131,7 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 	message.set_message(msg.m_data, msg.m_dataLen);
 	for(int i = 0; i < msg.m_pathLen; i++)
 	{
-		*message.add_ipc_path() = IPCObjectName(msg.m_path[i].m_name, msg.m_path[i].m_host, msg.m_path[i].m_suffix);
+		*message.add_ipc_path() = IPCObjectName(msg.m_path[i].m_name, msg.m_path[i].m_host, msg.m_path[i].m_connId);
 	}
 
 	IPCMessageSignal msgSignal(message);
@@ -152,16 +152,16 @@ extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module modu
 #ifdef WIN32
 	strcpy_s(retName.m_name, MAX_NAME_LENGTH, name.module_name().c_str());
 	strcpy_s(retName.m_host, MAX_NAME_LENGTH, name.host_name().c_str());
-	strcpy_s(retName.m_suffix, MAX_NAME_LENGTH, name.suffix().c_str());
+	strcpy_s(retName.m_connId, MAX_NAME_LENGTH, name.conn_id().c_str());
 #else
 	strcpy(retName.m_name, name.module_name().c_str());
 	strcpy(retName.m_host, name.host_name().c_str());
-	strcpy(retName.m_suffix, name.suffix().c_str());
+	strcpy(retName.m_connId, name.conn_id().c_str());
 #endif/*WIN32*/
 	return retName;
 }
 
-extern "C" void ChangeModuleName(const Twainet::Module module, const Twainet::ModuleName& moduleName)
+extern "C" void ChangeModuleName(const Twainet::Module module, const char* moduleName)
 {
 	if(!module)
 	{
@@ -169,7 +169,7 @@ extern "C" void ChangeModuleName(const Twainet::Module module, const Twainet::Mo
 	}
 
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
+	IPCObjectName ipcModuleName(moduleName);
 	twainetModule->UpdateModuleName(ipcModuleName);
 }
 		
@@ -199,11 +199,11 @@ extern "C" int Twainet::GetExistingModules(const Twainet::Module module, Twainet
 #ifdef WIN32
 		strcpy_s(modules[i].m_name, MAX_NAME_LENGTH, it->module_name().c_str());
 		strcpy_s(modules[i].m_host, MAX_NAME_LENGTH, it->host_name().c_str());
-		strcpy_s(modules[i].m_suffix, MAX_NAME_LENGTH, it->suffix().c_str());
+		strcpy_s(modules[i].m_connId, MAX_NAME_LENGTH, it->conn_id().c_str());
 #else
 		strcpy(modules[i].m_name, it->module_name().c_str());
 		strcpy(modules[i].m_host, it->host_name().c_str());
-		strcpy(modules[i].m_suffix, it->suffix().c_str());
+		strcpy(modules[i].m_connId, it->conn_id().c_str());
 #endif/*WIN32*/
 	}
 	return objects.size();
@@ -253,17 +253,17 @@ extern "C" void Twainet::UseLog(char* logFileName)
 	Logger::GetInstance().SetLogFile(logFileName);
 }
 
-extern "C" void Twainet::CreateInternalConnection(const Twainet::Module module, const Twainet::ModuleName& moduleName, const char* ip, int port, const char* id)
+extern "C" void Twainet::CreateInternalConnection(const Twainet::Module module, const Twainet::ModuleName& moduleName, const char* ip, int port)
 {
 	if(!module)
 		return;
 	
 	TwainetModule* twainetModule = (TwainetModule*)module;
-	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
-	twainetModule->CreateInternalConnection(ipcModuleName, ip, port, id);
+	IPCObjectName ipcModuleName(moduleName.m_name, moduleName.m_host, moduleName.m_connId);
+	twainetModule->CreateInternalConnection(ipcModuleName, ip, port);
 }
 
-extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twainet::InternalConnection* connections, int& sizeConnections)
+extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twainet::ModuleName* connections, int& sizeConnections)
 {
 	if(!module)
 		return 0;
@@ -281,15 +281,13 @@ extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twa
 		it != objects.end(); it++, i++)
 	{
 #ifdef WIN32
-		strcpy_s(connections[i].m_moduleName.m_name, MAX_NAME_LENGTH, it->module_name().c_str());
-		strcpy_s(connections[i].m_moduleName.m_host, MAX_NAME_LENGTH, it->host_name().c_str());
-		strcpy_s(connections[i].m_moduleName.m_suffix, MAX_NAME_LENGTH, it->suffix().c_str());
-		strcpy_s(connections[i].m_id, MAX_NAME_LENGTH, it->internal().c_str());
+		strcpy_s(connections[i].m_name, MAX_NAME_LENGTH, it->module_name().c_str());
+		strcpy_s(connections[i].m_host, MAX_NAME_LENGTH, it->host_name().c_str());
+		strcpy_s(connections[i].m_connId, MAX_NAME_LENGTH, it->conn_id().c_str());
 #else
-		strcpy(connections[i].m_moduleName.m_name, it->module_name().c_str());
-		strcpy(connections[i].m_moduleName.m_host, it->host_name().c_str());
-		strcpy(connections[i].m_moduleName.m_suffix, it->suffix().c_str());
-		strcpy(connections[i].m_id, it->internal().c_str());
+		strcpy(connections[i].m_name, it->module_name().c_str());
+		strcpy(connections[i].m_host, it->host_name().c_str());
+		strcpy(connections[i].m_connId, it->conn_id().c_str());
 #endif/*WIN32*/
 	}
 	return objects.size();
@@ -297,7 +295,7 @@ extern "C" int Twainet::GetInternalConnections(const Twainet::Module module, Twa
 
 extern "C" int Twainet::GetModuleNameString(const ModuleName& moduleName, char* str, int& strlen)
 {
-	IPCObjectName name(moduleName.m_name, moduleName.m_host, moduleName.m_suffix);
+	IPCObjectName name(moduleName.m_name, moduleName.m_host, moduleName.m_connId);
 	std::string strModuleName = name.GetModuleNameString();
 	if(strlen < (int)strModuleName.size())
 	{

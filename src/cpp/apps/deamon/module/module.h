@@ -29,7 +29,7 @@ public:
 	virtual void OnTunnelConnected(const char* sessionId, Twainet::TypeConnection type){}
 	virtual void OnTunnelDisconnected(const char* sessionId){}
 	virtual void OnMessageRecv(const Twainet::Message& msg){}
-	virtual void OnInternalConnectionStatusChanged(const char* moduleName, const char* id,
+	virtual void OnInternalConnectionStatusChanged(const char* moduleName,
 						       Twainet::InternalConnectionStatus status, int port){}
 
 protected:

@@ -9,7 +9,7 @@ using namespace ipc;
 class IPCObjectName : public IPCName
 {
 public:
-	IPCObjectName(const std::string& ipcName, const std::string& hostName = "", const std::string& suffix = "", const std::string& internal = "");
+	IPCObjectName(const std::string& ipcName, const std::string& hostName = "", const std::string& conn_id = "");
 	IPCObjectName(const IPCName& ipcName);
 	~IPCObjectName();
 

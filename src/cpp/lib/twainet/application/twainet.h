@@ -27,8 +27,8 @@
 //     server - ServerName.<sessionId>
 //     client - ClientName.<sessionId>
 //     tunnel - Tunnel.<sessionId>
-// For internal connection string version has the form: name.host.suffix->identificator
-//     sample - Tunnel.1234567->65776543
+// For internal connection string version has the form: name.host.suffix
+//     sample - Tunnel.1234567.65776543
 
 extern "C"
 {
@@ -48,15 +48,9 @@ extern "C"
 		{
 			char m_name[MAX_NAME_LENGTH];
 			char m_host[MAX_NAME_LENGTH];
-			char m_suffix[MAX_NAME_LENGTH];
+			char m_connId[MAX_NAME_LENGTH];
 		};
 
-		struct InternalConnection
-		{
-			ModuleName m_moduleName;
-			char m_id[MAX_NAME_LENGTH];
-		};
-		
 		// recomended data len 8192
 		struct Message
 		{	
@@ -109,7 +103,7 @@ extern "C"
 			void (TWAINET_CALL *OnTunnelDisconnected)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnTunnelCreationFailed)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnMessageRecv)(Module module, const Message& msg);
-			void (TWAINET_CALL *OnInternalConnectionStatusChanged)(Module module, const char* moduleName, const char* id, InternalConnectionStatus status, int port);
+			void (TWAINET_CALL *OnInternalConnectionStatusChanged)(Module module, const char* moduleName, InternalConnectionStatus status, int port);
 		};
 
 		// Initialize library
@@ -123,7 +117,7 @@ extern "C"
 		// Coordinator - the main module to which all must be connected.
 		//               Only the coordinator knows what modules are available on the local machine
 		// All modules, when they was created, are only available on the local machine
-		TWAINET_FUNC Twainet::Module CreateModule(const ModuleName& moduleName, IPVersion ipv, bool isCoordinator);
+		TWAINET_FUNC Twainet::Module CreateModule(const char* moduleName, IPVersion ipv, bool isCoordinator);
 
 		//Delete module
 		TWAINET_FUNC void DeleteModule(const Module module);
@@ -141,10 +135,10 @@ extern "C"
 		TWAINET_FUNC void DisconnectFromClient(const Module module, const char* sessionId);
 		
 		// Connect to module
-		TWAINET_FUNC void ConnectToModule(const Module module, const ModuleName& moduleName);
+		TWAINET_FUNC void ConnectToModule(const Module module, const char* moduleName);
 		
 		// Disconnect from module
-		TWAINET_FUNC void DisconnectFromModule(const Module module, const ModuleName& moduleName);
+		TWAINET_FUNC void DisconnectFromModule(const Module module, const char* moduleName);
 		
 		// Create tunnel between client modules
 		// sessionId - module name of other client(ClientName.<sessionId>.)
@@ -166,7 +160,7 @@ extern "C"
 		TWAINET_FUNC ModuleName GetModuleName(const Module module);
 		
 		//Change Module name
-		TWAINET_FUNC void ChangeModuleName(const Module module, const ModuleName& moduleName);
+		TWAINET_FUNC void ChangeModuleName(const Module module, const char* moduleName);
 		
 		// Get session id(module name of client or server connection)
 		TWAINET_FUNC const char* GetSessionId(const Module module);
@@ -190,10 +184,10 @@ extern "C"
 		TWAINET_FUNC void UseLog(char* logFileName);
 		
 		// Create Internal Connection through ipc connection(as proxy)
-		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port, const char* id);
+		TWAINET_FUNC void CreateInternalConnection(const Module module, const ModuleName& moduleName, const char* ip, int port);
 		
 		// Get list of existing internal connections that is available in current module
-		TWAINET_FUNC int GetInternalConnections(const Module module, InternalConnection* connections, int& sizeConnections);
+		TWAINET_FUNC int GetInternalConnections(const Module module, ModuleName* connections, int& sizeConnections);
 		
 		// Get string version of module name
 		TWAINET_FUNC int GetModuleNameString(const ModuleName& moduleName, char* str, int& strlen);

@@ -104,17 +104,15 @@ void IPCSignalHandler::onConnected(const ConnectedMessage& msg)
 void IPCSignalHandler::onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg)
 {
 	IPCObjectName target(msg.target());
-	IPCObjectName internalConn(msg.target());
-	internalConn.set_internal(msg.id());
 	if(msg.status() == interconn::CONN_OPEN)
 	{
-		m_module->m_internalConn.AddObject(internalConn);
+		m_module->m_modules.AddObject(IPCModule::IPCObject(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId));
 	}
 	if(msg.status() == interconn::CONN_CLOSE)
 	{
-		m_module->m_internalConn.RemoveObject(internalConn);
+		m_module->m_modules.RemoveObject(IPCModule::IPCObject(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId));
 	}
-	m_module->OnInternalConnection(target.GetModuleNameString(), msg.id(), msg.status(), msg.port());
+	m_module->OnInternalConnection(target.GetModuleNameString(), msg.status(), msg.port());
 }
 
 void IPCSignalHandler::onIPCMessage(const IPCProtoMessage& msg)

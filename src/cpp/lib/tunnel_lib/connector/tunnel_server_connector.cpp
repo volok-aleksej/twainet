@@ -28,8 +28,8 @@ void TunnelServerConnector::OnStart()
 	m_connectorTwo->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, ModuleStateMessage, onModuleState));
 	m_connectorOne->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, ModuleNameMessage, onModuleName));
 	m_connectorTwo->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, ModuleNameMessage, onModuleName));
-	m_connectorOne->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionDataMessage, onInternalConnectionData));
-	m_connectorTwo->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionDataMessage, onInternalConnectionData));
+	m_connectorOne->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionDataMessage, onInternalConnectionDataOne));
+	m_connectorTwo->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionDataMessage, onInternalConnectionDataTwo));
 	m_connectorOne->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionStatusMessage, onInternalConnectionStatus));
 	m_connectorTwo->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InternalConnectionStatusMessage, onInternalConnectionStatus));
 	m_connectorOne->addSubscriber(this, SIGNAL_FUNC(this, TunnelServerConnector, InitInternalConnectionMessage, onInitInternalConnection));
@@ -99,25 +99,19 @@ void TunnelServerConnector::onModuleName(const ModuleNameMessage& msg)
 	}
 }
 
-void TunnelServerConnector::onInternalConnectionData(const InternalConnectionDataMessage& msg)
+void TunnelServerConnector::onInternalConnectionDataOne(const InternalConnectionDataMessage& msg)
 {
-	IPCObjectName target(msg.target());
-	const_cast<InternalConnectionDataMessage&>(msg).release_target();
-	if(target.GetModuleNameString() == m_connectorOne->GetId())
-	{
-		m_connectorTwo->toMessage(msg);
-	}
-	else
-	{
-		m_connectorOne->toMessage(msg);
-	}
+	m_connectorTwo->toMessage(msg);
+}
+
+void TunnelServerConnector::onInternalConnectionDataTwo(const InternalConnectionDataMessage& msg)
+{
+	m_connectorOne->toMessage(msg);
 }
 
 void TunnelServerConnector::onInternalConnectionStatus(const InternalConnectionStatusMessage& msg)
 {
-	IPCObjectName target(msg.target());
-	const_cast<InternalConnectionStatusMessage&>(msg).release_target();
-	if(target.GetModuleNameString() == m_connectorOne->GetId())
+	if(msg.target().host_name() == m_connectorOne->GetId())
 	{
 		m_connectorTwo->toMessage(msg);
 	}
@@ -129,9 +123,7 @@ void TunnelServerConnector::onInternalConnectionStatus(const InternalConnectionS
 
 void TunnelServerConnector::onInitInternalConnection(const InitInternalConnectionMessage& msg)
 {
-	IPCObjectName target(msg.target());
-	const_cast<InitInternalConnectionMessage&>(msg).release_target();
-	if(target.GetModuleNameString() == m_connectorOne->GetId())
+	if(msg.target().host_name() == m_connectorOne->GetId())
 	{
 		m_connectorTwo->toMessage(msg);
 	}

@@ -93,7 +93,7 @@ void TunnelConnector::onMessage(const InternalConnectionData& msg)
 	if(m_isServer)
 	{
 		InternalConnectionDataMessage icdMsg(&m_handler, msg);
-		*icdMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+		icdMsg.set_id(GetId());
 		onSignal(icdMsg);
 	}
 	else

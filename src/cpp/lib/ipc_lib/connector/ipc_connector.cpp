@@ -119,6 +119,19 @@ void IPCConnector::OnStop()
 		m_checker->Stop();
 		m_checker = 0;
 	}
+	
+	std::vector<std::string> intConnList = m_internalConnections.GetObjectList();
+	for(std::vector<std::string>::iterator it = intConnList.begin();
+	    it != intConnList.end(); it++)
+	{
+		InternalConnectionStatusMessage icsMsg(&m_handler);
+		IPCName* name = icsMsg.mutable_target();
+		*name = IPCObjectName::GetIPCName(GetId());
+		name->set_conn_id(*it);
+		icsMsg.set_status(CONN_CLOSE);
+		onSignal(icsMsg);
+	}
+	
 	m_manager->Stop();
 }
 
@@ -302,38 +315,49 @@ IPCObjectName IPCConnector::GetIPCName()
 void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 {
 	InternalConnectionStatusMessage icsMsg(&m_handler);
-	icsMsg.set_id(msg.m_id);
+	IPCName* name = icsMsg.mutable_target();
+	*name = GetModuleName();
+	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
-	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+	*name = IPCObjectName::GetIPCName(GetId());
+	name->set_conn_id(msg.m_id);
 	onSignal(icsMsg);
+	m_internalConnections.RemoveObject(msg.m_id);
 }
 
 void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)
 {
 	InternalConnectionStatusMessage icsMsg(&m_handler);
-	icsMsg.set_id(msg.m_id);
 	icsMsg.set_status(CONN_OPEN);
 	icsMsg.set_port(msg.m_port);
-	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+	IPCName* name = icsMsg.mutable_target();
+	*name = IPCObjectName::GetIPCName(GetId());
+	name->set_conn_id(msg.m_id);
+	m_internalConnections.AddObject(msg.m_id);
 	onSignal(icsMsg);
 }
 
 void IPCConnector::onErrorListener(const ListenErrorMessage& msg)
 {
 	InternalConnectionStatusMessage icsMsg(&m_handler);
-	icsMsg.set_id(msg.m_id);
+	IPCName* name = icsMsg.mutable_target();
+	*name = GetModuleName();
+	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
+	*name = IPCObjectName::GetIPCName(GetId());
+	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_FAILED);
-	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
 	onSignal(icsMsg);
 }
 
 void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 {
 	InternalConnectionStatusMessage icsMsg(&m_handler);
-	icsMsg.set_id(msg.m_moduleName);
+	IPCName* name = icsMsg.mutable_target();
+	*name = GetModuleName();
+	name->set_conn_id(msg.m_moduleName);
 	icsMsg.set_status(CONN_FAILED);
 	toMessage(icsMsg);
 }
@@ -341,9 +365,12 @@ void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 {
 	InternalConnectionStatusMessage icsMsg(&m_handler);
-	icsMsg.set_id(msg.m_conn->GetId());
+	IPCName *name = icsMsg.mutable_target();
+	*name = IPCObjectName::GetIPCName(GetId());
+	name->set_conn_id(msg.m_conn->GetId());
+	onSignal(icsMsg);
+	m_internalConnections.AddObject(msg.m_conn->GetId());
 	icsMsg.set_status(CONN_OPEN);
-	
 	{
 		CSLocker locker(&m_cs);
 		std::map<std::string, ListenThread*>::iterator itListen = m_internalListener.find(msg.m_conn->GetId());
@@ -355,12 +382,11 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 		}
 		else
 		{
+			*name = GetModuleName();
+			name->set_conn_id(msg.m_conn->GetId());
 			toMessage(icsMsg);
 		}
-	}
-	
-	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
-	onSignal(icsMsg);
+	}	
 		
 	InternalConnector* connector = dynamic_cast<InternalConnector*>(msg.m_conn);
 	if(connector)
@@ -379,18 +405,20 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg)
 {
 	IPCObjectName target(msg.target());
+	target.clear_conn_id();
 	if(target.GetModuleNameString() == GetId())
 	{
-		if(m_isCoordinator)
+		if(m_isCoordinator || msg.target().conn_id().empty())
 		{
 			InternalConnectionStatusMessage icsMsg(&m_handler);
-			icsMsg.set_id(msg.id());
 			icsMsg.set_status(CONN_FAILED);
-			*icsMsg.mutable_target() = IPCObjectName::GetIPCName(GetId());
+			*icsMsg.mutable_target() = msg.target();
 			onSignal(icsMsg);
 		}
 		else
 		{
+			const_cast<IPCName&>(msg.target()).set_host_name(GetModuleName().host_name());
+			const_cast<IPCName&>(msg.target()).set_module_name(GetModuleName().module_name());
 			toMessage(msg);
 		}
 	}

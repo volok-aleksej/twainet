@@ -36,8 +36,7 @@ public:
 	static void TWAINET_CALL OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
 	static void TWAINET_CALL OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
 	static void TWAINET_CALL OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
-	static void TWAINET_CALL OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName,
-								   const char* id, Twainet::InternalConnectionStatus status, int port);
+	static void TWAINET_CALL OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
 private:
 	CriticalSection m_cs;
 	std::vector<Module*> m_modules;
