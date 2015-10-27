@@ -6,7 +6,7 @@
 #define VER_PRODUCT   "Twainet"
 
 #define VER_NUMBER_MAJOR   1
-#define VER_NUMBER_MINOR   0
+#define VER_NUMBER_MINOR   1
 #define VER_NUMBER_RELEASE 0
 
 #ifndef VER_NUMBER_BUILD
