@@ -417,8 +417,6 @@ void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionM
 		}
 		else
 		{
-			const_cast<IPCName&>(msg.target()).set_host_name(GetModuleName().host_name());
-			const_cast<IPCName&>(msg.target()).set_module_name(GetModuleName().module_name());
 			toMessage(msg);
 		}
 	}
