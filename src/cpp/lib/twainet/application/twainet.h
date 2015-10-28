@@ -21,13 +21,13 @@
 
 #define MAX_NAME_LENGTH 255
 
-// ModuleName cannot have strings ".", "->"
-// String version of ModuleName has the form: name.host.suffix
+// ModuleName cannot have strings "."
+// String version of ModuleName has the form: name.host.connId
 // All connections(server, client, tunnel) are also modules whose name is:
 //     server - ServerName.<sessionId>
 //     client - ClientName.<sessionId>
 //     tunnel - Tunnel.<sessionId>
-// For internal connection string version has the form: name.host.suffix
+// For internal connection string version has the form: name.host.connId
 //     sample - Tunnel.1234567.65776543
 
 extern "C"
@@ -75,7 +75,8 @@ extern "C"
 		{
 			OPEN = 1,
 			CLOSE = 2,
-			FAILED = 3
+			FAILED = 3,
+			EXIST = 4
 		};
 
 		enum IPVersion

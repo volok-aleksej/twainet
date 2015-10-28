@@ -1,16 +1,18 @@
 #include "ipc_object_name.h"
 #include "utils/utils.h"
 
-IPCObjectName::IPCObjectName(const std::string& ipcName, const std::string& hostName, const std::string& conn_id)
+IPCObjectName::IPCObjectName(const std::string& ipcName, const std::string& hostName, const std::string& connId)
 {
 	set_module_name(ipcName);
 	set_host_name(hostName);
-	set_conn_id(conn_id);
+	set_conn_id(connId);
+	m_moduleNameString = GetModuleNameString();
 }
 
 IPCObjectName::IPCObjectName(const IPCName& ipcName)
 : IPCName(ipcName)
 {
+	m_moduleNameString = GetModuleNameString();
 }
 
 IPCObjectName::~IPCObjectName()
@@ -34,21 +36,21 @@ bool IPCObjectName::operator < (const IPCName& ipcName) const
 		return false;
 }
 
-const std::string& IPCObjectName::GetModuleNameString()
+std::string IPCObjectName::GetModuleNameString() const
 {
-	m_moduleNameString = module_name();
+	std::string moduleNameString = module_name();
 	if(!host_name().empty())
 	{
-		m_moduleNameString.append(".");
-		m_moduleNameString.append(host_name());
+		moduleNameString.append(".");
+		moduleNameString.append(host_name());
 	}
 	if(!conn_id().empty())
 	{
-		m_moduleNameString.append(".");
-		m_moduleNameString.append(conn_id());
+		moduleNameString.append(".");
+		moduleNameString.append(conn_id());
 	}
 
-	return m_moduleNameString;
+	return moduleNameString;
 }
 
 IPCObjectName IPCObjectName::GetIPCName(const std::string& ipcName)

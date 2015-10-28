@@ -9,16 +9,18 @@ using namespace ipc;
 class IPCObjectName : public IPCName
 {
 public:
-	IPCObjectName(const std::string& ipcName, const std::string& hostName = "", const std::string& conn_id = "");
+	IPCObjectName(const std::string& ipcName, const std::string& hostName = "", const std::string& connId = "");
 	IPCObjectName(const IPCName& ipcName);
 	~IPCObjectName();
 
 	bool operator == (const IPCName& object);
 	bool operator < (const IPCName& object) const;
 
-	const std::string& GetModuleNameString();
+	std::string GetModuleNameString() const;
 
 	static IPCObjectName GetIPCName(const std::string& ipcName);
+protected:
+	void ModuleNameString();
 private:
 	std::string m_moduleNameString;
 };

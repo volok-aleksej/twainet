@@ -2,6 +2,7 @@
 #include "ipc_connector.h"
 #include "internal_connector.h"
 #include "common/logger.h"
+#include "common/ref.h"
 #include "module/ipc_module.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "connector_lib/thread/connect_thread.h"
@@ -228,24 +229,39 @@ void IPCHandler::onMessage(const InitInternalConnection& msg)
 		m_connector->toMessage(icsMsg);
 	}
 	else
-	{	
-		ConnectAddress address;
-		address.m_localIP = "";
-		address.m_localPort = 0;
-		address.m_moduleName = address.m_id = msg.target().conn_id();
-		address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
-		address.m_socketFactory = new TCPSocketFactory(m_connector->m_socket->m_ipv);
-		address.m_ip = msg.ip();
-		address.m_port = msg.port();
-		ConnectThread* thread = new ConnectThread(address);
-		thread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectorMessage, onAddConnector));
-		thread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectErrorMessage, onErrorConnect));
-		thread->Start();
+	{
+		IPCConnector::InternalConnection conn(msg.target().conn_id());
+		if(m_connector->m_internalConnections.AddObject(conn))
+		{
+			ConnectAddress address;
+			address.m_localIP = "";
+			address.m_localPort = 0;
+			address.m_moduleName = address.m_id = msg.target().conn_id();
+			address.m_connectorFactory = new SimpleConnectorFactory<InternalConnector>;
+			address.m_socketFactory = new TCPSocketFactory(m_connector->m_socket->m_ipv);
+			address.m_ip = msg.ip();
+			address.m_port = msg.port();
+			ConnectThread* thread = new ConnectThread(address);
+			thread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectorMessage, onAddConnector));
+			thread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectErrorMessage, onErrorConnect));
+			thread->Start();
+		}
+		else
+		{
+			InternalConnectionStatusMessage icsMsg(this);
+			IPCName* name = icsMsg.mutable_target();
+			*name = m_connector->GetModuleName();
+			name->set_conn_id(msg.target().conn_id());
+			icsMsg.set_status(CONN_EXIST);
+			m_connector->toMessage(icsMsg);
+		}
 	}
 }
 
 void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 {
+	IPCConnector::InternalConnection conn(msg.target().conn_id());
+	m_connector->m_internalConnections.GetObject(conn, &conn);
 	switch(msg.status())
 	{
 		case CONN_OPEN:
@@ -261,40 +277,29 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 			listenThread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, CreatedListenerMessage, onCreatedListener));
 			listenThread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ListenErrorMessage, onErrorListener));
 			listenThread->addSubscriber(m_connector, SIGNAL_FUNC(m_connector, IPCConnector, ConnectorMessage, onAddConnector));
+			conn.m_thread = listenThread;
+			m_connector->m_internalConnections.UpdateObject(conn);
 			listenThread->Start();
-			CSLocker locker(&m_connector->m_cs);
-			m_connector->m_internalListener.insert(std::make_pair(msg.target().conn_id(), listenThread));
-			break;
+			return;
 		}
 		case CONN_CLOSE:
 		{
-			CSLocker locker(&m_connector->m_cs);
-			std::map<std::string, ListenThread*>::iterator itListen = m_connector->m_internalListener.find(msg.target().conn_id());
-			if(itListen != m_connector->m_internalListener.end())
-			{
-				itListen->second->Stop();
-				ThreadManager::GetInstance().AddThread(itListen->second);
-				m_connector->m_internalListener.erase(itListen);
-				if(!m_connector->m_internalConnections.RemoveObject(msg.target().conn_id()))
-				{
-					break;
-				}
-			}
-			else
-			{
-				m_connector->m_manager->StopConnection(msg.target().conn_id());
-				break;
-			}
+			m_connector->m_internalConnections.DestroyObject(conn, Ref(m_connector, &IPCConnector::InternalDestroyNotify));
+			m_connector->m_manager->StopConnection(msg.target().conn_id());
+			return;
 		}
+		case CONN_EXIST:
 		case CONN_FAILED:
 		{
-			InternalConnectionStatusMessage icsMsg(this, msg);
-			*icsMsg.mutable_target() = IPCObjectName::GetIPCName(m_connector->GetId());
-			const_cast<IPCName&>(icsMsg.target()).set_conn_id(msg.target().conn_id());
-			m_connector->onSignal(icsMsg);
+			m_connector->m_internalConnections.DestroyObject(conn, Ref(m_connector, &IPCConnector::InternalDestroyNotify));
 			break;
 		}
 	}
+
+	InternalConnectionStatusMessage icsMsg(this, msg);
+	*icsMsg.mutable_target() = IPCObjectName::GetIPCName(m_connector->GetId());
+	const_cast<IPCName&>(icsMsg.target()).set_conn_id(msg.target().conn_id());
+	m_connector->onSignal(icsMsg);
 }
 
 void IPCHandler::onMessage(const InternalConnectionData& msg)

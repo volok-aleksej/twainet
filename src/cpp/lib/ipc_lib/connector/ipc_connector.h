@@ -18,6 +18,44 @@ class ListenThread;
 
 class IPCConnector : public Connector, public SignalReceiver, protected SignalOwner
 {
+	class InternalConnection
+	{
+	public:
+		InternalConnection(const std::string& id)
+			: m_id(id), m_thread(0), m_status(CONN_INIT){}
+		
+		InternalConnection(const InternalConnection& conn)
+		{
+			operator = (conn);
+		}
+
+		void operator = (const InternalConnection& conn)
+		{
+			m_id = conn.m_id;
+			m_thread = conn.m_thread;
+			m_status = conn.m_status;
+		}
+
+		bool operator != (const InternalConnection& conn)
+		{
+			return !(operator == (conn));
+		}
+
+		bool operator == (const InternalConnection& conn)
+		{
+			return m_id == conn.m_id;
+		}
+
+		bool operator < (const InternalConnection& conn)
+		{
+			return m_id < conn.m_id;
+		}
+
+		std::string m_id;
+		ConnectionStatus m_status;
+		ListenThread* m_thread;
+	};
+
 public:
 	IPCConnector(AnySocket* socket, const IPCObjectName& moduleName);
 	virtual ~IPCConnector();
@@ -47,7 +85,7 @@ protected:
 	void onInternalConnectionDataSignal(const InternalConnectionDataSignal& msg);
 
 	template<typename TClass, typename TFunc> class Reference;
-	bool InternalDestroyNotify(const std::string& connId);
+	bool InternalDestroyNotify(const InternalConnection& connId);
 	
 	friend class IPCModule;
 	friend class PingThread;
@@ -84,9 +122,7 @@ private:
 	
 	//for internal connections
 	ConnectorManager *m_manager;
-	CriticalSection m_cs;
-	std::map<std::string, ListenThread*> m_internalListener;
-	ObjectManager<std::string> m_internalConnections;
+	ObjectManager<InternalConnection> m_internalConnections;
 };
 
 #endif/*IPC_CONNECTOR_H*/

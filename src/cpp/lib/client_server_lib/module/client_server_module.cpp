@@ -107,7 +107,9 @@ void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	std::vector<IPCObject>::iterator it;
 	for(it = list.begin(); it != list.end(); it++)
 	{
-		if(it->m_ipcName.module_name() != m_clientIPCName && it->m_ipcName.module_name() != m_serverIPCName)
+		if (it->m_ipcName.module_name() != m_clientIPCName &&
+			it->m_ipcName.module_name() != m_serverIPCName &&
+			it->m_ipcName.conn_id().empty())
 		{
 			AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
 			ipcObject->set_ip(it->m_ip);

@@ -106,11 +106,15 @@ void IPCSignalHandler::onInternalConnectionStatusMessage(const InternalConnectio
 	IPCObjectName target(msg.target());
 	if(msg.status() == interconn::CONN_OPEN)
 	{
-		m_module->m_modules.AddObject(IPCModule::IPCObject(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId));
+		IPCModule::IPCObject object(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId);
+		m_module->m_modules.AddObject(object);
+		m_module->m_ipcObject.AddObject(object);
 	}
 	if(msg.status() == interconn::CONN_CLOSE)
 	{
-		m_module->m_modules.RemoveObject(IPCModule::IPCObject(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId));
+		IPCModule::IPCObject object(msg.target(), "127.0.0.1", msg.port(), m_module->m_internalAccessId);
+		m_module->m_modules.RemoveObject(object);
+		m_module->m_ipcObject.RemoveObject(object);
 	}
 	m_module->OnInternalConnection(target.GetModuleNameString(), msg.status(), msg.port());
 }

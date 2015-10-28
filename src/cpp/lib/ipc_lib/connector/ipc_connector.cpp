@@ -44,14 +44,6 @@ IPCConnector::~IPCConnector()
 {
 	m_ipcSignal->removeOwner();
 	removeReceiver();
-
-	CSLocker locker(&m_cs);
-	for(std::map<std::string, ListenThread*>::iterator it = m_internalListener.begin();
-		it != m_internalListener.end(); it++)
-	{
-		it->second->Stop();
-		ThreadManager::GetInstance().AddThread(it->second);
-	}
 }
 
 void IPCConnector::ThreadFunc()
@@ -310,23 +302,22 @@ void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
-	if(m_internalConnections.RemoveObject(msg.m_id))
-	{
-		*name = IPCObjectName::GetIPCName(GetId());
-		name->set_conn_id(msg.m_id);
-		onSignal(icsMsg);
-	}	
+	m_internalConnections.DestroyObject(msg.m_id, Ref(this, &IPCConnector::InternalDestroyNotify));
 }
 
 void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)
 {
+	InternalConnection conn(msg.m_id);
+	m_internalConnections.GetObject(conn, &conn);
+	conn.m_status = CONN_OPEN;
+	m_internalConnections.UpdateObject(conn);
+
 	InternalConnectionStatusMessage icsMsg(&m_handler);
 	icsMsg.set_status(CONN_OPEN);
 	icsMsg.set_port(msg.m_port);
 	IPCName* name = icsMsg.mutable_target();
 	*name = IPCObjectName::GetIPCName(GetId());
 	name->set_conn_id(msg.m_id);
-	m_internalConnections.AddObject(msg.m_id);
 	onSignal(icsMsg);
 }
 
@@ -342,6 +333,8 @@ void IPCConnector::onErrorListener(const ListenErrorMessage& msg)
 	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_FAILED);
 	onSignal(icsMsg);
+	InternalConnection conn(msg.m_id);
+	m_internalConnections.DestroyObject(conn, Ref(this, &IPCConnector::InternalDestroyNotify));
 }
 
 void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
@@ -352,33 +345,34 @@ void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 	name->set_conn_id(msg.m_moduleName);
 	icsMsg.set_status(CONN_FAILED);
 	toMessage(icsMsg);
+	InternalConnection conn(msg.m_moduleName);
+	m_internalConnections.DestroyObject(conn, Ref(this, &IPCConnector::InternalDestroyNotify));
 }
 	
 void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 {
+	InternalConnection conn(msg.m_conn->GetId());
+	m_internalConnections.GetObject(conn, &conn);
+	if(conn.m_thread)
 	{
-		CSLocker locker(&m_cs);
-		std::map<std::string, ListenThread*>::iterator itListen = m_internalListener.find(msg.m_conn->GetId());
-		if(itListen != m_internalListener.end())
-		{
-			itListen->second->Stop();
-			ThreadManager::GetInstance().AddThread(itListen->second);
-			m_internalListener.erase(itListen);
-		}
-		else
-		{
-			InternalConnectionStatusMessage icsMsg(&m_handler);
-			IPCName *name = icsMsg.mutable_target();
-			*name = IPCObjectName::GetIPCName(GetId());
-			name->set_conn_id(msg.m_conn->GetId());
-			icsMsg.set_status(CONN_OPEN);
-			onSignal(icsMsg);
-			*name = GetModuleName();
-			name->set_conn_id(msg.m_conn->GetId());
-			toMessage(icsMsg);
-			m_internalConnections.AddObject(msg.m_conn->GetId());
-		}
-	}	
+		conn.m_thread->Stop();
+		ThreadManager::GetInstance().AddThread(conn.m_thread);
+		conn.m_thread = 0;
+	}
+	else
+	{
+		InternalConnectionStatusMessage icsMsg(&m_handler);
+		IPCName *name = icsMsg.mutable_target();
+		*name = IPCObjectName::GetIPCName(GetId());
+		name->set_conn_id(msg.m_conn->GetId());
+		icsMsg.set_status(CONN_OPEN);
+		onSignal(icsMsg);
+		*name = GetModuleName();
+		name->set_conn_id(msg.m_conn->GetId());
+		toMessage(icsMsg);
+		conn.m_status = CONN_OPEN;
+	}
+	m_internalConnections.UpdateObject(conn);
 		
 	InternalConnector* connector = dynamic_cast<InternalConnector*>(msg.m_conn);
 	if(connector)
@@ -400,16 +394,25 @@ void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionM
 	target.clear_conn_id();
 	if(target.GetModuleNameString() == GetId())
 	{
+		InternalConnection conn(msg.target().conn_id());
 		if(m_isCoordinator || msg.target().conn_id().empty())
 		{
 			InternalConnectionStatusMessage icsMsg(&m_handler);
-			icsMsg.set_status(CONN_FAILED);
 			*icsMsg.mutable_target() = msg.target();
+			icsMsg.set_status(CONN_FAILED);
 			onSignal(icsMsg);
+		}
+		else if(m_internalConnections.AddObject(conn))
+		{
+			toMessage(msg);
+			return;
 		}
 		else
 		{
-			toMessage(msg);
+			InternalConnectionStatusMessage icsMsg(&m_handler);
+			*icsMsg.mutable_target() = msg.target();
+			icsMsg.set_status(CONN_EXIST);
+			onSignal(icsMsg);
 		}
 	}
 }
@@ -420,13 +423,19 @@ void IPCConnector::onInternalConnectionDataSignal(const InternalConnectionDataSi
 	toMessage(icdMsg);
 }
 
-bool IPCConnector::InternalDestroyNotify(const std::string& connId)
+bool IPCConnector::InternalDestroyNotify(const InternalConnection& conn)
 {
+	if(conn.m_thread)
+	{
+		conn.m_thread->Stop();
+		ThreadManager::GetInstance().AddThread(conn.m_thread);
+	}
+
 	InternalConnectionStatusMessage icsMsg(&m_handler);
 	IPCName* name = icsMsg.mutable_target();
 	*name = IPCObjectName::GetIPCName(GetId());
-	name->set_conn_id(connId);
-	icsMsg.set_status(CONN_CLOSE);
+	name->set_conn_id(conn.m_id);
+	icsMsg.set_status((conn.m_status == CONN_OPEN) ? CONN_CLOSE : CONN_FAILED);
 	onSignal(icsMsg);
 	return true;
 }

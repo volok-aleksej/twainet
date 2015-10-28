@@ -108,7 +108,7 @@ protected:
 	BaseListenThread* m_listenThread;
 	ConnectorFactory* m_factory;
 	IPCObjectName m_moduleName;
-	ObjectManager<IPCObject> m_ipcObject;		// available modules
+	ObjectManager<IPCObject> m_ipcObject;	// available modules
 	ObjectManager<IPCObject> m_modules;		// connected modules
 	ConnectorManager *m_manager;
 	bool m_isCoordinator;

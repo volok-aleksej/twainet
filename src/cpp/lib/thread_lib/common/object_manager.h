@@ -40,6 +40,20 @@ public:
 		return false;
 	}
 
+	template<typename Func>
+	bool DestroyObject(const Object& object, Func func)
+	{
+		CSLocker locker(&m_cs);
+		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		if(it != m_objects.end() && (*it) == object)
+		{
+			func(*it);
+			m_objects.erase(it);
+			return true;
+		}
+		return false;
+	}
+
 	bool GetObject(const Object& object, Object* getObject)
 	{
 		bool res = false;

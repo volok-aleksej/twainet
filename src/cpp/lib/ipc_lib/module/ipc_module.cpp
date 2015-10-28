@@ -239,6 +239,9 @@ void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	std::vector<IPCObject>::iterator it;
 	for(it = list.begin(); it != list.end(); it++)
 	{
+		if(!it->m_ipcName.conn_id().empty())
+			continue;
+
 		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
 		ipcObject->set_ip(it->m_ip);
 		ipcObject->set_port(it->m_port);
@@ -396,10 +399,18 @@ std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 }
 
 void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
-{
-	InitInternalConnectionMessage iicMsg(0);
-	iicMsg.set_ip(ip);
-	iicMsg.set_port(port);
-	iicMsg.mutable_target()->CopyFrom(moduleName);
-	onSignal(iicMsg);
+{	
+	IPCObject object(moduleName);
+	if(!m_modules.GetObject(object, &object))
+	{
+		InitInternalConnectionMessage iicMsg(0);
+		iicMsg.set_ip(ip);
+		iicMsg.set_port(port);
+		iicMsg.mutable_target()->CopyFrom(moduleName);
+		onSignal(iicMsg);
+	}
+	else
+	{
+		OnInternalConnection(moduleName.GetModuleNameString(), CONN_EXIST, 0);
+	}
 }

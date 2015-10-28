@@ -156,7 +156,8 @@ void TunnelModule::FillIPCObjectList(IPCObjectListMessage& msg)
 	{
 		if (it->m_ipcName.module_name() != m_clientIPCName &&
 			it->m_ipcName.module_name() != m_serverIPCName &&
-			it->m_ipcName.module_name() != m_tunnelIPCName)
+			it->m_ipcName.module_name() != m_tunnelIPCName &&
+			it->m_ipcName.conn_id().empty())
 		{
 			AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
 			ipcObject->set_ip(it->m_ip);
