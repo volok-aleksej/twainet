@@ -11,25 +11,22 @@ enum ConnectionStatus
 
 message InitInternalConnection
 {
-	required string id = 1;
+	required ipc.IPCName target = 1;
 	required string ip = 2;
 	required int32 port = 3;
-	optional ipc.IPCName target = 4;
 }
 
 message InternalConnectionStatus
 {
-	required string id = 1;
+	required ipc.IPCName target = 1;
 	required ConnectionStatus status = 2;
 	optional int32 port = 3;
-	optional ipc.IPCName target = 4;
 }
 
 message InternalConnectionData
 {
 	required string id = 1;
 	optional bytes data = 2;
-	optional ipc.IPCName target = 3;
 }
 
 option optimize_for = LITE_RUNTIME;
