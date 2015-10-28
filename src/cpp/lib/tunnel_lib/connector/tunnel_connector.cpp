@@ -93,7 +93,6 @@ void TunnelConnector::onMessage(const InternalConnectionData& msg)
 	if(m_isServer)
 	{
 		InternalConnectionDataMessage icdMsg(&m_handler, msg);
-		icdMsg.set_id(GetId());
 		onSignal(icdMsg);
 	}
 	else
