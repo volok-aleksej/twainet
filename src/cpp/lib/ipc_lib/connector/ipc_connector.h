@@ -36,17 +36,17 @@ class IPCConnector : public Connector, public SignalReceiver, protected SignalOw
 			m_status = conn.m_status;
 		}
 
-		bool operator != (const InternalConnection& conn)
+		bool operator != (const InternalConnection& conn) const
 		{
 			return !(operator == (conn));
 		}
 
-		bool operator == (const InternalConnection& conn)
+		bool operator == (const InternalConnection& conn) const
 		{
 			return m_id == conn.m_id;
 		}
 
-		bool operator < (const InternalConnection& conn)
+		bool operator < (const InternalConnection& conn) const
 		{
 			return m_id < conn.m_id;
 		}
