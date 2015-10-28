@@ -46,6 +46,9 @@ protected:
 	void onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg);
 	void onInternalConnectionDataSignal(const InternalConnectionDataSignal& msg);
 
+	template<typename TClass, typename TFunc> class Reference;
+	bool InternalDestroyNotify(const std::string& connId);
+	
 	friend class IPCModule;
 	friend class PingThread;
 	friend class IPCHandler;

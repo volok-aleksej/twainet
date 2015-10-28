@@ -7,6 +7,7 @@
 #include "common/common_func.h"
 #include "common/logger.h"
 #include "common/user.h"
+#include "common/ref.h"
 #include "utils/utils.h"
 
 #include "thread_lib/thread/thread_manager.h"
@@ -120,18 +121,7 @@ void IPCConnector::OnStop()
 		m_checker = 0;
 	}
 	
-	std::vector<std::string> intConnList = m_internalConnections.GetObjectList();
-	for(std::vector<std::string>::iterator it = intConnList.begin();
-	    it != intConnList.end(); it++)
-	{
-		InternalConnectionStatusMessage icsMsg(&m_handler);
-		IPCName* name = icsMsg.mutable_target();
-		*name = IPCObjectName::GetIPCName(GetId());
-		name->set_conn_id(*it);
-		icsMsg.set_status(CONN_CLOSE);
-		onSignal(icsMsg);
-	}
-	
+	m_internalConnections.CheckObjects(Ref(this, &IPCConnector::InternalDestroyNotify));	
 	m_manager->Stop();
 }
 
@@ -320,10 +310,12 @@ void IPCConnector::onDisconnected(const DisconnectedMessage& msg)
 	name->set_conn_id(msg.m_id);
 	icsMsg.set_status(CONN_CLOSE);
 	toMessage(icsMsg);
-	*name = IPCObjectName::GetIPCName(GetId());
-	name->set_conn_id(msg.m_id);
-	onSignal(icsMsg);
-	m_internalConnections.RemoveObject(msg.m_id);
+	if(m_internalConnections.RemoveObject(msg.m_id))
+	{
+		*name = IPCObjectName::GetIPCName(GetId());
+		name->set_conn_id(msg.m_id);
+		onSignal(icsMsg);
+	}	
 }
 
 void IPCConnector::onCreatedListener(const CreatedListenerMessage& msg)
@@ -426,4 +418,15 @@ void IPCConnector::onInternalConnectionDataSignal(const InternalConnectionDataSi
 {
 	InternalConnectionDataMessage icdMsg(&m_handler, msg);
 	toMessage(icdMsg);
+}
+
+bool IPCConnector::InternalDestroyNotify(const std::string& connId)
+{
+	InternalConnectionStatusMessage icsMsg(&m_handler);
+	IPCName* name = icsMsg.mutable_target();
+	*name = IPCObjectName::GetIPCName(GetId());
+	name->set_conn_id(connId);
+	icsMsg.set_status(CONN_CLOSE);
+	onSignal(icsMsg);
+	return true;
 }

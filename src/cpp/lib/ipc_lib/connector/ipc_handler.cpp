@@ -275,7 +275,10 @@ void IPCHandler::onMessage(const InternalConnectionStatus& msg)
 				itListen->second->Stop();
 				ThreadManager::GetInstance().AddThread(itListen->second);
 				m_connector->m_internalListener.erase(itListen);
-				m_connector->m_internalConnections.RemoveObject(msg.target().conn_id());
+				if(!m_connector->m_internalConnections.RemoveObject(msg.target().conn_id()))
+				{
+					break;
+				}
 			}
 			else
 			{
