@@ -404,6 +404,8 @@ void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionM
 		}
 		else if(m_internalConnections.AddObject(conn))
 		{
+			const_cast<IPCName&>(msg.target()).set_module_name(m_moduleName.module_name());
+			const_cast<IPCName&>(msg.target()).set_host_name(m_moduleName.host_name());
 			toMessage(msg);
 			return;
 		}
