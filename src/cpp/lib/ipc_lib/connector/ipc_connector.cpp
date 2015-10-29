@@ -82,7 +82,7 @@ void IPCConnector::OnStart()
 	m_isCoordinator = msg.m_isCoordinator;
 	m_isNotifyRemove = m_isCoordinator;
 	m_isSendIPCObjects = m_isNotifyRemove;
-	m_accessId = GetUserName();
+	SetAccessId(GetUserName());
 
 	ProtoMessage<ModuleName> mnMsg(&m_handler);
 	*mnMsg.mutable_ipc_name() = m_moduleName;
