@@ -10,6 +10,11 @@ add_subdirectory(lib)
 add_subdirectory(external/udt4)
 add_subdirectory(apps)
 
+add_custom_target(pre-build
+    COMMAND ./install.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/external/protobuf-2.5.0
+)
+
 add_custom_target(uninstall
     COMMAND xargs rm < install_manifest.txt
 )

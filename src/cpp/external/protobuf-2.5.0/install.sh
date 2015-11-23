@@ -1,6 +1,8 @@
 #!/bin/bash
-#compile protobufmkdir -p ../../../../output/lib/Debug
+#create output dirs
+mkdir -p ../../../../output/lib/Debug
 mkdir -p ../../../../output/lib/Release
+#compile protobuf
 svn checkout https://github.com/google/protobuf/tags/v2.5.0 v2.5.0
 cd v2.5.0
 autoreconf -f -i -Wall,no-obsolete
