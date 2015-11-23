@@ -1,18 +1,18 @@
 #!/bin/bash
-#compile protobuf
-mkdir -p ../../../../output/lib/Debug
+#compile protobufmkdir -p ../../../../output/lib/Debug
 mkdir -p ../../../../output/lib/Release
 svn checkout https://github.com/google/protobuf/tags/v2.5.0 v2.5.0
 cd v2.5.0
-./autogen.sh
+autoreconf -f -i -Wall,no-obsolete
 ./configure
-./autogen.sh
+autoreconf -f -i -Wall,no-obsolete
 
 #compile Release library
 C=/usr/bin/gcc ./configure -disable-shared CXXFLAGS="-fPIC"
 make
 rm ../../../../../output/lib/Release/libprotobuf.a
 cp src/.libs/libprotobuf.a ../../../../../output/lib/Release
+cp src/protoc ../../../../messages
 
 make clean
 

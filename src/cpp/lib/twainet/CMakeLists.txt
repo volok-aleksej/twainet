@@ -73,24 +73,21 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	if(TUNNEL_LIBRARY)
 	  set(EXTRA_LIBS ${EXTRA_LIBS} ${TUNNEL_LIBRARY})
 	endif(TUNNEL_LIBRARY)
-	
-	target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBS})
+		
+	target_link_libraries(${PROJECT_NAME} -Wl,--whole-archive ${EXTRA_LIBS} -Wl,--no-whole-archive)
 else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	add_dependencies(${PROJECT_NAME} ${DEPENDENCY_LIBS})
-	target_link_libraries(${PROJECT_NAME} ${DEPENDENCY_LIBS})
+	target_link_libraries(${PROJECT_NAME} -Wl,--whole-archive  ${DEPENDENCY_LIBS} -Wl,--no-whole-archiv)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
-
-find_library(PROTOBUF_LIBRARY NAMES protobuf PATHS ${LIB_PATH})
-if(PROTOBUF_LIBRARY)
-  target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARY})
-endif(PROTOBUF_LIBRARY)
 
 find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH})
 if(NTLM_LIBRARY)
   target_link_libraries(${PROJECT_NAME} ${NTLM_LIBRARY})
 endif(NTLM_LIBRARY)
-	
-target_link_libraries(${PROJECT_NAME} crypto uuid)
+
+target_link_libraries(${PROJECT_NAME} -Wl,--whole-archive ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a -Wl,--no-whole-archiv)
+  
+target_link_libraries(${PROJECT_NAME} crypto uuid z)
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${TWAINET_VERSION_STRING})
 
 install(TARGETS twainet

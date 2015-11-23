@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 2.6)
 project(ipc_lib)
 
 execute_process(COMMAND
-		protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 		       --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 		       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.proto
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 		
 execute_process(COMMAND
-		protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 		       --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 		       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
@@ -22,7 +22,7 @@ add_custom_command(OUTPUT
 		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.cc
 		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.h
 		  PRE_BUILD COMMAND
-		  protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 			 --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 			 ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.proto)
 			 
@@ -30,7 +30,7 @@ add_custom_command(OUTPUT
 		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.cc
 		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.h
 		  PRE_BUILD COMMAND
-		  protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 			 --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
 			 ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto)
 
