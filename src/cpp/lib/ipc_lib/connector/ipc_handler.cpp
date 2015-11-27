@@ -26,7 +26,7 @@ void IPCHandler::onMessage(const ModuleName& msg)
 	}
 	
 	bool isCoordinatorAccess = m_connector->m_isCoordinator || m_connector->m_id == IPCModule::m_coordinatorIPCName;
-	m_connector->m_isCoordinator ? m_connector->SetAccessId(IPCModule::m_baseAccessId) : void(0);	
+	isCoordinatorAccess ? m_connector->SetAccessId(IPCModule::m_baseAccessId) : void(0);	
 	if(!isCoordinatorAccess && m_connector->m_accessId != msg.access_id())
 	{
 		LOG_INFO("access denied: m_id-%s, m_module-%s, module_access-%s, id_access-%s\n",
