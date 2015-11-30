@@ -276,5 +276,6 @@ void IPCSignalHandler::getListenPort(const ListenerParamMessage& msg)
 
 void IPCSignalHandler::onIPCObjectList(const IPCObjectListMessage& msg)
 {
-	m_module->FillIPCObjectList(const_cast<IPCObjectListMessage&>(msg));
+	std::vector<IPCModule::IPCObject> list = m_module->m_ipcObject.GetObjectList();
+	m_module->FillIPCObjectList(const_cast<IPCObjectListMessage&>(msg), list);
 }

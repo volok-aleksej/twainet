@@ -69,7 +69,7 @@ protected:
 	virtual void OnClientConnector(const std::string& sessionId);
 	virtual void ServerCreationFailed();
 	virtual void OnAuthFailed();
-	virtual void FillIPCObjectList(IPCObjectListMessage& msg);
+	virtual void FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList);
 	
 	virtual void ManagerFunc();
 protected:

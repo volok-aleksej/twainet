@@ -101,23 +101,19 @@ void ClientServerModule::OnAuthFailed()
 	LOG_INFO("Client authorization failed. m_moduleName %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
-void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg)
+void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList)
 {
-	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
 	std::vector<IPCObject>::iterator it;
-	for(it = list.begin(); it != list.end(); it++)
+	for(it = ipcList.begin(); it != ipcList.end(); it++)
 	{
-		if (it->m_ipcName.module_name() != m_clientIPCName &&
-			it->m_ipcName.module_name() != m_serverIPCName &&
-			it->m_ipcName.conn_id().empty())
+		if (it->m_ipcName.module_name() == m_clientIPCName &&
+		    it->m_ipcName.module_name() == m_serverIPCName)
 		{
-			AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
-			ipcObject->set_ip(it->m_ip);
-			ipcObject->set_port(it->m_port);
-			ipcObject->set_access_id(it->m_accessId);
-			*ipcObject->mutable_ipc_name() = it->m_ipcName;
+			ipcList.erase(it++);
 		}
 	}
+	
+	IPCModule::FillIPCObjectList(msg, ipcList);
 }
 
 void ClientServerModule::ManagerFunc()

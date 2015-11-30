@@ -5,6 +5,7 @@
 #include "ipc_module.h"
 
 #include "common/logger.h"
+#include "common/user.h"
 #include "common/common.h"
 #include "common/common_func.h"
 
@@ -233,13 +234,12 @@ void IPCModule::ModuleCreationFialed()
 	LOG_INFO("Module Creation Failed: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
-void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg)
+void IPCModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList)
 {
-	std::vector<IPCObject> list = m_ipcObject.GetObjectList();
 	std::vector<IPCObject>::iterator it;
-	for(it = list.begin(); it != list.end(); it++)
+	for(it = ipcList.begin(); it != ipcList.end(); it++)
 	{
-		if(!it->m_ipcName.conn_id().empty())
+		if(it->m_accessId != msg.access_id())
 			continue;
 
 		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();

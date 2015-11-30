@@ -64,6 +64,7 @@ void IPCHandler::onMessage(const ModuleName& msg)
 	if(m_connector->m_isSendIPCObjects)
 	{
 		IPCObjectListMessage ipcolMsg(this);
+		ipcolMsg.set_access_id(msg.access_id());
 		m_connector->onSignal(ipcolMsg);
 		m_connector->toMessage(ipcolMsg);
 	}
