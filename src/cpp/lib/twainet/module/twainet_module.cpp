@@ -12,6 +12,40 @@ TwainetModule::~TwainetModule()
 {
 }
 
+std::vector<IPCObjectName> TwainetModule::GetTargetPath(const IPCObjectName& target)
+{
+	std::vector<IPCObjectName> retpath;
+	std::vector<IPCObject> moduleList = m_modules.GetObjectList();
+	for(std::vector<IPCObject>::iterator it = moduleList.begin();
+		it != moduleList.end(); it++)
+	{
+		if (target == it->m_ipcName)
+		{
+			retpath.push_back(target);
+			return retpath;
+		}
+	}
+	
+	bool throughtCoordinator = target.host_name().empty();
+	std::vector<IPCObject> ipcList = m_ipcObject.GetObjectList();
+	for(std::vector<IPCObject>::iterator it = ipcList.begin();
+		it != ipcList.end(); it++)
+	{
+		if(!it->m_ipcName.conn_id().empty())
+		{
+			continue;
+		}
+		else if(throughtCoordinator &&	it->m_accessId == IPCModule::m_baseAccessId ||
+			!throughtCoordinator &&	it->m_ipcName.module_name() == ClientServerModule::m_serverIPCName)
+		{
+			retpath.push_back(it->m_ipcName);
+			retpath.push_back(target);
+		}
+	}
+		
+	return retpath;
+}
+	
 void TwainetModule::OnTunnelConnectFailed(const std::string& sessionId)
 {
 	LOG_INFO("Tunnel connection failed: sessionId - %s\n", sessionId.c_str());

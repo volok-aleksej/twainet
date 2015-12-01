@@ -382,6 +382,19 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 	return retList;
 }
 
+std::vector<IPCObjectName> IPCModule::GetConnectedModules()
+{
+	std::vector<IPCObjectName> retList;
+	std::vector<IPCObject> list = m_modules.GetObjectList();
+	std::vector<IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		retList.push_back(IPCObjectName(it->m_ipcName));
+	}
+
+	return retList;
+}
+	
 std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 {
 	std::vector<IPCObjectName> retList;

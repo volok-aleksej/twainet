@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include <map>
+#include <string.h>
 #include "twainet/application/twainet.h"
 #include "connector_lib/handler/data_message.h"
 #include "deamon_message.h"
@@ -38,7 +39,7 @@ protected:
 		m_messages[msg->GetName()] = msg;
 	}
 	
-	bool onData(const std::string& type, const std::vector<Twainet::ModuleName>& path, char* data, int len)
+	bool onData(const std::string& type, const Twainet::ModuleName& path, char* data, int len)
 	{
 		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);
 		if (it != m_messages.end())
@@ -58,7 +59,7 @@ protected:
 		return false;
 	}
 	
-	bool toMessage(const DataMessage& msg, const Twainet::ModuleName* path, int pathsize)
+	bool toMessage(const DataMessage& msg, const Twainet::ModuleName path)
 	{
 		bool ret = false;
 		char* data = 0;
@@ -68,11 +69,10 @@ protected:
 		if(const_cast<DataMessage&>(msg).deserialize(data, datalen))
 		{
 		      std::string typeMessage = msg.GetName();
-		      Twainet::Message message;
+		      Twainet::Message message = {0};
 		      message.m_data = data;
 		      message.m_dataLen = datalen;
-		      message.m_path = path;
-		      message.m_pathLen = pathsize;
+		      memcpy((void*)&message.m_target, (void*)&path, sizeof(path));
 		      message.m_typeMessage = typeMessage.c_str();
 		      Twainet::SendMessage(m_module, message);
 		      ret = true;

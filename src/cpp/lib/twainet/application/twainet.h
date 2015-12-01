@@ -54,8 +54,7 @@ extern "C"
 		// recomended data len 8192
 		struct Message
 		{	
-			const ModuleName* m_path;
-			int m_pathLen;
+			const ModuleName m_target;
 			const char* m_typeMessage;
 			const char* m_data;
 			int m_dataLen;

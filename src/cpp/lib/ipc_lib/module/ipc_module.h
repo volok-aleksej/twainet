@@ -83,7 +83,8 @@ public:
 	void SendMsg(const IPCMessageSignal& msg);
 	void CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port);
 	const IPCObjectName& GetModuleName();
-	std::vector<IPCObjectName> GetIPCObjects();
+ 	std::vector<IPCObjectName> GetIPCObjects();
+	std::vector<IPCObjectName> GetConnectedModules();
 	std::vector<IPCObjectName> GetInternalConnections();
 protected:
 	virtual void OnNewConnector(Connector* connector);

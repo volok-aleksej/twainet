@@ -59,8 +59,7 @@ message IPCMessage
 	required string message_name = 1;
 	repeated IPCName ipc_path = 2;
 	repeated IPCName ipc_sender = 3;
-	required string access_id = 4;
-	optional bytes message = 5;
+	optional bytes message = 4;
 }
 
 message Ping

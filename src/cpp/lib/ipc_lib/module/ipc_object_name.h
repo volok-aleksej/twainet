@@ -13,7 +13,7 @@ public:
 	IPCObjectName(const IPCName& ipcName);
 	~IPCObjectName();
 
-	bool operator == (const IPCName& object);
+	bool operator == (const IPCName& object) const;
 	bool operator < (const IPCName& object) const;
 
 	std::string GetModuleNameString() const;

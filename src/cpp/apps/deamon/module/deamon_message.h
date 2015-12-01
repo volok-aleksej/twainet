@@ -10,17 +10,17 @@ class MessageAttr
 public:
 	MessageAttr(){}
 	virtual ~MessageAttr(){}
-	void SetPath(const std::vector<Twainet::ModuleName>& path)
+	void SetPath(const Twainet::ModuleName& path)
 	{
 		m_path = path;
 	}
 	
-	std::vector<Twainet::ModuleName> GetPath()
+	Twainet::ModuleName GetPath()
 	{
 		return m_path;
 	}
 private:
-	std::vector<Twainet::ModuleName> m_path;
+	Twainet::ModuleName m_path;
 };
 
 template<class TMessage, class THandler>

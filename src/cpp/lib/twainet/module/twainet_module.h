@@ -8,6 +8,8 @@ class TwainetModule : public TunnelModule
 public:
 	TwainetModule(const IPCObjectName& ipcName, int ipv);
 	~TwainetModule();
+public:
+	std::vector<IPCObjectName> GetTargetPath(const IPCObjectName& target);
 protected:
 	// Tunnel with other computer was not created
 	virtual void OnTunnelConnectFailed(const std::string& sessionId);

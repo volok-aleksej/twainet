@@ -19,7 +19,7 @@ IPCObjectName::~IPCObjectName()
 {
 }
 
-bool IPCObjectName::operator == (const IPCName& ipcName)
+bool IPCObjectName::operator == (const IPCName& ipcName) const
 {
 	return	module_name() == ipcName.module_name() &&
 		host_name() == ipcName.host_name() &&

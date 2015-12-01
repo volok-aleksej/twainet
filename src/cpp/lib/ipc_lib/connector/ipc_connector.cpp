@@ -204,7 +204,6 @@ void IPCConnector::onIPCMessage(const IPCMessageSignal& msg)
 		ipcName == IPCObjectName::GetIPCName(GetId()))
 	{
 		IPCProtoMessage ipcMsg(&m_handler, static_cast<const IPCMessage&>(msg));
-		ipcMsg.set_access_id(m_accessId);
 		toMessage(ipcMsg);
 	}
 }

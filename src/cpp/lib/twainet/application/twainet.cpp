@@ -125,15 +125,18 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 	if(!module)
 		return;
 
+
 	TwainetModule* twainetModule = (TwainetModule*)module;
 	IPCMessage message;
 	message.set_message_name(msg.m_typeMessage);
 	message.set_message(msg.m_data, msg.m_dataLen);
-	for(int i = 0; i < msg.m_pathLen; i++)
+	std::vector<IPCObjectName> path = twainetModule->GetTargetPath(IPCObjectName(msg.m_target.m_name, msg.m_target.m_host, msg.m_target.m_connId));
+	for(std::vector<IPCObjectName>::iterator it = path.begin();
+	    it != path.end(); it++)
 	{
-		*message.add_ipc_path() = IPCObjectName(msg.m_path[i].m_name, msg.m_path[i].m_host, msg.m_path[i].m_connId);
+		*message.add_ipc_path() = *it;
 	}
-
+	
 	IPCMessageSignal msgSignal(message);
 	twainetModule->SendMsg(msgSignal);
 }

@@ -208,30 +208,23 @@ GettingMessage::~GettingMessage()
 
 void GettingMessage::HandleMessage(Twainet::TwainetCallback callbacks)
 {
-	Twainet::Message msg;
+	Twainet::Message msg = {0};
 	msg.m_data = m_data.c_str();
 	msg.m_dataLen = m_data.size();
 	msg.m_typeMessage = m_messageName.c_str();
-	msg.m_pathLen = m_path.size();
-	msg.m_path = new Twainet::ModuleName[msg.m_pathLen];
-	std::string path;
-	for(std::vector<std::string>::iterator it = m_path.begin();
-		it != m_path.end(); it++)
-	{
-		IPCObjectName idName = IPCObjectName::GetIPCName(*it);
+	IPCObjectName idName = IPCObjectName::GetIPCName(m_path[0]);
 #ifdef WIN32
-		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
-		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
-		strcpy_s((char*)msg.m_path[it - m_path.begin()].m_connId, MAX_NAME_LENGTH, idName.conn_id().c_str());
+	strcpy_s((char*)msg.m_target.m_name, MAX_NAME_LENGTH, idName.module_name().c_str());
+	strcpy_s((char*)msg.m_target.m_host, MAX_NAME_LENGTH, idName.host_name().c_str());
+	strcpy_s((char*)msg.m_target.m_connId, MAX_NAME_LENGTH, idName.conn_id().c_str());
 #else
-		strcpy((char*)msg.m_path[it - m_path.begin()].m_name, idName.module_name().c_str());
-		strcpy((char*)msg.m_path[it - m_path.begin()].m_host, idName.host_name().c_str());
-		strcpy((char*)msg.m_path[it - m_path.begin()].m_connId, idName.conn_id().c_str());
+	strcpy((char*)msg.m_target.m_name, idName.module_name().c_str());
+	strcpy((char*)msg.m_target.m_host, idName.host_name().c_str());
+	strcpy((char*)msg.m_target.m_connId, idName.conn_id().c_str());
 #endif/*WIN32*/
-	}
+		
 	if(callbacks.OnMessageRecv)
 		callbacks.OnMessageRecv(m_module, msg);
-	delete msg.m_path;
 }
 
 /*******************************************************************************************/
