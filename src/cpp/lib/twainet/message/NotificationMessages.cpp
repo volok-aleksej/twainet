@@ -323,3 +323,20 @@ void InternalConnectionStatusChanged::HandleMessage(Twainet::TwainetCallback cal
 		callbacks.OnModuleDisconnected(m_module, retName);
 	}
 }
+
+/*******************************************************************************************/
+/*                                   ModuleListChanged                                     */
+/*******************************************************************************************/
+ModuleListChanged::ModuleListChanged(Twainet::Module module)
+	: NotificationMessage(module, MODULE_LIST_CHANGED)
+{
+}
+ModuleListChanged::~ModuleListChanged()
+{
+}
+	
+void ModuleListChanged::HandleMessage(Twainet::TwainetCallback callbacks)
+{
+	if(callbacks.OnModuleListChanged)
+		callbacks.OnModuleListChanged(m_module);
+}

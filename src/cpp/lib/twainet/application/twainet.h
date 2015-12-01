@@ -35,7 +35,7 @@ extern "C"
 	namespace Twainet
 	{
 		const char ServerModuleName[] = "Server";
-		const char ClentModuleName[] = "Client";
+		const char ClientModuleName[] = "Client";
 		const char TunnelModuleName[] = "Tunnel";
 		
 		struct UserPassword
@@ -104,6 +104,7 @@ extern "C"
 			void (TWAINET_CALL *OnTunnelCreationFailed)(Module module, const char* sessionId);
 			void (TWAINET_CALL *OnMessageRecv)(Module module, const Message& msg);
 			void (TWAINET_CALL *OnInternalConnectionStatusChanged)(Module module, const char* moduleName, InternalConnectionStatus status, int port);
+			void (TWAINET_CALL *OnModuleListChanged)(Module module);
 		};
 
 		// Initialize library

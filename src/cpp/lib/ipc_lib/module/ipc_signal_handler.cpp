@@ -22,6 +22,7 @@ void IPCSignalHandler::onCreatedListener(const CreatedListenerMessage& msg)
 	IPCModule::IPCObject object(IPCObjectName::GetIPCName(msg.m_id), msg.m_ip,
 				    msg.m_port, m_module->m_isCoordinator ? IPCModule::m_baseAccessId : GetUserName());
 	m_module->m_ipcObject.AddObject(object);
+	m_module->OnIPCObjectsChanged();
 	if(!m_module->m_isCoordinator)
 	{
 		m_module->ConnectToCoordinator();
@@ -116,6 +117,7 @@ void IPCSignalHandler::onInternalConnectionStatusMessage(const InternalConnectio
 		m_module->m_modules.RemoveObject(object);
 		m_module->m_ipcObject.RemoveObject(object);
 	}
+	m_module->OnIPCObjectsChanged();
 	m_module->OnInternalConnection(target.GetModuleNameString(), msg.status(), msg.port());
 }
 
@@ -136,6 +138,7 @@ void IPCSignalHandler::onAddIPCObject(const AddIPCObjectMessage& msg)
 	LOG_INFO("Add IPC Object: ipc name - %s, m_moduleName - %s\n",
 		 object.m_ipcName.GetModuleNameString().c_str(), m_module->m_moduleName.GetModuleNameString().c_str());
 	m_module->m_ipcObject.AddObject(object);
+	m_module->OnIPCObjectsChanged();
 }
 
 void IPCSignalHandler::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
@@ -176,6 +179,8 @@ void IPCSignalHandler::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 	{
 		m_module->m_modules.AddObject(object);
 	}
+	
+	m_module->OnIPCObjectsChanged();
 
 	IPCObjectName ipcNameNew(msg.ipc_new_name());
 	IPCObjectName ipcNameOld(msg.ipc_old_name());
@@ -189,6 +194,7 @@ void IPCSignalHandler::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
 {
 	IPCModule::IPCObject object(IPCObjectName::GetIPCName(msg.ipc_name()));
 	m_module->m_ipcObject.RemoveObject(object);
+	m_module->OnIPCObjectsChanged();
 	LOG_INFO("Remove IPC Object: ipc name - %s, m_moduleName - %s\n",
 		 object.m_ipcName.GetModuleNameString().c_str(), m_module->m_moduleName.GetModuleNameString().c_str());
 }
@@ -239,6 +245,7 @@ void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 	   !m_module->m_coordinatorName.empty() && msg.m_id == m_module->m_coordinatorName)
 	{
 		m_module->m_ipcObject.Clear();
+		m_module->OnIPCObjectsChanged();
 		if(m_module->m_countConnect + 1 == g_ipcCoordinatorPortCount)
 		{
 			m_module->m_countConnect = 0;

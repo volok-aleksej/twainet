@@ -118,3 +118,10 @@ void TwainetModule::OnInternalConnection(const std::string& moduleName, Connecti
 		 const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str(), status, port);
 	Application::GetInstance().AddNotifycationMessage(new InternalConnectionStatusChanged(this, moduleName, status, port));	
 }
+
+void TwainetModule::OnIPCObjectsChanged()
+{
+	LOG_INFO("ipc objects list was changed: moduleName - %s\n",
+		 const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str());
+	Application::GetInstance().AddNotifycationMessage(new ModuleListChanged(this));
+}

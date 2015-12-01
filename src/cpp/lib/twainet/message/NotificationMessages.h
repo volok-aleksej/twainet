@@ -18,7 +18,8 @@ enum NotificationType
 	MODULE_CREATION_FAILED,
 	SERVER_CREATION_FAILED,
 	TUNNEL_CREATION_FAILED,
-	INTERNAL_CONNECTION_STATUS
+	INTERNAL_CONNECTION_STATUS,
+	MODULE_LIST_CHANGED
 };
 
 class NotificationMessage
@@ -153,6 +154,15 @@ private:
 	std::string m_moduleName;
 	ConnectionStatus m_status;
 	int m_port;
+};
+
+class ModuleListChanged : public NotificationMessage
+{
+public:
+	ModuleListChanged(Twainet::Module module);
+	virtual ~ModuleListChanged();
+	
+	virtual void HandleMessage(Twainet::TwainetCallback callbacks);
 };
 
 #endif/*NOTIFICATION_MESSAGES_H*/

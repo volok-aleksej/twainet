@@ -12,7 +12,7 @@ Twainet::TwainetCallback tc = {&DeamonApplication::OnServerConnected, &DeamonApp
 			       &DeamonApplication::OnClientAuthFailed, &DeamonApplication::OnModuleConnected, &DeamonApplication::OnModuleDisconnected,
 			       &DeamonApplication::OnModuleConnectionFailed, &DeamonApplication::OnModuleCreationFailed, &DeamonApplication::OnTunnelConnected,
 			       &DeamonApplication::OnTunnelDisconnected, &DeamonApplication::OnTunnelCreationFailed, &DeamonApplication::OnMessageRecv,
-			       &DeamonApplication::OnInternalConnectionStatusChanged};
+			       &DeamonApplication::OnInternalConnectionStatusChanged, &DeamonApplication::OnModuleListChanged};
 
 void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
 {
@@ -240,6 +240,21 @@ void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::
 	}
 }
 
+void TWAINET_CALL DeamonApplication::OnModuleListChanged(Twainet::Module module)
+{
+	DeamonApplication& app = GetInstance();
+	CSLocker locker(&app.m_cs);
+	for(std::vector<Module*>::iterator it = app.m_modules.begin();
+		it != app.m_modules.end(); it++)
+	{
+		if(module == *it)
+		{
+			(*it)->OnModuleListChanged();
+			break;
+		}
+	}
+}
+
 DeamonApplication::DeamonApplication()
 : m_isStop(false)
 {
@@ -262,6 +277,7 @@ int DeamonApplication::Run()
 		CSLocker locker(&GetInstance().m_cs);
 		m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
 	}
+	
 	while(!m_isStop)
 	{
 		Thread::sleep(200);

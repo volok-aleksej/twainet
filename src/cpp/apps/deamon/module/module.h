@@ -32,6 +32,7 @@ public:
 	virtual void OnMessageRecv(const Twainet::Message& msg){}
 	virtual void OnInternalConnectionStatusChanged(const char* moduleName,
 						       Twainet::InternalConnectionStatus status, int port){}
+	virtual void OnModuleListChanged(){}
 
 protected:
 	void AddMessage(DataMessage* msg)
@@ -80,6 +81,11 @@ protected:
 		
 		delete data;
 		return ret;
+	}
+	
+	const Twainet::Module GetModule()
+	{
+		return m_module;
 	}
 private:
 	Twainet::Module m_module;

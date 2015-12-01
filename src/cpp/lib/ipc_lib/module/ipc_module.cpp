@@ -254,6 +254,10 @@ void IPCModule::OnInternalConnection(const std::string& moduleName, ConnectionSt
 {
 }
 
+void IPCModule::OnIPCObjectsChanged()
+{
+}
+	
 void IPCModule::ManagerFunc()
 {
 	CSLocker locker(&m_csRequest);

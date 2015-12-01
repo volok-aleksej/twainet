@@ -50,6 +50,9 @@ protected:
 
 	// Changed internal connection status
 	virtual void OnInternalConnection(const std::string& moduleName, ConnectionStatus status, int port);
+	
+	// IPC Object list was changed
+	virtual void OnIPCObjectsChanged();
 };
 
 #endif/*TWAINET_MODULE_H*/

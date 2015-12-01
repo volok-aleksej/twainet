@@ -96,6 +96,7 @@ protected:
 	virtual void ModuleCreationFialed();
 	virtual void FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList);
 	virtual void OnInternalConnection(const std::string& moduleName, ConnectionStatus status, int port);
+	virtual void OnIPCObjectsChanged();
 
 	virtual void ManagerFunc();
 	virtual void ManagerStart();

@@ -7,15 +7,60 @@
 
 #define MAX_BUFFER_LEN 1024
 
+/*******************************************************************************/
+/*                             ClientModuleName                                */
+/*******************************************************************************/
+DeamonModule::ClientModuleName::ClientModuleName()
+{
+}
+
+DeamonModule::ClientModuleName::ClientModuleName(const DeamonModule::ClientModuleName& name)
+{
+	operator = (name);
+}
+
+DeamonModule::ClientModuleName::ClientModuleName(const std::string& moduleName, const std::string& hostClient)
+: m_moduleName(moduleName), m_hostClient(hostClient)
+{
+}
+
+DeamonModule::ClientModuleName::~ClientModuleName()
+{
+}
+		
+void DeamonModule::ClientModuleName::operator = (const DeamonModule::ClientModuleName& name)
+{
+	m_moduleName = name.m_moduleName;
+	m_hostClient = name.m_hostClient;
+}
+
+bool DeamonModule::ClientModuleName::operator == (const DeamonModule::ClientModuleName& name) const
+{
+	return m_hostClient == name.m_hostClient;
+}
+
+bool DeamonModule::ClientModuleName::operator != (const DeamonModule::ClientModuleName& name) const
+{
+	return !operator == (name);
+}
+
+bool DeamonModule::ClientModuleName::operator < (const DeamonModule::ClientModuleName& name) const
+{
+	return m_hostClient < name.m_hostClient;
+}
+
+/*******************************************************************************/
+/*                             DeamonModule                                    */
+/*******************************************************************************/
 DeamonModule::DeamonModule(const Twainet::Module& module)
 : Module(module)
 {
 	ReadConfig();
 	
-    strcpy(m_userPassword.m_user, CreateGUID().c_str());
-    strcpy(m_userPassword.m_pass, CreateGUID().c_str());
-    Twainet::SetUsersList(module, &m_userPassword, 1);
-    Twainet::CreateServer(module, g_localServerPort, Twainet::IPV6, true);
+	strcpy(m_userPassword.m_user, CreateGUID().c_str());
+	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
+	Twainet::SetUsersList(module, &m_userPassword, 1);
+	Twainet::CreateServer(module, g_localServerPort, Twainet::IPV4, true);
 }
 
 DeamonModule::~DeamonModule()
@@ -25,6 +70,9 @@ DeamonModule::~DeamonModule()
 
 void DeamonModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 {
+	if(strlen(moduleName.m_host) != 0)
+		return;
+	
 	int sizeName = 0;
 	Twainet::GetModuleNameString(moduleName, 0, sizeName);
 	std::string strModuleName(sizeName, 0);
@@ -50,6 +98,68 @@ void DeamonModule::OnMessageRecv(const Twainet::Message& message)
 	onData(message.m_typeMessage, message.m_target, (char*)message.m_data, message.m_dataLen);
 }
 
+void DeamonModule::OnModuleListChanged()
+{
+	Twainet::ModuleName* names = 0;
+	int sizeNames = 0;
+	sizeNames = Twainet::GetExistingModules(GetModule(), names, sizeNames);
+	names = new Twainet::ModuleName[sizeNames];
+	Twainet::GetExistingModules(GetModule(), names, sizeNames);
+	std::vector<ClientModuleName> clients = m_clientsName.GetObjectList();
+	for(std::vector<ClientModuleName>::iterator it = clients.begin();
+	  it != clients.end(); it++)
+	{
+		bool bFind = false;
+		for(int i = 0; i < sizeNames; i++)
+		{
+			if(it->m_hostClient == names[i].m_host)
+			{
+				bFind = true;
+			}
+		}
+		
+		if(!bFind)
+		{
+			m_clientsName.RemoveObject(*it);
+		}
+	}
+	delete names;
+}
+
+void DeamonModule::onMessage(const ClientName& msg, const Twainet::ModuleName& path)
+{
+	ClientModuleName clientName(msg.ipc_name(), msg.host_name());
+	if(!m_clientsName.AddObject(clientName))
+	{
+		m_clientsName.UpdateObject(clientName);
+	}
+	
+	ClientNameListMessage cnlMsg(this);
+	std::vector<ClientModuleName> clients = m_clientsName.GetObjectList();
+	for(std::vector<ClientModuleName>::iterator it = clients.begin();
+	    it != clients.end(); it++)
+	{
+		ClientName name;
+		name.set_ipc_name(it->m_moduleName);
+		name.set_host_name(it->m_hostClient);
+		*cnlMsg.add_name_list() = name;
+	}
+	
+	Twainet::ModuleName* names = 0;
+	int sizeNames = 0;
+	sizeNames = Twainet::GetExistingModules(GetModule(), names, sizeNames);
+	names = new Twainet::ModuleName[sizeNames];
+	Twainet::GetExistingModules(GetModule(), names, sizeNames);
+	for(int i = 0; i < sizeNames; i++)
+	{
+		if(strlen(names[i].m_host) == 0)
+			continue;
+		
+		toMessage(cnlMsg, names[i]);
+	}
+	delete names;
+}
+	
 void DeamonModule::ReadConfig()
 {
 #ifdef WIN32
