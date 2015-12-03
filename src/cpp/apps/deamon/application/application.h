@@ -6,7 +6,7 @@
 #include "common/singleton.h"
 #include "thread_lib/common/critical_section.h"
 #include "twainet/application/twainet.h"
-#include "module/module.h"
+#include "module.h"
 
 class DeamonApplication : public Singleton<DeamonApplication>
 {

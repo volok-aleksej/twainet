@@ -35,11 +35,12 @@ set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TY
 	     ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work) 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} 
-					${CMAKE_CURRENT_SOURCE_DIR}/../.. 
-					${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
-					${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-					${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
-					${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src) 
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../include
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
+		   ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src) 
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}}) 
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME}) 
