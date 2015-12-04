@@ -115,6 +115,7 @@ void IPCConnector::OnStop()
 	
 	m_internalConnections.CheckObjects(Ref(this, &IPCConnector::InternalDestroyNotify));	
 	m_manager->Stop();
+	m_manager = 0;
 }
 
 void IPCConnector::SubscribeConnector(const IPCConnector* connector)
@@ -379,7 +380,8 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 			
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, InternalConnectionDataSignal, onInternalConnectionDataSignal));
 		connector->SubscribeConnector(dynamic_cast<SignalOwner*>(this));
-		m_manager->AddConnection(msg.m_conn);
+		if(m_manager)
+			m_manager->AddConnection(msg.m_conn);
 	}
 	else
 	{

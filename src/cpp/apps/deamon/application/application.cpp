@@ -1,5 +1,4 @@
 #include "application.h"
-#include "thread_lib/thread/thread.h"
 #include "module/deamon_module.h"
 #ifndef WIN32
 #	include <string.h>
@@ -7,14 +6,7 @@
 
 #define COORDINATOR_NAME	"twndeamon"
 
-Twainet::TwainetCallback tc = {&DeamonApplication::OnServerConnected, &DeamonApplication::OnServerDisconnected, &DeamonApplication::OnServerCreationFailed,
-			       &DeamonApplication::OnClientConnected, &DeamonApplication::OnClientDisconnected, &DeamonApplication::OnClientConnectionFailed,
-			       &DeamonApplication::OnClientAuthFailed, &DeamonApplication::OnModuleConnected, &DeamonApplication::OnModuleDisconnected,
-			       &DeamonApplication::OnModuleConnectionFailed, &DeamonApplication::OnModuleCreationFailed, &DeamonApplication::OnTunnelConnected,
-			       &DeamonApplication::OnTunnelDisconnected, &DeamonApplication::OnTunnelCreationFailed, &DeamonApplication::OnMessageRecv,
-			       &DeamonApplication::OnInternalConnectionStatusChanged, &DeamonApplication::OnModuleListChanged};
-
-void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
+void DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
 {
 	if(strcmp(Twainet::GetModuleName(module).m_name, COORDINATOR_NAME) == 0)
 	{
@@ -22,7 +14,7 @@ void TWAINET_CALL DeamonApplication::OnModuleCreationFailed(Twainet::Module modu
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnServerCreationFailed(Twainet::Module module)
+void DeamonApplication::OnServerCreationFailed(Twainet::Module module)
 {
 	if(strcmp(Twainet::GetModuleName(module).m_name, COORDINATOR_NAME) == 0)
 	{
@@ -30,7 +22,7 @@ void TWAINET_CALL DeamonApplication::OnServerCreationFailed(Twainet::Module modu
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+void DeamonApplication::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -45,7 +37,7 @@ void TWAINET_CALL DeamonApplication::OnTunnelCreationFailed(Twainet::Module modu
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnServerConnected(Twainet::Module module, const char* sessionId)
+void DeamonApplication::OnServerConnected(Twainet::Module module, const char* sessionId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -60,7 +52,7 @@ void TWAINET_CALL DeamonApplication::OnServerConnected(Twainet::Module module, c
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnClientConnected(Twainet::Module module, const char* sessionId)
+void DeamonApplication::OnClientConnected(Twainet::Module module, const char* sessionId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -75,7 +67,7 @@ void TWAINET_CALL DeamonApplication::OnClientConnected(Twainet::Module module, c
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnClientDisconnected(Twainet::Module module, const char* sessionId)
+void DeamonApplication::OnClientDisconnected(Twainet::Module module, const char* sessionId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -90,7 +82,7 @@ void TWAINET_CALL DeamonApplication::OnClientDisconnected(Twainet::Module module
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnClientConnectionFailed(Twainet::Module module)
+void DeamonApplication::OnClientConnectionFailed(Twainet::Module module)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -105,7 +97,7 @@ void TWAINET_CALL DeamonApplication::OnClientConnectionFailed(Twainet::Module mo
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnClientAuthFailed(Twainet::Module module)
+void DeamonApplication::OnClientAuthFailed(Twainet::Module module)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -120,7 +112,7 @@ void TWAINET_CALL DeamonApplication::OnClientAuthFailed(Twainet::Module module)
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnServerDisconnected(Twainet::Module module)
+void DeamonApplication::OnServerDisconnected(Twainet::Module module)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -135,7 +127,7 @@ void TWAINET_CALL DeamonApplication::OnServerDisconnected(Twainet::Module module
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void DeamonApplication::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -150,7 +142,7 @@ void TWAINET_CALL DeamonApplication::OnModuleConnected(Twainet::Module module, c
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void DeamonApplication::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -165,7 +157,7 @@ void TWAINET_CALL DeamonApplication::OnModuleDisconnected(Twainet::Module module
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+void DeamonApplication::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -180,7 +172,7 @@ void TWAINET_CALL DeamonApplication::OnModuleConnectionFailed(Twainet::Module mo
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+void DeamonApplication::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -195,7 +187,7 @@ void TWAINET_CALL DeamonApplication::OnTunnelConnected(Twainet::Module module, c
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
+void DeamonApplication::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -210,7 +202,7 @@ void TWAINET_CALL DeamonApplication::OnTunnelDisconnected(Twainet::Module module
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+void DeamonApplication::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -225,7 +217,7 @@ void TWAINET_CALL DeamonApplication::OnMessageRecv(Twainet::Module module, const
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
+void DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -240,7 +232,7 @@ void TWAINET_CALL DeamonApplication::OnInternalConnectionStatusChanged(Twainet::
 	}
 }
 
-void TWAINET_CALL DeamonApplication::OnModuleListChanged(Twainet::Module module)
+void DeamonApplication::OnModuleListChanged(Twainet::Module module)
 {
 	DeamonApplication& app = GetInstance();
 	CSLocker locker(&app.m_cs);
@@ -256,7 +248,6 @@ void TWAINET_CALL DeamonApplication::OnModuleListChanged(Twainet::Module module)
 }
 
 DeamonApplication::DeamonApplication()
-: m_isStop(false)
 {
 }
 
@@ -270,27 +261,10 @@ DeamonApplication::~DeamonApplication()
 	}
 }
 
-int DeamonApplication::Run()
+void DeamonApplication::InitializeApplication()
 {
-	Twainet::InitLibrary(tc);
-	{
-		CSLocker locker(&GetInstance().m_cs);
-		m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
-	}
-	
-	while(!m_isStop)
-	{
-		Thread::sleep(200);
-	}
-
-	Twainet::CloseLibrary();
-	return 0;
-}
-
-int DeamonApplication::Stop()
-{
-	m_isStop = true;
-	return 0;
+	CSLocker locker(&GetInstance().m_cs);
+	m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
 }
 
 std::string DeamonApplication::GetAppName()

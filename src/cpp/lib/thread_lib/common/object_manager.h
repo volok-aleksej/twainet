@@ -103,19 +103,24 @@ public:
 	void CheckObjects(Func func)
 	{
 		CSLocker locker(&m_cs);
-		for (typename std::vector<Object>::iterator it = m_objects.begin();
-			it != m_objects.end();)
+//		for (typename std::vector<Object>::iterator it = m_objects.begin();
+//			it != m_objects.end();)
+		for(int i = 0; i < m_objects.size(); i++)
 		{
 			bool erase;
-			func(*it, erase);
+//			func(*it, erase);
+			func(m_objects[i], erase);
 			if(erase)
 			{
-				it = m_objects.erase(it);
+//				it =m_objects.erase(it);
+				m_objects.erase(m_objects.begin() + i);
+				i--;
+			  
 			}
-			else 
-			{
-				it++;
-			}
+//			else 
+//			{
+//				it++;
+//			}
 		}	
 	}
 
