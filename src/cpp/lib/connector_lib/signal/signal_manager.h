@@ -15,7 +15,7 @@ protected:
 public:
 	void AddSignal(Signal* signal);
 protected:
-	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	template<typename TClass, typename TFunc, typename TObject, typename TReturn> friend class ReferenceObject;
 	bool CheckSignal(const std::vector<Signal*>& signals, const Signal* signal);
 protected:
 	virtual void ManagerFunc();

@@ -19,13 +19,13 @@ public:
 	void StopAllConnection();
 
 protected:
-	template<typename TClass, typename TFunc> friend class Reference;
-	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	template<typename TClass, typename TFunc, typename TReturn> friend class Reference;
+	template<typename TClass, typename TFunc, typename TObject, typename TReturn> friend class ReferenceObject;
 	bool CheckConnection(const std::map<std::string, std::string>& discModules, const Connector* msg);
 	bool StopConnector(const std::map<std::string, std::string>& discModules, const Connector* msg);
-	void StopConnectors(const Connector* connector);
-	void SubscribeConnector(const Connector* newConnector, const Connector* connector);
-	void StopConnectionByName(const std::string& moduleName, const Connector* connector);
+	bool StopConnectors(const Connector* connector);
+	bool SubscribeConnector(const Connector* newConnector, const Connector* connector);
+	bool StopConnectionByName(const std::string& moduleName, const Connector* connector);
 protected:
 	virtual void ManagerFunc();
 	virtual void ManagerStart();

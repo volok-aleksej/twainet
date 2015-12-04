@@ -24,7 +24,7 @@ protected:
 	void subscribe(IReceiverFunc* obj);
 	void unsubscribe(SignalReceiver* receiver);
 private:
-	void onSignalFunc(const DataMessage& msg, const IReceiverFunc* obj);
+	bool onSignalFunc(const DataMessage& msg, const IReceiverFunc* obj);
 	bool unsubsribeFunc(const SignalReceiver* receiver, const IReceiverFunc* signal);
 	bool unsubsribeReceiver(const IReceiverFunc* signal);
 	ObjectManager<IReceiverFunc*> m_receiverFunctions;

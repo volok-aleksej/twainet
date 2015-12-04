@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "critical_section.h"
+#include "common/ref.h"
 
 template<typename Object>
 class ObjectManager
@@ -98,29 +99,18 @@ public:
 		CSLocker locker(&m_cs);
 		m_objects = const_cast<ObjectManager<Object>&>(manager).GetObjectList();
 	}
-
+	
 	template<typename Func>
 	void CheckObjects(Func func)
 	{
 		CSLocker locker(&m_cs);
-//		for (typename std::vector<Object>::iterator it = m_objects.begin();
-//			it != m_objects.end();)
 		for(int i = 0; i < m_objects.size(); i++)
 		{
-			bool erase;
-//			func(*it, erase);
-			func(m_objects[i], erase);
-			if(erase)
+			if(func(m_objects[i]))
 			{
-//				it =m_objects.erase(it);
 				m_objects.erase(m_objects.begin() + i);
-				i--;
-			  
+				i--;			  
 			}
-//			else 
-//			{
-//				it++;
-//			}
 		}	
 	}
 

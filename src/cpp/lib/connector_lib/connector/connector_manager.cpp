@@ -62,12 +62,13 @@ void ConnectorManager::StopAllConnection()
 	m_connectors.ProcessingObjects(Ref(this, &ConnectorManager::StopConnectors));
 }
 
-void ConnectorManager::SubscribeConnector(const Connector* newConnector, const Connector* connector)
+bool ConnectorManager::SubscribeConnector(const Connector* newConnector, const Connector* connector)
 {
 	const_cast<Connector*>(newConnector)->onNewConnector(connector);
+	return true;
 }
 
-void ConnectorManager::StopConnectionByName(const std::string& moduleName, const Connector* connector)
+bool ConnectorManager::StopConnectionByName(const std::string& moduleName, const Connector* connector)
 {
 	if(connector->GetId() == moduleName)
 	{
@@ -88,9 +89,10 @@ bool ConnectorManager::CheckConnection(const std::map<std::string, std::string>&
 	return false;
 }
 
-void ConnectorManager::StopConnectors(const Connector* connector)
+bool ConnectorManager::StopConnectors(const Connector* connector)
 {
 	const_cast<Connector*>(connector)->Stop();
+	return true;
 }
 
 bool ConnectorManager::StopConnector(const std::map<std::string, std::string>& discModules, const Connector* connector)

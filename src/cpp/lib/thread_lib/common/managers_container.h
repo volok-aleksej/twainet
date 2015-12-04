@@ -47,7 +47,7 @@ public:
 	void RemoveManager(IManager* manager);
 
 protected:
-	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	template<typename TClass, typename TFunc, typename TObject, typename TReturn> friend class ReferenceObject;
 	bool RunManager(const std::vector<IManager*>& managers, const IManager* manager);
 	bool CheckManager(const std::vector<IManager*>& managers, const IManager* manager);
 protected:

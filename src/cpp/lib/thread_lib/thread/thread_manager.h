@@ -16,7 +16,7 @@ public:
 	void RemoveThread(Thread* thread);
 
 protected:
-	template<typename TClass, typename TFunc, typename TObject> friend class ReferenceObject;
+	template<typename TClass, typename TFunc, typename TObject, typename TReturn> friend class ReferenceObject;
 	bool CheckThread(const std::vector<Thread*>& threads, const Thread* thread);
 	bool StopThread(const std::vector<Thread*>& threads, const Thread* thread);
 protected:

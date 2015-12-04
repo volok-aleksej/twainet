@@ -36,12 +36,13 @@ void Signal::removeOwner()
 	m_receiverFunctions.CheckObjects(Ref(this, &Signal::unsubsribeReceiver));
 }
 
-void Signal::onSignalFunc(const DataMessage& msg, const IReceiverFunc* obj)
+bool Signal::onSignalFunc(const DataMessage& msg, const IReceiverFunc* obj)
 {
 	if(const_cast<IReceiverFunc*>(obj)->isSignal(msg))
 	{
 		const_cast<IReceiverFunc*>(obj)->onSignal(msg);
 	}
+	return true;
 }
 
 bool Signal::unsubsribeFunc(const SignalReceiver* receiver, const IReceiverFunc* signal)
