@@ -15,11 +15,11 @@ public:
 	{
 		bool res = false;
 		CSLocker locker(&m_cs);
-		typename std::vector<Object>::iterator it = std::lower_bound(m_objects.begin(), m_objects.end(), object);
+		typename std::vector<Object>::iterator it = std::upper_bound(m_objects.begin(), m_objects.end(), object);
 		if(it != m_objects.end() && *it != object)
 		{
 			res = true;
-			m_objects.insert(it++, object);
+			m_objects.insert(it, object);
 		}
 		else if(it == m_objects.end())
 		{
