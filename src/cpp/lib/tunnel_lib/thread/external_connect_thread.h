@@ -21,8 +21,8 @@ protected:
 
 private:
 	AnySocket* m_udpSocket;
-	bool m_isChangeAddress;
 	CriticalSection m_csSocket;
+	Semaphore m_changeAddr;
 };
 
 #endif/*EXTERNAL_CONNECT_THREAD_H*/

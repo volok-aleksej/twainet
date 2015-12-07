@@ -7,7 +7,7 @@
 #include "connector_lib/message/connector_messages.h"
 
 ExternalConnectThread::ExternalConnectThread(const ConnectAddress& address)
-: ConnectThread(address), m_udpSocket(0), m_isChangeAddress(false)
+: ConnectThread(address), m_udpSocket(0)
 {
 }
 
@@ -30,7 +30,8 @@ void ExternalConnectThread::Stop()
 		m_udpSocket->Close();
 	}
 	m_csSocket.Leave();
-
+	
+	m_changeAddr.Set();
 	ConnectThread::Stop();
 }
 
@@ -40,7 +41,7 @@ void ExternalConnectThread::ChangeConnectAddress(const ConnectAddress& address)
 	delete m_address.m_socketFactory;
 
 	m_address = address;
-	m_isChangeAddress = true;
+	m_changeAddr.Set();
 }
 
 void ExternalConnectThread::ThreadFunc()
@@ -58,19 +59,19 @@ void ExternalConnectThread::ThreadFunc()
 	int size = m_address.m_moduleName.size();
 	while(!IsStop())
 	{
-		if (!socket->Send((char*)&size, sizeof(size)) ||
-			!socket->Send((char*)data.c_str(), data.size() * sizeof(char)))
+		if(m_changeAddr.Wait(1000) == Semaphore::TIMEOUT)
 		{
-			SignalError();
-			return;
+			if (!socket->Send((char*)&size, sizeof(size)) ||
+				!socket->Send((char*)data.c_str(), data.size() * sizeof(char)))
+			{
+				SignalError();
+				return;
+			}
 		}
-
-		if(m_isChangeAddress)
+		else
 		{
 			break;
 		}
-
-		sleep(1000);
 	}
 
 	UDTSecureSocketFactory* udtSocketFactory = dynamic_cast<UDTSecureSocketFactory*>(m_address.m_socketFactory);

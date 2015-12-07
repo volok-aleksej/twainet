@@ -42,7 +42,6 @@ add_library (${PROJECT_NAME} SHARED ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})
 
-set(EXTRA_LIBS pthread)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})	
 	find_library(UDT_LIBRARY  NAMES udt PATHS ${LIB_PATH})
 	if(UDT_LIBRARY)
@@ -74,20 +73,20 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	  set(EXTRA_LIBS ${EXTRA_LIBS} ${TUNNEL_LIBRARY})
 	endif(TUNNEL_LIBRARY)
 		
-	target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBS})
+	target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${EXTRA_LIBS} -Wl,-no-whole-archive)
 else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	add_dependencies(${PROJECT_NAME} ${DEPENDENCY_LIBS})
-	target_link_libraries(${PROJECT_NAME} ${DEPENDENCY_LIBS})
+	target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${DEPENDENCY_LIBS} -Wl,-no-whole-archive)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
 find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH})
 if(NTLM_LIBRARY)
-  target_link_libraries(${PROJECT_NAME} ${NTLM_LIBRARY})
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${NTLM_LIBRARY})
 endif(NTLM_LIBRARY)
 
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
+target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a -Wl,-no-whole-archive)
   
-target_link_libraries(${PROJECT_NAME} crypto uuid z)
+target_link_libraries(${PROJECT_NAME} PUBLIC crypto uuid z pthread)
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${TWAINET_VERSION_STRING})
 
 install(TARGETS twainet

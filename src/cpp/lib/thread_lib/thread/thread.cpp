@@ -61,10 +61,7 @@ bool Thread::Start()
     if(re != 0)
         return false;
 #endif
-	while(m_state == THREAD_START_PENDING)
-	{
-		sleep(100);
-	}
+	while(!WaitRun(100)){}
 
 	return true;
 }
@@ -77,17 +74,14 @@ void Thread::Join()
 	}
 	else if(m_state == THREAD_START_PENDING)
 	{
-		while(m_state != THREAD_RUNNING)
-		{
-			sleep(100);
-		}
+		while(!WaitRun(100)){}
 	}
 
 	StopThread();
 
 	Stop();
 
-	while(m_state != THREAD_STOPPED)
+	while(!WaitStop(100))
 	{
 #ifdef WIN32
 		DWORD exitCode = 0;
@@ -97,7 +91,6 @@ void Thread::Join()
 			break;
 		}
 #endif
-		sleep(100);
 	}
 
 #ifdef WIN32
