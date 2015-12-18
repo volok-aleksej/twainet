@@ -8,6 +8,7 @@
 #endif/*WIN32*/
 
 #include <map>
+#include <vector>
 #include "managers_container.h"
 
 struct ITimerProc

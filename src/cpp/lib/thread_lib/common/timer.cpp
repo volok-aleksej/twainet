@@ -191,4 +191,20 @@ int TimerManager::GetNextTimerId()
 
 void TimerManager::ManagerStop()
 {
+	std::vector<Timer> timers;
+	{
+		CSLocker lock(&m_cs);
+		for(typename std::map<int, Timer>::iterator it = m_timers.begin();
+		  it != m_timers.end(); it++)
+		{
+			timers.push_back(it->second);
+		}
+		m_timers.clear();
+	}
+	
+	for(typename std::vector<Timer>::iterator it = timers.begin();
+	    it != timers.end(); it++)
+	{
+		it->Destroy();
+	}
 }
