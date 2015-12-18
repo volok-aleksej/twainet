@@ -1,5 +1,10 @@
 #include "timer.h"
 
+#ifdef WIN32
+VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime)
+{
+}
+#else
 void TimerProc(union sigval sgval)
 {
 	Timer timer = TimerManager::GetInstance().GetTimer(sgval.sival_int);
@@ -9,6 +14,7 @@ void TimerProc(union sigval sgval)
 		proc->OnTimer();
 	}
 }
+#endif/*WIN32*/
 
 /************************************************************************************************/
 /*                                           Timer                                              */
@@ -61,6 +67,9 @@ int Timer::Create(int ms)
 		return m_id;
 	
 #ifdef WIN32
+	m_id = TimerManager::GetInstance().GetNextTimerId();
+	m_id = SetTimer(NULL, m_id, ms, &TimerProc);
+	return m_id;
 #else
 	sigevent se;
 	se.sigev_notify = SIGEV_THREAD;
@@ -88,6 +97,7 @@ void Timer::Destroy()
 	if(!m_id)
 		return;
 #ifdef WIN32
+	KillTimer(NULL, m_id);
 #else
 	timer_delete(t_id);
 #endif/*WIN32*/
