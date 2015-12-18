@@ -81,12 +81,12 @@ endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
 find_library(NTLM_LIBRARY NAMES libntlm.so.0 PATHS ${LIB_PATH})
 if(NTLM_LIBRARY)
-  target_link_libraries(${PROJECT_NAME} PUBLIC ${NTLM_LIBRARY})
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${NTLM_LIBRARY})
 endif(NTLM_LIBRARY)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a -Wl,-no-whole-archive)
   
-target_link_libraries(${PROJECT_NAME} PUBLIC crypto uuid z pthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE crypto uuid z pthread rt)
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${TWAINET_VERSION_STRING})
 
 install(TARGETS twainet

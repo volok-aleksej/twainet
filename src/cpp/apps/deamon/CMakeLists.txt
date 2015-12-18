@@ -56,7 +56,7 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
   target_link_libraries(${PROJECT_NAME} PRIVATE twainet)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR}) 
 
-target_link_libraries(${PROJECT_NAME} PUBLIC uuid pthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE uuid pthread)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
 
 install(TARGETS twndeamon

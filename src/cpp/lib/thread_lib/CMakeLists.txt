@@ -9,6 +9,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 set (SRC_${PROJECT_NAME}
     common/critical_section.cpp
     common/semafor.cpp
+    common/timer.cpp
     common/managers_container.cpp
     thread/thread.cpp
     thread/thread_impl.cpp
