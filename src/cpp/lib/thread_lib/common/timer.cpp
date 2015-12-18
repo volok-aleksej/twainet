@@ -166,7 +166,17 @@ void TimerManager::AddTimer(int id, Timer timer)
 
 int TimerManager::GetNextTimerId()
 {
-	return 0;
+	int id = 1;
+	CSLocker lock(&m_cs);
+	for(typename std::map<int, Timer>::iterator it = m_timers.begin();
+	  it != m_timers.end(); it++, id++)
+	{
+		if(id != it->first)
+		{
+			return id;
+		}
+	}
+	return id;
 }
 
 void TimerManager::ManagerStop()
