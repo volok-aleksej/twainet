@@ -19,13 +19,21 @@ Timer::Timer()
 }
 
 Timer::Timer(int ms, ITimerProc* proc)
+#ifdef WIN32
+: m_proc(proc), m_id(0)
+#else
 : t_id(0), m_proc(proc), m_id(0)
+#endif/*WIN32*/
 {
 	Create(ms);
 }
 
 Timer::Timer(const Timer& timer)
+#ifdef WIN32
+: m_proc(timer.m_proc), m_id(timer.m_id)
+#else
 : m_proc(timer.m_proc), t_id(timer.t_id), m_id(timer.m_id)
+#endif/*WIN32*/
 {
 }
 	
@@ -36,20 +44,24 @@ Timer::~Timer()
 void Timer::operator = (const Timer& timer)
 {
 	m_proc = timer.m_proc;
+#ifndef WIN32
 	t_id = timer.t_id;
+#endif/*WIN32*/
 	m_id = timer.m_id;
 }
 
 bool Timer::operator == (const Timer& timer)
 {
-	return t_id == timer.t_id;
+	return m_id == timer.m_id;
 }
 	
 int Timer::Create(int ms)
 {
-	if(t_id)
+	if(m_id)
 		return m_id;
 	
+#ifdef WIN32
+#else
 	sigevent se;
 	se.sigev_notify = SIGEV_THREAD;
 	se.sigev_value.sival_int = m_id = TimerManager::GetInstance().GetNextTimerId();
@@ -68,13 +80,17 @@ int Timer::Create(int ms)
 	
 	TimerManager::GetInstance().AddTimer(m_id, *this);
 	return m_id;
+#endif/*WIN32*/
 }
 
 void Timer::Destroy()
 {
-	if(!t_id)
+	if(!m_id)
 		return;
+#ifdef WIN32
+#else
 	timer_delete(t_id);
+#endif/*WIN32*/
 	TimerManager::GetInstance().RemoveTimer(m_id);
 }
 

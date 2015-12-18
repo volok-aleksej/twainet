@@ -1,8 +1,11 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <time.h>
-#include <signal.h>
+#ifdef WIN32
+#else
+#	include <time.h>
+#	include <signal.h>
+#endif/*WIN32*/
 
 #include <map>
 #include "managers_container.h"
@@ -28,7 +31,10 @@ public:
 	int Create(int ms);
 	void Destroy();
 private:
+#ifdef WIN32
+#else
 	timer_t t_id;
+#endif/*WIN32*/
 	int m_id;
 	ITimerProc* m_proc;
 };
