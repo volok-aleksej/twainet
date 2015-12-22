@@ -62,8 +62,8 @@ bool TCPSocket::Bind(const std::string& host, int port)
 					memcpy(&si, addr->ai_addr, addr->ai_addrlen);
 				}
 			}
+			freeaddrinfo(result);
 		}
-		freeaddrinfo(result);
 	}
 	
 	return bind(m_socket, (sockaddr*)&si, m_ipv == IPV4 ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
@@ -144,9 +144,9 @@ bool TCPSocket::Connect(const std::string& host, int port)
 				memcpy(&si, addr->ai_addr, addr->ai_addrlen);
 			}
 		}
+		freeaddrinfo(result);
 		//TODO: if ip version 6 and host ip version 4, convert ip4 to ip6
 	}
-	freeaddrinfo(result);
 
 	return connect(m_socket, (sockaddr*)&si, (m_ipv == IPV4) ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
 }

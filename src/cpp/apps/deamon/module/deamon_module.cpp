@@ -7,55 +7,16 @@
 
 #define MAX_BUFFER_LEN 1024
 
-/*******************************************************************************/
-/*                             ClientModuleName                                */
-/*******************************************************************************/
-DeamonModule::ClientModuleName::ClientModuleName()
-{
-}
+typedef DeamonMessage<LocalServerAttributes, DeamonModule> LocalServerAttributesMessage;
+typedef DeamonMessage<ClientName, DeamonModule> ClientNameMessage;
+typedef DeamonMessage<ClientNameList, DeamonModule> ClientNameListMessage;
 
-DeamonModule::ClientModuleName::ClientModuleName(const DeamonModule::ClientModuleName& name)
-{
-	operator = (name);
-}
-
-DeamonModule::ClientModuleName::ClientModuleName(const std::string& moduleName, const std::string& hostClient)
-: m_moduleName(moduleName), m_hostClient(hostClient)
-{
-}
-
-DeamonModule::ClientModuleName::~ClientModuleName()
-{
-}
-		
-void DeamonModule::ClientModuleName::operator = (const DeamonModule::ClientModuleName& name)
-{
-	m_moduleName = name.m_moduleName;
-	m_hostClient = name.m_hostClient;
-}
-
-bool DeamonModule::ClientModuleName::operator == (const DeamonModule::ClientModuleName& name) const
-{
-	return m_hostClient == name.m_hostClient;
-}
-
-bool DeamonModule::ClientModuleName::operator != (const DeamonModule::ClientModuleName& name) const
-{
-	return !operator == (name);
-}
-
-bool DeamonModule::ClientModuleName::operator < (const DeamonModule::ClientModuleName& name) const
-{
-	return m_hostClient < name.m_hostClient;
-}
-
-/*******************************************************************************/
-/*                             DeamonModule                                    */
-/*******************************************************************************/
 DeamonModule::DeamonModule(const Twainet::Module& module)
 : Module(module)
 {
 	ReadConfig();
+	
+	AddMessage(new ClientNameMessage(this));
 	
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
@@ -147,7 +108,7 @@ void DeamonModule::onMessage(const ClientName& msg, const Twainet::ModuleName& p
 	
 	Twainet::ModuleName* names = 0;
 	int sizeNames = 0;
-	sizeNames = Twainet::GetExistingModules(GetModule(), names, sizeNames);
+	Twainet::GetExistingModules(GetModule(), names, sizeNames);
 	names = new Twainet::ModuleName[sizeNames];
 	Twainet::GetExistingModules(GetModule(), names, sizeNames);
 	for(int i = 0; i < sizeNames; i++)

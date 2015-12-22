@@ -64,8 +64,8 @@ bool UDPSocket::Bind(const std::string& host, int port)
 					memcpy(&si, addr->ai_addr, addr->ai_addrlen);
 				}
 			}
+			freeaddrinfo(result);
 		}
-		freeaddrinfo(result);
 	}
 
 	return bind(m_socket, (sockaddr*)&si, m_ipv == IPV4 ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)) == 0;
@@ -121,8 +121,8 @@ bool UDPSocket::Send(char* data, int len)
 					memcpy(&si, addr->ai_addr, addr->ai_addrlen);
 				}
 			}
+			freeaddrinfo(result);
 		}
-		freeaddrinfo(result);
 	}
 
 	CSLocker locker(&m_cs);

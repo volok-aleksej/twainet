@@ -34,6 +34,10 @@ public:
 						       Twainet::InternalConnectionStatus status, int port){}
 	virtual void OnModuleListChanged(){}
 
+	const Twainet::Module GetModule()
+	{
+		return m_module;
+	}
 protected:
 	void AddMessage(DataMessage* msg)
 	{
@@ -83,10 +87,6 @@ protected:
 		return ret;
 	}
 	
-	const Twainet::Module GetModule()
-	{
-		return m_module;
-	}
 private:
 	Twainet::Module m_module;
 	std::map<std::string, DataMessage*> m_messages;

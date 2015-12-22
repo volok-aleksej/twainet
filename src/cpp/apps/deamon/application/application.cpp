@@ -1,10 +1,9 @@
 #include "application.h"
 #include "module/deamon_module.h"
+#include "module/google_data_module.h"
 #ifndef WIN32
 #	include <string.h>
 #endif/*WIN32*/
-
-#define COORDINATOR_NAME	"twndeamon"
 
 void DeamonApplication::OnModuleCreationFailed(Twainet::Module module)
 {
@@ -29,7 +28,7 @@ void DeamonApplication::OnTunnelCreationFailed(Twainet::Module module, const cha
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnTunnelCreationFailed(sessionId);
 			break;
@@ -44,7 +43,7 @@ void DeamonApplication::OnServerConnected(Twainet::Module module, const char* se
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnServerConnected(sessionId);
 			break;
@@ -59,7 +58,7 @@ void DeamonApplication::OnClientConnected(Twainet::Module module, const char* se
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnClientConnected(sessionId);
 			break;
@@ -74,7 +73,7 @@ void DeamonApplication::OnClientDisconnected(Twainet::Module module, const char*
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnClientDisconnected(sessionId);
 			break;
@@ -89,7 +88,7 @@ void DeamonApplication::OnClientConnectionFailed(Twainet::Module module)
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnClientConnectionFailed();
 			break;
@@ -104,7 +103,7 @@ void DeamonApplication::OnClientAuthFailed(Twainet::Module module)
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnClientAuthFailed();
 			break;
@@ -119,7 +118,7 @@ void DeamonApplication::OnServerDisconnected(Twainet::Module module)
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnServerDisconnected();
 			break;
@@ -134,7 +133,7 @@ void DeamonApplication::OnModuleConnected(Twainet::Module module, const Twainet:
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnModuleConnected(moduleId);
 			break;
@@ -149,7 +148,7 @@ void DeamonApplication::OnModuleDisconnected(Twainet::Module module, const Twain
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnModuleDisconnected(moduleId);
 			break;
@@ -164,7 +163,7 @@ void DeamonApplication::OnModuleConnectionFailed(Twainet::Module module, const T
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnModuleConnectionFailed(moduleId);
 			break;
@@ -179,7 +178,7 @@ void DeamonApplication::OnTunnelConnected(Twainet::Module module, const char* se
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnTunnelConnected(sessionId, type);
 			break;
@@ -194,7 +193,7 @@ void DeamonApplication::OnTunnelDisconnected(Twainet::Module module, const char*
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnTunnelDisconnected(sessionId);
 			break;
@@ -209,7 +208,7 @@ void DeamonApplication::OnMessageRecv(Twainet::Module module, const Twainet::Mes
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnMessageRecv(msg);
 			break;
@@ -224,7 +223,7 @@ void DeamonApplication::OnInternalConnectionStatusChanged(Twainet::Module module
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnInternalConnectionStatusChanged(moduleName, status, port);
 			break;
@@ -239,7 +238,7 @@ void DeamonApplication::OnModuleListChanged(Twainet::Module module)
 	for(std::vector<Module*>::iterator it = app.m_modules.begin();
 		it != app.m_modules.end(); it++)
 	{
-		if(module == *it)
+		if(module == (*it)->GetModule())
 		{
 			(*it)->OnModuleListChanged();
 			break;
@@ -265,6 +264,7 @@ void DeamonApplication::InitializeApplication()
 {
 	CSLocker locker(&GetInstance().m_cs);
 	m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
+	m_modules.push_back(new GoogleDataModule(Twainet::CreateModule(GOOGLE_DATA_NAME, Twainet::IPV4, false)));
 }
 
 std::string DeamonApplication::GetAppName()

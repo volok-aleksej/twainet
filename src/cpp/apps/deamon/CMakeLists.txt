@@ -30,6 +30,7 @@ set (SRC_${PROJECT_NAME}
 	application/application.cpp 
 	application/main.cpp 
 	module/deamon_module.cpp 
+	module/google_data_module.cpp 
     ) 
 
 set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 

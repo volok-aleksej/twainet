@@ -2,6 +2,7 @@
 #define DEAMON_MODULE_H
 
 #include "module.h"
+#include "client_module_name.h"
 #include "thread_lib/common/object_manager.h"
 
 #pragma warning(disable:4244 4267)
@@ -9,31 +10,10 @@
 using namespace deamon;
 #pragma warning(default:4244 4267)
 
-class DeamonModule;
-
-typedef DeamonMessage<LocalServerAttributes, DeamonModule> LocalServerAttributesMessage;
-typedef DeamonMessage<ClientName, DeamonModule> ClientNameMessage;
-typedef DeamonMessage<ClientNameList, DeamonModule> ClientNameListMessage;
+#define COORDINATOR_NAME	"twndeamon"
 
 class DeamonModule : public Module
 {
-	class ClientModuleName
-	{
-	public:
-		ClientModuleName();
-		ClientModuleName(const ClientModuleName& name);
-		ClientModuleName(const std::string& moduleName, const std::string& hostClient);
-		~ClientModuleName();
-		
-		void operator = (const ClientModuleName& name);
-		bool operator == (const ClientModuleName& name) const;
-		bool operator != (const ClientModuleName& name) const;
-		bool operator < (const ClientModuleName& name) const;
-		
-	public:
-		std::string m_moduleName;
-		std::string m_hostClient;
-	};
 public:
 	DeamonModule(const Twainet::Module& module);
 	virtual ~DeamonModule();
