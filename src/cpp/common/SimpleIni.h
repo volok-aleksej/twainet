@@ -418,7 +418,7 @@ public:
             return *this;
         }
         bool ConvertToStore(const SI_CHAR * a_pszString) {
-            size_t uLen = SizeToStore(a_pszString);
+            size_t uLen = SI_CONVERTER::SizeToStore(a_pszString);
             if (uLen == (size_t)(-1)) {
                 return false;
             }
@@ -2663,6 +2663,7 @@ public:
 #define SI_NoCase   SI_GenericNoCase
 
 #include <wchar.h>
+#define CLANG_NEEDS_THESE_ONE_DAY
 #include "ConvertUTF.h"
 
 /**

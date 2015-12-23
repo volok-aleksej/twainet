@@ -23,6 +23,7 @@ protected:
 	void onMessage(const ClientNameList& msg, const Twainet::ModuleName& path);
 	void onMessage(const ClientName& msg, const Twainet::ModuleName& path){}
 protected:
+	virtual void OnModuleConnectionFailed(const Twainet::ModuleName& moduleId);
 	virtual void OnServerConnected(const char* sessionId);
 	virtual void OnMessageRecv(const Twainet::Message& message);
 private:

@@ -1,4 +1,7 @@
 #include "ini_file.h"
+#ifndef WIN32
+#include <sys/stat.h>
+#endif/*WIN32*/
 
 IniFile::IniFile(const std::string& filePath)
 : m_filePath(filePath)

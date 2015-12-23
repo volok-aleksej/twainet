@@ -1,4 +1,5 @@
 #include "google_data_module.h"
+#include "../application/config.h"
 
 typedef DeamonMessage<LocalServerAttributes, GoogleDataModule> LocalServerAttributesMessage;
 typedef DeamonMessage<ClientName, GoogleDataModule> ClientNameMessage;
@@ -9,6 +10,9 @@ GoogleDataModule::GoogleDataModule(const Twainet::Module& module)
 {
 	AddMessage(new LocalServerAttributesMessage(this));
 	AddMessage(new ClientNameListMessage(this));
+	
+	std::string accountName = Config::GetInstance().GetGoogleAccountName();
+	int i = 0;
 }
 
 GoogleDataModule::~GoogleDataModule()
@@ -32,6 +36,10 @@ void GoogleDataModule::onMessage(const ClientNameList& msg, const Twainet::Modul
 	}
 }
 
+void GoogleDataModule::OnModuleConnectionFailed(const Twainet::ModuleName& moduleId)
+{
+}
+	
 void GoogleDataModule::OnServerConnected(const char* sessionId)
 {
 	m_sessionId = sessionId;

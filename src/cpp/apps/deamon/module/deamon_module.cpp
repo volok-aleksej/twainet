@@ -4,6 +4,7 @@
 #include "common/dir.h"
 #include "common/file.h"
 #include "utils/utils.h"
+#include "../application/config.h"
 
 #define MAX_BUFFER_LEN 1024
 
@@ -123,10 +124,11 @@ void DeamonModule::onMessage(const ClientName& msg, const Twainet::ModuleName& p
 	
 void DeamonModule::ReadConfig()
 {
+	std::string fileName = Config::GetInstance().GetTrustedFileName();
 #ifdef WIN32
-	std::string configPath = Dir::GetConfigDir() + "\\twainet.trusted";
+	std::string configPath = Dir::GetConfigDir() + "\\" + fileName;
 #else
-	std::string configPath = Dir::GetConfigDir() + "/twainet.trusted";
+	std::string configPath = Dir::GetConfigDir() + "/" + fileName;
 #endif/*WIN32*/
 	File configFile(configPath);
 	int filesize = configFile.GetFileSize(), filepos = 0;

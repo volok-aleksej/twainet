@@ -26,9 +26,11 @@ set (SRC_${PROJECT_NAME}
 	../../common/process.cpp
 	../../common/service_manager.cpp
 	../../common/dir.cpp
+	../../common/ini_file.cpp
 	../../../messages/deamon.pb.cc
 	application/application.cpp 
 	application/main.cpp 
+	application/config.cpp 
 	module/deamon_module.cpp 
 	module/google_data_module.cpp 
     ) 
