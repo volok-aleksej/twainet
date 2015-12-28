@@ -263,8 +263,8 @@ DeamonApplication::~DeamonApplication()
 void DeamonApplication::InitializeApplication()
 {
 	CSLocker locker(&GetInstance().m_cs);
-	m_modules.push_back(new DeamonModule(Twainet::CreateModule(COORDINATOR_NAME, Twainet::IPV4, true)));
-	m_modules.push_back(new GoogleDataModule(Twainet::CreateModule(GOOGLE_DATA_NAME, Twainet::IPV4, false)));
+	m_modules.push_back(new DeamonModule);
+	m_modules.push_back(new GoogleDataModule);
 }
 
 std::string DeamonApplication::GetAppName()

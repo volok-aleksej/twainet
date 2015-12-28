@@ -15,20 +15,10 @@ using namespace deamon;
 class GoogleDataModule : public Module
 {
 public:
-	GoogleDataModule(const Twainet::Module& module);
+	GoogleDataModule();
 	virtual ~GoogleDataModule();
-protected:
-	template<class TMessage, class THandler> friend class DeamonMessage;
-	void onMessage(const LocalServerAttributes& msg, const Twainet::ModuleName& path);
-	void onMessage(const ClientNameList& msg, const Twainet::ModuleName& path);
-	void onMessage(const ClientName& msg, const Twainet::ModuleName& path){}
-protected:
-	virtual void OnModuleConnectionFailed(const Twainet::ModuleName& moduleId);
-	virtual void OnServerConnected(const char* sessionId);
-	virtual void OnMessageRecv(const Twainet::Message& message);
 private:
-	std::string m_sessionId;
-	ObjectManager<ClientModuleName> m_clientsName;
+	std::string m_accountName;
 };
 
 #endif/*GOOGLE_DATA_MODULE_H*/
