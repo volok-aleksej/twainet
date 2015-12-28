@@ -104,7 +104,7 @@ public:
 	void CheckObjects(Func func)
 	{
 		CSLocker locker(&m_cs);
-		for(int i = 0; i < m_objects.size(); i++)
+		for(int i = 0; i < (int)m_objects.size(); i++)
 		{
 			if(func(m_objects[i]))
 			{

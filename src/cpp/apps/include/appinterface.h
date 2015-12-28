@@ -24,6 +24,7 @@ public:
 		InitializeApplication();
 		m_stop.Wait(INFINITE);
 		Twainet::CloseLibrary();
+		return true;
 	}
 	
 	

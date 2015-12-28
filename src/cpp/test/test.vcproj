@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\test\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\..\output\test\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\test\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\test\x86\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).exe"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/x86/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib/x86&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -93,8 +93,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\..\output\test\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)..\..\output\test\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\..\output\test\x86\$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)..\..\output\test\x86\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -137,10 +137,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib"
-				OutputFile="$(SolutionDir)..\..\output\work\$(ConfigurationName)\$(ProjectName).exe"
+				AdditionalDependencies="Ws2_32.lib ssleay32.lib libeay32.lib twainet.lib thread_lib.lib libprotobuf.lib"
+				OutputFile="$(SolutionDir)..\..\output\work\x86\$(ConfigurationName)\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)../../output/lib/x86/$(ConfigurationName)&quot;;&quot;$(SolutionDir)external/openssl/lib/x86&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -187,11 +187,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\messages\deamon.pb.cc"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\test_module.cpp"
 				>
 			</File>
 			<File
@@ -213,11 +221,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\messages\deamon.pb.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
 				RelativePath=".\targetver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_module.h"
 				>
 			</File>
 			<File

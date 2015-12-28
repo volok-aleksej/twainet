@@ -65,6 +65,11 @@ HISTORY:
 
 /* ================================================================ */
 
+#ifdef WIN32
+typedef short UCS4;
+#endif/*WIN32*/
+
+
 const int halfShift				= 10;
 const UCS4 halfBase				= 0x0010000UL;
 const UCS4 halfMask				= 0x3FFUL;
@@ -128,7 +133,7 @@ ConversionResult	ConvertUTF16toUTF8 (
 		UTF16** sourceStart, const UTF16* sourceEnd, 
 		UTF8** targetStart, const UTF8* targetEnd)
 {
-	ConversionResult result = ok;
+	ConversionResult result = conversionOK;
 	register UTF16* source = *sourceStart;
 	register UTF8* target = *targetStart;
 	while (source < sourceEnd) {
@@ -200,7 +205,7 @@ ConversionResult	ConvertUTF8toUTF16 (
 		UTF8** sourceStart, UTF8* sourceEnd, 
 		UTF16** targetStart, const UTF16* targetEnd)
 {
-	ConversionResult result = ok;
+	ConversionResult result = conversionOK;
 	register UTF8* source = *sourceStart;
 	register UTF16* target = *targetStart;
 

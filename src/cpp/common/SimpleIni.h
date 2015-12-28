@@ -1878,7 +1878,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         if (a_pComment) {
             oKey.pComment = a_pComment;
         }
-        typename TKeyVal::value_type oEntry(oKey, NULL);
+        typename TKeyVal::value_type oEntry(oKey, (const char*)NULL);
         iKey = keyval.insert(oEntry);
         bInserted = true;
     }

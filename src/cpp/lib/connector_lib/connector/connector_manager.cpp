@@ -74,6 +74,7 @@ bool ConnectorManager::StopConnectionByName(const std::string& moduleName, const
 	{
 		const_cast<Connector*>(connector)->Stop();
 	}
+	return true;
 }
 
 bool ConnectorManager::CheckConnection(const std::map<std::string, std::string>& discModules, const Connector* connector)

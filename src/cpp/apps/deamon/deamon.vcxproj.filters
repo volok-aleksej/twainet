@@ -16,6 +16,9 @@
     <Filter Include="messages">
       <UniqueIdentifier>{5bdd8123-63dc-42b7-b8e2-22d8e1fec404}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{413ca4f3-b46a-4d4e-b1b5-9c6a9eac74c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\application.cpp">
@@ -53,6 +56,18 @@
     </ClCompile>
     <ClCompile Include="..\..\common\dir.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\ConvertUTF.c">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\ini_file.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="application\config.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="module\google_data_module.cpp">
+      <Filter>module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +109,33 @@
     </ClInclude>
     <ClInclude Include="..\..\common\dir.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ConvertUTF.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\ini_file.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\SimpleIni.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="application\config.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\appinterface.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client_module_name.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\deamon_message.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\module.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="module\google_data_module.h">
+      <Filter>module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
