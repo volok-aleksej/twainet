@@ -258,7 +258,8 @@ protected:
 		Twainet::GetExistingModules(GetModule(), names, sizeNames);
 		for(int i = 0; i < sizeNames; i++)
 		{
-			if(strlen(names[i].m_host) == 0)
+			if(strlen(names[i].m_host) == 0 ||
+			   strcmp(names[i].m_name, Twainet::ServerModuleName) == 0)
 				continue;
 			
 			toMessage(cnlMsg, names[i]);

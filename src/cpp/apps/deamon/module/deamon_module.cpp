@@ -1,5 +1,4 @@
 #include "deamon_module.h"
-#include "common/common.h"
 #include "common/common_func.h"
 #include "common/dir.h"
 #include "common/file.h"
@@ -16,7 +15,8 @@ DeamonModule::DeamonModule()
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
 	Twainet::SetUsersList(m_module, &m_userPassword, 1);
-	Twainet::CreateServer(m_module, g_localServerPort, Twainet::IPV4, true);
+	int port = Config::GetInstance().GetLocalServerPort();
+	Twainet::CreateServer(m_module, port, Twainet::IPV4, true);
 }
 
 DeamonModule::~DeamonModule()
@@ -40,7 +40,7 @@ void DeamonModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 		if(*it == strModuleName)
 		{
 			LocalServerAttributesMessage msg(this);
-			msg.set_port(g_localServerPort);
+			msg.set_port(Config::GetInstance().GetLocalServerPort());
 			msg.set_username(m_userPassword.m_user);
 			msg.set_password(m_userPassword.m_pass);
 			toMessage(msg, moduleName);

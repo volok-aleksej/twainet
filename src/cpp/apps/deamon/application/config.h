@@ -17,6 +17,8 @@ public:
 	std::string GetGoogleAccountName();
 	void SetTrustedFileName(const std::string& fileName);
 	std::string GetTrustedFileName();
+	int GetLocalServerPort();
+	void SetLocalServerPort(int port);
 private:
 	IniFile m_file;
 };
