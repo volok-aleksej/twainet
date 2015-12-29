@@ -66,6 +66,10 @@ void DeamonModule::onMessage(const GetConfig& msg, const Twainet::ModuleName& pa
 
 void DeamonModule::onMessage(const SetConfig& msg, const Twainet::ModuleName& path)
 {
+	if(strlen(path.m_host) == 0 ||
+	   strcmp(path.m_name, Twainet::ServerModuleName) == 0)
+	  return ;
+	
 	Config::GetInstance().SetLocalServerPort(msg.local_port());
 	Config::GetInstance().SetTrustedFileName(msg.trusted_file_name());
 	Config::GetInstance().SetGoogleAccountName(msg.google_account());
