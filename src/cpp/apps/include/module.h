@@ -183,7 +183,7 @@ protected:
 		return false;
 	}
 	
-	bool toMessage(const DataMessage& msg, const Twainet::ModuleName path)
+	bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path)
 	{
 		bool ret = false;
 		char* data = 0;

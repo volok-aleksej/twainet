@@ -7,10 +7,16 @@
 
 #define MAX_BUFFER_LEN 1024
 
+typedef DeamonMessage<SetConfig, DeamonModule> SetConfigMessage;
+typedef DeamonMessage<GetConfig, DeamonModule> GetConfigMessage;
+
 DeamonModule::DeamonModule()
 : Module(COORDINATOR_NAME, Twainet::IPV4, true)
 {
 	ReadConfig();
+	
+	AddMessage(new SetConfigMessage(this));
+	AddMessage(new GetConfigMessage(this));
 	
 	strcpy(m_userPassword.m_user, CreateGUID().c_str());
 	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
@@ -49,6 +55,22 @@ void DeamonModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 	}
 }
 
+void DeamonModule::onMessage(const GetConfig& msg, const Twainet::ModuleName& path)
+{
+	SetConfigMessage stMsg(this);
+	stMsg.set_local_port(Config::GetInstance().GetLocalServerPort());
+	stMsg.set_trusted_file_name(Config::GetInstance().GetTrustedFileName());
+	stMsg.set_google_account(Config::GetInstance().GetGoogleAccountName());
+	toMessage(stMsg, path);
+}
+
+void DeamonModule::onMessage(const SetConfig& msg, const Twainet::ModuleName& path)
+{
+	Config::GetInstance().SetLocalServerPort(msg.local_port());
+	Config::GetInstance().SetTrustedFileName(msg.trusted_file_name());
+	Config::GetInstance().SetGoogleAccountName(msg.google_account());
+}
+	
 void DeamonModule::ReadConfig()
 {
 	std::string fileName = Config::GetInstance().GetTrustedFileName();
