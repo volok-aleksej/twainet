@@ -34,7 +34,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}/..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../..
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src
 		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/libntlm/include)
 
 add_library (${PROJECT_NAME} STATIC ${SRC_${PROJECT_NAME}})

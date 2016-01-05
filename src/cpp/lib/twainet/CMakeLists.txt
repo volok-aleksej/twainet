@@ -31,12 +31,20 @@ set(DEPENDENCY_LIBS udt
 
 add_definitions(-fPIC)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-		    ${CMAKE_CURRENT_SOURCE_DIR}/..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
+if(NOT USE_SYSTEM_PROTOBUF)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
+else(NOT USE_SYSTEM_PROTOBUF)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src)
+endif(NOT USE_SYSTEM_PROTOBUF)
 		    
 add_library (${PROJECT_NAME} SHARED ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
@@ -84,7 +92,11 @@ if(NTLM_LIBRARY)
   target_link_libraries(${PROJECT_NAME} PRIVATE ${NTLM_LIBRARY})
 endif(NTLM_LIBRARY)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a -Wl,-no-whole-archive)
+if(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE -Wl,-whole-archive ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a -Wl,-no-whole-archive)
+else(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE protobuf)
+endif(NOT USE_SYSTEM_PROTOBUF)
   
 target_link_libraries(${PROJECT_NAME} PRIVATE crypto uuid z pthread rt)
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${TWAINET_VERSION_STRING})

@@ -6,6 +6,11 @@ if(NOT CMAKE_BUILD_TYPE)
 #    set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
+if(NOT USE_SYSTEM_PROTOBUF)
+    set(USE_SYSTEM_PROTOBUF 0)
+ #   set(USE_SYSTEM_PROTOBUF 1)
+endif(NOT USE_SYSTEM_PROTOBUF)
+
 add_subdirectory(lib)
 add_subdirectory(external/udt4)
 add_subdirectory(apps)

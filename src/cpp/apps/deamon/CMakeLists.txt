@@ -1,25 +1,52 @@
 cmake_minimum_required(VERSION 2.6)
 project(twndeamon)
 
-execute_process(COMMAND
-		${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-		       --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-		       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 #    set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
-add_custom_command(OUTPUT 
-		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
-		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h
-		  PRE_BUILD COMMAND
-		  ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-			 --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-			 ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto)
-
+if(NOT USE_SYSTEM_PROTOBUF)
+    execute_process(COMMAND
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                                                                         --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                                                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    add_custom_command(OUTPUT 
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h
+                       PRE_BUILD COMMAND
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                                                                            --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                                                                            ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../include
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
+else(NOT USE_SYSTEM_PROTOBUF)
+    execute_process(COMMAND
+                    protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                           --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                           ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    add_custom_command(OUTPUT 
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
+                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h
+                       PRE_BUILD COMMAND
+                       protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                              --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                              ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../include
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src)
+endif(NOT USE_SYSTEM_PROTOBUF)
+		   
 set (SRC_${PROJECT_NAME} 
 	../../common/common_func.cpp
 	../../common/file.cpp
@@ -34,15 +61,7 @@ set (SRC_${PROJECT_NAME}
 	module/deamon_module.cpp 
     ) 
 
-set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} 
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../include
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
-		   ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src) 
+set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})  
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}}) 
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME}) 
@@ -59,7 +78,11 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR}) 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE uuid pthread)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
+if(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
+else(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE protobuf)
+endif(NOT USE_SYSTEM_PROTOBUF)
 
 install(TARGETS twndeamon
 	RUNTIME DESTINATION /usr/bin)

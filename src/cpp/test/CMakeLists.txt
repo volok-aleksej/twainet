@@ -15,12 +15,20 @@ set (SRC_${PROJECT_NAME}
 
 set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-		    ${CMAKE_CURRENT_SOURCE_DIR}/..
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src/
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../external/protobuf-2.5.0/src
-		    ${CMAKE_CURRENT_SOURCE_DIR}/../../messages)
+if(NOT USE_SYSTEM_PROTOBUF)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../lib
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src/
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../external/protobuf-2.5.0/src)
+else(NOT USE_SYSTEM_PROTOBUF)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}
+                        ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../lib
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src/)
+endif(NOT USE_SYSTEM_PROTOBUF)
 	    
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/${PROJECT_NAME})
@@ -38,3 +46,8 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(${PROJECT_NAME} INTERFACE pthread)
+if(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
+else(NOT USE_SYSTEM_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME} PRIVATE protobuf)
+endif(NOT USE_SYSTEM_PROTOBUF)
