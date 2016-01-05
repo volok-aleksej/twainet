@@ -13,8 +13,6 @@ private:
 	virtual ~Config();
 	
 public:	
-	void SetGoogleAccountName(const std::string& accountName);
-	std::string GetGoogleAccountName();
 	void SetTrustedFileName(const std::string& fileName);
 	std::string GetTrustedFileName();
 	int GetLocalServerPort();

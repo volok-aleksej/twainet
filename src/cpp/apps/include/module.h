@@ -19,11 +19,14 @@ class Module;
 typedef DeamonMessage<LocalServerAttributes, Module> LocalServerAttributesMessage;
 typedef DeamonMessage<ClientName, Module> ClientNameMessage;
 typedef DeamonMessage<ClientNameList, Module> ClientNameListMessage;
+typedef DeamonMessage<SetConfig, Module> SetConfigMessage;
+typedef DeamonMessage<GetConfig, Module> GetConfigMessage;
+typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
 
 class Module
 {
 public:
-	Module(const std::string& moduleName, Twainet::IPVersion ipv, bool isCoord)
+	Module(const std::string& moduleName, Twainet::IPVersion ipv = Twainet::IPV4, bool isCoord = false)
 	  : m_module(0)
 	{
 		m_module = Twainet::CreateModule(moduleName.c_str(), ipv, isCoord);
@@ -31,12 +34,16 @@ public:
 		AddMessage(new LocalServerAttributesMessage(this));
 		AddMessage(new ClientNameListMessage(this));
 		AddMessage(new ClientNameMessage(this));
+		AddMessage(new SetConfigMessage(this));
+		AddMessage(new GetConfigMessage(this));
+		AddMessage(new InstallPluginMessage(this));
 	}
 	virtual ~Module()
 	{
 		Twainet::DeleteModule(m_module);
 	}
 	
+public:
 	virtual void OnTunnelCreationFailed(const char* sessionId)
 	{
 	}
@@ -152,11 +159,18 @@ public:
 		
 		delete names;
 	}
-
+	
+public:
 	const Twainet::Module GetModule()
 	{
 		return m_module;
 	}
+	
+	void Free()
+	{
+		delete this;
+	}
+	
 protected:
 	void AddMessage(DataMessage* msg)
 	{
@@ -207,8 +221,57 @@ protected:
 	}
 	
 protected:
+	virtual void OnInstallPluginRequest(const InstallPlugin& msg)
+	{
+	}
+	
+	/*******************************************************************************************/
+	/*                                      server functions                                   */
+	/*******************************************************************************************/
+	virtual void OnConfigChanged(const SetConfig& msg)
+	{
+	}
+	
+	/*******************************************************************************************/
+	/*                                      client functions                                   */
+	/*******************************************************************************************/
+	virtual void OnConfig(const SetConfig& msg)
+	{
+	}
+	
+private:
 	template<class TMessage, class THandler> friend class DeamonMessage;
 
+	/*******************************************************************************************/
+	/*                                    messages for all                                     */
+	/*******************************************************************************************/
+	void onMessage(const SetConfig& msg, const Twainet::ModuleName& path)
+	{
+		if(strcmp(path.m_name, Twainet::ClientModuleName) != 0)
+		{
+			// from all besides the client
+			OnConfig(msg);
+		}
+		else
+		{
+			// from client to server
+			OnConfigChanged(msg);
+		}
+		
+		m_config = msg;
+	}
+	
+	void onMessage(const GetConfig& msg, const Twainet::ModuleName& path)
+	{
+		SetConfigMessage scMsg(this, m_config);
+		toMessage(scMsg, path);
+	}
+	
+	void onMessage(const InstallPlugin& msg, const Twainet::ModuleName& path)
+	{
+		OnInstallPluginRequest(msg);
+	}
+	
 	/*******************************************************************************************/
 	/*                                      server messages                                    */
 	/*******************************************************************************************/
@@ -271,6 +334,7 @@ protected:
 	ObjectManager<ClientModuleName> m_clientsNameOnServer;
 	ObjectManager<ClientModuleName> m_clientsNameOnClient;
 	Twainet::Module m_module;
+	SetConfig m_config;
 private:
 	std::map<std::string, DataMessage*> m_messages;
 };

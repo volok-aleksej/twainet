@@ -13,12 +13,13 @@ public:
 	
 protected:
 	virtual void OnModuleConnected(const Twainet::ModuleName& moduleName);
+	
 protected:
-	template<class TMessage, class THandler> friend class DeamonMessage;
-	void onMessage(const GetConfig& msg, const Twainet::ModuleName& path);
-	void onMessage(const SetConfig& msg, const Twainet::ModuleName& path);
+	virtual void OnConfigChanged(const SetConfig& msg);
+	
 private:
 	void ReadConfig();
+	
 private:
 	Twainet::UserPassword m_userPassword;
 	std::vector<std::string> m_trustedModules;

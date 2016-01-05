@@ -12,16 +12,6 @@ Config::~Config()
 {
 	m_file.Save();
 }
-	
-void Config::SetGoogleAccountName(const std::string& accountName)
-{
-	m_file.setString("google", "accountName", accountName.c_str());
-}
-
-std::string Config::GetGoogleAccountName()
-{
-	return m_file.getString("google", "accountName");
-}
 
 void Config::SetTrustedFileName(const std::string& fileName)
 {

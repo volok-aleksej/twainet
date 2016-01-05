@@ -1,6 +1,5 @@
 #include "application.h"
 #include "module/deamon_module.h"
-#include "module/google_data_module.h"
 #ifndef WIN32
 #	include <string.h>
 #endif/*WIN32*/
@@ -256,7 +255,7 @@ DeamonApplication::~DeamonApplication()
 	for(std::vector<Module*>::iterator it = m_modules.begin();
 	    it != m_modules.end(); it++)
 	{
-		delete *it;
+		(*it)->Free();
 	}
 }
 
@@ -264,7 +263,6 @@ void DeamonApplication::InitializeApplication()
 {
 	CSLocker locker(&GetInstance().m_cs);
 	m_modules.push_back(new DeamonModule);
-	m_modules.push_back(new GoogleDataModule);
 }
 
 std::string DeamonApplication::GetAppName()
