@@ -20,7 +20,14 @@ PathParser::PathParser(const std::string& filePath)
 	}
 
 	m_folder.insert(m_folder.begin(), path.begin(), path.begin() + pos);
-	m_file.insert(m_file.begin(), path.begin() + pos + 1, path.end());
+	if(m_folder.empty())
+	{
+		m_file.insert(m_file.begin(), path.begin() + pos, path.end());
+	}
+	else
+	{
+		m_file.insert(m_file.begin(), path.begin() + pos + 1, path.end());
+	}
 	pos = m_file.find_last_of('.');
 	if(pos != -1)
 	{
