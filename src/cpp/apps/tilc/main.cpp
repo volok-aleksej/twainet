@@ -8,6 +8,7 @@
 
 #include "../../version.h"
 #include "common/file.h"
+#include "compiler/til_compiler.h"
 #include <vector>
 #include <string>
 
@@ -72,7 +73,9 @@ int  main(int argc, char* argv[])
 	      return 0;
 	}
 	
-	//TODO: Compile amd generate c++
+	TILCompiler compiler(source);
+    compiler.Parse();
+	//TODO: generate c++
 	
 	return 0;
 }

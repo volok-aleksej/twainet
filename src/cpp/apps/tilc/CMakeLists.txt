@@ -13,6 +13,11 @@ set (SRC_${PROJECT_NAME}
 	../../common/file.cpp
 	../../utils/path_parser.cpp
 	main.cpp
+	compiler/til_compiler.cpp
+    compiler/tokenizer.cpp
+    compiler/compiler_root_state.cpp
+    compiler/compiler_comment_state.cpp
+    compiler/compiler_plugin_state.cpp
     )
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})

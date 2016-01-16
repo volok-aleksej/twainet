@@ -2,18 +2,40 @@ package deamon;
 
 message LocalServerAttributes
 {
-	required int32 port		= 1;
-	required string username	= 2;
-	required string password	= 3;
+	required int32 port			= 1;
+	required string username		= 2;
+	required string password		= 3;
 }
 
 message ClientName
 {
-	required string ipc_name	= 1;
-	required string host_name	= 2;
+	required string ipc_name		= 1;
+	required string host_name		= 2;
 }
 
 message ClientNameList
 {
-	repeated ClientName name_list	= 1;
+	repeated ClientName name_list		= 1;
+}
+
+message Plugin
+{
+	repeated string name_modules		= 1;
+	required string path			= 2;
+}
+
+message InstallPlugin
+{
+	required string plugin_url		= 1;
+}
+
+message SetConfig
+{
+	required int32 local_port		= 1;
+	required string trusted_file_name	= 2;
+	repeated Plugin plugins			= 3;
+}
+
+message GetConfig
+{
 }
