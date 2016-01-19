@@ -21,10 +21,14 @@ public:
     {
         return m_stateName;
     }
-    
-    virtual StateStatus IsNextState(const std::string& word, char token)
+    virtual StateStatus IsNextState(char token)
     {
-        return CheckIsNextState(word, token);
+        return CheckIsNextState(token);
+    }
+    
+    virtual StateStatus IsNextState(const std::string& word)
+    {
+        return CheckIsNextState(word);
     }
 
     virtual CompilerState* NextState(const std::string& word)
@@ -39,7 +43,8 @@ public:
     }
     
 protected:
-    virtual StateStatus CheckIsNextState(const std::string& word, char token) = 0;
+    virtual StateStatus CheckIsNextState(char token) = 0;
+    virtual StateStatus CheckIsNextState(const std::string& word) = 0;
     virtual CompilerState* GetNextState(const std::string& word) = 0;
 
     void EnterState()

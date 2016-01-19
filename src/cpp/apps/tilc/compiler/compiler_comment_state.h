@@ -9,7 +9,8 @@ public:
     CompilerCommentState(CompilerState* parent, const std::string& commentWord);
     virtual ~CompilerCommentState();
 protected:
-    virtual StateStatus CheckIsNextState(const std::string& word, char token);
+    virtual StateStatus CheckIsNextState(char token);
+    virtual StateStatus CheckIsNextState(const std::string& word);
     virtual CompilerState* GetNextState(const std::string& word);
 private:
     std::string m_commentWord;

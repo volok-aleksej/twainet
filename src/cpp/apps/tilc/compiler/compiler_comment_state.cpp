@@ -5,13 +5,19 @@ CompilerCommentState::CompilerCommentState(CompilerState* parent, const std::str
 
 CompilerCommentState::~CompilerCommentState(){}
 
-CompilerState::StateStatus CompilerCommentState::CheckIsNextState(const std::string& word, char token)
+CompilerState::StateStatus CompilerCommentState::CheckIsNextState(char token)
 {
     if((token == '\r' || token == '\n') && m_commentWord == "//")
     {
         return StateApply;
     }
-    else if(word == "*/" && m_commentWord == "/*")
+
+    return StateContinue;
+}
+
+CompilerState::StateStatus CompilerCommentState::CheckIsNextState(const std::string& word)
+{
+    if(word == "*/" && m_commentWord == "/*")
     {
         return StateApply;
     }

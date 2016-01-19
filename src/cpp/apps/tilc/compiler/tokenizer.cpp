@@ -37,7 +37,7 @@ bool Tokenizer::ProcessToken(char token)
     else if(type == typeReserved)
     {
         m_lastReserved.push_back(token);
-        CompilerState::StateStatus state = m_currentState->IsNextState(m_lastReserved, token);
+        CompilerState::StateStatus state = m_currentState->IsNextState(m_lastReserved);
         if(state == CompilerState::StateApply)
         {
             m_currentState = m_currentState->NextState(m_lastString);
@@ -56,7 +56,7 @@ bool Tokenizer::ProcessToken(char token)
             m_lastReserved.clear();
         }
         
-        CompilerState::StateStatus state = m_currentState->IsNextState(m_lastString, token);
+        CompilerState::StateStatus state = m_currentState->IsNextState(token);
         if(state == CompilerState::StateApply)
         {
             m_currentState = m_currentState->NextState(m_lastString);

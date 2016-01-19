@@ -7,14 +7,20 @@ CompilerRootState::CompilerRootState()
 
 CompilerRootState::~CompilerRootState(){}
 
-CompilerState::StateStatus CompilerRootState::CheckIsNextState(const std::string& word, char token)
+CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
 {
-    m_checkWord = word;
-    if(word == "//" || word == "/*")
+    if(token == ' ')
     {
         return CompilerState::StateApply;
     }
-    else if(word == "plugin" && (token == ' '))
+    
+    return CompilerState::StateContinue;
+}
+
+CompilerState::StateStatus CompilerRootState::CheckIsNextState(const std::string& word)
+{
+    m_checkWord = word;
+    if(word == "//" || word == "/*")
     {
         return CompilerState::StateApply;
     }
