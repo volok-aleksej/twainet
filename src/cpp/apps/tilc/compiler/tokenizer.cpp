@@ -41,6 +41,7 @@ bool Tokenizer::ProcessToken(char token)
         {
             m_currentState = m_currentState->NextState(m_lastString);
             m_lastReserved.clear();
+	    m_lastString.clear();
         }
         else if(state == CompilerState::StateIgnore)
         {
@@ -48,6 +49,8 @@ bool Tokenizer::ProcessToken(char token)
         }
         else if(state == CompilerState::StateError)
         {
+            m_lastReserved.clear();
+	    m_lastString.clear();
             return false;
         }
     }
@@ -71,6 +74,7 @@ bool Tokenizer::ProcessToken(char token)
         }
         else if(state == CompilerState::StateError)
         {
+	    m_lastString.clear();
             return false;
         }
     }
@@ -120,6 +124,7 @@ Tokenizer::typeToken Tokenizer::GetType(char ch)
         
         if(!m_lastReserved.empty())
             data.clear();
+	m_lastString += m_lastReserved;
         m_lastReserved.clear();
     }
     while(data.size() != 1 && ch != data[0]);

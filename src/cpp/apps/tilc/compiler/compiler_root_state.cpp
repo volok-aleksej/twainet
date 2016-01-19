@@ -11,8 +11,6 @@ CompilerRootState::CompilerRootState()
     m_errorString.push_back(")");
     m_errorString.push_back(",");
     
-    m_ignoreString.push_back("\n");
-    m_ignoreString.push_back("\r");
     m_ignoreString.push_back(";");
 }
 
@@ -20,7 +18,10 @@ CompilerRootState::~CompilerRootState(){}
 
 CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
 {
-    if(token == ' ' || token == '\t')
+    if(token == ' ' ||
+       token == '\t' ||
+       token == '\n' ||
+       token == '\r')
     {
         return CompilerState::StateApply;
     }
@@ -31,7 +32,8 @@ CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
 CompilerState::StateStatus CompilerRootState::CheckIsNextState(const std::string& word)
 {
     m_checkWord = word;
-    if(word == "//" || word == "/*")
+    if(word == "//" ||
+       word == "/*")
     {
         return CompilerState::StateApply;
     }
@@ -51,7 +53,7 @@ CompilerState* CompilerRootState::GetNextState(const std::string& word)
         return m_childState;
     }
     
-    if (checkword == "plugin")
+    if (checkword == "plugin" && checkword == word)
     {
         m_childState = new CompilerPluginState(this);
         return m_childState;
