@@ -3,13 +3,24 @@
 #include "compiler_plugin_state.h"
 
 CompilerRootState::CompilerRootState()
-: CompilerState("root", 0){}
+: CompilerState("root", 0)
+{
+    m_errorString.push_back("{");
+    m_errorString.push_back("}");
+    m_errorString.push_back("(");
+    m_errorString.push_back(")");
+    m_errorString.push_back(",");
+    
+    m_ignoreString.push_back("\n");
+    m_ignoreString.push_back("\r");
+    m_ignoreString.push_back(";");
+}
 
 CompilerRootState::~CompilerRootState(){}
 
 CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
 {
-    if(token == ' ')
+    if(token == ' ' || token == '\t')
     {
         return CompilerState::StateApply;
     }
@@ -30,18 +41,26 @@ CompilerState::StateStatus CompilerRootState::CheckIsNextState(const std::string
 
 CompilerState* CompilerRootState::GetNextState(const std::string& word)
 {
-    if ((m_checkWord == "//" ||
-        m_checkWord == "/*") &&
+    std::string checkword = m_checkWord;
+    m_checkWord.clear();
+    if ((checkword == "//" ||
+        checkword == "/*") &&
         word.empty())
     {
-        m_childState = new CompilerCommentState(this, m_checkWord);
+        m_childState = new CompilerCommentState(this, checkword);
+        return m_childState;
     }
     
-    if (m_checkWord == "plugin")
+    if (checkword == "plugin")
     {
         m_childState = new CompilerPluginState(this);
+        return m_childState;
+    }
+  
+    if (word.empty())
+    {
+        return this;
     }
     
-    m_checkWord.clear();
-    return m_childState;
+    return 0;
 }

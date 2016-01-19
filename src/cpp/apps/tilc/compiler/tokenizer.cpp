@@ -36,7 +36,6 @@ bool Tokenizer::ProcessToken(char token)
     }
     else if(type == typeReserved)
     {
-        m_lastReserved.push_back(token);
         CompilerState::StateStatus state = m_currentState->IsNextState(m_lastReserved);
         if(state == CompilerState::StateApply)
         {
@@ -46,6 +45,10 @@ bool Tokenizer::ProcessToken(char token)
         else if(state == CompilerState::StateIgnore)
         {
             m_lastReserved.clear();
+        }
+        else if(state == CompilerState::StateError)
+        {
+            return false;
         }
     }
     else if(type == typeSeporator)
@@ -66,7 +69,10 @@ bool Tokenizer::ProcessToken(char token)
         {
             m_lastString.push_back(token);
         }
-            
+        else if(state == CompilerState::StateError)
+        {
+            return false;
+        }
     }
     
     if(!m_currentState)
@@ -83,6 +89,7 @@ Tokenizer::typeToken Tokenizer::GetType(char ch)
         case ' ':
         case '\r':
         case '\n':
+        case '\t':
         case ',':
         case ';':
         case '{':
@@ -92,13 +99,30 @@ Tokenizer::typeToken Tokenizer::GetType(char ch)
             return typeSeporator;
     }
     
-    std::string data = m_lastReserved + ch;
-    for(std::vector<std::string>::iterator it = m_reservedWords.begin();
-        it != m_reservedWords.end(); it++)
+    std::string data = m_lastReserved;
+    do
     {
-        if(data.size() <= it->size() && memcmp(data.c_str(), it->c_str(), data.size()) == 0)
-            return typeReserved;
+        data.push_back(ch);
+        for(std::vector<std::string>::iterator it = m_reservedWords.begin();
+            it != m_reservedWords.end(); it++)
+        {
+            if(data.size() < it->size() && memcmp(data.c_str(), it->c_str(), data.size()) == 0)
+            {
+                m_lastReserved.push_back(ch);
+                return typeNeedMore;
+            }
+            else if(data.size() == it->size() && memcmp(data.c_str(), it->c_str(), data.size()) == 0)
+            {
+                m_lastReserved.push_back(ch);
+                return typeReserved;
+            }
+        }
+        
+        if(!m_lastReserved.empty())
+            data.clear();
+        m_lastReserved.clear();
     }
+    while(data.size() != 1 && ch != data[0]);
 
     return typeSymbol;
 }

@@ -13,7 +13,8 @@ class Tokenizer
     {
         typeSymbol = 0,
         typeSeporator,
-        typeReserved
+        typeReserved,
+        typeNeedMore
     };
 public:
     Tokenizer(TILCompiler* compiler, CompilerState* currentState);

@@ -18,6 +18,8 @@ set (SRC_${PROJECT_NAME}
     compiler/compiler_root_state.cpp
     compiler/compiler_comment_state.cpp
     compiler/compiler_plugin_state.cpp
+    compiler/compiler_var_state.cpp
+    compiler/compiler_function_state.cpp
     )
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})
