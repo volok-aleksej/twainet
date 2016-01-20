@@ -1,9 +1,9 @@
-#include "compiler_plugin_state.h"
+#include "compiler_module_state.h"
 #include "compiler_comment_state.h"
 #include "compiler_var_state.h"
 
-CompilerPluginState::CompilerPluginState(CompilerState* parent)
-: CompilerState("plugin", parent), m_state(Name)
+CompilerModuleState::CompilerModuleState(CompilerState* parent)
+: CompilerState("module", parent), m_state(Name)
 {
     m_useTokens.push_back('\r');
     m_useTokens.push_back('\n');
@@ -14,8 +14,9 @@ CompilerPluginState::CompilerPluginState(CompilerState* parent)
     m_useTokens.push_back('\t');
 }
 
-CompilerPluginState::~CompilerPluginState(){}
-CompilerState::StateStatus CompilerPluginState::CheckIsUseWord(const std::string& word)
+CompilerModuleState::~CompilerModuleState(){}
+
+CompilerState::StateStatus CompilerModuleState::CheckIsUseWord(const std::string& word)
 {
     if(word == "//" || word == "/*")
     {
@@ -25,7 +26,7 @@ CompilerState::StateStatus CompilerPluginState::CheckIsUseWord(const std::string
     return CompilerState::StateContinue;
 }
 
-CompilerState* CompilerPluginState::GetNextState(const std::string& word, char token)
+CompilerState* CompilerModuleState::GetNextState(const std::string& word, char token)
 {
     if(word.empty() && token == 0)
         return this;
@@ -42,7 +43,7 @@ CompilerState* CompilerPluginState::GetNextState(const std::string& word, char t
         else if(m_state == Name)
         {
             m_state = PreBody;
-            m_pluginName = word;
+            m_moduleName = word;
             return this;
         }
         else if(m_state == PreBody)
@@ -66,7 +67,7 @@ CompilerState* CompilerPluginState::GetNextState(const std::string& word, char t
         else if(m_state == Name)
         {
             m_state = Body;
-            m_pluginName = word;
+            m_moduleName = word;
             return this;
         }
         else if(m_state == PreBody)
@@ -75,8 +76,22 @@ CompilerState* CompilerPluginState::GetNextState(const std::string& word, char t
             return this;
         }
     }
-    else if(token == ';' && m_state == Body && word.empty())
-        return this;
+    else if(token == ';')
+    {
+        if(m_state == Body && word.empty())
+            return this;
+        else if(m_state == Name && !word.empty())
+        {
+            m_state = Body;
+            m_moduleName = word;
+            return m_parentState;
+        }
+        else if(m_state == PreBody && word.empty())
+        {
+            m_state = Body;
+            return m_parentState;
+        }
+    }
     else if(token == '}' && m_state == Body)
     {
         return m_parentState;

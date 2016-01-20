@@ -47,19 +47,24 @@ CompilerState* CompilerVarState::GetNextState(const std::string& word, char toke
             return this;
         }
     }
-    else if(token == ',' && m_state == End)
+    else if(token == ',' || token == '(' || token == ';')
     {
-        m_childState = new CompilerVarState(m_parentState, m_varType);
+        if(m_state == Name && word.empty() ||
+           m_state == End && !word.empty())
+            return 0;
+        if(m_state == Name)
+        {
+            m_state = End;
+            m_varName = word;
+        }
+        if(token == ',')
+            m_childState = new CompilerVarState(m_parentState, m_varType);
+        else if(token == '(')
+            m_childState = new CompilerFunctionState(m_parentState, m_varType, m_varName);
+        else 
+            return m_parentState;
+        
         return m_childState;
-    }
-    else if(token == '( ' && m_state == End)
-    {
-        m_childState = new CompilerFunctionState(m_parentState, m_varType, m_varName);
-        return m_childState;
-    }
-    else if(token == ';' && m_state == End)
-    {
-        return m_parentState;
     }
     
     return 0;

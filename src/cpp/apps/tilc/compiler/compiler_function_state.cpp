@@ -1,9 +1,15 @@
 #include "compiler_function_state.h"
 #include "compiler_comment_state.h"
+#include "compiler_function_attr_state.h"
 
 CompilerFunctionState::CompilerFunctionState(CompilerState* parent, const std::string& retVal, const std::string& funcName)
-: CompilerState("function", parent)
+: CompilerState("function", parent), m_retVal(retVal), m_funcName(funcName)
 {
+    m_useTokens.push_back(' ');
+    m_useTokens.push_back('\t');
+    m_useTokens.push_back('\n');
+    m_useTokens.push_back('\r');
+    m_useTokens.push_back(')');
 }
 
 CompilerFunctionState::~CompilerFunctionState(){}
@@ -26,6 +32,25 @@ CompilerState* CompilerFunctionState::GetNextState(const std::string& word, char
     {
         m_childState = new CompilerCommentState(this, word);
         return m_childState;
+    }
+    else if(token == ' ' || token == '\t' ||
+            token == '\r' || token == '\n')
+    {
+        if(word.empty())
+            return this;
+        else if(word == "int" ||
+                word == "bool" ||
+                word == "string" ||
+                word == "float" ||
+                word == "void")
+        {
+            m_childState = new CompilerFunctionAttrState(this, word);
+            return m_childState;
+        }
+    }
+    else if(token == ')')
+    {
+        return m_parentState;
     }
     
     return 0;

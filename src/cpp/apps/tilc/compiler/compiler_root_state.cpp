@@ -1,6 +1,6 @@
 #include "compiler_root_state.h"
 #include "compiler_comment_state.h"
-#include "compiler_plugin_state.h"
+#include "compiler_plugin_app_state.h"
 
 CompilerRootState::CompilerRootState()
 : CompilerState("root", 0)
@@ -46,6 +46,11 @@ CompilerState* CompilerRootState::GetNextState(const std::string& word, char tok
     else if (word == "plugin")
     {
         m_childState = new CompilerPluginState(this);
+        return m_childState;
+    }    
+    else if (word == "application")
+    {
+        m_childState = new CompilerApplicationState(this);
         return m_childState;
     }
     

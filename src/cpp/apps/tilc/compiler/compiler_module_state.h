@@ -1,9 +1,9 @@
-#ifndef COMPILER_PLUGIN_STATE_H
-#define COMPILER_PLUGIN_STATE_H
+#ifndef COMPILER_MODULE_STATE_H
+#define COMPILER_MODULE_STATE_H
 
 #include "compiler_state.h"
 
-class CompilerPluginState : public CompilerState
+class CompilerModuleState : public CompilerState
 {
     enum State
     {
@@ -12,14 +12,14 @@ class CompilerPluginState : public CompilerState
         Body
     };
 public:
-    CompilerPluginState(CompilerState* parent);
-    virtual ~CompilerPluginState();
+    CompilerModuleState(CompilerState* parent);
+    virtual ~CompilerModuleState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);
     virtual CompilerState* GetNextState(const std::string& word, char token);
 private:
-    std::string m_pluginName;
+    std::string m_moduleName;
     State m_state;
 };
 
-#endif/*COMPILER_PLUGIN_STATE_H*/
+#endif/*COMPILER_MODULE_STATE_H*/
