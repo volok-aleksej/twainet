@@ -53,7 +53,9 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
                  word == "bool" ||
                  word == "string" ||
                  word == "float" ||
-                 word == "void"))
+                 word == "void" ||
+                 word == "short" ||
+                 word == "char"))
         {
             m_childState = new CompilerVarState(this, word);
             return m_childState;

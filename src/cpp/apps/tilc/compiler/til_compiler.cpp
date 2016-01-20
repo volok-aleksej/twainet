@@ -19,10 +19,10 @@ bool TILCompiler::Parse()
         if (!f.Read(&ch, &len) ||
             !m_tokenizer.ProcessToken(ch))
         {
-            break;
+            return false;
         }
 
         currentPos++;
     }
-    return false;
+    return true;
 }

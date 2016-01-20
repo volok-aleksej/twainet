@@ -42,7 +42,9 @@ CompilerState* CompilerFunctionState::GetNextState(const std::string& word, char
                 word == "bool" ||
                 word == "string" ||
                 word == "float" ||
-                word == "void")
+                word == "void" ||
+                word == "short" ||
+                word == "char")
         {
             m_childState = new CompilerFunctionAttrState(this, word);
             return m_childState;
