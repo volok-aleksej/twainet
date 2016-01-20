@@ -13,6 +13,11 @@ protected:
     virtual StateStatus CheckIsNextState(char token);
     virtual StateStatus CheckIsNextState(const std::string& word);
     virtual CompilerState* GetNextState(const std::string& word);
+private:
+    std::string m_funcName;
+    std::string m_retVal;
+    std::string m_checkWord;
+    
 };
 
 #endif/*COMPILER_FUNCTION_STATE_H*/

@@ -22,6 +22,7 @@ private:
     std::string m_varType;
     std::string m_varName;
     char m_lastSep;
+    std::string m_checkWord;
     State m_state;
 };
 

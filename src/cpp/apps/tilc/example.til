@@ -1,7 +1,6 @@
 //plugin modules
-plugin TestPlugin
-{
-    int test;
+plugin TestPlugin {
+    int test/*test*/, test1;
     module PluginModule
     {
 	//variables

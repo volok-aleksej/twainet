@@ -1,5 +1,6 @@
 #include "compiler_var_state.h"
 #include "compiler_function_state.h"
+#include "compiler_comment_state.h"
 
 CompilerVarState::CompilerVarState(CompilerState* parent, const std::string& varType)
 : CompilerState("variable", parent), m_varType(varType), m_state(Name), m_lastSep(0)
@@ -39,6 +40,12 @@ CompilerState::StateStatus CompilerVarState::CheckIsNextState(char token)
 
 CompilerState::StateStatus CompilerVarState::CheckIsNextState(const std::string& word)
 {
+    if(word == "//" || word == "/*")
+    {
+        m_checkWord = word;
+        return CompilerState::StateApply;
+    }
+    
     if(m_state == Name)
     {
         m_varName = word;
@@ -65,6 +72,13 @@ CompilerState* CompilerVarState::GetNextState(const std::string& word)
     else if(!word.empty())
     {
         return 0;
+    }
+    
+    if(m_checkWord == "//" || m_checkWord == "/*")
+    {
+        m_childState = new CompilerCommentState(this, m_checkWord);
+        m_checkWord.clear();
+        return m_childState;
     }
     
     if(m_state == End && m_lastSep == ',')

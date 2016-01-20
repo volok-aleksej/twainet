@@ -109,6 +109,10 @@ CompilerState* CompilerPluginState::GetNextState(const std::string& word)
         m_childState = new CompilerVarState(this, m_checkWord);
         return m_childState;
     }
+    else if(m_state == Body &&
+            m_checkWord == "module")
+    {
+    }
     
     return state;
 }
