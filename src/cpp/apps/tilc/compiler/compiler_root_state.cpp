@@ -5,23 +5,20 @@
 CompilerRootState::CompilerRootState()
 : CompilerState("root", 0)
 {
-    m_errorString.push_back("{");
-    m_errorString.push_back("}");
-    m_errorString.push_back("(");
-    m_errorString.push_back(")");
-    m_errorString.push_back(",");
-    
-    m_ignoreString.push_back(";");
+    m_useTokens.push_back('{');
+    m_useTokens.push_back('(');
+    m_useTokens.push_back(';');
+    m_useTokens.push_back(' ');
+    m_useTokens.push_back('\r');
+    m_useTokens.push_back('\n');
+    m_useTokens.push_back('\t');
 }
 
 CompilerRootState::~CompilerRootState(){}
 
-CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
+CompilerState::StateStatus CompilerRootState::CheckIsUseWord(const std::string& word)
 {
-    if(token == ' ' ||
-       token == '\t' ||
-       token == '\n' ||
-       token == '\r')
+    if(word == "//" || word == "/*")
     {
         return CompilerState::StateApply;
     }
@@ -29,39 +26,27 @@ CompilerState::StateStatus CompilerRootState::CheckIsNextState(char token)
     return CompilerState::StateContinue;
 }
 
-CompilerState::StateStatus CompilerRootState::CheckIsNextState(const std::string& word)
+CompilerState* CompilerRootState::GetNextState(const std::string& word, char token)
 {
-    m_checkWord = word;
-    if(word == "//" ||
-       word == "/*")
+    if (word == "//" || word == "/*")
     {
-        return CompilerState::StateApply;
-    }
-    
-    return CompilerState::StateContinue;
-}
-
-CompilerState* CompilerRootState::GetNextState(const std::string& word)
-{
-    std::string checkword = m_checkWord;
-    m_checkWord.clear();
-    if ((checkword == "//" ||
-        checkword == "/*") &&
-        word.empty())
-    {
-        m_childState = new CompilerCommentState(this, checkword);
+        m_childState = new CompilerCommentState(this, word);
         return m_childState;
     }
-    
-    if (checkword == "plugin" && checkword == word)
+    else if(token == '{')
+    {
+    }
+    else if(token == '(')
+    {
+    }
+    else if(word.empty())
+    {
+        return this;
+    }    
+    else if (word == "plugin")
     {
         m_childState = new CompilerPluginState(this);
         return m_childState;
-    }
-  
-    if (word.empty())
-    {
-        return this;
     }
     
     return 0;

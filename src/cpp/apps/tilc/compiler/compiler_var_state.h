@@ -15,14 +15,11 @@ public:
     CompilerVarState(CompilerState* parent, const std::string& varType);
     virtual ~CompilerVarState();
 protected:
-    virtual StateStatus CheckIsNextState(char token);
-    virtual StateStatus CheckIsNextState(const std::string& word);
-    virtual CompilerState* GetNextState(const std::string& word);
+    virtual StateStatus CheckIsUseWord(const std::string& word);
+    virtual CompilerState* GetNextState(const std::string& word, char token);
 private:
     std::string m_varType;
     std::string m_varName;
-    char m_lastSep;
-    std::string m_checkWord;
     State m_state;
 };
 

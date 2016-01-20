@@ -5,7 +5,7 @@
 
 Tokenizer::Tokenizer(TILCompiler* compiler, CompilerState* currentState)
 : m_compiler(compiler), m_currentState(currentState)
-{
+{/*
     m_reservedWords.push_back("application");
     m_reservedWords.push_back("plugin");
     
@@ -15,7 +15,7 @@ Tokenizer::Tokenizer(TILCompiler* compiler, CompilerState* currentState)
     m_reservedWords.push_back("bool");
     m_reservedWords.push_back("float");
     m_reservedWords.push_back("void");
-    
+    */
     m_reservedWords.push_back("//");
     m_reservedWords.push_back("/*");
     m_reservedWords.push_back("*/");
@@ -26,56 +26,51 @@ bool Tokenizer::ProcessToken(char token)
     typeToken type = GetType(token);
     if(type == typeSymbol)
     {
-        if(!m_lastReserved.empty())
-        {
-            m_lastString += m_lastReserved;
-            m_lastReserved.clear();
-        }
-        
+        m_lastString += m_lastReserved;
+        m_lastReserved.clear();
         m_lastString.push_back(token);
     }
     else if(type == typeReserved)
     {
-        CompilerState::StateStatus state = m_currentState->IsNextState(m_lastReserved);
+        CompilerState::StateStatus state = m_currentState->IsUseWord(m_lastReserved);
         if(state == CompilerState::StateApply)
         {
-            m_currentState = m_currentState->NextState(m_lastString);
+            m_currentState = m_currentState->NextState(m_lastString, 0);
+            if(!m_currentState)
+                return false;
+            m_currentState = m_currentState->NextState(m_lastReserved, 0);
             m_lastReserved.clear();
-	    m_lastString.clear();
+            m_lastString.clear();
+        }
+        else if(state == CompilerState::StateError)
+        {
+            m_lastReserved.clear();
+            m_lastString.clear();
+            return false;
         }
         else if(state == CompilerState::StateIgnore)
         {
             m_lastReserved.clear();
         }
-        else if(state == CompilerState::StateError)
-        {
-            m_lastReserved.clear();
-	    m_lastString.clear();
-            return false;
-        }
-    }
-    else if(type == typeSeporator)
-    {
-        if(!m_lastReserved.empty())
+        else
         {
             m_lastString += m_lastReserved;
             m_lastReserved.clear();
         }
+    }
+    else if(type == typeSeporator)
+    {
+        m_lastString += m_lastReserved;
+        m_lastReserved.clear();
         
-        CompilerState::StateStatus state = m_currentState->IsNextState(token);
-        if(state == CompilerState::StateApply)
+        if(m_currentState->IsUseToken(token))
         {
-            m_currentState = m_currentState->NextState(m_lastString);
+            m_currentState = m_currentState->NextState(m_lastString, token);
             m_lastString.clear();
         }
-        else if(state == CompilerState::StateContinue)
+        else
         {
             m_lastString.push_back(token);
-        }
-        else if(state == CompilerState::StateError)
-        {
-	    m_lastString.clear();
-            return false;
         }
     }
     

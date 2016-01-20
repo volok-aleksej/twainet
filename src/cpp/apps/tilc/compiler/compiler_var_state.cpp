@@ -3,100 +3,64 @@
 #include "compiler_comment_state.h"
 
 CompilerVarState::CompilerVarState(CompilerState* parent, const std::string& varType)
-: CompilerState("variable", parent), m_varType(varType), m_state(Name), m_lastSep(0)
+: CompilerState("variable", parent), m_varType(varType), m_state(Name)
 {
-    m_errorString.push_back("{");
-    m_errorString.push_back("}");
-    m_errorString.push_back(")");
-    
-    m_ignoreString.push_back("\r");
-    m_ignoreString.push_back("\n");
-}
-CompilerVarState::~CompilerVarState()
-{
+    m_useTokens.push_back(';');
+    m_useTokens.push_back('(');
+    m_useTokens.push_back(',');
+    m_useTokens.push_back(' ');
+    m_useTokens.push_back('\t');
+    m_useTokens.push_back('\r');
+    m_useTokens.push_back('\n');
 }
 
-CompilerState::StateStatus CompilerVarState::CheckIsNextState(char token)
+CompilerVarState::~CompilerVarState(){}
+
+CompilerState::StateStatus CompilerVarState::CheckIsUseWord(const std::string& word)
 {
-    if(token == ',' || token == '(' || token == ';')
+    if(word == "//" || word == "/*")
     {
-        m_lastSep = token;
         return CompilerState::StateApply;
-    }
-    else if(token == ' ' || token == '\t')
-    {
-        if(m_state == Name)
-        {
-            return CompilerState::StateApply;
-        }
-        else
-        {
-            return CompilerState::StateIgnore;
-        }
     }
     
     return CompilerState::StateContinue;
 }
 
-CompilerState::StateStatus CompilerVarState::CheckIsNextState(const std::string& word)
+CompilerState* CompilerVarState::GetNextState(const std::string& word, char token)
 {
-    if(word == "//" || word == "/*")
+    if(word.empty() && token == 0)
+        return this;
+    else if(word == "//" || word == "/*")
     {
-        m_checkWord = word;
-        return CompilerState::StateApply;
+        m_childState = new CompilerCommentState(this, word);
+        return m_childState;
     }
-    
-    if(m_state == Name)
+    else if(token == ' ' || token == '\t' ||
+            token == '\r' || token == '\n')
     {
-        m_varName = word;
-        return CompilerState::StateContinue;
-    }
-    else
-    {
-        return CompilerState::StateError;
-    }
-}
-
-CompilerState* CompilerVarState::GetNextState(const std::string& word)
-{
-    CompilerState* retState = 0;
-    if (m_state == Name)
-    {
-        if(m_varName.empty() && !word.empty())
+        if(word.empty())
+            return this;
+        else if(m_varName.empty())
         {
             m_state = End;
             m_varName = word;
+            return this;
         }
-        retState = this;
     }
-    else if(!word.empty())
+    else if(token == ',' && m_state == End)
     {
-        return 0;
-    }
-    
-    if(m_checkWord == "//" || m_checkWord == "/*")
-    {
-        m_childState = new CompilerCommentState(this, m_checkWord);
-        m_checkWord.clear();
-        return m_childState;
-    }
-    
-    if(m_state == End && m_lastSep == ',')
-    {
-        m_lastSep = 0;
         m_childState = new CompilerVarState(m_parentState, m_varType);
         return m_childState;
     }
-    else if(m_state == End && m_lastSep == '(')
+    else if(token == '( ' && m_state == End)
     {
-        m_lastSep = 0;
         m_childState = new CompilerFunctionState(m_parentState, m_varType, m_varName);
         return m_childState;
     }
-    else if(m_state == End && m_lastSep == ';')
+    else if(token == ';' && m_state == End)
     {
         return m_parentState;
     }
     
-    return retState;
+    return 0;
 }

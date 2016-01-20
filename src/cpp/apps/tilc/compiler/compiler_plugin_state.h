@@ -15,14 +15,11 @@ public:
     CompilerPluginState(CompilerState* parent);
     virtual ~CompilerPluginState();
 protected:
-    virtual StateStatus CheckIsNextState(char token);
-    virtual StateStatus CheckIsNextState(const std::string& word);
-    virtual CompilerState* GetNextState(const std::string& word);
+    virtual StateStatus CheckIsUseWord(const std::string& word);
+    virtual CompilerState* GetNextState(const std::string& word, char token);
 private:
     std::string m_pluginName;
     State m_state;
-    
-    std::string m_checkWord;
 };
 
 #endif/*COMPILER_PLUGIN_STATE_H*/

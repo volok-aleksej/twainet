@@ -10,13 +10,11 @@ public:
     CompilerFunctionState(CompilerState* parent, const std::string& retVal, const std::string& funcName);
     virtual ~CompilerFunctionState();
 protected:
-    virtual StateStatus CheckIsNextState(char token);
-    virtual StateStatus CheckIsNextState(const std::string& word);
-    virtual CompilerState* GetNextState(const std::string& word);
+    virtual StateStatus CheckIsUseWord(const std::string& word);
+    virtual CompilerState* GetNextState(const std::string& word, char token);
 private:
     std::string m_funcName;
     std::string m_retVal;
-    std::string m_checkWord;
     
 };
 

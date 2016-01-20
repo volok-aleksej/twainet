@@ -9,11 +9,8 @@ public:
     CompilerRootState();
     virtual ~CompilerRootState();
 protected:
-    virtual StateStatus CheckIsNextState(char token);
-    virtual StateStatus CheckIsNextState(const std::string& word);
-    virtual CompilerState* GetNextState(const std::string& word);
-private:
-    std::string m_checkWord;
+    virtual StateStatus CheckIsUseWord(const std::string& word);
+    virtual CompilerState* GetNextState(const std::string& word, char token);
 };
 
 #endif/*COMPILER_ROOT_STATE_H*/

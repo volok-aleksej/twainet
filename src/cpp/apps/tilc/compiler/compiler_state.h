@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 class CompilerState
 {
@@ -30,47 +31,21 @@ public:
     {
         return m_stateName;
     }
-    virtual StateStatus IsNextState(char token)
+    
+    bool IsUseToken(char token)
     {
-        for(std::vector<std::string>::iterator it = m_errorString.begin();
-            it != m_errorString.end(); it++)
-        {
-            if(*it == std::string(&token, 1))
-                return StateError;
-        }
-        
-        for(std::vector<std::string>::iterator it = m_ignoreString.begin();
-            it != m_ignoreString.end(); it++)
-        {
-            if(*it == std::string(&token, 1))
-                return StateIgnore;
-        }
-        
-        return CheckIsNextState(token);
+        std::vector<char>::iterator it = std::find(m_useTokens.begin(), m_useTokens.end(), token);
+        return it != m_useTokens.end();
     }
     
-    virtual StateStatus IsNextState(const std::string& word)
+    StateStatus IsUseWord(const std::string& word)
     {
-        for(std::vector<std::string>::iterator it = m_errorString.begin();
-            it != m_errorString.end(); it++)
-        {
-            if(*it == word)
-                return StateError;
-        }
-        
-        for(std::vector<std::string>::iterator it = m_ignoreString.begin();
-            it != m_ignoreString.end(); it++)
-        {
-            if(*it == word)
-                return StateIgnore;
-        }
-        
-        return CheckIsNextState(word);
+        return CheckIsUseWord(word);
     }
-
-    virtual CompilerState* NextState(const std::string& word)
+    
+    CompilerState* NextState(const std::string& word, char token)
     {
-        CompilerState* state = GetNextState(word);
+        CompilerState* state = GetNextState(word, token);
         if(state)
         {
             state->EnterState();
@@ -80,9 +55,8 @@ public:
     }
     
 protected:
-    virtual StateStatus CheckIsNextState(char token) = 0;
-    virtual StateStatus CheckIsNextState(const std::string& word) = 0;
-    virtual CompilerState* GetNextState(const std::string& word) = 0;
+    virtual StateStatus CheckIsUseWord(const std::string& word) = 0;
+    virtual CompilerState* GetNextState(const std::string& word, char token) = 0;
 
     void EnterState()
     {
@@ -96,10 +70,7 @@ protected:
 protected:
     CompilerState* m_parentState;
     CompilerState* m_childState;
-    
-    std::vector<std::string> m_errorString;
-    std::vector<std::string> m_ignoreString;
-
+    std::vector<char> m_useTokens;
 private:
     std::string m_stateName;
 };
