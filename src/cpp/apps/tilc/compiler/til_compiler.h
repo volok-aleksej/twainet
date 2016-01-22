@@ -4,6 +4,7 @@
 #include <string>
 #include "tokenizer.h"
 #include "states/compiler_root_state.h"
+#include "ti_objects.h"
 
 class CompilerState;
 
@@ -44,6 +45,8 @@ private:
     std::string m_file;
     Tokenizer m_tokenizer;
     CompilerRootState m_genericState;
+    TIObject m_rootObject;
+    TIObject* m_currentObject;
 };
 
 #endif/*TIL_COMPILER_H*/
