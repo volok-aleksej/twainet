@@ -2,8 +2,8 @@
 #include "compiler_comment_state.h"
 #include "compiler_plugin_app_state.h"
 
-CompilerRootState::CompilerRootState()
-: CompilerState("root", 0)
+CompilerRootState::CompilerRootState(ICompilerEvent* event)
+: CompilerState("root", 0, event)
 {
     m_useTokens.push_back('{');
     m_useTokens.push_back('(');
@@ -30,7 +30,7 @@ CompilerState* CompilerRootState::GetNextState(const std::string& word, char tok
 {
     if (word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == '{')
@@ -45,12 +45,12 @@ CompilerState* CompilerRootState::GetNextState(const std::string& word, char tok
     }    
     else if (word == "plugin")
     {
-        m_childState = new CompilerPluginState(this);
+        m_childState = new CompilerPluginState(this, m_event);
         return m_childState;
     }    
     else if (word == "application")
     {
-        m_childState = new CompilerApplicationState(this);
+        m_childState = new CompilerApplicationState(this, m_event);
         return m_childState;
     }
     

@@ -1,9 +1,10 @@
 #include "compiler_function_state.h"
 #include "compiler_comment_state.h"
 #include "compiler_function_attr_state.h"
+#include "til_compiler.h"
 
-CompilerFunctionState::CompilerFunctionState(CompilerState* parent, const std::string& retVal, const std::string& funcName)
-: CompilerState("function", parent), m_retVal(retVal), m_funcName(funcName)
+CompilerFunctionState::CompilerFunctionState(CompilerState* parent, ICompilerEvent* event, const std::string& retVal, const std::string& funcName)
+: CompilerState("function", parent, event), m_retVal(retVal), m_funcName(funcName)
 {
     m_useTokens.push_back(' ');
     m_useTokens.push_back('\t');
@@ -30,7 +31,7 @@ CompilerState* CompilerFunctionState::GetNextState(const std::string& word, char
         return this;
     else if(word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == ' ' || token == '\t' ||
@@ -46,12 +47,13 @@ CompilerState* CompilerFunctionState::GetNextState(const std::string& word, char
                 word == "short" ||
                 word == "char")
         {
-            m_childState = new CompilerFunctionAttrState(this, word);
+            m_childState = new CompilerFunctionAttrState(this, m_event, word);
             return m_childState;
         }
     }
     else if(token == ')')
     {
+        m_event->onFunctionEnd();
         return m_parentState;
     }
     

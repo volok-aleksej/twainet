@@ -1,9 +1,10 @@
 #include "compiler_module_state.h"
 #include "compiler_comment_state.h"
 #include "compiler_var_state.h"
+#include "til_compiler.h"
 
-CompilerModuleState::CompilerModuleState(CompilerState* parent)
-: CompilerState("module", parent), m_state(Name)
+CompilerModuleState::CompilerModuleState(CompilerState* parent, ICompilerEvent* event)
+: CompilerState("module", parent, event), m_state(Name)
 {
     m_useTokens.push_back('\r');
     m_useTokens.push_back('\n');
@@ -32,7 +33,7 @@ CompilerState* CompilerModuleState::GetNextState(const std::string& word, char t
         return this;
     else if(word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == ' ' || token == '\t' ||
@@ -57,7 +58,7 @@ CompilerState* CompilerModuleState::GetNextState(const std::string& word, char t
                  word == "short" ||
                  word == "char"))
         {
-            m_childState = new CompilerVarState(this, word);
+            m_childState = new CompilerVarState(this, m_event, word);
             return m_childState;
         }
     }
@@ -70,13 +71,14 @@ CompilerState* CompilerModuleState::GetNextState(const std::string& word, char t
         {
             m_state = Body;
             m_moduleName = word;
-            return this;
         }
         else if(m_state == PreBody)
-        {
             m_state = Body;
-            return this;
-        }
+        else
+            return 0;
+        
+        m_event->onModuleBegin(m_moduleName);
+        return this;
     }
     else if(token == ';')
     {
@@ -86,16 +88,19 @@ CompilerState* CompilerModuleState::GetNextState(const std::string& word, char t
         {
             m_state = Body;
             m_moduleName = word;
-            return m_parentState;
         }
         else if(m_state == PreBody && word.empty())
-        {
             m_state = Body;
-            return m_parentState;
-        }
+        else
+            return 0;
+        
+        m_event->onModuleBegin(m_moduleName);
+        m_event->onModuleEnd();
+        return m_parentState;
     }
     else if(token == '}' && m_state == Body)
     {
+        m_event->onModuleEnd();
         return m_parentState;
     }
     

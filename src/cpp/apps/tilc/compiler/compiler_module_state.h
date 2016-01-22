@@ -12,7 +12,7 @@ class CompilerModuleState : public CompilerState
         Body
     };
 public:
-    CompilerModuleState(CompilerState* parent);
+    CompilerModuleState(CompilerState* parent, ICompilerEvent* event);
     virtual ~CompilerModuleState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

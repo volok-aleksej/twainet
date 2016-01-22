@@ -7,7 +7,7 @@
 class CompilerFunctionState : public CompilerState
 {
 public:
-    CompilerFunctionState(CompilerState* parent, const std::string& retVal, const std::string& funcName);
+    CompilerFunctionState(CompilerState* parent, ICompilerEvent* event, const std::string& retVal, const std::string& funcName);
     virtual ~CompilerFunctionState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

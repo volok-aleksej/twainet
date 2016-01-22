@@ -12,7 +12,7 @@ class CompilerVarState : public CompilerState
         End
     };
 public:
-    CompilerVarState(CompilerState* parent, const std::string& varType);
+    CompilerVarState(CompilerState* parent, ICompilerEvent* event, const std::string& varType);
     virtual ~CompilerVarState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

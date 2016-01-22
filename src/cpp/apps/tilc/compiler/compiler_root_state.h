@@ -6,7 +6,7 @@
 class CompilerRootState : public CompilerState
 {
 public:
-    CompilerRootState();
+    CompilerRootState(ICompilerEvent* event);
     virtual ~CompilerRootState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

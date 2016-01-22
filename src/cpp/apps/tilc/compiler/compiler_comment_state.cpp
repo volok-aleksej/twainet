@@ -1,7 +1,8 @@
 #include "compiler_comment_state.h"
+#include "til_compiler.h"
 
-CompilerCommentState::CompilerCommentState(CompilerState* parent, const std::string& commentWord)
-: CompilerState("compiler", parent), m_commentWord(commentWord)
+CompilerCommentState::CompilerCommentState(CompilerState* parent, ICompilerEvent* event, const std::string& commentWord)
+: CompilerState("compiler", parent, event), m_commentWord(commentWord)
 {
     m_useTokens.push_back('\r');
     m_useTokens.push_back('\n');
@@ -24,6 +25,7 @@ CompilerState* CompilerCommentState::GetNextState(const std::string& word, char 
        m_commentWord == "//" &&
        (token == '\r' || token == '\n'))
     {
+        m_event->onComment(word);
         return m_parentState;
     }
     return this;

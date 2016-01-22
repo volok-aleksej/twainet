@@ -3,7 +3,7 @@
 #include "compiler_state.h"
 
 TILCompiler::TILCompiler(const std::string& file)
-: m_file(file), m_tokenizer(this, &m_genericState){}
+: m_file(file), m_genericState(this), m_tokenizer(this, &m_genericState){}
 
 TILCompiler::~TILCompiler(){}
 
@@ -25,4 +25,44 @@ bool TILCompiler::Parse()
         currentPos++;
     }
     return true;
+}
+
+void TILCompiler::onPluginBegin(const std::string& name)
+{
+}
+
+void TILCompiler::onPluginEnd()
+{
+}
+
+void TILCompiler::onApplicationBegin(const std::string& name)
+{
+}
+
+void TILCompiler::onApplicationEnd()
+{
+}
+
+void TILCompiler::onModuleBegin(const std::string& name)
+{
+}
+
+void TILCompiler::onModuleEnd()
+{
+}
+
+void TILCompiler::onVariable(const std::string& type, const std::string& name)
+{
+}
+
+void TILCompiler::onFunctionBegin(const std::string& type, const std::string& name)
+{
+}
+
+void TILCompiler::onFunctionEnd()
+{
+}
+
+void TILCompiler::onComment(const std::string& data)
+{
 }

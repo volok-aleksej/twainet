@@ -5,17 +5,7 @@
 
 Tokenizer::Tokenizer(TILCompiler* compiler, CompilerState* currentState)
 : m_compiler(compiler), m_currentState(currentState)
-{/*
-    m_reservedWords.push_back("application");
-    m_reservedWords.push_back("plugin");
-    
-    m_reservedWords.push_back("module");
-    m_reservedWords.push_back("int");
-    m_reservedWords.push_back("string");
-    m_reservedWords.push_back("bool");
-    m_reservedWords.push_back("float");
-    m_reservedWords.push_back("void");
-    */
+{
     m_reservedWords.push_back("//");
     m_reservedWords.push_back("/*");
     m_reservedWords.push_back("*/");

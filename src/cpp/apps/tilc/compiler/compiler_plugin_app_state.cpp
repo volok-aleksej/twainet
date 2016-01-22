@@ -2,9 +2,10 @@
 #include "compiler_comment_state.h"
 #include "compiler_var_state.h"
 #include "compiler_module_state.h"
+#include "til_compiler.h"
 
-CompilerPluginAppState::CompilerPluginAppState(const std::string& name, CompilerState* parent)
-: CompilerState(name, parent), m_state(Name)
+CompilerPluginAppState::CompilerPluginAppState(const std::string& name, CompilerState* parent, ICompilerEvent* event)
+: CompilerState(name, parent, event), m_state(Name)
 {
     m_useTokens.push_back('\r');
     m_useTokens.push_back('\n');
@@ -32,7 +33,7 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
         return this;
     else if(word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == ' ' || token == '\t' ||
@@ -57,13 +58,13 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
                  word == "short" ||
                  word == "char"))
         {
-            m_childState = new CompilerVarState(this, word);
+            m_childState = new CompilerVarState(this, m_event, word);
             return m_childState;
         }
         else if(m_state == Body &&
                 word == "module")
         {
-            m_childState = new CompilerModuleState(this);
+            m_childState = new CompilerModuleState(this, m_event);
             return m_childState;
         }
     }
@@ -76,20 +77,42 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
         {
             m_state = Body;
             m_name = word;
-            return this;
         }
         else if(m_state == PreBody)
-        {
             m_state = Body;
-            return this;
-        }
+        else
+            return 0;
+        
+        OnBegin();
+        return this;
     }
     else if(token == ';' && m_state == Body && word.empty())
         return this;
     else if(token == '}' && m_state == Body)
     {
+        OnEnd();
         return m_parentState;
     }
     
     return 0;
+}
+
+void CompilerApplicationState::OnBegin()
+{
+    m_event->onApplicationBegin(m_name);
+}
+
+void CompilerPluginState::OnBegin()
+{
+    m_event->onPluginBegin(m_name);
+}
+
+void CompilerApplicationState::OnEnd()
+{
+    m_event->onApplicationEnd();
+}
+
+void CompilerPluginState::OnEnd()
+{
+    m_event->onPluginEnd();
 }

@@ -5,6 +5,8 @@
 #include <vector>
 #include <algorithm>
 
+class ICompilerEvent;
+
 class CompilerState
 {
 public:
@@ -16,8 +18,8 @@ public:
         StateError
     };
     
-    CompilerState(const std::string& stateName, CompilerState* parentState)
-    : m_stateName(stateName), m_parentState(parentState), m_childState(0){}
+    CompilerState(const std::string& stateName, CompilerState* parentState, ICompilerEvent* event)
+    : m_stateName(stateName), m_parentState(parentState), m_childState(0), m_event(event){}
     virtual ~CompilerState()
     {
         if(m_childState)
@@ -70,6 +72,7 @@ protected:
 protected:
     CompilerState* m_parentState;
     CompilerState* m_childState;
+    ICompilerEvent* m_event;
     std::vector<char> m_useTokens;
 private:
     std::string m_stateName;

@@ -11,7 +11,7 @@ class CompilerFunctionAttrState : public CompilerState
         End
     };
 public:
-    CompilerFunctionAttrState(CompilerState* parent, const std::string& type);
+    CompilerFunctionAttrState(CompilerState* parent, ICompilerEvent* event, const std::string& type);
     virtual ~CompilerFunctionAttrState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

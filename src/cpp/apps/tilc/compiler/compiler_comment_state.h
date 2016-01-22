@@ -6,7 +6,7 @@
 class CompilerCommentState : public CompilerState
 {
 public:
-    CompilerCommentState(CompilerState* parent, const std::string& commentWord);
+    CompilerCommentState(CompilerState* parent, ICompilerEvent* event, const std::string& commentWord);
     virtual ~CompilerCommentState();
 protected:
     virtual StateStatus CheckIsUseWord(const std::string& word);

@@ -1,8 +1,9 @@
 #include "compiler_function_attr_state.h"
 #include "compiler_comment_state.h"
+#include "til_compiler.h"
 
-CompilerFunctionAttrState::CompilerFunctionAttrState(CompilerState* parent, const std::string& type)
-: CompilerState("function_attr", parent), m_varType(type), m_state(Name)
+CompilerFunctionAttrState::CompilerFunctionAttrState(CompilerState* parent, ICompilerEvent* event, const std::string& type)
+: CompilerState("function_attr", parent, event), m_varType(type), m_state(Name)
 {
     m_useTokens.push_back(' ');
     m_useTokens.push_back('\t');
@@ -30,7 +31,7 @@ CompilerState* CompilerFunctionAttrState::GetNextState(const std::string& word, 
         return this;
     else if(word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == ' ' || token == '\t' ||
@@ -54,6 +55,7 @@ CompilerState* CompilerFunctionAttrState::GetNextState(const std::string& word, 
             m_varName = word;
         }
         
+        m_event->onVariable(m_varType, m_varName);
         if(token == ',')
             return m_parentState;
         else

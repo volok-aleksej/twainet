@@ -1,9 +1,10 @@
 #include "compiler_var_state.h"
 #include "compiler_function_state.h"
 #include "compiler_comment_state.h"
+#include "til_compiler.h"
 
-CompilerVarState::CompilerVarState(CompilerState* parent, const std::string& varType)
-: CompilerState("variable", parent), m_varType(varType), m_state(Name)
+CompilerVarState::CompilerVarState(CompilerState* parent, ICompilerEvent* event, const std::string& varType)
+: CompilerState("variable", parent, event), m_varType(varType), m_state(Name)
 {
     m_useTokens.push_back(';');
     m_useTokens.push_back('(');
@@ -32,7 +33,7 @@ CompilerState* CompilerVarState::GetNextState(const std::string& word, char toke
         return this;
     else if(word == "//" || word == "/*")
     {
-        m_childState = new CompilerCommentState(this, word);
+        m_childState = new CompilerCommentState(this, m_event, word);
         return m_childState;
     }
     else if(token == ' ' || token == '\t' ||
@@ -58,11 +59,21 @@ CompilerState* CompilerVarState::GetNextState(const std::string& word, char toke
             m_varName = word;
         }
         if(token == ',')
-            m_childState = new CompilerVarState(m_parentState, m_varType);
+        {
+            m_event->onVariable(m_varType, m_varName);
+            m_childState = new CompilerVarState(m_parentState, m_event, m_varType);
+        }
         else if(token == '(')
-            m_childState = new CompilerFunctionState(m_parentState, m_varType, m_varName);
-        else 
+        {
+            
+            m_event->onFunctionBegin(m_varType, m_varName);
+            m_childState = new CompilerFunctionState(m_parentState, m_event, m_varType, m_varName);
+        }
+        else
+        {
+            m_event->onVariable(m_varType, m_varName);
             return m_parentState;
+        }
         
         return m_childState;
     }
