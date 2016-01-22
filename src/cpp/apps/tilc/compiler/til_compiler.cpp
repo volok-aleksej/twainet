@@ -1,6 +1,5 @@
 #include "til_compiler.h"
 #include "common/file.h"
-#include "compiler_state.h"
 
 TILCompiler::TILCompiler(const std::string& file)
 : m_file(file), m_genericState(this), m_tokenizer(this, &m_genericState){}

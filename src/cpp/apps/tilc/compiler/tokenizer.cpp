@@ -1,7 +1,7 @@
-#include "tokenizer.h"
-#include "compiler_state.h"
 #include <string.h>
 #include <iostream>
+#include "states/compiler_state.h"
+#include "tokenizer.h"
 
 Tokenizer::Tokenizer(TILCompiler* compiler, CompilerState* currentState)
 : m_compiler(compiler), m_currentState(currentState)

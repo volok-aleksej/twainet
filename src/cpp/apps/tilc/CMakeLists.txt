@@ -15,13 +15,13 @@ set (SRC_${PROJECT_NAME}
 	main.cpp
 	compiler/til_compiler.cpp
     compiler/tokenizer.cpp
-    compiler/compiler_root_state.cpp
-    compiler/compiler_comment_state.cpp
-    compiler/compiler_plugin_app_state.cpp
-    compiler/compiler_var_state.cpp
-    compiler/compiler_function_state.cpp
-    compiler/compiler_function_attr_state.cpp
-    compiler/compiler_module_state.cpp
+    compiler/states/compiler_root_state.cpp
+    compiler/states/compiler_comment_state.cpp
+    compiler/states/compiler_plugin_app_state.cpp
+    compiler/states/compiler_var_state.cpp
+    compiler/states/compiler_function_state.cpp
+    compiler/states/compiler_function_attr_state.cpp
+    compiler/states/compiler_module_state.cpp
     )
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})

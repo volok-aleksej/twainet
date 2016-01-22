@@ -1,5 +1,5 @@
 #include "compiler_comment_state.h"
-#include "til_compiler.h"
+#include "../til_compiler.h"
 
 CompilerCommentState::CompilerCommentState(CompilerState* parent, ICompilerEvent* event, const std::string& commentWord)
 : CompilerState("compiler", parent, event), m_commentWord(commentWord)

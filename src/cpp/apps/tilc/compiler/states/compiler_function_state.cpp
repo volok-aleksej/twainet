@@ -1,7 +1,7 @@
 #include "compiler_function_state.h"
 #include "compiler_comment_state.h"
 #include "compiler_function_attr_state.h"
-#include "til_compiler.h"
+#include "../til_compiler.h"
 
 CompilerFunctionState::CompilerFunctionState(CompilerState* parent, ICompilerEvent* event, const std::string& retVal, const std::string& funcName)
 : CompilerState("function", parent, event), m_retVal(retVal), m_funcName(funcName)

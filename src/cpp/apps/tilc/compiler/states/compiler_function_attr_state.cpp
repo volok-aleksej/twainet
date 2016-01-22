@@ -1,6 +1,6 @@
 #include "compiler_function_attr_state.h"
 #include "compiler_comment_state.h"
-#include "til_compiler.h"
+#include "../til_compiler.h"
 
 CompilerFunctionAttrState::CompilerFunctionAttrState(CompilerState* parent, ICompilerEvent* event, const std::string& type)
 : CompilerState("function_attr", parent, event), m_varType(type), m_state(Name)

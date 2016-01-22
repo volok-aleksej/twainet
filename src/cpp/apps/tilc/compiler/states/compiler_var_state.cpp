@@ -1,7 +1,7 @@
 #include "compiler_var_state.h"
 #include "compiler_function_state.h"
 #include "compiler_comment_state.h"
-#include "til_compiler.h"
+#include "../til_compiler.h"
 
 CompilerVarState::CompilerVarState(CompilerState* parent, ICompilerEvent* event, const std::string& varType)
 : CompilerState("variable", parent, event), m_varType(varType), m_state(Name)

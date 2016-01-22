@@ -1,11 +1,10 @@
-#include "compiler_plugin_app_state.h"
+#include "compiler_module_state.h"
 #include "compiler_comment_state.h"
 #include "compiler_var_state.h"
-#include "compiler_module_state.h"
-#include "til_compiler.h"
+#include "../til_compiler.h"
 
-CompilerPluginAppState::CompilerPluginAppState(const std::string& name, CompilerState* parent, ICompilerEvent* event)
-: CompilerState(name, parent, event), m_state(Name)
+CompilerModuleState::CompilerModuleState(CompilerState* parent, ICompilerEvent* event)
+: CompilerState("module", parent, event), m_state(Name)
 {
     m_useTokens.push_back('\r');
     m_useTokens.push_back('\n');
@@ -16,8 +15,9 @@ CompilerPluginAppState::CompilerPluginAppState(const std::string& name, Compiler
     m_useTokens.push_back('\t');
 }
 
-CompilerPluginAppState::~CompilerPluginAppState(){}
-CompilerState::StateStatus CompilerPluginAppState::CheckIsUseWord(const std::string& word)
+CompilerModuleState::~CompilerModuleState(){}
+
+CompilerState::StateStatus CompilerModuleState::CheckIsUseWord(const std::string& word)
 {
     if(word == "//" || word == "/*")
     {
@@ -27,7 +27,7 @@ CompilerState::StateStatus CompilerPluginAppState::CheckIsUseWord(const std::str
     return CompilerState::StateContinue;
 }
 
-CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, char token)
+CompilerState* CompilerModuleState::GetNextState(const std::string& word, char token)
 {
     if(word.empty() && token == 0)
         return this;
@@ -44,7 +44,7 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
         else if(m_state == Name)
         {
             m_state = PreBody;
-            m_name = word;
+            m_moduleName = word;
             return this;
         }
         else if(m_state == PreBody)
@@ -61,12 +61,6 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
             m_childState = new CompilerVarState(this, m_event, word);
             return m_childState;
         }
-        else if(m_state == Body &&
-                word == "module")
-        {
-            m_childState = new CompilerModuleState(this, m_event);
-            return m_childState;
-        }
     }
     else if(token == '{')
     {
@@ -76,43 +70,39 @@ CompilerState* CompilerPluginAppState::GetNextState(const std::string& word, cha
         else if(m_state == Name)
         {
             m_state = Body;
-            m_name = word;
+            m_moduleName = word;
         }
         else if(m_state == PreBody)
             m_state = Body;
         else
             return 0;
         
-        OnBegin();
+        m_event->onModuleBegin(m_moduleName);
         return this;
     }
-    else if(token == ';' && m_state == Body && word.empty())
-        return this;
+    else if(token == ';')
+    {
+        if(m_state == Body && word.empty())
+            return this;
+        else if(m_state == Name && !word.empty())
+        {
+            m_state = Body;
+            m_moduleName = word;
+        }
+        else if(m_state == PreBody && word.empty())
+            m_state = Body;
+        else
+            return 0;
+        
+        m_event->onModuleBegin(m_moduleName);
+        m_event->onModuleEnd();
+        return m_parentState;
+    }
     else if(token == '}' && m_state == Body)
     {
-        OnEnd();
+        m_event->onModuleEnd();
         return m_parentState;
     }
     
     return 0;
-}
-
-void CompilerApplicationState::OnBegin()
-{
-    m_event->onApplicationBegin(m_name);
-}
-
-void CompilerPluginState::OnBegin()
-{
-    m_event->onPluginBegin(m_name);
-}
-
-void CompilerApplicationState::OnEnd()
-{
-    m_event->onApplicationEnd();
-}
-
-void CompilerPluginState::OnEnd()
-{
-    m_event->onPluginEnd();
 }
