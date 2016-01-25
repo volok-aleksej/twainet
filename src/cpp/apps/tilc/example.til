@@ -25,6 +25,9 @@ plugin TestPlugin
 // application modules
 application TestApp
 {
+	//automatic connections of application
+	connection AppModule, EmptyModule;
+	//module of application
     module AppModule
     {
 	//variables
