@@ -25,6 +25,9 @@
     <Filter Include="utils">
       <UniqueIdentifier>{7aed10ab-5f32-4110-9460-3f715f44370a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{9b18f471-4f7d-4d40-851c-9b0df21c2109}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="connector\connector.cpp">
@@ -98,12 +101,6 @@
     <ClInclude Include="..\..\common\common.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\thread_lib\common\object_manager.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\ref.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="socket\any_socket.h">
       <Filter>socket</Filter>
     </ClInclude>
@@ -137,19 +134,10 @@
     <ClInclude Include="handler\data_handler.h">
       <Filter>handler</Filter>
     </ClInclude>
-    <ClInclude Include="handler\data_message.h">
-      <Filter>handler</Filter>
-    </ClInclude>
-    <ClInclude Include="handler\deserializer.h">
-      <Filter>handler</Filter>
-    </ClInclude>
     <ClInclude Include="handler\message_handler.h">
       <Filter>handler</Filter>
     </ClInclude>
     <ClInclude Include="handler\sender.h">
-      <Filter>handler</Filter>
-    </ClInclude>
-    <ClInclude Include="handler\serializer.h">
       <Filter>handler</Filter>
     </ClInclude>
     <ClInclude Include="signal\receiver_func.h">
@@ -184,6 +172,15 @@
     </ClInclude>
     <ClInclude Include="socket\proxy_socket.h">
       <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\data_message.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\deserializer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\serializer.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

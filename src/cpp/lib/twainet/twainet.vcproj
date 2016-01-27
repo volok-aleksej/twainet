@@ -365,10 +365,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\application\twainet.h"
-				>
-			</File>
-			<File
 				RelativePath=".\twainet.rc"
 				>
 			</File>
@@ -426,6 +422,14 @@
 			</File>
 			<File
 				RelativePath="..\..\utils\path_parser.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="include"
+			>
+			<File
+				RelativePath="..\..\include\twainet.h"
 				>
 			</File>
 		</Filter>

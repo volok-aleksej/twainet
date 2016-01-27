@@ -164,27 +164,17 @@
     <ClCompile Include="thread\thread.cpp" />
     <ClCompile Include="thread\thread_impl.cpp" />
     <ClCompile Include="thread\thread_manager.cpp" />
-    <ClCompile Include="common\critical_section.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\critical_section.h" />
+    <ClInclude Include="..\..\include\object_manager.h" />
+    <ClInclude Include="..\..\include\ref.h" />
+    <ClInclude Include="..\..\include\singleton.h" />
     <ClInclude Include="common\managers_container.h" />
     <ClInclude Include="common\semafor.h" />
     <ClInclude Include="thread\thread.h" />
     <ClInclude Include="thread\thread_impl.h" />
     <ClInclude Include="thread\thread_manager.h" />
-    <ClInclude Include="common\critical_section.h" />
-    <ClInclude Include="common\object_manager.h" />
-    <ClInclude Include="..\..\common\ref.h" />
-    <ClInclude Include="..\..\common\singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

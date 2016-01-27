@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external/openssl&quot;;&quot;$(SolutionDir)external/udt4/src&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;;&quot;$(SolutionDir)apps/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external/openssl&quot;;&quot;$(SolutionDir)external/udt4/src&quot;;&quot;$(SolutionDir)external/protobuf-2.5.0/src&quot;;&quot;$(SolutionDir)..&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -121,7 +121,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external/openssl&quot;;&quot;$(SolutionDir)external/udt4/src&quot;;&quot;$(SolutionDir)external\protobuf-2.5.0\src&quot;;&quot;$(SolutionDir)apps/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)&quot;;&quot;$(SolutionDir)..&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)external/openssl&quot;;&quot;$(SolutionDir)external/udt4/src&quot;;&quot;$(SolutionDir)external/protobuf-2.5.0/src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -366,14 +366,6 @@
 				RelativePath=".\module\deamon_module.h"
 				>
 			</File>
-			<File
-				RelativePath=".\module\google_data_module.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\module\google_data_module.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="common"
@@ -527,19 +519,19 @@
 			Name="include"
 			>
 			<File
-				RelativePath="..\include\appinterface.h"
+				RelativePath="..\..\include\appinterface.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\client_module_name.h"
+				RelativePath="..\..\include\client_module_name.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\deamon_message.h"
+				RelativePath="..\..\include\deamon_message.h"
 				>
 			</File>
 			<File
-				RelativePath="..\include\module.h"
+				RelativePath="..\..\include\module.h"
 				>
 			</File>
 		</Filter>

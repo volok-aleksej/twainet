@@ -16,6 +16,9 @@
     <Filter Include="utils">
       <UniqueIdentifier>{06de9077-ca08-4708-8057-f3868a380a26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{0047e0fa-799e-4c4f-8448-99d5f348a8c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\dllmain.cpp">
@@ -47,9 +50,6 @@
     <ClInclude Include="application\application.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="application\twainet.h">
-      <Filter>application</Filter>
-    </ClInclude>
     <ClInclude Include="module\twainet_module.h">
       <Filter>module</Filter>
     </ClInclude>
@@ -70,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="..\..\utils\path_parser.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\twainet.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

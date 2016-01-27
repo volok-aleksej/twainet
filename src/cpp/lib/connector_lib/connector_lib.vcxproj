@@ -181,14 +181,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\common_func.h" />
+    <ClInclude Include="..\..\include\data_message.h" />
+    <ClInclude Include="..\..\include\deserializer.h" />
+    <ClInclude Include="..\..\include\serializer.h" />
     <ClInclude Include="..\..\utils\base64.h" />
     <ClInclude Include="common\aes.h" />
     <ClInclude Include="connector\connector.h" />
     <ClInclude Include="connector\connector_factory.h" />
     <ClInclude Include="connector\connector_manager.h" />
     <ClInclude Include="..\..\common\common.h" />
-    <ClInclude Include="..\thread_lib\common\object_manager.h" />
-    <ClInclude Include="..\..\common\ref.h" />
     <ClInclude Include="socket\any_socket.h" />
     <ClInclude Include="socket\proxy_socket.h" />
     <ClInclude Include="socket\secure_socket.h" />
@@ -202,11 +203,8 @@
     <ClInclude Include="thread\connect_thread.h" />
     <ClInclude Include="thread\listen_thread.h" />
     <ClInclude Include="handler\data_handler.h" />
-    <ClInclude Include="handler\data_message.h" />
-    <ClInclude Include="handler\deserializer.h" />
     <ClInclude Include="handler\message_handler.h" />
     <ClInclude Include="handler\sender.h" />
-    <ClInclude Include="handler\serializer.h" />
     <ClInclude Include="signal\receiver_func.h" />
     <ClInclude Include="signal\signal.h" />
     <ClInclude Include="signal\signal_manager.h" />

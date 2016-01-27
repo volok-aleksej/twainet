@@ -7,6 +7,9 @@
     <Filter Include="common">
       <UniqueIdentifier>{ec06c155-9da9-4204-9153-cacc6fce29f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{3f3011fa-f10e-431c-958f-083d82c3e184}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="thread\thread.cpp">
@@ -17,9 +20,6 @@
     </ClCompile>
     <ClCompile Include="thread\thread_manager.cpp">
       <Filter>thread</Filter>
-    </ClCompile>
-    <ClCompile Include="common\critical_section.cpp">
-      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="common\managers_container.cpp">
       <Filter>common</Filter>
@@ -38,23 +38,23 @@
     <ClInclude Include="thread\thread_manager.h">
       <Filter>thread</Filter>
     </ClInclude>
-    <ClInclude Include="common\critical_section.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\object_manager.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\ref.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\singleton.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="common\managers_container.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="common\semafor.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\critical_section.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\object_manager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ref.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\singleton.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -332,14 +332,6 @@
 				RelativePath="..\..\common\common_func.h"
 				>
 			</File>
-			<File
-				RelativePath="..\thread_lib\common\object_manager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\ref.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="socket"
@@ -445,14 +437,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\handler\data_message.h"
-				>
-			</File>
-			<File
-				RelativePath=".\handler\deserializer.h"
-				>
-			</File>
-			<File
 				RelativePath=".\handler\message_handler.cpp"
 				>
 			</File>
@@ -462,10 +446,6 @@
 			</File>
 			<File
 				RelativePath=".\handler\sender.h"
-				>
-			</File>
-			<File
-				RelativePath=".\handler\serializer.h"
 				>
 			</File>
 		</Filter>
@@ -522,6 +502,22 @@
 			</File>
 			<File
 				RelativePath="..\..\utils\base64.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="include"
+			>
+			<File
+				RelativePath="..\..\include\data_message.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\deserializer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\serializer.h"
 				>
 			</File>
 		</Filter>

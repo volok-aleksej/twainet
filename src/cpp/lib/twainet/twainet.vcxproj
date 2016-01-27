@@ -31,10 +31,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\common\file.h" />
     <ClInclude Include="..\..\common\logger.h" />
+    <ClInclude Include="..\..\include\twainet.h" />
     <ClInclude Include="..\..\utils\path_parser.h" />
     <ClInclude Include="..\..\version.h" />
     <ClInclude Include="application\application.h" />
-    <ClInclude Include="application\twainet.h" />
     <ClInclude Include="message\NotificationMessages.h" />
     <ClInclude Include="module\twainet_module.h" />
     <ClInclude Include="resource.h" />

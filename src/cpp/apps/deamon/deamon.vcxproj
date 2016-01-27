@@ -34,7 +34,6 @@
     <ClCompile Include="application\config.cpp" />
     <ClCompile Include="application\main.cpp" />
     <ClCompile Include="module\deamon_module.cpp" />
-    <ClCompile Include="module\google_data_module.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\deamon.pb.h" />
@@ -47,18 +46,15 @@
     <ClInclude Include="..\..\common\service_manager.h" />
     <ClInclude Include="..\..\common\SimpleIni.h" />
     <ClInclude Include="..\..\common\tstring.h" />
+    <ClInclude Include="..\..\include\appinterface.h" />
+    <ClInclude Include="..\..\include\client_module_name.h" />
+    <ClInclude Include="..\..\include\deamon_message.h" />
+    <ClInclude Include="..\..\include\module.h" />
     <ClInclude Include="..\..\utils\path_parser.h" />
     <ClInclude Include="..\..\utils\utils.h" />
-    <ClInclude Include="..\include\appinterface.h" />
-    <ClInclude Include="..\include\client_module_name.h" />
-    <ClInclude Include="..\include\deamon_message.h" />
-    <ClInclude Include="..\include\module.h" />
     <ClInclude Include="application\application.h" />
     <ClInclude Include="application\config.h" />
-    <ClInclude Include="module\deamon_message.h" />
     <ClInclude Include="module\deamon_module.h" />
-    <ClInclude Include="module\google_data_module.h" />
-    <ClInclude Include="module\module.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\messages\deamon.proto">
@@ -151,7 +147,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;$(SolutionDir)apps/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)..;$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -169,7 +165,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;$(SolutionDir)apps/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)..;$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
@@ -189,7 +185,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;$(SolutionDir)apps/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)..;$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -215,7 +211,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;$(SolutionDir)apps/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(SolutionDir);$(SolutionDir)..;$(SolutionDir)lib;$(SolutionDir)external/openssl;$(SolutionDir)external/udt4/src;$(SolutionDir)external/protobuf-2.5.0/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>

@@ -31,7 +31,7 @@ public:
         
 #ifdef WIN32
         m_semafor = CreateSemaphore(NULL, 0, 1, NULL);
-        DWORD ret = WaitForSingleObject(m_semafor, timeout);
+        DWORD ret = WaitForSingleObject(m_semafor, INFINITE);
         CloseHandle(m_semafor);
 #else
         sem_init(&m_semafor, 0, 0);

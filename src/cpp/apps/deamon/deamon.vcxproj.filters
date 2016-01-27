@@ -66,9 +66,6 @@
     <ClCompile Include="application\config.cpp">
       <Filter>application</Filter>
     </ClCompile>
-    <ClCompile Include="module\google_data_module.cpp">
-      <Filter>module</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\application.h">
@@ -89,13 +86,7 @@
     <ClInclude Include="..\..\utils\utils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="module\deamon_message.h">
-      <Filter>module</Filter>
-    </ClInclude>
     <ClInclude Include="module\deamon_module.h">
-      <Filter>module</Filter>
-    </ClInclude>
-    <ClInclude Include="module\module.h">
       <Filter>module</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\messages\deamon.pb.h">
@@ -122,20 +113,17 @@
     <ClInclude Include="application\config.h">
       <Filter>application</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\appinterface.h">
+    <ClInclude Include="..\..\include\appinterface.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\client_module_name.h">
+    <ClInclude Include="..\..\include\client_module_name.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\deamon_message.h">
+    <ClInclude Include="..\..\include\deamon_message.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\module.h">
+    <ClInclude Include="..\..\include\module.h">
       <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="module\google_data_module.h">
-      <Filter>module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
