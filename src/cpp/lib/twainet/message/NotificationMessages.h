@@ -2,7 +2,7 @@
 #define NOTIFICATION_MESSAGES_H
 
 #include "tunnel_lib/connector/tunnel_connector.h"
-#include "twainet/application/twainet.h"
+#include "include/twainet.h"
 
 enum NotificationType
 {

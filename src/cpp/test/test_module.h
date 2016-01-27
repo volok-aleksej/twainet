@@ -1,7 +1,7 @@
 #ifndef TEST_MODULE_H
 #define TEST_MODULE_H
 
-#include "apps/include/module.h"
+#include "include/module.h"
 
 class TestModule : public Module
 {

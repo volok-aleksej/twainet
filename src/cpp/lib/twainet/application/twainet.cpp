@@ -9,7 +9,7 @@
 #	include <signal.h>
 #endif/*WIN32*/
 #include "udt.h"
-#include "twainet.h"
+#include "include/twainet.h"
 #include "application.h"
 #include "utils/utils.h"
 #include "common/logger.h"

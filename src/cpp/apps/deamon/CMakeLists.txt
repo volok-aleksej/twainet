@@ -20,7 +20,6 @@ if(NOT USE_SYSTEM_PROTOBUF)
                                                                             --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
                                                                             ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../include
                         ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
@@ -40,7 +39,6 @@ else(NOT USE_SYSTEM_PROTOBUF)
                               --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
                               ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../include
                         ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages

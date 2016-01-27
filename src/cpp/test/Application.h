@@ -1,8 +1,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "twainet/application/twainet.h"
-#include "apps/include/appinterface.h"
+#include "include/twainet.h"
+#include "include/appinterface.h"
 #include "test_module.h"
 
 class ApplicationTest : public IApplication<ApplicationTest>

@@ -1,7 +1,7 @@
 #ifndef DEAMON_MODULE_H
 #define DEAMON_MODULE_H
 
-#include "module.h"
+#include "include/module.h"
 
 #define COORDINATOR_NAME	"twndeamon"
 

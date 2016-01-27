@@ -2,7 +2,7 @@
 #define MESSAGE_HANDLER_H
 
 #include "data_handler.h"
-#include "data_message.h"
+#include "sender.h"
 
 #include <map>
 #include <string>

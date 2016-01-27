@@ -1,7 +1,7 @@
 #ifndef TUNNEL_MESSAGES_H
 #define TUNNEL_MESSAGES_H
 
-#include "connector_lib/handler/data_message.h"
+#include "include/data_message.h"
 #include "connector_lib/message/connector_messages.h"
 #include "tunnel_lib/connector/tunnel_connector.h"
 

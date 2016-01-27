@@ -2,8 +2,7 @@
 #define DEAMON_MESSAGE_H
 
 #include <vector>
-#include "connector_lib/handler/data_message.h"
-#include "twainet/application/twainet.h"
+#include "data_message.h"
 
 class MessageAttr
 {

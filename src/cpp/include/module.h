@@ -3,11 +3,10 @@
 
 #include <map>
 #include <string.h>
-#include "twainet/application/twainet.h"
-#include "connector_lib/handler/data_message.h"
-#include "thread_lib/common/object_manager.h"
+#include "twainet.h"
 #include "client_module_name.h"
 #include "deamon_message.h"
+#include "thread_lib/common/object_manager.h"
 
 #pragma warning(disable:4244 4267)
 #include "../messages/deamon.pb.h"

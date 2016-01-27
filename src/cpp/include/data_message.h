@@ -3,7 +3,6 @@
 
 #include "serializer.h"
 #include "deserializer.h"
-#include "sender.h"
 
 #include <string>
 #include <typeinfo>

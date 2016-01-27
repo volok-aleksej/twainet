@@ -1,7 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "twainet.h"
+#include "include/twainet.h"
 #include "twainet/module/twainet_module.h"
 #include "twainet/message/NotificationMessages.h"
 #include "thread_lib/common/managers_container.h"

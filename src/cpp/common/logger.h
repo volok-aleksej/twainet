@@ -2,7 +2,7 @@
 #define LOGGER_H
 
 #include <string>
-#include "singleton.h"
+#include "include/singleton.h"
 #include "thread_lib/common/critical_section.h"
 #include "file.h"
 

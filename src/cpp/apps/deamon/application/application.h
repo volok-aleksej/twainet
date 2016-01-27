@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include "thread_lib/common/critical_section.h"
-#include "module.h"
-#include "appinterface.h"
+#include "include/module.h"
+#include "include/appinterface.h"
 
 class DeamonApplication : public IApplication<DeamonApplication>
 {
@@ -19,23 +19,23 @@ public:
 	static std::string GetAppName();
 	static std::string GetDescription();
 public:
-	void OnModuleCreationFailed(Twainet::Module module);
-	void OnServerCreationFailed(Twainet::Module module);
-	void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId);
-	void OnServerConnected(Twainet::Module module, const char* sessionId);
-	void OnClientConnected(Twainet::Module module, const char* sessionId);
-	void OnClientDisconnected(Twainet::Module module, const char* sessionId);
-	void OnClientConnectionFailed(Twainet::Module module);
-	void OnClientAuthFailed(Twainet::Module module);
-	void OnServerDisconnected(Twainet::Module module);
-	void OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	void OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	void OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	void OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
-	void OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
-	void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
-	void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
-	void OnModuleListChanged(Twainet::Module module);
+	virtual void OnModuleCreationFailed(Twainet::Module module);
+	virtual void OnServerCreationFailed(Twainet::Module module);
+	virtual void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId);
+	virtual void OnServerConnected(Twainet::Module module, const char* sessionId);
+	virtual void OnClientConnected(Twainet::Module module, const char* sessionId);
+	virtual void OnClientDisconnected(Twainet::Module module, const char* sessionId);
+	virtual void OnClientConnectionFailed(Twainet::Module module);
+	virtual void OnClientAuthFailed(Twainet::Module module);
+	virtual void OnServerDisconnected(Twainet::Module module);
+	virtual void OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
+	virtual void OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
+	virtual void OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId);
+	virtual void OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
+	virtual void OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
+	virtual void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
+	virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
+	virtual void OnModuleListChanged(Twainet::Module module);
 private:
 	CriticalSection m_cs;
 	std::vector<Module*> m_modules;

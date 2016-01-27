@@ -1,7 +1,7 @@
 #ifndef SIGNAL_MESSAGE_H
 #define SIGNAL_MESSAGE_H
 
-#include "connector_lib/handler/data_message.h"
+#include "include/data_message.h"
 
 template<class TMessage>
 class SignalMessage : public DataMessage, public TMessage

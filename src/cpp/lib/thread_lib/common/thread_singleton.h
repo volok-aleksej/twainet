@@ -1,7 +1,7 @@
 #ifndef THREAD_SINGLETON_H
 #define THREAD_SINGLETON_H
 
-#include "common/singleton.h"
+#include "include/singleton.h"
 #include "../thread/thread.h"
 
 template<class Object>

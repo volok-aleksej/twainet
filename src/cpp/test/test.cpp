@@ -9,7 +9,7 @@
 #endif/*WIN32*/
 #include <string.h>
 #include <iostream>
-#include "twainet/application/twainet.h"
+#include "include/twainet.h"
 #include "Application.h"
 #include "common/common_func.h"
 #include "thread_lib/thread/thread_manager.h"

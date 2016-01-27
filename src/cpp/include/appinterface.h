@@ -1,9 +1,9 @@
 #ifndef APP_INTERFACE_H
 #define APP_INTERFACE_H
 
-#include "common/singleton.h"
-#include "twainet/application/twainet.h"
-#include "thread_lib/thread/thread.h"
+#include "singleton.h"
+#include "twainet.h"
+#include "thread_lib/common/semafor.h"
 
 template<class Application>
 class IApplication : public Singleton<Application>

@@ -1,7 +1,7 @@
 #ifndef PROTO_MESSAGE_H
 #define PROTO_MESSAGE_H
 
-#include "connector_lib/handler/data_message.h"
+#include "include/data_message.h"
 
 class IPCHandler;
 

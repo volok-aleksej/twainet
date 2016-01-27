@@ -3,7 +3,7 @@
 
 #include "thread_lib/common/object_manager.h"
 #include "thread_lib/thread/thread_impl.h"
-#include "../handler/data_message.h"
+#include "include/data_message.h"
 #include "receiver_func.h"
 
 class SignalOwner;
