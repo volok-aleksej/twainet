@@ -4,8 +4,8 @@
 #include <vector>
 #include <algorithm>
 
-#include "critical_section.h"
-#include "common/ref.h"
+#include "thread_lib/common/critical_section.h"
+#include "ref.h"
 
 template<typename Object>
 class ObjectManager

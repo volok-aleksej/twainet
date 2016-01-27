@@ -2,8 +2,8 @@
 #define THREAD_MANAGER_H
 
 #include "thread.h"
-#include "../common/object_manager.h"
-#include "../common/managers_container.h"
+#include "include/object_manager.h"
+#include "thread_lib/common/managers_container.h"
 
 class ThreadManager : public ManagerCreator<ThreadManager>
 {

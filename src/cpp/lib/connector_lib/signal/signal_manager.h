@@ -2,7 +2,7 @@
 #define SIGNAL_MANAGER_H
 
 #include "thread_lib/common/managers_container.h"
-#include "thread_lib/common/object_manager.h"
+#include "include/object_manager.h"
 
 class Signal;
 

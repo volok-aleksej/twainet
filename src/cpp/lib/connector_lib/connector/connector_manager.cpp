@@ -1,7 +1,7 @@
 #include "connector_manager.h"
 #include "message/connector_messages.h"
 
-#include "common/ref.h"
+#include "include/ref.h"
 #include "thread_lib/thread/thread_manager.h"
 
 

@@ -10,7 +10,7 @@
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/thread/listen_thread.h"
 
-#include "thread_lib/common/object_manager.h"
+#include "include/object_manager.h"
 
 #include <string>
 #include <stdarg.h>

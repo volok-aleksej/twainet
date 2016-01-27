@@ -1,9 +1,9 @@
 #ifndef SIGNAL_H
 #define SIGNAL_H
 
-#include "thread_lib/common/object_manager.h"
-#include "thread_lib/thread/thread_impl.h"
+#include "include/object_manager.h"
 #include "include/data_message.h"
+#include "thread_lib/thread/thread_impl.h"
 #include "receiver_func.h"
 
 class SignalOwner;

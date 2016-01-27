@@ -2,7 +2,7 @@
 #include "ipc_connector.h"
 #include "internal_connector.h"
 #include "common/logger.h"
-#include "common/ref.h"
+#include "include/ref.h"
 #include "module/ipc_module.h"
 #include "connector_lib/socket/socket_factories.h"
 #include "connector_lib/thread/connect_thread.h"

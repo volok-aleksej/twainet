@@ -7,7 +7,7 @@
 #include "common/common_func.h"
 #include "common/logger.h"
 #include "common/user.h"
-#include "common/ref.h"
+#include "include/ref.h"
 #include "utils/utils.h"
 
 #include "thread_lib/thread/thread_manager.h"

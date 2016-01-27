@@ -18,15 +18,15 @@ set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_T
 if(NOT USE_SYSTEM_PROTOBUF)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
                         ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src/
                         ${CMAKE_CURRENT_SOURCE_DIR}/../external/protobuf-2.5.0/src)
 else(NOT USE_SYSTEM_PROTOBUF)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
+                        ${CMAKE_CURRENT_SOURCE_DIR}/../..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../lib
-                        ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
                         ${CMAKE_CURRENT_SOURCE_DIR}/../external/udt4/src/)
 endif(NOT USE_SYSTEM_PROTOBUF)
 	    

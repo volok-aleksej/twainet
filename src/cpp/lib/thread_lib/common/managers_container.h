@@ -1,8 +1,8 @@
 #ifndef MANAGERS_CONTAINER_H
 #define MANAGERS_CONTAINER_H
 
+#include "include/object_manager.h"
 #include "../common/thread_singleton.h"
-#include "../common/object_manager.h"
 
 class IManager
 {

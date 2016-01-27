@@ -2,11 +2,10 @@
 #define CONNECTOR_MANAGER_H
 
 #include "connector.h"
-
+#include "include/object_manager.h"
 #include "thread_lib/common/managers_container.h"
-#include "thread_lib/common/object_manager.h"
-#include "../signal/signal.h"
-#include "../signal/signal_owner.h"
+#include "connector_lib/signal/signal.h"
+#include "connector_lib/signal/signal_owner.h"
 
 class ConnectorManager : public SignalOwner, public DynamicManager
 {

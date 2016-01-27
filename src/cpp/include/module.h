@@ -6,10 +6,10 @@
 #include "twainet.h"
 #include "client_module_name.h"
 #include "deamon_message.h"
-#include "thread_lib/common/object_manager.h"
+#include "object_manager.h"
 
 #pragma warning(disable:4244 4267)
-#include "../messages/deamon.pb.h"
+#include "messages/deamon.pb.h"
 using namespace deamon;
 #pragma warning(default:4244 4267)
 

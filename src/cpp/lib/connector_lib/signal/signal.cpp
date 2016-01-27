@@ -1,9 +1,9 @@
 #include "signal.h"
 #include "signal_receiver.h"
 #include "receiver_func.h"
-#include "common/ref.h"
-#include "thread_lib/thread/thread_manager.h"
 #include "signal_manager.h"
+#include "include/ref.h"
+#include "thread_lib/thread/thread_manager.h"
 
 Signal::Signal(SignalOwner* owner)
 : m_owner(owner)
