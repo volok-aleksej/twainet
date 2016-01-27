@@ -15,6 +15,7 @@ public:
 	virtual ~DeamonApplication();
 	
 	virtual void InitializeApplication();
+    virtual void ShutdownApplication();
 	
 	static std::string GetAppName();
 	static std::string GetDescription();

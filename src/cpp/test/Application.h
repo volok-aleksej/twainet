@@ -33,6 +33,7 @@ public:
 	
 protected:
 	virtual void InitializeApplication();
+    virtual void ShutdownApplication();
 	
 private:
 	TestModule* m_module;	

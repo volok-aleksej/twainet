@@ -251,18 +251,22 @@ DeamonApplication::DeamonApplication()
 
 DeamonApplication::~DeamonApplication()
 {
-	CSLocker locker(&GetInstance().m_cs);
-	for(std::vector<Module*>::iterator it = m_modules.begin();
-	    it != m_modules.end(); it++)
-	{
-		(*it)->Free();
-	}
 }
 
 void DeamonApplication::InitializeApplication()
 {
 	CSLocker locker(&GetInstance().m_cs);
 	m_modules.push_back(new DeamonModule);
+}
+
+void DeamonApplication::ShutdownApplication()
+{
+    CSLocker locker(&GetInstance().m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        (*it)->Free();
+    }
 }
 
 std::string DeamonApplication::GetAppName()

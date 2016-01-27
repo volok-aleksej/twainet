@@ -13,6 +13,8 @@ set (SRC_${PROJECT_NAME}
 	../../messages/deamon.pb.cc
 )
 
+add_definitions(-fPIC)
+
 set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})
 
 if(NOT USE_SYSTEM_PROTOBUF)
@@ -45,7 +47,7 @@ else(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 	target_link_libraries(${PROJECT_NAME} PRIVATE twainet)
 endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
 
-target_link_libraries(${PROJECT_NAME} INTERFACE pthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 if(NOT USE_SYSTEM_PROTOBUF)
   target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/lib/${CMAKE_BUILD_TYPE}/libprotobuf.a)
 else(NOT USE_SYSTEM_PROTOBUF)

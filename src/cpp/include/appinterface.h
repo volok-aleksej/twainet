@@ -1,9 +1,15 @@
 #ifndef APP_INTERFACE_H
 #define APP_INTERFACE_H
 
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <semaphore.h>
+#define INFINITE    -1
+#endif/*WIN32*/
+
 #include "singleton.h"
 #include "twainet.h"
-#include "thread_lib/common/semafor.h"
 
 template<class Application>
 class IApplication : public Singleton<Application>
@@ -22,7 +28,18 @@ public:
 					      &IApplication::OnInternalConnectionStatusChanged, &IApplication::OnModuleListChanged};
 		Twainet::InitLibrary(tc);
 		InitializeApplication();
-		m_stop.Wait(INFINITE);
+        
+#ifdef WIN32
+        m_semafor = CreateSemaphore(NULL, 0, 1, NULL);
+        DWORD ret = WaitForSingleObject(m_semafor, timeout);
+        CloseHandle(m_semafor);
+#else
+        sem_init(&m_semafor, 0, 0);
+        int ret = sem_wait(&m_semafor);
+        sem_destroy(&m_semafor);
+#endif/*WIN32*/
+        
+        ShutdownApplication();
 		Twainet::CloseLibrary();
 		return true;
 	}
@@ -30,12 +47,18 @@ public:
 	
 	int Stop()
 	{
-		m_stop.Set();
+#ifdef WIN32
+        ReleaseSemaphore(m_semafor, 1, NULL);
+#else
+        sem_post(&m_semafor);
+#endif/*WIN32*/
+        
 		return 0;
 	}
 	
 protected:
 	virtual void InitializeApplication() = 0;
+    virtual void ShutdownApplication() = 0;
 	
 public:
 	static void TWAINET_CALL OnModuleCreationFailed(Twainet::Module module)
@@ -141,7 +164,11 @@ public:
 	}
 	
 private:
-	Semaphore m_stop;
+#ifdef WIN32
+    HANDLE m_semafor;
+#else
+    sem_t m_semafor;
+#endif/*WIN32*/
 };
 
 #endif/*APP_INTERFACE_H*/

@@ -16,7 +16,6 @@ ApplicationTest::ApplicationTest()
 
 ApplicationTest::~ApplicationTest()
 {
-	delete m_module;
 }
 
 void ApplicationTest::OnModuleCreationFailed(Twainet::Module module)
@@ -126,4 +125,9 @@ void ApplicationTest::OnModuleListChanged(Twainet::Module module)
 void ApplicationTest::InitializeApplication()
 {
 	m_module = new TestModule;
+}
+
+void ApplicationTest::ShutdownApplication()
+{
+    delete m_module;
 }
