@@ -2,7 +2,7 @@
 #define UDT_SOCKET_H
 
 #include "any_socket.h"
-#include "thread_lib/common/critical_section.h"
+#include "include/critical_section.h"
 
 class UDTSocket : public AnySocket
 {

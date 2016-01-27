@@ -21,11 +21,11 @@ public:
 	int Run()
 	{
 		Twainet::TwainetCallback tc = {&IApplication::OnServerConnected, &IApplication::OnServerDisconnected, &IApplication::OnServerCreationFailed,
-					      &IApplication::OnClientConnected, &IApplication::OnClientDisconnected, &IApplication::OnClientConnectionFailed,
-					      &IApplication::OnClientAuthFailed, &IApplication::OnModuleConnected, &IApplication::OnModuleDisconnected,
-					      &IApplication::OnModuleConnectionFailed, &IApplication::OnModuleCreationFailed, &IApplication::OnTunnelConnected,
-					      &IApplication::OnTunnelDisconnected, &IApplication::OnTunnelCreationFailed, &IApplication::OnMessageRecv,
-					      &IApplication::OnInternalConnectionStatusChanged, &IApplication::OnModuleListChanged};
+                                       &IApplication::OnClientConnected, &IApplication::OnClientDisconnected, &IApplication::OnClientConnectionFailed,
+                                       &IApplication::OnClientAuthFailed, &IApplication::OnModuleConnected, &IApplication::OnModuleDisconnected,
+                                       &IApplication::OnModuleConnectionFailed, &IApplication::OnModuleCreationFailed, &IApplication::OnTunnelConnected,
+                                       &IApplication::OnTunnelDisconnected, &IApplication::OnTunnelCreationFailed, &IApplication::OnMessageRecv,
+                                       &IApplication::OnInternalConnectionStatusChanged, &IApplication::OnModuleListChanged};
 		Twainet::InitLibrary(tc);
 		InitializeApplication();
         

@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "thread_lib/common/critical_section.h"
+#include "critical_section.h"
 #include "ref.h"
 
 template<typename Object>

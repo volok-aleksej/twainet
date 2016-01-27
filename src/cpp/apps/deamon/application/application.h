@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "thread_lib/common/critical_section.h"
 #include "include/module.h"
 #include "include/appinterface.h"
 

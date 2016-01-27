@@ -1,7 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "appinterface.h"
+#include "include/appinterface.h"
+#include "include/object_manager.h"
+#include "include/module.h"
 
 class ##ClassName## : public IApplication<##ClassName##>
 {
@@ -11,6 +13,7 @@ public:
     virtual ~##ClassName##();
     
     virtual void InitializeApplication();
+    virtual void ShutdownApplication();
     
     static std::string GetAppName();
     static std::string GetDescription();
@@ -32,4 +35,6 @@ public:
     virtual void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
     virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
     virtual void OnModuleListChanged(Twainet::Module module);
+private:
+    ObjectManager<Module*> m_modules;
 };

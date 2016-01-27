@@ -3,7 +3,7 @@
 
 #include <string>
 #include "any_socket.h"
-#include "thread_lib/common/critical_section.h"
+#include "include/critical_section.h"
 
 #include "openssl/ssl.h"
 #include "openssl/err.h"

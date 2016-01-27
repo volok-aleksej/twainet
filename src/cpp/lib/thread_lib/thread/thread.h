@@ -1,7 +1,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-#include "../common/critical_section.h"
+#include "include/critical_section.h"
 #include "../common/semafor.h"
 
 #ifdef WIN32

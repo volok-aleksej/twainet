@@ -4,7 +4,6 @@
 #include "signal.h"
 #include "receiver_func.h"
 #include "include/object_manager.h"
-#include "thread_lib/common/critical_section.h"
 
 #define SIGNAL_FUNC(ClassObject, Class, MessageName, Func)\
 	new ReceiverFunc<Class>(ClassObject, MessageName::GetMessageName(), reinterpret_cast<ReceiverFunc<Class>::SignalFunction>(\

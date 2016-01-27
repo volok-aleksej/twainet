@@ -3,7 +3,7 @@
 
 #include <string>
 #include "include/singleton.h"
-#include "thread_lib/common/critical_section.h"
+#include "include/critical_section.h"
 #include "file.h"
 
 #define LOG_WARNING(Format, ...) Logger::GetInstance().Log(Logger::LOG_WARNING, Format, ## __VA_ARGS__)
