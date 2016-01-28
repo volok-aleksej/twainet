@@ -30,6 +30,7 @@ set(DEPENDENCY_LIBS udt
 		    tunnel_lib)
 
 add_definitions(-fPIC)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -e __libtwainet_main")
 
 if(NOT USE_SYSTEM_PROTOBUF)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
@@ -45,7 +46,8 @@ else(NOT USE_SYSTEM_PROTOBUF)
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src)
 endif(NOT USE_SYSTEM_PROTOBUF)
-		    
+
+
 add_library (${PROJECT_NAME} SHARED ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})

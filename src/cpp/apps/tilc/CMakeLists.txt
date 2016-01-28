@@ -41,8 +41,8 @@ set (SRC_${PROJECT_NAME}
     compiler/states/compiler_module_state.cpp
     )
 
-make_directory(${PROJECT_BINARY_DIR}/generator)
-ADD_RESOURCES(someResources generator/application.h.tmpl generator/application.cpp.tmpl generator/module.h.tmpl)
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)
+ADD_RESOURCES(someResources resources/application.h.tmpl resources/application.cpp.tmpl resources/module.h.tmpl)
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}} ${someResources})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 

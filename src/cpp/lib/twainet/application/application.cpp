@@ -1,6 +1,18 @@
 #include "application.h"
 #include "memory.h"
 
+#ifndef WIN32
+
+const char my_interp[] __attribute__((section(".interp"))) = "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2";
+
+extern "C" void __libtwainet_main()
+{
+    //TODO():print info about twainet
+    _exit (0);
+}
+
+#endif/*WIN32*/
+
 Application::Application()
 {
 	memset(&m_callbacks, 0, sizeof(m_callbacks));
