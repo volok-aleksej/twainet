@@ -2,8 +2,10 @@
 #define ##Header##
 
 #include "include/appinterface.h"
-#include "include/object_manager.h"
+#include "include/critical_section.h"
 #include "include/module.h"
+
+#include <vector>
 
 class ##ClassName## : public IApplication<##ClassName##>
 {
@@ -36,7 +38,8 @@ public:
     virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
     virtual void OnModuleListChanged(Twainet::Module module);
 private:
-    ObjectManager<Module*> m_modules;
+    CriticalSection m_cs;
+    std::vector<Module*> m_modules;
 };
 
 #endif/*##Header##*/

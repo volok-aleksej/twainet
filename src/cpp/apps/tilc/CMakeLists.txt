@@ -6,6 +6,23 @@ if(NOT CMAKE_BUILD_TYPE)
 #    set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
+FUNCTION(ADD_RESOURCES out_var)
+  SET(result)
+  FOREACH(in_f ${ARGN})
+    FILE(RELATIVE_PATH src_f ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/${in_f})
+    SET(out_f "${PROJECT_BINARY_DIR}/${in_f}.o")
+    ADD_CUSTOM_COMMAND(OUTPUT ${out_f}
+      COMMAND ld -r -b binary -o ${out_f} ${src_f}
+      DEPENDS ${in_f}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "Building GLSL object ${out_f}"
+      VERBATIM
+      )
+    LIST(APPEND result ${out_f})
+  ENDFOREACH()
+  SET(${out_var} "${result}" PARENT_SCOPE)
+ENDFUNCTION()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
@@ -24,7 +41,10 @@ set (SRC_${PROJECT_NAME}
     compiler/states/compiler_module_state.cpp
     )
 
-add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})
+make_directory(${PROJECT_BINARY_DIR}/generator)
+ADD_RESOURCES(someResources generator/application.h.tmpl generator/application.cpp.tmpl generator/module.h.tmpl)
+
+add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}} ${someResources})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 
 
 install(TARGETS tilc

@@ -9,6 +9,7 @@
 #include "../../version.h"
 #include "common/file.h"
 #include "compiler/til_compiler.h"
+#include "resource.h"
 #include <vector>
 #include <string>
 

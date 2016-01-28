@@ -1,0 +1,259 @@
+#include "##Header##"
+##ModulesHeaders##
+#ifndef WIN32
+#   include <string.h>
+#endif/*WIN32*/
+
+void ##ClassName##::OnModuleCreationFailed(Twainet::Module module)
+{
+    ##CheckModules##
+}
+
+void ##ClassName##::OnServerCreationFailed(Twainet::Module module)
+{
+    ##CheckServer##
+}
+
+void ##ClassName##::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnTunnelCreationFailed(sessionId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnServerConnected(Twainet::Module module, const char* sessionId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnServerConnected(sessionId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnClientConnected(Twainet::Module module, const char* sessionId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnClientConnected(sessionId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnClientDisconnected(Twainet::Module module, const char* sessionId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnClientDisconnected(sessionId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnClientConnectionFailed(Twainet::Module module)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnClientConnectionFailed();
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnClientAuthFailed(Twainet::Module module)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnClientAuthFailed();
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnServerDisconnected(Twainet::Module module)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnServerDisconnected();
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnModuleConnected(moduleId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnModuleDisconnected(moduleId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnModuleConnectionFailed(moduleId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnTunnelConnected(sessionId, type);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnTunnelDisconnected(sessionId);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnMessageRecv(msg);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnInternalConnectionStatusChanged(moduleName, status, port);
+            break;
+        }
+    }
+}
+
+void ##ClassName##::OnModuleListChanged(Twainet::Module module)
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        if(module == (*it)->GetModule())
+        {
+            (*it)->OnModuleListChanged();
+            break;
+        }
+    }
+}
+
+##ClassName##::##ClassName##()
+{
+}
+
+##ClassName##::~##ClassName##()
+{
+}
+
+void ##ClassName##::InitializeApplication()
+{
+    CSLocker locker(&m_cs);
+    ##CreateModules##
+}
+
+void ##ClassName##::ShutdownApplication()
+{
+    CSLocker locker(&m_cs);
+    for(std::vector<Module*>::iterator it = m_modules.begin();
+        it != m_modules.end(); it++)
+    {
+        (*it)->Free();
+    }
+}
+
+std::string ##ClassName##::GetAppName()
+{
+    return "##AppName##";
+}
+
+std::string ##ClassName##::GetDescription()
+{
+    return "##AppDescription##";
+}
