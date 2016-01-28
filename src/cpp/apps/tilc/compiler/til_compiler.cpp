@@ -29,6 +29,11 @@ bool TILCompiler::Parse()
     return true;
 }
 
+TIObject* TILCompiler::getTIObject()
+{
+    return &m_rootObject;
+}
+
 void TILCompiler::onPluginBegin(const std::string& name)
 {
     TIObject* object = new ContainerObject(ContainerObject::Plugin, name);

@@ -39,6 +39,7 @@ set (SRC_${PROJECT_NAME}
     compiler/states/compiler_function_state.cpp
     compiler/states/compiler_function_attr_state.cpp
     compiler/states/compiler_module_state.cpp
+    generator/til_generator.cpp
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)

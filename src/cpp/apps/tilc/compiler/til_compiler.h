@@ -30,6 +30,7 @@ public:
     ~TILCompiler();
     
     bool Parse();
+    TIObject* getTIObject();
 protected:
     virtual void onPluginBegin(const std::string& name);
     virtual void onPluginEnd();

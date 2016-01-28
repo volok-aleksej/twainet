@@ -9,6 +9,7 @@
 #include "../../version.h"
 #include "common/file.h"
 #include "compiler/til_compiler.h"
+#include "generator/til_generator.h"
 #include "resource.h"
 #include <vector>
 #include <string>
@@ -77,7 +78,8 @@ int  main(int argc, char* argv[])
 	TILCompiler compiler(source);
     compiler.Parse();
     
-	//TODO: generate c++
+    TILGenerator generator(target_dir);
+    generator.Generate(compiler.getTIObject());
 	
 	return 0;
 }
