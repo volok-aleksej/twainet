@@ -6,12 +6,12 @@
 
 void ##ClassName##::OnModuleCreationFailed(Twainet::Module module)
 {
-    ##CheckModules##
+##CheckModules##
 }
 
 void ##ClassName##::OnServerCreationFailed(Twainet::Module module)
 {
-    ##CheckServer##
+##CheckServer##
 }
 
 void ##ClassName##::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
@@ -235,7 +235,7 @@ void ##ClassName##::OnModuleListChanged(Twainet::Module module)
 void ##ClassName##::InitializeApplication()
 {
     CSLocker locker(&m_cs);
-    ##CreateModules##
+##CreateModules##
 }
 
 void ##ClassName##::ShutdownApplication()
