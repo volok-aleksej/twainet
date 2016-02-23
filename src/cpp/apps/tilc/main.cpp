@@ -9,7 +9,7 @@
 #include "../../version.h"
 #include "common/file.h"
 #include "compiler/til_compiler.h"
-#include "generator/til_generator.h"
+#include "generator/generator_manager.h"
 #include "resource.h"
 #include <vector>
 #include <string>
@@ -78,8 +78,13 @@ int  main(int argc, char* argv[])
 	TILCompiler compiler(source);
     compiler.Parse();
     
-    TILGenerator generator(target_dir);
-    generator.Generate(compiler.getTIObject());
+    GeneratorManager::GetInstance().Init(target_dir);
+    Generator* generator = GeneratorManager::GetInstance().GetGenerator(TIObject::Root);
+    if(generator)
+    {
+        generator->GenerateH(compiler.getTIObject());
+        generator->GenerateCPP(compiler.getTIObject());
+    }
 	
 	return 0;
 }

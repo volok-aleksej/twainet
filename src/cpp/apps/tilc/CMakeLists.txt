@@ -39,7 +39,11 @@ set (SRC_${PROJECT_NAME}
     compiler/states/compiler_function_state.cpp
     compiler/states/compiler_function_attr_state.cpp
     compiler/states/compiler_module_state.cpp
-    generator/til_generator.cpp
+    generator/generator_manager.cpp
+    generator/generators/til_generator.cpp
+    generator/generators/generator_helper.cpp
+    generator/generators/app_generator.cpp
+    generator/generators/module_generator.cpp
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)
