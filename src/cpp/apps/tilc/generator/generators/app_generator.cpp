@@ -2,6 +2,8 @@
 #include "../generator_manager.h"
 #include "resource.h"
 
+#include <stdio.h>
+
 AppGenerator::AppGenerator(const std::string& path)
 : m_folderPath(path)
 {

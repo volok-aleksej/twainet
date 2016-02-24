@@ -45,4 +45,5 @@ std::string ModuleGenerator::GenerateH(TIObject* object)
 
 std::string ModuleGenerator::GenerateCPP(TIObject* object)
 {
+    return "";
 }

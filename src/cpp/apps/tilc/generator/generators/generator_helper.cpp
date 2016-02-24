@@ -1,5 +1,6 @@
 #include "generator_helper.h"
 #include "common/file.h"
+#include "../interfaces.h"
 
 #include <algorithm>
 
