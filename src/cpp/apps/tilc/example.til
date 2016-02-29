@@ -4,21 +4,15 @@ plugin TestPlugin
     int test, test1;
     module PluginModule
     {
-	//variables
-	int testInt;
-	string testStr;
-	bool testBool;
-	float testFloat;
-        //functions
-	int testFunc();
-	int testFunc1(int arg1);
-	void testFunc2(int arg1, string arg2);
-    }
-    
-    module EmptyModule;
-    
-    module EmptyModule1
-    {
+        //variables
+        int testInt;
+        string testStr;
+        bool testBool;
+        float testFloat;
+            //functions
+        int testFunc();
+        int testFunc1(int arg1);
+        void testFunc2(int arg1, string arg2);
     }
 }
 

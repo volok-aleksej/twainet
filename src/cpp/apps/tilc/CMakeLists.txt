@@ -30,6 +30,7 @@ set (SRC_${PROJECT_NAME}
 	../../common/file.cpp
 	../../utils/path_parser.cpp
 	main.cpp
+	types.cpp
 	compiler/til_compiler.cpp
     compiler/tokenizer.cpp
     compiler/states/compiler_root_state.cpp
@@ -44,6 +45,8 @@ set (SRC_${PROJECT_NAME}
     generator/generators/generator_helper.cpp
     generator/generators/app_generator.cpp
     generator/generators/module_generator.cpp
+    generator/generators/function_generator.cpp
+    generator/generators/var_generator.cpp
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)

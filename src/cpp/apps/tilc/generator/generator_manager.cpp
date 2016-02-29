@@ -1,4 +1,5 @@
 #include "generator_manager.h"
+#include "generators/function_generator.h"
 #include "generators/module_generator.h"
 #include "generators/app_generator.h"
 #include "generators/til_generator.h"
@@ -21,6 +22,7 @@ void GeneratorManager::Init(const std::string& path)
     m_generators.insert(std::make_pair(TIObject::Root, new TILGenerator));
     m_generators.insert(std::make_pair(TIObject::Application, new AppGenerator(path)));
     m_generators.insert(std::make_pair(TIObject::Module, new ModuleGenerator(path)));
+    m_generators.insert(std::make_pair(TIObject::Function, new FunctionGenerator()));
 }
 
 Generator* GeneratorManager::GetGenerator(TIObject::typeObject type)

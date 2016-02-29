@@ -2,6 +2,7 @@
 #include "compiler_comment_state.h"
 #include "compiler_var_state.h"
 #include "../til_compiler.h"
+#include "types.h"
 
 CompilerModuleState::CompilerModuleState(CompilerState* parent, ICompilerEvent* event)
 : CompilerState("module", parent, event), m_state(Name)
@@ -50,13 +51,7 @@ CompilerState* CompilerModuleState::GetNextState(const std::string& word, char t
         else if(m_state == PreBody)
             return 0;
         else if(m_state == Body &&
-                (word == "int" ||
-                 word == "bool" ||
-                 word == "string" ||
-                 word == "float" ||
-                 word == "void" ||
-                 word == "short" ||
-                 word == "char"))
+                TypesManager::IsInType(word))
         {
             m_childState = new CompilerVarState(this, m_event, word);
             return m_childState;

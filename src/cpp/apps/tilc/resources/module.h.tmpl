@@ -9,10 +9,11 @@
 class ##ClassName## : public Module
 {
 public:
-	##ClassName##();
-	virtual ~##ClassName##();
-
-	##ContentDeclare##
+    ##ClassName##();
+    virtual ~##ClassName##();
+private:
+    template<class TMessage, class THandler> friend class DeamonMessage;
+##ContentDeclare##
 };
 
 #endif/*##Header##*/

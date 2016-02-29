@@ -2,6 +2,7 @@
 #include "compiler_comment_state.h"
 #include "compiler_function_attr_state.h"
 #include "../til_compiler.h"
+#include "types.h"
 
 CompilerFunctionState::CompilerFunctionState(CompilerState* parent, ICompilerEvent* event, const std::string& retVal, const std::string& funcName)
 : CompilerState("function", parent, event), m_retVal(retVal), m_funcName(funcName)
@@ -39,13 +40,7 @@ CompilerState* CompilerFunctionState::GetNextState(const std::string& word, char
     {
         if(word.empty())
             return this;
-        else if(word == "int" ||
-                word == "bool" ||
-                word == "string" ||
-                word == "float" ||
-                word == "void" ||
-                word == "short" ||
-                word == "char")
+        else if(TypesManager::IsInType(word))
         {
             m_childState = new CompilerFunctionAttrState(this, m_event, word);
             return m_childState;
