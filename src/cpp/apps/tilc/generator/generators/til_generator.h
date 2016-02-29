@@ -11,9 +11,9 @@ public:
     TILGenerator();
     virtual ~TILGenerator();
     
-    virtual std::string GenerateH(TIObject* object);
-    virtual std::string GenerateCPP(TIObject* object);
-    virtual std::string GenerateProto(TIObject* object);
+    virtual std::string GenerateH(TIObject* object, const std::string& parameter);
+    virtual std::string GenerateCPP(TIObject* object, const std::string& parameter);
+    virtual std::string GenerateProto(TIObject* object, const std::string& parameter);
 };
 
 #endif/*TIL_GENERATOR_H*/

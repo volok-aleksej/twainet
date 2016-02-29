@@ -13,7 +13,7 @@ TILGenerator::~TILGenerator()
 {
 }
 
-std::string TILGenerator::GenerateH(TIObject* object)
+std::string TILGenerator::GenerateH(TIObject* object, const std::string& parameter)
 {
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
@@ -29,7 +29,7 @@ std::string TILGenerator::GenerateH(TIObject* object)
     return "";
 }
 
-std::string TILGenerator::GenerateCPP(TIObject* object)
+std::string TILGenerator::GenerateCPP(TIObject* object, const std::string& parameter)
 {
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
@@ -44,7 +44,7 @@ std::string TILGenerator::GenerateCPP(TIObject* object)
     return "";
 }
 
-std::string TILGenerator::GenerateProto(TIObject* object)
+std::string TILGenerator::GenerateProto(TIObject* object, const std::string& parameter)
 {
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();

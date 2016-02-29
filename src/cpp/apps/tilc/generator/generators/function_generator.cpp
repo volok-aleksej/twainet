@@ -11,37 +11,12 @@ FunctionGenerator::~FunctionGenerator()
 {
 }
     
-std::string FunctionGenerator::GenerateH(TIObject* object)
+std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& parameter)
 {
     std::string result;
     RetObject* retObject = dynamic_cast<RetObject*>(object);
-    if(retObject)
-    {
-//         // generate virtual function
-//         result.append("public:\n    ");
-//         result.append("virtual ");
-//         result.append(TypesManager::GetCType(retObject->GetRetValue()));
-//         result.append(" ");
-//         result.append(retObject->GetName());
-//         result.append("(");
-//         std::vector<TIObject*> childs = object->GetChilds();
-//         for(std::vector<TIObject*>::iterator it = childs.begin();
-//             it != childs.end(); it++)
-//         {
-//             RetObject* varObject = dynamic_cast<RetObject*>(*it);
-//             if(varObject)
-//             {
-//                 if(it != childs.begin())
-//                 {
-//                     result.append(",");
-//                 }
-//                 result.append(TypesManager::GetCType(varObject->GetRetValue()));
-//                 result.append(" ");
-//                 result.append(varObject->GetName());
-//             }
-//         }
-//         result.append(");\n");
-        
+    if(retObject && parameter == CONTENT_DECLARE_TMPL)
+    {       
         result.append("    typedef DeamonMessage<");
         result.append(retObject->GetName());
         result.append(",");
@@ -49,20 +24,45 @@ std::string FunctionGenerator::GenerateH(TIObject* object)
         result.append("> ");
         result.append(retObject->GetName());
         result.append("Message;\n    ");
-        result.append("onMessage(const ");
+        result.append("void onMessage(const ");
         result.append(object->GetName());
         result.append("& msg, const Twainet::ModuleName& path);\n");
+    }
+    if(retObject && parameter == FUNCTIONS_TMPL)
+    {
+        result.append("         virtual ");
+        result.append(TypesManager::GetCType(retObject->GetRetValue()));
+        result.append(" ");
+        result.append(retObject->GetName());
+        result.append("(");
+        std::vector<TIObject*> childs = object->GetChilds();
+        for(std::vector<TIObject*>::iterator it = childs.begin();
+            it != childs.end(); it++)
+        {
+            RetObject* varObject = dynamic_cast<RetObject*>(*it);
+            if(varObject)
+            {
+                if(it != childs.begin())
+                {
+                    result.append(",");
+                }
+                result.append(TypesManager::GetCType(varObject->GetRetValue()));
+                result.append(" ");
+                result.append(varObject->GetName());
+            }
+        }
+        result.append(") = 0;\n");
     }
     return result;
 }
 
-std::string FunctionGenerator::GenerateCPP(TIObject* object)
+std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& parameter)
 {
     std::string result;
     return result;
 }
 
-std::string FunctionGenerator::GenerateProto(TIObject* object)
+std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string& parameter)
 {
     std::string result("message ");
     result.append(object->GetName());

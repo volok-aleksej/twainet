@@ -15,6 +15,7 @@
 #define PACKAGE_NAME_TMPL "##PackageName##"
 #define ENUMS_TMPL "##Enums##"
 #define MESSAGES_TMPL "##Messages##"
+#define FUNCTIONS_TMPL "##Functions##"
 
 #include "compiler/ti_objects.h"
 
@@ -23,9 +24,9 @@ class Generator
 public:
     virtual ~Generator(){}
     
-    virtual std::string GenerateH(TIObject* object) = 0;
-    virtual std::string GenerateCPP(TIObject* object) = 0;
-    virtual std::string GenerateProto(TIObject* object) = 0;
+    virtual std::string GenerateH(TIObject* object, const std::string& parameter = "") = 0;
+    virtual std::string GenerateCPP(TIObject* object, const std::string& parameter = "") = 0;
+    virtual std::string GenerateProto(TIObject* object, const std::string& parameter = "") = 0;
 };
 
 #endif/*INTERFACES_H*/

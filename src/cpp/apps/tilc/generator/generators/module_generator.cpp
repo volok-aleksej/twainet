@@ -12,11 +12,12 @@ ModuleGenerator::~ModuleGenerator()
 {
 }
     
-std::string ModuleGenerator::GenerateH(TIObject* object)
+std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& parameter)
 {
     std::string nameLower(object->GetName());
     std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
     std::string content;
+    std::string functions;
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
@@ -24,7 +25,8 @@ std::string ModuleGenerator::GenerateH(TIObject* object)
         Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
         if(generator)
         {
-            content.append(generator->GenerateH(*it));
+            content.append(generator->GenerateH(*it, CONTENT_DECLARE_TMPL));
+            functions.append(generator->GenerateH(*it, FUNCTIONS_TMPL));
         }
     }
 
@@ -50,17 +52,18 @@ std::string ModuleGenerator::GenerateH(TIObject* object)
     replacement_module_h.insert(std::make_pair(DEFINES_TMPL, defines));
     replacement_module_h.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + "StubImpl"));
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_TMPL, content));
+    replacement_module_h.insert(std::make_pair(FUNCTIONS_TMPL, functions));
     loadAndReplace(replacement_module_h, module_h_data);
     saveInFile(m_folderPath + "/" + object->GetName() + "StubImpl.h", module_h_data);
     return module_h_data;
 }
 
-std::string ModuleGenerator::GenerateCPP(TIObject* object)
+std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& parameter)
 {
     return "";
 }
 
-std::string ModuleGenerator::GenerateProto(TIObject* object)
+std::string ModuleGenerator::GenerateProto(TIObject* object, const std::string& parameter)
 {
     std::string nameLower(object->GetName());
     std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);

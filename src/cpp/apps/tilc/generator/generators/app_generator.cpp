@@ -13,7 +13,7 @@ AppGenerator::~AppGenerator()
 {
 }
     
-std::string AppGenerator::GenerateH(TIObject* object)
+std::string AppGenerator::GenerateH(TIObject* object, const std::string& parameter)
 {
     std::vector<std::string> modulesNames;
     std::vector<TIObject*> childs = object->GetChilds();
@@ -40,7 +40,7 @@ std::string AppGenerator::GenerateH(TIObject* object)
     return app_h_data;
 }
 
-std::string AppGenerator::GenerateCPP(TIObject* object)
+std::string AppGenerator::GenerateCPP(TIObject* object, const std::string& parameter)
 {
     std::vector<std::string> modulesNames;
     std::vector<TIObject*> childs = object->GetChilds();
@@ -91,7 +91,7 @@ std::string AppGenerator::GenerateCPP(TIObject* object)
     return app_cpp_data;
 }
 
-std::string AppGenerator::GenerateProto(TIObject* object)
+std::string AppGenerator::GenerateProto(TIObject* object, const std::string& parameter)
 {
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();

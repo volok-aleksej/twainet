@@ -9,12 +9,20 @@
 class ##ClassName## : public Module
 {
 public:
-    ##ClassName##();
+    class ISubscriber
+    {
+    public:
+##Functions##
+    };
+public:
+    ##ClassName##(ISubscriber* subscriber);
     virtual ~##ClassName##();
 private:
     template<class TMessage, class THandler> friend class DeamonMessage;
 protected:
 ##ContentDeclare##
+private:
+    ISubscriber* m_subscriber;
 };
 
 #endif/*##Header##*/
