@@ -12,6 +12,9 @@
 #define INCLUDES_TMPL "##Includes##"
 #define DEFINES_TMPL "##Defines##"
 #define CONTENT_DECLARE_TMPL "##ContentDeclare##"
+#define PACKAGE_NAME_TMPL "##PackageName##"
+#define ENUMS_TMPL "##Enums##"
+#define MESSAGES_TMPL "##Messages##"
 
 #include "compiler/ti_objects.h"
 
@@ -22,6 +25,7 @@ public:
     
     virtual std::string GenerateH(TIObject* object) = 0;
     virtual std::string GenerateCPP(TIObject* object) = 0;
+    virtual std::string GenerateProto(TIObject* object) = 0;
 };
 
 #endif/*INTERFACES_H*/

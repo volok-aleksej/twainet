@@ -9,8 +9,13 @@ std::string TypesManager::GetCType(const std::string& type)
 {
     return m_c_types[type];
 }
+
+std::string TypesManager::GetProtoType(const std::string& type)
+{
+    return m_proto_types[type];
+}
     
-std::map<std::string, std::string> TypesManager::GenerateTypes()
+std::map<std::string, std::string> TypesManager::GenerateCTypes()
 {
     std::map<std::string, std::string> types;
     types.insert(std::make_pair("int", "int"));
@@ -23,4 +28,18 @@ std::map<std::string, std::string> TypesManager::GenerateTypes()
     return types;
 }
 
-std::map<std::string, std::string> TypesManager::m_c_types = TypesManager::GenerateTypes();
+std::map<std::string, std::string> TypesManager::GenerateProtoTypes()
+{
+    std::map<std::string, std::string> types;
+    types.insert(std::make_pair("int", "int32"));
+    types.insert(std::make_pair("bool", "bool"));
+    types.insert(std::make_pair("float", "float"));
+    types.insert(std::make_pair("void", ""));
+    types.insert(std::make_pair("short", "int32"));
+    types.insert(std::make_pair("char", "uint32"));
+    types.insert(std::make_pair("string", "string"));
+    return types;
+}
+
+std::map<std::string, std::string> TypesManager::m_c_types = TypesManager::GenerateCTypes();
+std::map<std::string, std::string> TypesManager::m_proto_types = TypesManager::GenerateProtoTypes();

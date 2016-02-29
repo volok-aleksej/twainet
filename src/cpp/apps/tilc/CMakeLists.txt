@@ -50,7 +50,11 @@ set (SRC_${PROJECT_NAME}
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)
-ADD_RESOURCES(someResources resources/application.h.tmpl resources/application.cpp.tmpl resources/module.h.tmpl)
+ADD_RESOURCES(someResources 
+              resources/application.h.tmpl
+              resources/application.cpp.tmpl
+              resources/module.h.tmpl
+              resources/module.proto.tmpl)
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}} ${someResources})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 

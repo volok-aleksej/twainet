@@ -84,6 +84,7 @@ int  main(int argc, char* argv[])
     {
         generator->GenerateH(compiler.getTIObject());
         generator->GenerateCPP(compiler.getTIObject());
+        generator->GenerateProto(compiler.getTIObject());
     }
 	
 	return 0;

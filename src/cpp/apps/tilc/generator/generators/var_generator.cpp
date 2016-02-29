@@ -19,3 +19,9 @@ std::string VarGenerator::GenerateCPP(TIObject* object)
     std::string result;
     return result;
 }
+
+std::string VarGenerator::GenerateProto(TIObject* object)
+{
+    std::string result;
+    return result;
+}

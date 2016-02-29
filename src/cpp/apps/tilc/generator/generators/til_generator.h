@@ -13,6 +13,7 @@ public:
     
     virtual std::string GenerateH(TIObject* object);
     virtual std::string GenerateCPP(TIObject* object);
+    virtual std::string GenerateProto(TIObject* object);
 };
 
 #endif/*TIL_GENERATOR_H*/

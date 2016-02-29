@@ -65,7 +65,7 @@ std::string AppGenerator::GenerateCPP(TIObject* object)
     {
         modules_headers.append("#include \"");
         modules_headers.append(*it);
-        modules_headers.append(".h\"\n");
+        modules_headers.append("StubImpl.h\"\n");
         check_modules.append("\tif(strcmp(Twainet::GetModuleName(module).m_name, \"");
         check_modules.append(*it);
         check_modules.append("\") == 0)\n\t{\n\t\t");
@@ -73,7 +73,7 @@ std::string AppGenerator::GenerateCPP(TIObject* object)
         check_modules.append("::GetInstance().Stop();\n\t}\n");
         create_modules.append("\tm_modules.push_back(new ");
         create_modules.append(*it);
-        create_modules.append("());\n");
+        create_modules.append("StubImpl());\n");
     }
     std::string header = object->GetName();
     header.append(".h");
@@ -89,4 +89,19 @@ std::string AppGenerator::GenerateCPP(TIObject* object)
     loadAndReplace(replacement_app_cpp, app_cpp_data);
     saveInFile(m_folderPath + "/" + object->GetName() + ".cpp", app_cpp_data);
     return app_cpp_data;
+}
+
+std::string AppGenerator::GenerateProto(TIObject* object)
+{
+    std::vector<TIObject*> childs = object->GetChilds();
+    for(std::vector<TIObject*>::iterator it = childs.begin();
+        it != childs.end(); it++)
+    {
+        Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
+        if(generator)
+        {
+            generator->GenerateProto(*it);
+        }
+    }
+    return "";
 }
