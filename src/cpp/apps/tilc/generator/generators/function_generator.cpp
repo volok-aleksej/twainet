@@ -88,6 +88,12 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         }
         result.append(");\n}\n");
     }
+    else if(retObject && parameter == ADD_MESSAGES_TMPL)
+    {
+        result.append("    AddMessage(new ");
+        result.append(object->GetName());
+        result.append("Message(this));\n");
+    }
     else if(retObject && parameter == FUNCTIONS_TMPL)
     {
         result.append(TypesManager::GetCType(retObject->GetRetValue()));

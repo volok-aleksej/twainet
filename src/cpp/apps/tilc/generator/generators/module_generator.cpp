@@ -84,6 +84,7 @@ std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& pa
 {
     std::string content;
     std::string functions;
+    std::string addMessages;
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
@@ -96,6 +97,7 @@ std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& pa
             {
                 content.append(generator->GenerateCPP(*it, CONTENT_DECLARE_TMPL));
                 functions.append(generator->GenerateCPP(*it, FUNCTIONS_TMPL));
+                addMessages.append(generator->GenerateCPP(*it, ADD_MESSAGES_TMPL));
                 std::map<std::string, std::string> replacement_functions;
                 if(parameter == APP_TMPL)
                 {
@@ -130,6 +132,7 @@ std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& pa
     replacement_module_cpp.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + MODULE_POSTFIX));
     replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_TMPL, content));
     replacement_module_cpp.insert(std::make_pair(FUNCTIONS_TMPL, functions));
+    replacement_module_cpp.insert(std::make_pair(ADD_MESSAGES_TMPL, addMessages));
     replacement_module_cpp.insert(std::make_pair(DEFINES_TMPL, getDefinedModuleName(object->GetName())));
     if(parameter == APP_TMPL)
     {
