@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 
+#define MODULE_POSTFIX          "ModuleStub"
+
 class GeneratorHelper
 {
 public:

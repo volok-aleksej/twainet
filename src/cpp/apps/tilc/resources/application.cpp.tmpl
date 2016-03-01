@@ -226,19 +226,10 @@ void ##ClassName##::OnModuleListChanged(Twainet::Module module)
 
 ##ClassName##::##ClassName##()
 {
-}
-
-##ClassName##::~##ClassName##()
-{
-}
-
-void ##ClassName##::InitializeApplication()
-{
-    CSLocker locker(&m_cs);
 ##CreateModules##
 }
 
-void ##ClassName##::ShutdownApplication()
+##ClassName##::~##ClassName##()
 {
     CSLocker locker(&m_cs);
     for(std::vector<Module*>::iterator it = m_modules.begin();
@@ -256,4 +247,10 @@ std::string ##ClassName##::GetAppName()
 std::string ##ClassName##::GetDescription()
 {
     return "##AppDescription##";
+}
+
+void ##ClassName##::AddModule(Module* module)
+{
+    CSLocker locker(&m_cs);
+    m_modules.push_back(module);
 }

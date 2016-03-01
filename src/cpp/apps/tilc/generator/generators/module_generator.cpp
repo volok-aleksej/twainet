@@ -22,11 +22,15 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
     {
-        Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
-        if(generator)
+        if((*it)->GetType() == TIObject::Variable ||
+           (*it)->GetType() == TIObject::Function)
         {
-            content.append(generator->GenerateH(*it, CONTENT_DECLARE_TMPL));
-            functions.append(generator->GenerateH(*it, FUNCTIONS_TMPL));
+            Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
+            if(generator)
+            {
+                content.append(generator->GenerateH(*it, CONTENT_DECLARE_TMPL));
+                functions.append(generator->GenerateH(*it, FUNCTIONS_TMPL));
+            }
         }
     }
 
@@ -37,6 +41,12 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
     defines.append(" \"");
     defines.append(object->GetName());
     defines.append("\"");
+    if(parameter == APP_TMPL)
+    {
+        defines.append("\nclass ");
+        defines.append(object->GetName());
+        defines.append(";");
+    }
     std::string include("#include <string>\n");
     include.append("#pragma warning(disable:4244 4267)\n");
     include.append("#include \"messages/");
@@ -47,14 +57,20 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
     include.append(";\n");
     include.append("#pragma warning(default:4244 4267)\n");
     std::map<std::string, std::string> replacement_module_h;
-    replacement_module_h.insert(std::make_pair(HEADER_TMPL, getIfnDefHeader(object->GetName())));
+    replacement_module_h.insert(std::make_pair(HEADER_TMPL, getIfnDefHeader(object->GetName() + MODULE_POSTFIX)));
     replacement_module_h.insert(std::make_pair(INCLUDES_TMPL, include));
     replacement_module_h.insert(std::make_pair(DEFINES_TMPL, defines));
-    replacement_module_h.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + "StubImpl"));
+    replacement_module_h.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + MODULE_POSTFIX));
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_TMPL, content));
     replacement_module_h.insert(std::make_pair(FUNCTIONS_TMPL, functions));
+    if(parameter == APP_TMPL)
+    {
+        std::string app(object->GetName() + "* ");
+        replacement_module_h.insert(std::make_pair(APP_TMPL, app + "app"));
+        replacement_module_h.insert(std::make_pair(APP_MEMBER_TMPL, app + "m_app"));
+    }
     loadAndReplace(replacement_module_h, module_h_data);
-    saveInFile(m_folderPath + "/" + object->GetName() + "StubImpl.h", module_h_data);
+    saveInFile(m_folderPath + "/" + object->GetName() + MODULE_POSTFIX + ".h", module_h_data);
     return module_h_data;
 }
 
@@ -72,10 +88,14 @@ std::string ModuleGenerator::GenerateProto(TIObject* object, const std::string& 
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
     {
-        Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
-        if(generator)
+        if((*it)->GetType() == TIObject::Variable ||
+           (*it)->GetType() == TIObject::Function)
         {
-            messages.append(generator->GenerateProto(*it));
+            Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
+            if(generator)
+            {
+                messages.append(generator->GenerateProto(*it));
+            }
         }
     }
     

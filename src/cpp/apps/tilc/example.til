@@ -19,6 +19,7 @@ plugin TestPlugin
 // application modules
 application TestApp
 {
+    void testFunc();
 	//module of application
     module AppModule
     {

@@ -19,7 +19,7 @@ GeneratorManager::~GeneratorManager()
 
 void GeneratorManager::Init(const std::string& path)
 {
-    m_generators.insert(std::make_pair(TIObject::Root, new TILGenerator));
+    m_generators.insert(std::make_pair(TIObject::Root, new TILGenerator(path)));
     m_generators.insert(std::make_pair(TIObject::Application, new AppGenerator(path)));
     m_generators.insert(std::make_pair(TIObject::Module, new ModuleGenerator(path)));
     m_generators.insert(std::make_pair(TIObject::Function, new FunctionGenerator()));

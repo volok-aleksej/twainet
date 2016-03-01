@@ -5,7 +5,8 @@
 #include <string.h>
 #include <algorithm>
 
-TILGenerator::TILGenerator()
+TILGenerator::TILGenerator(const std::string& path)
+: m_folderPath(path)
 {
 }
 
@@ -56,5 +57,10 @@ std::string TILGenerator::GenerateProto(TIObject* object, const std::string& par
             generator->GenerateProto(*it);
         }
     }
+    
+    LOAD_RESOURCE(apps_tilc_resources_deamon_proto, deamon_proto_str);
+    std::string deamon_proto_data(deamon_proto_str.data(), deamon_proto_str.size());
+    saveInFile(m_folderPath + "/deamon.proto", deamon_proto_data);
+    
     return "";
 }

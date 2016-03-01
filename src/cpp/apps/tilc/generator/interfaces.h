@@ -1,6 +1,8 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
+#define APP_TMPL "##App##"
+#define APP_MEMBER_TMPL "##AppMember##"
 #define HEADER_TMPL "##Header##"
 #define CLASS_NAME_TMPL "##ClassName##"
 #define MODULE_HEADERS_TMPL "##ModulesHeaders##"

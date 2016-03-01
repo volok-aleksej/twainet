@@ -16,8 +16,8 @@ class ##ClassName## : public IApplication<##ClassName##>
 public:
     virtual ~##ClassName##();
     
-    virtual void InitializeApplication();
-    virtual void ShutdownApplication();
+    virtual void InitializeApplication() = 0;
+    virtual void ShutdownApplication() = 0;
     
     static std::string GetAppName();
     static std::string GetDescription();
@@ -39,6 +39,10 @@ public:
     virtual void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
     virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
     virtual void OnModuleListChanged(Twainet::Module module);
+public:
+##Functions##
+protected:
+    void AddModule(Module* module);
 private:
     CriticalSection m_cs;
     std::vector<Module*> m_modules;

@@ -30,7 +30,7 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
     }
     if(retObject && parameter == FUNCTIONS_TMPL)
     {
-        result.append("         virtual ");
+        result.append("     virtual ");
         result.append(TypesManager::GetCType(retObject->GetRetValue()));
         result.append(" ");
         result.append(retObject->GetName());
@@ -51,7 +51,7 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
                 result.append(varObject->GetName());
             }
         }
-        result.append(") = 0;\n");
+        result.append(");\n");
     }
     return result;
 }

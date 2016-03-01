@@ -50,11 +50,13 @@ set (SRC_${PROJECT_NAME}
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)
+file(COPY ../../../messages/deamon.proto DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 ADD_RESOURCES(someResources 
               resources/application.h.tmpl
               resources/application.cpp.tmpl
               resources/module.h.tmpl
-              resources/module.proto.tmpl)
+              resources/module.proto.tmpl
+              resources/deamon.proto)
 
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}} ${someResources})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 
