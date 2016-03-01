@@ -19,14 +19,14 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
     {
         result.append("    typedef DeamonMessage<");
         result.append(retObject->GetName());
-        result.append(",");
-        result.append(object->GetParent()->GetName() + "StubImpl");
+        result.append("_,");
+        result.append(object->GetParent()->GetName() + MODULE_POSTFIX);
         result.append("> ");
         result.append(retObject->GetName());
         result.append("Message;\n    ");
         result.append("void onMessage(const ");
         result.append(object->GetName());
-        result.append("& msg, const Twainet::ModuleName& path);\n");
+        result.append("_& msg, const Twainet::ModuleName& path);\n");
     }
     else if(retObject && parameter == FUNCTIONS_TMPL)
     {
@@ -67,7 +67,7 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         result.append(retObject->GetParent()->GetName() + MODULE_POSTFIX);
         result.append("::onMessage(const ");
         result.append(retObject->GetName());
-        result.append("& msg, const Twainet::ModuleName& path)\n{\n    ");
+        result.append("_& msg, const Twainet::ModuleName& path)\n{\n    ");
         result.append(retObject->GetName());
         result.append("(");
         std::vector<TIObject*> childs = object->GetChilds();
@@ -149,7 +149,7 @@ std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string
 {
     std::string result("message ");
     result.append(object->GetName());
-    result.append(" {\n");    
+    result.append("_ {\n");    
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)

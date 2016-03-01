@@ -68,7 +68,7 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
     {
         std::string app(object->GetName() + "* ");
         replacement_module_h.insert(std::make_pair(APP_TMPL, app + "app"));
-        replacement_module_h.insert(std::make_pair(APP_MEMBER_TMPL, app + "m_app"));
+        replacement_module_h.insert(std::make_pair(APP_MEMBER_TMPL, app + "m_app;"));
     }
     else
     {
@@ -130,16 +130,22 @@ std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& pa
     replacement_module_cpp.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + MODULE_POSTFIX));
     replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_TMPL, content));
     replacement_module_cpp.insert(std::make_pair(FUNCTIONS_TMPL, functions));
+    replacement_module_cpp.insert(std::make_pair(DEFINES_TMPL, getDefinedModuleName(object->GetName())));
     if(parameter == APP_TMPL)
     {
         std::string app(object->GetName() + "* ");
         replacement_module_cpp.insert(std::make_pair(APP_TMPL, app + "app"));
-        replacement_module_cpp.insert(std::make_pair(APP_MEMBER_TMPL, ": m_app(app)\n"));
+        replacement_module_cpp.insert(std::make_pair(APP_MEMBER_TMPL, ", m_app(app)\n"));
+        std::string includes("#include \"");
+        includes.append(object->GetName());
+        includes.append(".h\"\n");
+        replacement_module_cpp.insert(std::make_pair(INCLUDES_TMPL, includes));
     }
     else
     {
         replacement_module_cpp.insert(std::make_pair(APP_TMPL, ""));
         replacement_module_cpp.insert(std::make_pair(APP_MEMBER_TMPL, ""));
+        replacement_module_cpp.insert(std::make_pair(INCLUDES_TMPL, ""));
     }
     loadAndReplace(replacement_module_cpp, module_cpp_data);
     saveInFile(m_folderPath + "/" + object->GetName() + MODULE_POSTFIX + ".cpp", module_cpp_data);

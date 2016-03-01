@@ -7,8 +7,6 @@
 
 #include <vector>
 
-class ISubscriber;
-
 class ##ClassName## : public IApplication<##ClassName##>
 {
     friend class Singleton<##ClassName##>;
@@ -16,8 +14,8 @@ class ##ClassName## : public IApplication<##ClassName##>
 public:
     virtual ~##ClassName##();
     
-    virtual void InitializeApplication() = 0;
-    virtual void ShutdownApplication() = 0;
+    virtual void InitializeApplication(){};
+    virtual void ShutdownApplication(){};
     
     static std::string GetAppName();
     static std::string GetDescription();
