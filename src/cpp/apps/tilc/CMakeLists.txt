@@ -55,6 +55,7 @@ ADD_RESOURCES(someResources
               resources/application.h.tmpl
               resources/application.cpp.tmpl
               resources/module.h.tmpl
+              resources/module.cpp.tmpl
               resources/module.proto.tmpl
               resources/deamon.proto)
 

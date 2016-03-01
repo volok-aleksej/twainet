@@ -1,6 +1,7 @@
 #include "module_generator.h"
 #include "../generator_manager.h"
 #include "resource.h"
+#include "types.h"
 #include <algorithm>
 
 ModuleGenerator::ModuleGenerator(const std::string& path)
@@ -69,6 +70,11 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
         replacement_module_h.insert(std::make_pair(APP_TMPL, app + "app"));
         replacement_module_h.insert(std::make_pair(APP_MEMBER_TMPL, app + "m_app"));
     }
+    else
+    {
+        replacement_module_h.insert(std::make_pair(APP_TMPL, ""));
+        replacement_module_h.insert(std::make_pair(APP_MEMBER_TMPL, ""));
+    }
     loadAndReplace(replacement_module_h, module_h_data);
     saveInFile(m_folderPath + "/" + object->GetName() + MODULE_POSTFIX + ".h", module_h_data);
     return module_h_data;
@@ -76,6 +82,67 @@ std::string ModuleGenerator::GenerateH(TIObject* object, const std::string& para
 
 std::string ModuleGenerator::GenerateCPP(TIObject* object, const std::string& parameter)
 {
+    std::string content;
+    std::string functions;
+    std::vector<TIObject*> childs = object->GetChilds();
+    for(std::vector<TIObject*>::iterator it = childs.begin();
+        it != childs.end(); it++)
+    {
+        if((*it)->GetType() == TIObject::Variable ||
+           (*it)->GetType() == TIObject::Function)
+        {
+            Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
+            if(generator)
+            {
+                content.append(generator->GenerateCPP(*it, CONTENT_DECLARE_TMPL));
+                functions.append(generator->GenerateCPP(*it, FUNCTIONS_TMPL));
+                std::map<std::string, std::string> replacement_functions;
+                if(parameter == APP_TMPL)
+                {
+                    std::string fapp = generator->GenerateCPP(*it, FUNCTIONS_APP_TMPL);
+                    replacement_functions.insert(std::make_pair(FUNCTIONS_APP_TMPL, fapp));
+                }
+                else
+                {
+                    RetObject* retObject = dynamic_cast<RetObject*>(*it);
+                    if(retObject)
+                    {
+                        std::string returnVal = TypesManager::GetDefaultReturn(retObject->GetRetValue());
+                        std::string fapp("// not implemented by default\n");
+                        if(!returnVal.empty())
+                        {
+                            fapp.append("    return ");
+                            fapp.append(returnVal);
+                            fapp.append(";\n");
+                        }
+                        replacement_functions.insert(std::make_pair(FUNCTIONS_APP_TMPL, fapp));
+                    }
+                }
+                loadAndReplace(replacement_functions, functions);
+            }
+        }
+    }
+    
+    LOAD_RESOURCE(apps_tilc_resources_module_cpp_tmpl, module_cpp_str);
+    std::string module_cpp_data(module_cpp_str.data(), module_cpp_str.size());
+    std::map<std::string, std::string> replacement_module_cpp;
+    replacement_module_cpp.insert(std::make_pair(HEADER_TMPL, object->GetName() + MODULE_POSTFIX + ".h"));
+    replacement_module_cpp.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + MODULE_POSTFIX));
+    replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_TMPL, content));
+    replacement_module_cpp.insert(std::make_pair(FUNCTIONS_TMPL, functions));
+    if(parameter == APP_TMPL)
+    {
+        std::string app(object->GetName() + "* ");
+        replacement_module_cpp.insert(std::make_pair(APP_TMPL, app + "app"));
+        replacement_module_cpp.insert(std::make_pair(APP_MEMBER_TMPL, ": m_app(app)\n"));
+    }
+    else
+    {
+        replacement_module_cpp.insert(std::make_pair(APP_TMPL, ""));
+        replacement_module_cpp.insert(std::make_pair(APP_MEMBER_TMPL, ""));
+    }
+    loadAndReplace(replacement_module_cpp, module_cpp_data);
+    saveInFile(m_folderPath + "/" + object->GetName() + MODULE_POSTFIX + ".cpp", module_cpp_data);
     return "";
 }
 

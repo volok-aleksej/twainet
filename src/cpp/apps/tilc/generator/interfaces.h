@@ -18,6 +18,7 @@
 #define ENUMS_TMPL "##Enums##"
 #define MESSAGES_TMPL "##Messages##"
 #define FUNCTIONS_TMPL "##Functions##"
+#define FUNCTIONS_APP_TMPL "##FunctionsApp##"
 
 #include "compiler/ti_objects.h"
 

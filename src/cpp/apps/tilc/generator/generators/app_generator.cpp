@@ -71,7 +71,7 @@ std::string AppGenerator::GenerateCPP(TIObject* object, const std::string& param
     
     Generator* generator = GeneratorManager::GetInstance().GetGenerator(TIObject::Module);
     if(generator) {
-        generator->GenerateProto(object, APP_TMPL);
+        generator->GenerateCPP(object, APP_TMPL);
     }
 
     LOAD_RESOURCE(apps_tilc_resources_application_cpp_tmpl, app_cpp_str);
