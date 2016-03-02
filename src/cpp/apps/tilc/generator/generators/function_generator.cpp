@@ -15,20 +15,36 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
 {
     std::string result;
     RetObject* retObject = dynamic_cast<RetObject*>(object);
-    if(retObject && parameter == CONTENT_DECLARE_TMPL)
+    if(retObject && parameter == CONTENT_DECLARE_STUB_TMPL)
     {
         result.append("    typedef DeamonMessage<");
         result.append(retObject->GetName());
         result.append("_,");
-        result.append(object->GetParent()->GetName() + MODULE_POSTFIX);
+        result.append(object->GetParent()->GetName() + MODULE_SERVER_POSTFIX);
         result.append("> ");
         result.append(retObject->GetName());
         result.append("Message;\n    ");
         result.append("void onMessage(const ");
         result.append(object->GetName());
-        result.append("_& msg, const Twainet::ModuleName& path);\n");
+        result.append("_& msg, const Twainet::ModuleName& path);\n    ");
+        result.append("void fireReturn(const ");
+        result.append(object->GetName());
+        result.append("_result& msg, const Twainet::ModuleName& path);\n");
     }
-    else if(retObject && parameter == FUNCTIONS_TMPL)
+    if(retObject && parameter == CONTENT_DECLARE_PROXY_TMPL)
+    {
+        result.append("    typedef DeamonMessage<");
+        result.append(retObject->GetName());
+        result.append("_result,");
+        result.append(object->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
+        result.append("> ");
+        result.append(retObject->GetName());
+        result.append("Message;\n    ");
+        result.append("void onMessage(const ");
+        result.append(object->GetName());
+        result.append("_result& msg, const Twainet::ModuleName& path);\n");
+    }
+    else if(retObject && parameter == FUNCTIONS_STUB_TMPL)
     {
         result.append("     virtual ");
         result.append(TypesManager::GetCType(retObject->GetRetValue()));
@@ -60,33 +76,61 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
 {
     std::string result;
     RetObject* retObject = dynamic_cast<RetObject*>(object);
-    if(retObject && parameter == CONTENT_DECLARE_TMPL)
+    if(retObject && parameter == CONTENT_DECLARE_STUB_TMPL)
     {
-        
-        result.append("void ");
-        result.append(retObject->GetParent()->GetName() + MODULE_POSTFIX);
-        result.append("::onMessage(const ");
-        result.append(retObject->GetName());
-        result.append("_& msg, const Twainet::ModuleName& path)\n{\n    ");
-        result.append(retObject->GetName());
-        result.append("(");
+        std::string onMessageContent;
+        std::string protoRetType = TypesManager::GetProtoType(retObject->GetRetValue());
+        if(!protoRetType.empty())
+        {
+            onMessageContent.append(TypesManager::GetCType(retObject->GetRetValue()));
+            onMessageContent.append(" ret = ");
+        }
+        onMessageContent.append(retObject->GetName());
+        onMessageContent.append("(");
         std::vector<TIObject*> childs = object->GetChilds();
         for(std::vector<TIObject*>::iterator it = childs.begin();
             it != childs.end(); it++)
         {
             if(it != childs.begin())
             {
-                result.append(",");
+                onMessageContent.append(",");
             }
             RetObject* varObject = dynamic_cast<RetObject*>(*it);
             if(varObject)
             {
-                result.append("msg.");
-                result.append(varObject->GetName());
-                result.append("()");
+                onMessageContent.append("msg.");
+                onMessageContent.append(varObject->GetName());
+                onMessageContent.append("()");
             }
         }
-        result.append(");\n}\n");
+        onMessageContent.append(");\n    ");
+        onMessageContent.append(retObject->GetName());
+        onMessageContent.append("_result retMsg;\n    ");
+        if(!protoRetType.empty())
+        {
+            onMessageContent.append("retMsg.set_result(ret);\n    ");
+        }
+        onMessageContent.append("fireReturn(retMsg, path);\n");
+        
+        result.append("void ");
+        result.append(retObject->GetParent()->GetName() + MODULE_SERVER_POSTFIX);
+        result.append("::onMessage(const ");
+        result.append(retObject->GetName());
+        result.append("_& msg, const Twainet::ModuleName& path)\n{\n    ");
+        result.append(onMessageContent);
+        result.append("}\n");
+        result.append("void ");
+        result.append(retObject->GetParent()->GetName() + MODULE_SERVER_POSTFIX);
+        result.append("::fireReturn(const ");
+        result.append(retObject->GetName());
+        result.append("_result& msg, const Twainet::ModuleName& path)\n{\n    ");
+        result.append("DeamonMessage<");
+        result.append(retObject->GetName());
+        result.append("_result, ");
+        result.append(retObject->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
+        result.append("> retMsg(0, msg);\n    ");
+        result.append("toMessage(retMsg, path);\n");
+        result.append("}\n");
     }
     else if(retObject && parameter == ADD_MESSAGES_TMPL)
     {
@@ -94,11 +138,11 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         result.append(object->GetName());
         result.append("Message(this));\n");
     }
-    else if(retObject && parameter == FUNCTIONS_TMPL)
+    else if(retObject && parameter == FUNCTIONS_STUB_TMPL)
     {
         result.append(TypesManager::GetCType(retObject->GetRetValue()));
         result.append(" ");
-        result.append(retObject->GetParent()->GetName() + MODULE_POSTFIX);
+        result.append(retObject->GetParent()->GetName() + MODULE_SERVER_POSTFIX);
         result.append("::");
         result.append(retObject->GetName());
         result.append("(");
@@ -182,15 +226,15 @@ std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string
     
     RetObject* retObject = dynamic_cast<RetObject*>(object);
     std::string rtype = TypesManager::GetProtoType(retObject->GetRetValue());
+    result.append("message ");
+    result.append(object->GetName());
+    result.append("_result {\n");
     if(!rtype.empty())
     {
-        result.append("message ");
-        result.append(object->GetName());
-        result.append("_return {\n    ");
-        result.append("required ");
+        result.append("    required ");
         result.append(rtype);
-        result.append(" return = 1;\n}\n");
+        result.append(" result = 1;\n");
     }
-            
+    result.append("}\n");
     return result;
 }

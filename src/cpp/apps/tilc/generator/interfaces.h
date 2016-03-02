@@ -1,8 +1,8 @@
 #ifndef INTERFACES_H
 #define INTERFACES_H
 
-#define APP_TMPL "##App##"
-#define APP_MEMBER_TMPL "##AppMember##"
+#define ARGS_TMPL "##Args##"
+#define ARGS_MEMBER_TMPL "##ArgsMember##"
 #define HEADER_TMPL "##Header##"
 #define CLASS_NAME_TMPL "##ClassName##"
 #define MODULE_HEADERS_TMPL "##ModulesHeaders##"
@@ -13,13 +13,18 @@
 #define APP_DESC_TMPL "##AppDescription##"
 #define INCLUDES_TMPL "##Includes##"
 #define DEFINES_TMPL "##Defines##"
-#define CONTENT_DECLARE_TMPL "##ContentDeclare##"
+#define CONTENT_DECLARE_STUB_TMPL "##ContentDeclareStub##"
+#define CONTENT_DECLARE_PROXY_TMPL "##ContentDeclareProxy##"
 #define PACKAGE_NAME_TMPL "##PackageName##"
 #define ENUMS_TMPL "##Enums##"
 #define MESSAGES_TMPL "##Messages##"
 #define FUNCTIONS_TMPL "##Functions##"
+#define FUNCTIONS_STUB_TMPL "##FunctionsStub##"
+#define FUNCTIONS_PROXY_TMPL "##FunctionsProxy##"
 #define FUNCTIONS_APP_TMPL "##FunctionsApp##"
 #define ADD_MESSAGES_TMPL "##AddMessages##"
+
+#define INHERITE_TMPL "##: public Module##"
 
 #include "compiler/ti_objects.h"
 

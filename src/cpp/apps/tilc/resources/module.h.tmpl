@@ -6,19 +6,19 @@
 ##Includes##
 ##Defines##
 
-class ##ClassName## : public Module
+class ##ClassName## ##: public Module##
 {
 public:
-    ##ClassName##(##App##);
+    ##ClassName##(##Args##);
     virtual ~##ClassName##();
 private:
     template<class TMessage, class THandler> friend class DeamonMessage;
 public:
-##Functions##
+##FunctionsStub####FunctionsProxy##
 protected:
-##ContentDeclare##
+##ContentDeclareStub####ContentDeclareProxy##
 private:
-    ##AppMember##
+    ##ArgsMember##
 };
 
 #endif/*##Header##*/

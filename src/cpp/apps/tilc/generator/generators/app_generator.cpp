@@ -32,14 +32,14 @@ std::string AppGenerator::GenerateH(TIObject* object, const std::string& paramet
         {            
             Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
             if(generator) {
-                functions.append(generator->GenerateH(*it, FUNCTIONS_TMPL));
+                functions.append(generator->GenerateH(*it, FUNCTIONS_STUB_TMPL));
             }
         }
     }
 
     Generator* generator = GeneratorManager::GetInstance().GetGenerator(TIObject::Module);
     if(generator) {
-        generator->GenerateH(object, APP_TMPL);
+        generator->GenerateH(object, ARGS_TMPL);
     }
 
     LOAD_RESOURCE(apps_tilc_resources_application_h_tmpl, app_h_str);
@@ -71,7 +71,7 @@ std::string AppGenerator::GenerateCPP(TIObject* object, const std::string& param
     
     Generator* generator = GeneratorManager::GetInstance().GetGenerator(TIObject::Module);
     if(generator) {
-        generator->GenerateCPP(object, APP_TMPL);
+        generator->GenerateCPP(object, ARGS_TMPL);
     }
 
     LOAD_RESOURCE(apps_tilc_resources_application_cpp_tmpl, app_cpp_str);
@@ -84,11 +84,11 @@ std::string AppGenerator::GenerateCPP(TIObject* object, const std::string& param
     check_modules.append("::GetInstance().Stop();\n\t}");
     modules_headers.append("#include \"");
     modules_headers.append(object->GetName());
-    modules_headers.append(MODULE_POSTFIX);
+    modules_headers.append(MODULE_SERVER_POSTFIX);
     modules_headers.append(".h\"\n");
     create_modules.append("\tAddModule(new ");
     create_modules.append(object->GetName());
-    create_modules.append(MODULE_POSTFIX);
+    create_modules.append(MODULE_SERVER_POSTFIX);
     create_modules.append("(this));");
     std::string header = object->GetName();
     header.append(".h");
@@ -121,7 +121,7 @@ std::string AppGenerator::GenerateProto(TIObject* object, const std::string& par
     
     Generator* generator = GeneratorManager::GetInstance().GetGenerator(TIObject::Module);
     if(generator) {
-        generator->GenerateProto(object, APP_TMPL);
+        generator->GenerateProto(object, ARGS_TMPL);
     }
     return "";
 }

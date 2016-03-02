@@ -4,7 +4,8 @@
 #include <string>
 #include <map>
 
-#define MODULE_POSTFIX          "ModuleStub"
+#define MODULE_SERVER_POSTFIX          "ModuleStub"
+#define MODULE_CLIENT_POSTFIX          "ModuleProxy"
 
 class GeneratorHelper
 {
