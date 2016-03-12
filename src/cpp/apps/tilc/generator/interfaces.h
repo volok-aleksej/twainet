@@ -23,6 +23,8 @@
 #define FUNCTIONS_PROXY_TMPL "##FunctionsProxy##"
 #define FUNCTIONS_APP_TMPL "##FunctionsApp##"
 #define ADD_MESSAGES_TMPL "##AddMessages##"
+#define ADD_MESSAGES_STUB_TMPL "##AddMessagesStub##"
+#define ADD_MESSAGES_PROXY_TMPL "##AddMessagesProxy##"
 
 #define INHERITE_TMPL "##: public Module##"
 

@@ -6,6 +6,7 @@
 #include "helpers/function_stub.h"
 #include "helpers/content_stub.h"
 #include "helpers/function_app.h"
+#include "helpers/add_message.h"
 #include <stdio.h>
 
 FunctionGenerator::FunctionGenerator()
@@ -15,6 +16,8 @@ FunctionGenerator::FunctionGenerator()
     m_helpers.insert(std::make_pair(CONTENT_DECLARE_PROXY_TMPL, new ContentProxy));
     m_helpers.insert(std::make_pair(CONTENT_DECLARE_STUB_TMPL, new ContentStub));
     m_helpers.insert(std::make_pair(FUNCTIONS_APP_TMPL, new FunctionApp));
+    m_helpers.insert(std::make_pair(ADD_MESSAGES_STUB_TMPL, new AddMessageStub));
+    m_helpers.insert(std::make_pair(ADD_MESSAGES_PROXY_TMPL, new AddMessageProxy));
 }
 
 FunctionGenerator::~FunctionGenerator()

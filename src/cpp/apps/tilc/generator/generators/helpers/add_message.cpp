@@ -1,20 +1,20 @@
 #include "add_message.h"
 #include "types.h"
 
-AddMessage::AddMessage()
+AddMessageStub::AddMessageStub()
 {
 }
 
-AddMessage::~AddMessage()
+AddMessageStub::~AddMessageStub()
 {
 }
    
-std::string AddMessage::GenerateH(TIObject* object)
+std::string AddMessageStub::GenerateH(TIObject* object)
 {
     return "";
 }
 
-std::string AddMessage::GenerateCPP(TIObject* object)
+std::string AddMessageStub::GenerateCPP(TIObject* object)
 {
     std::string result;
     RetObject* retObject = dynamic_cast<RetObject*>(object);
@@ -29,7 +29,41 @@ std::string AddMessage::GenerateCPP(TIObject* object)
     return result;
 }
 
-std::string AddMessage::GenerateProto(TIObject* object)
+std::string AddMessageStub::GenerateProto(TIObject* object)
+{
+    return "";
+}
+
+
+AddMessageProxy::AddMessageProxy()
+{
+}
+
+AddMessageProxy::~AddMessageProxy()
+{
+}
+   
+std::string AddMessageProxy::GenerateH(TIObject* object)
+{
+    return "";
+}
+
+std::string AddMessageProxy::GenerateCPP(TIObject* object)
+{
+    std::string result;
+    RetObject* retObject = dynamic_cast<RetObject*>(object);
+    if(!object || !retObject)
+    {
+        return result;
+    }
+
+    result.append("    m_module->AddMessage(new ");
+    result.append(object->GetName());
+    result.append("ResultMessage(this));\n");
+    return result;
+}
+
+std::string AddMessageProxy::GenerateProto(TIObject* object)
 {
     return "";
 }

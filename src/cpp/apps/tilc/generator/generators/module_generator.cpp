@@ -148,7 +148,7 @@ void ModuleGenerator::generateStubCPP(TIObject* object, const std::string& param
             {
                 content.append(generator->GenerateCPP(*it, CONTENT_DECLARE_STUB_TMPL));
                 functions.append(generator->GenerateCPP(*it, FUNCTIONS_STUB_TMPL));
-                addMessages.append(generator->GenerateCPP(*it, ADD_MESSAGES_TMPL));
+                addMessages.append(generator->GenerateCPP(*it, ADD_MESSAGES_STUB_TMPL));
                 std::map<std::string, std::string> replacement_functions;
                 if(parameter == ARGS_TMPL)
                 {
@@ -213,6 +213,7 @@ void ModuleGenerator::generateProxyCPP(TIObject* object, const std::string& para
     std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
     std::string content;
     std::string functions;
+    std::string addMessages;
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
@@ -223,6 +224,7 @@ void ModuleGenerator::generateProxyCPP(TIObject* object, const std::string& para
             Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
             if(generator)
             {
+                addMessages.append(generator->GenerateCPP(*it, ADD_MESSAGES_PROXY_TMPL));
                 content.append(generator->GenerateCPP(*it, CONTENT_DECLARE_PROXY_TMPL));
                 functions.append(generator->GenerateCPP(*it, FUNCTIONS_PROXY_TMPL));
             }
@@ -240,7 +242,7 @@ void ModuleGenerator::generateProxyCPP(TIObject* object, const std::string& para
     replacement_module_cpp.insert(std::make_pair(FUNCTIONS_STUB_TMPL, ""));
     replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_PROXY_TMPL, content));
     replacement_module_cpp.insert(std::make_pair(FUNCTIONS_PROXY_TMPL, functions));
-    replacement_module_cpp.insert(std::make_pair(ADD_MESSAGES_TMPL, ""));
+    replacement_module_cpp.insert(std::make_pair(ADD_MESSAGES_TMPL, addMessages));
     replacement_module_cpp.insert(std::make_pair(ARGS_TMPL, "IModule* module"));
     replacement_module_cpp.insert(std::make_pair(ARGS_MEMBER_TMPL, ": m_module(module)"));
     replacement_module_cpp.insert(std::make_pair(INCLUDES_TMPL, includes));

@@ -25,6 +25,7 @@ typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
 class IModule
 {
 public:
+    virtual void AddMessage(DataMessage* msg) = 0;
     virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path) = 0;
 };
 
@@ -177,29 +178,9 @@ public:
 	}
 	
 protected:
-	void AddMessage(DataMessage* msg)
+	virtual void AddMessage(DataMessage* msg)
 	{
 		m_messages[msg->GetName()] = msg;
-	}
-	
-	bool onData(const std::string& type, const Twainet::ModuleName& path, char* data, int len)
-	{
-		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);
-		if (it != m_messages.end())
-		{
-			if (len >= 0)
-			{
-				it->second->serialize(data, len);
-				MessageAttr* attr = dynamic_cast<MessageAttr*>(it->second);
-				if(attr)
-				{
-				    attr->SetPath(path);
-				    it->second->onMessage();
-				    return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path)
@@ -225,6 +206,26 @@ protected:
 		return ret;
 	}
 	
+	bool onData(const std::string& type, const Twainet::ModuleName& path, char* data, int len)
+	{
+		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);
+		if (it != m_messages.end())
+		{
+			if (len >= 0)
+			{
+				it->second->serialize(data, len);
+				MessageAttr* attr = dynamic_cast<MessageAttr*>(it->second);
+				if(attr)
+				{
+				    attr->SetPath(path);
+				    it->second->onMessage();
+				    return true;
+				}
+			}
+		}
+		return false;
+	}
+
 protected:
 	virtual void OnInstallPluginRequest(const InstallPlugin& msg)
 	{
