@@ -29,7 +29,7 @@ std::map<std::string, std::string> TypesManager::GenerateCTypes()
     types.insert(std::make_pair("void", "void"));
     types.insert(std::make_pair("short", "short"));
     types.insert(std::make_pair("char", "char"));
-    types.insert(std::make_pair("string", "std::string"));
+    types.insert(std::make_pair("string", "const std::string&"));
     return types;
 }
 

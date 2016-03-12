@@ -103,6 +103,9 @@ void ModuleGenerator::generateStubH(TIObject* object, const std::string& paramet
     include.append(nameLower);
     include.append(";\n");
     include.append("#pragma warning(default:4244 4267)\n");
+    std::string functionsProxy("    friend class ");
+    functionsProxy.append(object->GetName() + MODULE_CLIENT_POSTFIX);
+    functionsProxy.append(";");
     std::map<std::string, std::string> replacement_module_h;
     replacement_module_h.insert(std::make_pair(HEADER_TMPL, getIfnDefHeader(object->GetName() + MODULE_SERVER_POSTFIX)));
     replacement_module_h.insert(std::make_pair(INCLUDES_TMPL, include));
@@ -111,7 +114,7 @@ void ModuleGenerator::generateStubH(TIObject* object, const std::string& paramet
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_STUB_TMPL, content));
     replacement_module_h.insert(std::make_pair(FUNCTIONS_STUB_TMPL, functions));
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_PROXY_TMPL, ""));
-    replacement_module_h.insert(std::make_pair(FUNCTIONS_PROXY_TMPL, ""));
+    replacement_module_h.insert(std::make_pair(FUNCTIONS_PROXY_TMPL, functionsProxy));
     replacement_module_h.insert(std::make_pair(INHERITE_TMPL, ": public Module"));
     if(parameter == ARGS_TMPL)
     {
@@ -206,6 +209,43 @@ void ModuleGenerator::generateStubCPP(TIObject* object, const std::string& param
 
 void ModuleGenerator::generateProxyCPP(TIObject* object, const std::string& parameter)
 {
+    std::string nameLower(object->GetName());
+    std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
+    std::string content;
+    std::string functions;
+    std::vector<TIObject*> childs = object->GetChilds();
+    for(std::vector<TIObject*>::iterator it = childs.begin();
+        it != childs.end(); it++)
+    {
+        if((*it)->GetType() == TIObject::Variable ||
+           (*it)->GetType() == TIObject::Function)
+        {
+            Generator* generator = GeneratorManager::GetInstance().GetGenerator((*it)->GetType());
+            if(generator)
+            {
+                content.append(generator->GenerateCPP(*it, CONTENT_DECLARE_PROXY_TMPL));
+                functions.append(generator->GenerateCPP(*it, FUNCTIONS_PROXY_TMPL));
+            }
+        }
+    }
+    
+    std::string includes("#include \"");
+    includes.append(object->GetName() + MODULE_SERVER_POSTFIX + ".h\"\n");
+    LOAD_RESOURCE(apps_tilc_resources_module_cpp_tmpl, module_cpp_str);
+    std::string module_cpp_data(module_cpp_str.data(), module_cpp_str.size());
+    std::map<std::string, std::string> replacement_module_cpp;
+    replacement_module_cpp.insert(std::make_pair(HEADER_TMPL, object->GetName() + MODULE_CLIENT_POSTFIX + ".h"));
+    replacement_module_cpp.insert(std::make_pair(CLASS_NAME_TMPL, object->GetName() + MODULE_CLIENT_POSTFIX));
+    replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_STUB_TMPL, ""));
+    replacement_module_cpp.insert(std::make_pair(FUNCTIONS_STUB_TMPL, ""));
+    replacement_module_cpp.insert(std::make_pair(CONTENT_DECLARE_PROXY_TMPL, content));
+    replacement_module_cpp.insert(std::make_pair(FUNCTIONS_PROXY_TMPL, functions));
+    replacement_module_cpp.insert(std::make_pair(ADD_MESSAGES_TMPL, ""));
+    replacement_module_cpp.insert(std::make_pair(ARGS_TMPL, "IModule* module"));
+    replacement_module_cpp.insert(std::make_pair(ARGS_MEMBER_TMPL, ": m_module(module)"));
+    replacement_module_cpp.insert(std::make_pair(INCLUDES_TMPL, includes));
+    loadAndReplace(replacement_module_cpp, module_cpp_data);
+    saveInFile(m_folderPath + "/" + object->GetName() + MODULE_CLIENT_POSTFIX + ".cpp", module_cpp_data);
 }
 
 void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parameter)
@@ -241,6 +281,9 @@ void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parame
     include.append(nameLower);
     include.append(";\n");
     include.append("#pragma warning(default:4244 4267)\n");
+    std::string functionsStub("    friend class ");
+    functionsStub.append(object->GetName() + MODULE_SERVER_POSTFIX);
+    functionsStub.append(";");
     std::map<std::string, std::string> replacement_module_h;
     replacement_module_h.insert(std::make_pair(HEADER_TMPL, getIfnDefHeader(object->GetName() + MODULE_CLIENT_POSTFIX)));
     replacement_module_h.insert(std::make_pair(INCLUDES_TMPL, include));
@@ -249,9 +292,9 @@ void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parame
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_PROXY_TMPL, content));
     replacement_module_h.insert(std::make_pair(FUNCTIONS_PROXY_TMPL, functions));
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_STUB_TMPL, ""));
-    replacement_module_h.insert(std::make_pair(FUNCTIONS_STUB_TMPL, ""));
-    replacement_module_h.insert(std::make_pair(ARGS_TMPL, "Module* module"));
-    replacement_module_h.insert(std::make_pair(ARGS_MEMBER_TMPL, "Module* m_module;"));
+    replacement_module_h.insert(std::make_pair(FUNCTIONS_STUB_TMPL, functionsStub));
+    replacement_module_h.insert(std::make_pair(ARGS_TMPL, "IModule* module"));
+    replacement_module_h.insert(std::make_pair(ARGS_MEMBER_TMPL, "IModule* m_module;"));
     replacement_module_h.insert(std::make_pair(INHERITE_TMPL, ""));
     loadAndReplace(replacement_module_h, module_h_data);
     saveInFile(m_folderPath + "/" + object->GetName() + MODULE_CLIENT_POSTFIX + ".h", module_h_data);

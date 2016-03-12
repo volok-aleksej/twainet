@@ -22,7 +22,13 @@ typedef DeamonMessage<SetConfig, Module> SetConfigMessage;
 typedef DeamonMessage<GetConfig, Module> GetConfigMessage;
 typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
 
-class Module
+class IModule
+{
+public:
+    virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path) = 0;
+};
+
+class Module : protected IModule
 {
 public:
 	Module(const std::string& moduleName, Twainet::IPVersion ipv = Twainet::IPV4, bool isCoord = false)
@@ -196,7 +202,7 @@ protected:
 		return false;
 	}
 	
-	bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path)
+	virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path)
 	{
 		bool ret = false;
 		char* data = 0;

@@ -39,14 +39,14 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
         result.append(object->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
         result.append("> ");
         result.append(retObject->GetName());
-        result.append("Message;\n    ");
+        result.append("ResultMessage;\n    ");
         result.append("void onMessage(const ");
         result.append(object->GetName());
         result.append("_result& msg, const Twainet::ModuleName& path);\n");
     }
-    else if(retObject && parameter == FUNCTIONS_STUB_TMPL)
+    else if(retObject && parameter == FUNCTIONS_PROXY_TMPL)
     {
-        result.append("     virtual ");
+        result.append("    ");
         result.append(TypesManager::GetCType(retObject->GetRetValue()));
         result.append(" ");
         result.append(retObject->GetName());
@@ -55,6 +55,28 @@ std::string FunctionGenerator::GenerateH(TIObject* object, const std::string& pa
         for(std::vector<TIObject*>::iterator it = childs.begin();
             it != childs.end(); it++)
         {
+            RetObject* varObject = dynamic_cast<RetObject*>(*it);
+            if(varObject)
+            {
+                result.append(TypesManager::GetCType(varObject->GetRetValue()));
+                result.append(" ");
+                result.append(varObject->GetName());
+                result.append(",");
+            }
+        }
+        result.append("const Twainet::ModuleName& path);\n");
+    }
+    else if(retObject && parameter == FUNCTIONS_STUB_TMPL)
+    {
+        result.append("    virtual ");
+        result.append(TypesManager::GetCType(retObject->GetRetValue()));
+        result.append(" ");
+        result.append(retObject->GetName());
+        result.append("(");
+        std::vector<TIObject*> childs = object->GetChilds();
+        for(std::vector<TIObject*>::iterator it = childs.begin();
+            it != childs.end(); it++)
+        {            
             RetObject* varObject = dynamic_cast<RetObject*>(*it);
             if(varObject)
             {
@@ -91,13 +113,13 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         for(std::vector<TIObject*>::iterator it = childs.begin();
             it != childs.end(); it++)
         {
-            if(it != childs.begin())
-            {
-                onMessageContent.append(",");
-            }
             RetObject* varObject = dynamic_cast<RetObject*>(*it);
             if(varObject)
             {
+                if(it != childs.begin())
+                {
+                    onMessageContent.append(",");
+                }
                 onMessageContent.append("msg.");
                 onMessageContent.append(varObject->GetName());
                 onMessageContent.append("()");
@@ -124,12 +146,22 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         result.append("::fireReturn(const ");
         result.append(retObject->GetName());
         result.append("_result& msg, const Twainet::ModuleName& path)\n{\n    ");
-        result.append("DeamonMessage<");
-        result.append(retObject->GetName());
-        result.append("_result, ");
         result.append(retObject->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
-        result.append("> retMsg(0, msg);\n    ");
+        result.append("::");
+        result.append(retObject->GetName());
+        result.append("ResultMessage retMsg(0, msg);\n    ");
         result.append("toMessage(retMsg, path);\n");
+        result.append("}\n");
+    }
+    else if(retObject && parameter == CONTENT_DECLARE_PROXY_TMPL)
+    {
+        std::string onMessageContent("\n");
+        result.append("void ");
+        result.append(retObject->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
+        result.append("::onMessage(const ");
+        result.append(retObject->GetName());
+        result.append("_result& msg, const Twainet::ModuleName& path)\n{\n    ");
+        result.append(onMessageContent);
         result.append("}\n");
     }
     else if(retObject && parameter == ADD_MESSAGES_TMPL)
@@ -156,7 +188,7 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
                 if(it != childs.begin())
                 {
                     result.append(",");
-                }
+                }                
                 result.append(TypesManager::GetCType(varObject->GetRetValue()));
                 result.append(" ");
                 result.append(varObject->GetName());
@@ -165,6 +197,41 @@ std::string FunctionGenerator::GenerateCPP(TIObject* object, const std::string& 
         result.append(")\n{\n    ");
         result.append(FUNCTIONS_APP_TMPL);
         result.append("\n}\n");
+    }
+    else if(retObject && parameter == FUNCTIONS_PROXY_TMPL)
+    {
+        result.append(TypesManager::GetCType(retObject->GetRetValue()));
+        result.append(" ");
+        result.append(retObject->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
+        result.append("::");
+        result.append(retObject->GetName());
+        result.append("(");
+        std::string fillingMsg;
+        std::vector<TIObject*> childs = object->GetChilds();
+        for(std::vector<TIObject*>::iterator it = childs.begin();
+            it != childs.end(); it++)
+        {
+            RetObject* varObject = dynamic_cast<RetObject*>(*it);
+            if(varObject)
+            {
+                result.append(TypesManager::GetCType(varObject->GetRetValue()));
+                result.append(" ");
+                result.append(varObject->GetName());
+                result.append(",");
+                fillingMsg.append("msg.set_");
+                fillingMsg.append(varObject->GetName());
+                fillingMsg.append("(");
+                fillingMsg.append(varObject->GetName());
+                fillingMsg.append(");\n    ");
+            }
+        }
+        result.append("const Twainet::ModuleName& path)\n{\n    ");
+        result.append(retObject->GetParent()->GetName() + MODULE_SERVER_POSTFIX);
+        result.append("::");
+        result.append(retObject->GetName());
+        result.append("Message msg(0);\n    ");
+        result.append(fillingMsg);
+        result.append("m_module->toMessage(msg, path);\n}\n");
     }
     else if(retObject && parameter == FUNCTIONS_APP_TMPL)
     {
