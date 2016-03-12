@@ -47,6 +47,12 @@ set (SRC_${PROJECT_NAME}
     generator/generators/module_generator.cpp
     generator/generators/function_generator.cpp
     generator/generators/var_generator.cpp
+    generator/generators/helpers/function_proxy.cpp
+    generator/generators/helpers/function_stub.cpp
+    generator/generators/helpers/content_stub.cpp
+    generator/generators/helpers/content_proxy.cpp
+    generator/generators/helpers/function_app.cpp
+    generator/generators/helpers/add_message.cpp
     )
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/resources)

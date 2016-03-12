@@ -14,6 +14,8 @@ public:
     virtual std::string GenerateH(TIObject* object, const std::string& parameter);
     virtual std::string GenerateCPP(TIObject* object, const std::string& parameter);
     virtual std::string GenerateProto(TIObject* object, const std::string& parameter);
+private:
+    std::map<std::string, Helper*> m_helpers;
 };
 
 #endif/*FUNCTION_GENERATOR_H*/

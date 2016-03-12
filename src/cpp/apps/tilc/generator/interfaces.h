@@ -28,6 +28,16 @@
 
 #include "compiler/ti_objects.h"
 
+class Helper
+{
+public:
+    virtual ~Helper(){}
+    
+    virtual std::string GenerateH(TIObject* object) = 0;
+    virtual std::string GenerateCPP(TIObject* object) = 0;
+    virtual std::string GenerateProto(TIObject* object) = 0;
+};
+
 class Generator
 {
 public:
