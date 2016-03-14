@@ -275,6 +275,8 @@ void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parame
     LOAD_RESOURCE(apps_tilc_resources_module_h_tmpl, module_h_str);
     std::string module_h_data(module_h_str.data(), module_h_str.size());
     std::string include("#include <string>\n");
+    include.append("#include <map>\n");
+    include.append("#include \"include/semaphore.h\"\n");
     include.append("#pragma warning(disable:4244 4267)\n");
     include.append("#include \"messages/");
     include.append(nameLower);
@@ -286,6 +288,8 @@ void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parame
     std::string functionsStub("    friend class ");
     functionsStub.append(object->GetName() + MODULE_SERVER_POSTFIX);
     functionsStub.append(";");
+    std::string argMember("IModule* m_module;\n");
+    argMember.append("std::map<int, Semaphore*> m_requests;\n");
     std::map<std::string, std::string> replacement_module_h;
     replacement_module_h.insert(std::make_pair(HEADER_TMPL, getIfnDefHeader(object->GetName() + MODULE_CLIENT_POSTFIX)));
     replacement_module_h.insert(std::make_pair(INCLUDES_TMPL, include));
@@ -296,7 +300,7 @@ void ModuleGenerator::generateProxyH(TIObject* object, const std::string& parame
     replacement_module_h.insert(std::make_pair(CONTENT_DECLARE_STUB_TMPL, ""));
     replacement_module_h.insert(std::make_pair(FUNCTIONS_STUB_TMPL, functionsStub));
     replacement_module_h.insert(std::make_pair(ARGS_TMPL, "IModule* module"));
-    replacement_module_h.insert(std::make_pair(ARGS_MEMBER_TMPL, "IModule* m_module;"));
+    replacement_module_h.insert(std::make_pair(ARGS_MEMBER_TMPL, argMember));
     replacement_module_h.insert(std::make_pair(INHERITE_TMPL, ""));
     loadAndReplace(replacement_module_h, module_h_data);
     saveInFile(m_folderPath + "/" + object->GetName() + MODULE_CLIENT_POSTFIX + ".h", module_h_data);

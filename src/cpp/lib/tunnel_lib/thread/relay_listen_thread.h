@@ -2,12 +2,12 @@
 #define RELAY_LISTEN_THREAD_H
 
 #include <map>
-#include "tunnel_lib/thread/tunnel_server_listen_address.h"
+#include "include/semaphore.h"
 #include "thread_lib/thread/thread_impl.h"
-#include "thread_lib/common/semafor.h"
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/message/connector_messages.h"
+#include "tunnel_lib/thread/tunnel_server_listen_address.h"
 
 class ListenThread;
 

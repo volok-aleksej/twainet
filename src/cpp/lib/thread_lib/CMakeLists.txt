@@ -7,7 +7,6 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 set (SRC_${PROJECT_NAME}
-    common/semafor.cpp
     common/timer.cpp
     common/managers_container.cpp
     thread/thread.cpp

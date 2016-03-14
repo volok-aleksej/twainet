@@ -8,7 +8,7 @@
 #include "connector_lib/signal/signal_owner.h"
 #include "connector_lib/signal/signal_receiver.h"
 #include "connector_lib/message/connector_messages.h"
-#include "thread_lib/common/semafor.h"
+#include "include/semaphore.h"
 
 class UDPSocket;
 

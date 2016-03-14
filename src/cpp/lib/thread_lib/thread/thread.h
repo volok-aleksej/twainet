@@ -2,7 +2,7 @@
 #define THREAD_H
 
 #include "include/critical_section.h"
-#include "../common/semafor.h"
+#include "include/semaphore.h"
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN

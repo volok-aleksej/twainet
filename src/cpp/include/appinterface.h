@@ -1,13 +1,7 @@
 #ifndef APP_INTERFACE_H
 #define APP_INTERFACE_H
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <semaphore.h>
-#define INFINITE    -1
-#endif/*WIN32*/
-
+#include "semaphore.h"
 #include "singleton.h"
 #include "twainet.h"
 
@@ -29,15 +23,7 @@ public:
 		Twainet::InitLibrary(tc);
 		InitializeApplication();
         
-#ifdef WIN32
-        m_semafor = CreateSemaphore(NULL, 0, 1, NULL);
-        DWORD ret = WaitForSingleObject(m_semafor, INFINITE);
-        CloseHandle(m_semafor);
-#else
-        sem_init(&m_semafor, 0, 0);
-        int ret = sem_wait(&m_semafor);
-        sem_destroy(&m_semafor);
-#endif/*WIN32*/
+        m_semafor.Wait(INFINITE);
         
         ShutdownApplication();
 		Twainet::CloseLibrary();
@@ -47,12 +33,7 @@ public:
 	
 	int Stop()
 	{
-#ifdef WIN32
-        ReleaseSemaphore(m_semafor, 1, NULL);
-#else
-        sem_post(&m_semafor);
-#endif/*WIN32*/
-        
+        m_semafor.Release();
 		return 0;
 	}
 	
@@ -164,11 +145,7 @@ public:
 	}
 	
 private:
-#ifdef WIN32
-    HANDLE m_semafor;
-#else
-    sem_t m_semafor;
-#endif/*WIN32*/
+    Semaphore m_semafor;
 };
 
 #endif/*APP_INTERFACE_H*/
