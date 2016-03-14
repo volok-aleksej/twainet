@@ -63,7 +63,7 @@ std::string ContentStub::GenerateCPP(TIObject* object)
             {
                 onMessageContent.append(",");
             }
-            onMessageContent.append("msg.");
+            onMessageContent.append("msg.arg_");
             onMessageContent.append(varObject->GetName());
             onMessageContent.append("()");
         }
@@ -71,6 +71,7 @@ std::string ContentStub::GenerateCPP(TIObject* object)
     onMessageContent.append(");\n    ");
     onMessageContent.append(retObject->GetName());
     onMessageContent.append("_result retMsg;\n    ");
+    onMessageContent.append("retMsg.set_id(msg.id());\n    ");
     if(!protoRetType.empty())
     {
         onMessageContent.append("retMsg.set_result(ret);\n    ");

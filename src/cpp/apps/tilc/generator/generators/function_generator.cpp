@@ -59,7 +59,8 @@ std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string
 {
     std::string result("message ");
     result.append(object->GetName());
-    result.append("_ {\n");    
+    result.append("_ {\n");
+    result.append("    required int32 id = 1;\n");
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
@@ -71,10 +72,10 @@ std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string
             if(!rtype.empty())
             {
                 char num[10] = {0};
-                sprintf(num, "%d", int(it - childs.begin()) + 1);
+                sprintf(num, "%d", int(it - childs.begin()) + 2);
                 result.append("    required ");
                 result.append(rtype);
-                result.append(" ");
+                result.append(" arg_");
                 result.append(varObject->GetName());
                 result.append(" = ");
                 result.append(num);
@@ -89,11 +90,12 @@ std::string FunctionGenerator::GenerateProto(TIObject* object, const std::string
     result.append("message ");
     result.append(object->GetName());
     result.append("_result {\n");
+    result.append("    required int32 id = 1;\n");
     if(!rtype.empty())
     {
         result.append("    required ");
         result.append(rtype);
-        result.append(" result = 1;\n");
+        result.append(" result = 2;\n");
     }
     result.append("}\n");
     return result;

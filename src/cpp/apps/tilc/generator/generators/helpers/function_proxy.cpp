@@ -55,7 +55,7 @@ std::string FunctionProxy::GenerateCPP(TIObject* object)
     result.append("::");
     result.append(retObject->GetName());
     result.append("(");
-    std::string fillingMsg;
+    std::string fillingMsg("msg.set_id(rand());\n    ");
     std::vector<TIObject*> childs = object->GetChilds();
     for(std::vector<TIObject*>::iterator it = childs.begin();
         it != childs.end(); it++)
@@ -67,7 +67,7 @@ std::string FunctionProxy::GenerateCPP(TIObject* object)
             result.append(" ");
             result.append(varObject->GetName());
             result.append(",");
-            fillingMsg.append("msg.set_");
+            fillingMsg.append("msg.set_arg_");
             fillingMsg.append(varObject->GetName());
             fillingMsg.append("(");
             fillingMsg.append(varObject->GetName());
