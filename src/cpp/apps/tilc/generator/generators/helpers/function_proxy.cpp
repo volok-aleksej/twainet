@@ -80,7 +80,13 @@ std::string FunctionProxy::GenerateCPP(TIObject* object)
     result.append(retObject->GetName());
     result.append("Message msg(0);\n    ");
     result.append(fillingMsg);
-    result.append("m_module->toMessage(msg, path);\n}\n");
+    result.append("Semaphore* sm = new Semaphore;\n    ");
+    result.append("m_requests.insert(std::make_pair(msg.id(), sm));\n    ");
+    result.append("m_module->toMessage(msg, path);\n    ");
+    result.append("sm->Wait(INFINITE);\n    ");
+    result.append("m_requests.erase(m_requests.find(msg.id()));\n    ");
+    result.append("delete sm;\n");
+    result.append("}\n");
     return result;
 }
 

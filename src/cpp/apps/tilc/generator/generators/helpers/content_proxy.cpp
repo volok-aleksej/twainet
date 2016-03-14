@@ -40,13 +40,16 @@ std::string ContentProxy::GenerateCPP(TIObject* object)
         return result;
     }
 
-    std::string onMessageContent("\n");
     result.append("void ");
     result.append(retObject->GetParent()->GetName() + MODULE_CLIENT_POSTFIX);
     result.append("::onMessage(const ");
     result.append(retObject->GetName());
     result.append("_result& msg, const Twainet::ModuleName& path)\n{\n    ");
-    result.append(onMessageContent);
+    result.append("Semaphore* sm = m_requests[msg.id()];\n    ");
+    result.append("if(sm)\n    ");
+    result.append("{\n      ");
+    result.append("sm->Release();\n    ");
+    result.append("}\n");
     result.append("}\n");
     return result;
 }
