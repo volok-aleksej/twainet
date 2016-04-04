@@ -101,7 +101,7 @@ void ClientServerModule::OnAuthFailed()
 	LOG_INFO("Client authorization failed. m_moduleName %s\n", m_moduleName.GetModuleNameString().c_str());
 }
 
-void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList)
+void ClientServerModule::FillIPCObjectList(std::vector<IPCObject>& ipcList)
 {
 	std::vector<IPCObject>::iterator it;
 	for(it = ipcList.begin(); it != ipcList.end(); it++)
@@ -113,7 +113,7 @@ void ClientServerModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vecto
 		}
 	}
 	
-	IPCModule::FillIPCObjectList(msg, ipcList);
+	IPCModule::FillIPCObjectList(ipcList);
 }
 
 void ClientServerModule::ManagerFunc()

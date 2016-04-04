@@ -148,7 +148,7 @@ void TunnelModule::OnTunnelConnected(const std::string& sessionId, TunnelConnect
 	LOG_INFO("Creation of tunnel successful: from %s to %s type %d\n", m_ownSessionId.c_str(), sessionId.c_str(), type);
 }
 
-void TunnelModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList)
+void TunnelModule::FillIPCObjectList(std::vector<IPCObject>& ipcList)
 {
 	std::vector<IPCObject>::iterator it;
 	for(it = ipcList.begin(); it != ipcList.end(); it++)
@@ -159,7 +159,7 @@ void TunnelModule::FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCO
 		}
 	}
 	
-	ClientServerModule::FillIPCObjectList(msg, ipcList);
+	ClientServerModule::FillIPCObjectList(ipcList);
 }
 
 void TunnelModule::CreateLocalListenThread(const std::string& extSessionId)

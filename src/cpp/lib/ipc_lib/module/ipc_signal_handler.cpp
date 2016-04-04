@@ -284,5 +284,17 @@ void IPCSignalHandler::getListenPort(const ListenerParamMessage& msg)
 void IPCSignalHandler::onIPCObjectList(const IPCObjectListMessage& msg)
 {
 	std::vector<IPCModule::IPCObject> list = m_module->m_ipcObject.GetObjectList();
-	m_module->FillIPCObjectList(const_cast<IPCObjectListMessage&>(msg), list);
+	m_module->FillIPCObjectList(list);
+	std::vector<IPCModule::IPCObject>::iterator it;
+	for(it = list.begin(); it != list.end(); it++)
+	{
+		if(it->m_accessId != msg.access_id())
+			continue;
+
+		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
+		ipcObject->set_ip(it->m_ip);
+		ipcObject->set_port(it->m_port);
+		ipcObject->set_access_id(it->m_accessId);
+		*ipcObject->mutable_ipc_name() = it->m_ipcName;
+	}
 }

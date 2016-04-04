@@ -23,7 +23,7 @@ protected:
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnTunnelConnectFailed(const std::string& sessionId);
 	virtual void OnTunnelConnected(const std::string& sessionId, TunnelConnector::TypeConnection type);
-	virtual void FillIPCObjectList(IPCObjectListMessage& msg, std::vector<IPCObject>& ipcList);
+	virtual void FillIPCObjectList(std::vector<IPCObject>& ipcList);
 private:
 	friend class ClientSignalHandler;
 	friend class ServerSignalHandler;
