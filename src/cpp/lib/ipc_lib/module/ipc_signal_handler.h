@@ -24,6 +24,7 @@ public:
 	void onIPCObjectList(const IPCObjectListMessage& msg);
 	void onUpdateIPCObject(const UpdateIPCObjectMessage& msg);
 	void onIPCMessage(const IPCProtoMessage& msg);
+    void onIPCMessage(const IPCMessageSignal& msg);
 	void onConnected(const ConnectedMessage& msg);
 	void onInternalConnectionStatusMessage(const InternalConnectionStatusMessage& msg);
 private:

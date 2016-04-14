@@ -312,6 +312,7 @@ void IPCModule::AddConnector(Connector* conn)
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ListenerParamMessage, getListenPort));
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectedMessage, onConnected));
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCProtoMessage, onIPCMessage));
+        connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCMessageSignal, onIPCMessage));
 		
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
 		
@@ -374,6 +375,39 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 	return retList;
 }
 
+std::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& target)
+{
+    std::vector<IPCObjectName> retpath;
+    std::vector<IPCObject> moduleList = m_modules.GetObjectList();
+    for(std::vector<IPCObject>::iterator it = moduleList.begin();
+        it != moduleList.end(); it++)
+    {
+        if (target == it->m_ipcName)
+        {
+            retpath.push_back(target);
+            return retpath;
+        }
+    }
+    
+    bool throughtCoordinator = target.host_name().empty();
+    std::vector<IPCObject> ipcList = m_ipcObject.GetObjectList();
+    for(std::vector<IPCObject>::iterator it = ipcList.begin();
+        it != ipcList.end(); it++)
+    {
+        if(!it->m_ipcName.conn_id().empty())
+        {
+            continue;
+        }
+        else if(throughtCoordinator &&  it->m_accessId == IPCModule::m_baseAccessId)
+        {
+            retpath.push_back(it->m_ipcName);
+            retpath.push_back(target);
+        }
+    }
+        
+    return retpath;
+}
+
 std::vector<IPCObjectName> IPCModule::GetConnectedModules()
 {
 	std::vector<IPCObjectName> retList;
@@ -402,7 +436,7 @@ std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 
 	return retList;
 }
-
+    
 void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
 {	
 	IPCObject object(moduleName);

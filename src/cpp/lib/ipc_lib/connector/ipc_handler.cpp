@@ -167,7 +167,9 @@ void IPCHandler::onMessage(const IPCMessage& msg)
 	}
 	else if(newMsg.ipc_path_size())
 	{
-		IPCProtoMessage protoMsg(this, newMsg);
+        IPCMessageSignal sigMsg(newMsg);
+        m_connector->onSignal(sigMsg);
+		IPCProtoMessage protoMsg(this, sigMsg);
 		m_connector->onIPCSignal(protoMsg);
 	}
 }

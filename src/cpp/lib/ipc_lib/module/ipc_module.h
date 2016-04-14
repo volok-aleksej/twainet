@@ -87,6 +87,7 @@ public:
 	std::vector<IPCObjectName> GetConnectedModules();
 	std::vector<IPCObjectName> GetInternalConnections();
 protected:
+    virtual std::vector<IPCObjectName> GetTargetPath(const IPCObjectName& target);
 	virtual void OnNewConnector(Connector* connector);
 	virtual void OnFireConnector(const std::string& moduleName);
 	virtual void OnConnected(const std::string& moduleName);

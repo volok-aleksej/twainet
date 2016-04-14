@@ -132,6 +132,21 @@ void IPCSignalHandler::onIPCMessage(const IPCProtoMessage& msg)
 	m_module->OnMessage(msg.message_name(), path, msg.message());
 }
 
+void IPCSignalHandler::onIPCMessage(const IPCMessageSignal& msg)
+{
+    IPCObjectName newPath(msg.ipc_path(0));
+    std::vector<IPCObjectName> path = m_module->GetTargetPath(newPath);
+    if(path.size() != 1)
+    {
+        const_cast<IPCMessageSignal&>(msg).clear_ipc_path();
+        for(std::vector<IPCObjectName>::iterator it = path.begin();
+            it != path.end(); it++)
+        {
+            *const_cast<IPCMessageSignal&>(msg).add_ipc_path() = *it;
+        }
+    }
+}
+
 void IPCSignalHandler::onAddIPCObject(const AddIPCObjectMessage& msg)
 {
 	IPCModule::IPCObject object(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
