@@ -5,6 +5,10 @@
 
 #define COORDINATOR_NAME	"twndeamon"
 
+class DeamonModule;
+
+typedef DeamonMessage<Test, DeamonModule> TestMessage;
+
 class DeamonModule : public Module
 {
 public:
@@ -17,6 +21,9 @@ protected:
 protected:
 	virtual void OnConfigChanged(const SetConfig& msg);
 	
+private:
+	template<class TMessage, class THandler> friend class DeamonMessage;
+	void onMessage(const Test& test, Twainet::ModuleName path);
 private:
 	void ReadConfig();
 	

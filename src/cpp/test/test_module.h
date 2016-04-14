@@ -11,6 +11,10 @@ public:
 	
 public:
 	virtual void OnModuleListChanged();
+	virtual void OnServerConnected(const char* sessionId);
+private:
+	template<class TMessage, class THandler> friend class DeamonMessage;
+	void onMessage(const Test& test, Twainet::ModuleName path);
 };
 
 #endif/*TEST_MODULE_H*/

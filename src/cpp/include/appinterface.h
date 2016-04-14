@@ -33,7 +33,7 @@ public:
 	
 	int Stop()
 	{
-        m_semafor.Release();
+		m_semafor.Set();
 		return 0;
 	}
 	

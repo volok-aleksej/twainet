@@ -3,8 +3,9 @@
 #include <stdio.h>
 
 TestModule::TestModule()
-: Module(CreateGUID(), Twainet::IPV4, false)
+: Module("twntest", Twainet::IPV4, false)
 {
+  AddMessage(new DeamonMessage<Test, TestModule>(this));
 }
 
 TestModule::~TestModule()
@@ -29,4 +30,21 @@ void TestModule::OnModuleListChanged()
 	printf("\n");
 	
 	delete names;
+}
+
+void TestModule::OnServerConnected(const char* sessionId)
+{
+	Module::OnServerConnected(sessionId);
+	
+	Twainet::ModuleName moduleName = {0};
+	strcpy(moduleName.m_name, "twntest");
+	strcpy(moduleName.m_host, sessionId);
+	DeamonMessage<Test, TestModule> cnMsg(this);
+	toMessage(cnMsg, moduleName);
+}
+
+
+void TestModule::onMessage(const Test& test, Twainet::ModuleName path)
+{
+  printf("test message\n");
 }

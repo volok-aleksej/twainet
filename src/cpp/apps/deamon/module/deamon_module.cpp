@@ -20,6 +20,8 @@ DeamonModule::DeamonModule()
 	Twainet::SetUsersList(m_module, &m_userPassword, 1);
 	int port = Config::GetInstance().GetLocalServerPort();
 	Twainet::CreateServer(m_module, port, Twainet::IPV4, true);
+	
+	AddMessage(new TestMessage(this));
 }
 
 DeamonModule::~DeamonModule()
@@ -57,7 +59,11 @@ void DeamonModule::OnConfigChanged(const SetConfig& msg)
 	Config::GetInstance().SetLocalServerPort(msg.local_port());
 	Config::GetInstance().SetTrustedFileName(msg.trusted_file_name());
 }
-	
+
+void DeamonModule::onMessage(const Test& test, Twainet::ModuleName path)
+{
+}
+
 void DeamonModule::ReadConfig()
 {
 	std::string fileName = Config::GetInstance().GetTrustedFileName();

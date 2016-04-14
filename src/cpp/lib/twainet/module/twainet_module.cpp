@@ -15,6 +15,10 @@ TwainetModule::~TwainetModule()
 std::vector<IPCObjectName> TwainetModule::GetTargetPath(const IPCObjectName& target)
 {
 	std::vector<IPCObjectName> retpath;
+	if(m_moduleName == target)
+	{
+		return retpath;
+	}
 	std::vector<IPCObject> moduleList = m_modules.GetObjectList();
 	for(std::vector<IPCObject>::iterator it = moduleList.begin();
 		it != moduleList.end(); it++)
@@ -27,7 +31,7 @@ std::vector<IPCObjectName> TwainetModule::GetTargetPath(const IPCObjectName& tar
 	}
 	
 	bool throughtCoordinator = target.host_name().empty();
-    bool throughtServer = !target.host_name().empty();
+	bool throughtServer = !target.host_name().empty();
 	std::vector<IPCObject> ipcList = m_ipcObject.GetObjectList();
 	for(std::vector<IPCObject>::iterator it = ipcList.begin();
 		it != ipcList.end(); it++)
@@ -42,10 +46,10 @@ std::vector<IPCObjectName> TwainetModule::GetTargetPath(const IPCObjectName& tar
 			retpath.push_back(target);
 		}
 		else if(throughtServer && it->m_ipcName.module_name() == ClientServerModule::m_serverIPCName)
-        {
-            retpath.push_back(it->m_ipcName);
-            retpath.push_back(IPCObjectName(target.module_name()));
-        }
+		{
+			retpath.push_back(it->m_ipcName);
+			retpath.push_back(IPCObjectName(target.module_name()));
+		}
 	}
 		
 	return retpath;

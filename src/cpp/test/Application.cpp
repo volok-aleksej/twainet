@@ -105,7 +105,6 @@ void ApplicationTest::OnMessageRecv(Twainet::Module module, const Twainet::Messa
 	char name[255] = {0};
 	int size = 255;
 	Twainet::GetModuleNameString(msg.m_target, name, size);
-	printf("datalen: %u, data: %s from %s\n", msg.m_dataLen, msg.m_data, name);
 	m_module->OnMessageRecv(msg);
 }
 

@@ -378,6 +378,11 @@ std::vector<IPCObjectName> IPCModule::GetIPCObjects()
 std::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& target)
 {
     std::vector<IPCObjectName> retpath;
+    if(m_moduleName == target)
+    {
+      return retpath;
+    }
+    
     std::vector<IPCObject> moduleList = m_modules.GetObjectList();
     for(std::vector<IPCObject>::iterator it = moduleList.begin();
         it != moduleList.end(); it++)
