@@ -116,7 +116,7 @@ void TwainetModule::OnInternalConnection(const std::string& moduleName, Connecti
 {
 	LOG_INFO("internal connection status: moduleName - %s, status - %d, port - %d\n",
 		 const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str(), status, port);
-	Application::GetInstance().AddNotifycationMessage(new InternalConnectionStatusChanged(this, moduleName, status, port));	
+	Application::GetInstance().AddNotifycationMessage(new InternalConnectionStatusChanged(this, moduleName, status, port));
 }
 
 void TwainetModule::OnIPCObjectsChanged()
