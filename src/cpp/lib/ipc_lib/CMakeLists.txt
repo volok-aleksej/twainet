@@ -17,20 +17,6 @@ if(NOT USE_SYSTEM_PROTOBUF)
                                                                           --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
                                                                           ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto
                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    add_custom_command(OUTPUT
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.cc
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.h
-                       PRE_BUILD COMMAND
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                            --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                            ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.proto) 
-    add_custom_command(OUTPUT
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.cc
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.h
-                       PRE_BUILD COMMAND
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                            --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                            ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../..
@@ -47,20 +33,6 @@ else(NOT USE_SYSTEM_PROTOBUF)
                             --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
                             ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto
                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-    add_custom_command(OUTPUT
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.cc
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.pb.h
-                       PRE_BUILD COMMAND
-                       protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                              --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                              ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/ipc.proto) 
-    add_custom_command(OUTPUT
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.cc
-                       ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.pb.h
-                       PRE_BUILD COMMAND
-                       protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                              --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                              ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/interconn.proto)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../..

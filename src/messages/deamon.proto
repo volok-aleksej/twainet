@@ -39,3 +39,7 @@ message SetConfig
 message GetConfig
 {
 }
+
+message Test
+{
+}
