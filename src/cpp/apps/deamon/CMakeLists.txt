@@ -7,11 +7,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 if(NOT USE_SYSTEM_PROTOBUF)
-    execute_process(COMMAND
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                         --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                                                                         ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    set(PROTOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/../..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../..
@@ -19,18 +15,14 @@ if(NOT USE_SYSTEM_PROTOBUF)
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../external/protobuf-2.5.0/src)
 else(NOT USE_SYSTEM_PROTOBUF)
-    execute_process(COMMAND
-                    protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                           --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
-                           ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.proto
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    set(PROTOC_PATH protoc)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/../.. 
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../lib
                         ${CMAKE_CURRENT_SOURCE_DIR}/../../external/udt4/src)
 endif(NOT USE_SYSTEM_PROTOBUF)
-		   
+
 set (SRC_${PROJECT_NAME} 
 	../../common/common_func.cpp
 	../../common/file.cpp
@@ -38,16 +30,25 @@ set (SRC_${PROJECT_NAME}
 	../../common/service_manager.cpp
 	../../common/dir.cpp
 	../../common/ini_file.cpp
-	../../../messages/deamon.pb.cc
 	application/application.cpp 
 	application/main.cpp 
 	application/config.cpp 
 	module/deamon_module.cpp 
-    ) 
+    )
 
-set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})  
+set (SRC_GEN_${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h)
 
-add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}}) 
+set_source_files_properties(${SRC_GEN_${PROJECT_NAME}} PROPERTIES GENERATED TRUE)
+add_custom_command( OUTPUT ${SRC_GEN_${PROJECT_NAME}}
+                    COMMAND ${PROTOC_PATH}
+                    ARGS --proto_path=. --cpp_out=. deamon.proto
+                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages
+                    DEPENDS ../../../messages/deamon.proto)
+                    
+set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE})
+
+add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}} ${SRC_GEN_${PROJECT_NAME}}) 
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/${PROJECT_NAME}) 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../output/work/${CMAKE_BUILD_TYPE}) 
 

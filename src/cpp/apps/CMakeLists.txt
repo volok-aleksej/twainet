@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
-project(twainet_apps)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
