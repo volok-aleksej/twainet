@@ -4,7 +4,7 @@
 #include "ipc_module.h"
 #include "thread_lib/thread/thread_manager.h"
 #include "common/common.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 #include "common/user.h"
 
 IPCSignalHandler::IPCSignalHandler(IPCModule* module)

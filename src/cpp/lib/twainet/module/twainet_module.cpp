@@ -1,7 +1,7 @@
 #include "twainet_module.h"
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "application/application.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 
 TwainetModule::TwainetModule(const IPCObjectName& ipcName, int ipv)
 	: TunnelModule(ipcName, new IPCConnectorFactory<IPCConnector>(ipcName), ipv)

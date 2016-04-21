@@ -2,7 +2,7 @@
 #include "message/client_server_messages.h"
 #include "module/client_server_module.h"
 #include "common/common_func.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 
 class ClientSendMessage : public DataMessage
 {

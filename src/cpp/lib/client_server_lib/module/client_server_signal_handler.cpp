@@ -3,7 +3,7 @@
 #include "client_server_signal_handler.h"
 #include "client_server_module.h"
 #include "thread_lib/thread/thread_manager.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 
 ClientServerSignalHandler::ClientServerSignalHandler(ClientServerModule* module)
 : m_module(module)

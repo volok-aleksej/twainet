@@ -2664,7 +2664,7 @@ public:
 
 #include <wchar.h>
 #define CLANG_NEEDS_THESE_ONE_DAY
-#include "ConvertUTF.h"
+#include "utils/ConvertUTF.h"
 
 /**
  * Converts UTF-8 to a wchar_t (or equivalent) using the Unicode reference

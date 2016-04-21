@@ -12,7 +12,7 @@
 #include "include/twainet.h"
 #include "application.h"
 #include "utils/utils.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 
 #pragma warning(disable: 4273)
 

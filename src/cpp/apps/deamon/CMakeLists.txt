@@ -32,12 +32,13 @@ set (SRC_${PROJECT_NAME}
 	../../common/ini_file.cpp
 	application/application.cpp 
 	application/main.cpp 
-	application/config.cpp 
+	application/config.cpp
 	module/deamon_module.cpp 
     )
 
-set (SRC_GEN_${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
-                     ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h)
+set (SRC_GEN_${PROJECT_NAME} 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/deamon.pb.h)
 
 set_source_files_properties(${SRC_GEN_${PROJECT_NAME}} PROPERTIES GENERATED TRUE)
 add_custom_command( OUTPUT ${SRC_GEN_${PROJECT_NAME}}

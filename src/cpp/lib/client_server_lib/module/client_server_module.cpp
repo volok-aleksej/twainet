@@ -5,7 +5,7 @@
 #include "connector_lib/socket/socket_factories.h"
 #include "ipc_lib/connector/ipc_connector_factory.h"
 #include "thread_lib/thread/thread_manager.h"
-#include "common/logger.h"
+#include "utils/logger.h"
 
 const std::string ClientServerModule::m_serverIPCName = "Server";
 const std::string ClientServerModule::m_clientIPCName = "Client";
