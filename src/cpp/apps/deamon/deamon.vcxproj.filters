@@ -57,14 +57,14 @@
     <ClCompile Include="..\..\common\dir.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\ConvertUTF.c">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\ini_file.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="application\config.cpp">
       <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\ConvertUTF.c">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +101,6 @@
     <ClInclude Include="..\..\common\dir.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\ConvertUTF.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\ini_file.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\module.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\ConvertUTF.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

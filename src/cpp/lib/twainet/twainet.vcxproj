@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\file.cpp" />
-    <ClCompile Include="..\..\common\logger.cpp" />
+    <ClCompile Include="..\..\utils\logger.cpp" />
     <ClCompile Include="..\..\utils\path_parser.cpp" />
     <ClCompile Include="application\application.cpp" />
     <ClCompile Include="application\dllmain.cpp" />
@@ -30,8 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\file.h" />
-    <ClInclude Include="..\..\common\logger.h" />
     <ClInclude Include="..\..\include\twainet.h" />
+    <ClInclude Include="..\..\utils\logger.h" />
     <ClInclude Include="..\..\utils\path_parser.h" />
     <ClInclude Include="..\..\version.h" />
     <ClInclude Include="application\application.h" />

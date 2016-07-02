@@ -404,18 +404,18 @@
 				RelativePath="..\..\common\file.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\common\logger.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\logger.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="utils"
 			>
+			<File
+				RelativePath="..\..\utils\logger.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\logger.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\utils\path_parser.cpp"
 				>

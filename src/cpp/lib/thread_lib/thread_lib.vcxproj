@@ -160,7 +160,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="common\managers_container.cpp" />
-    <ClCompile Include="common\semafor.cpp" />
     <ClCompile Include="thread\thread.cpp" />
     <ClCompile Include="thread\thread_impl.cpp" />
     <ClCompile Include="thread\thread_manager.cpp" />
@@ -169,9 +168,9 @@
     <ClInclude Include="..\..\include\critical_section.h" />
     <ClInclude Include="..\..\include\object_manager.h" />
     <ClInclude Include="..\..\include\ref.h" />
+    <ClInclude Include="..\..\include\semaphore.h" />
     <ClInclude Include="..\..\include\singleton.h" />
     <ClInclude Include="common\managers_container.h" />
-    <ClInclude Include="common\semafor.h" />
     <ClInclude Include="thread\thread.h" />
     <ClInclude Include="thread\thread_impl.h" />
     <ClInclude Include="thread\thread_manager.h" />

@@ -21,13 +21,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\messages\deamon.pb.cc" />
     <ClCompile Include="..\..\common\common_func.cpp" />
-    <ClCompile Include="..\..\common\ConvertUTF.c" />
     <ClCompile Include="..\..\common\dir.cpp" />
     <ClCompile Include="..\..\common\file.cpp" />
     <ClCompile Include="..\..\common\ini_file.cpp" />
     <ClCompile Include="..\..\common\process.cpp" />
     <ClCompile Include="..\..\common\service_manager.cpp" />
     <ClCompile Include="..\..\common\tstring.cpp" />
+    <ClCompile Include="..\..\utils\ConvertUTF.c" />
     <ClCompile Include="..\..\utils\path_parser.cpp" />
     <ClCompile Include="..\..\utils\utils.cpp" />
     <ClCompile Include="application\application.cpp" />
@@ -38,7 +38,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\messages\deamon.pb.h" />
     <ClInclude Include="..\..\common\common_func.h" />
-    <ClInclude Include="..\..\common\ConvertUTF.h" />
     <ClInclude Include="..\..\common\dir.h" />
     <ClInclude Include="..\..\common\file.h" />
     <ClInclude Include="..\..\common\ini_file.h" />
@@ -50,6 +49,7 @@
     <ClInclude Include="..\..\include\client_module_name.h" />
     <ClInclude Include="..\..\include\deamon_message.h" />
     <ClInclude Include="..\..\include\module.h" />
+    <ClInclude Include="..\..\utils\ConvertUTF.h" />
     <ClInclude Include="..\..\utils\path_parser.h" />
     <ClInclude Include="..\..\utils\utils.h" />
     <ClInclude Include="application\application.h" />

@@ -379,14 +379,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\common\ConvertUTF.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\common\ConvertUTF.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\common\dir.cpp"
 				>
 			</File>
@@ -442,6 +434,14 @@
 		<Filter
 			Name="utils"
 			>
+			<File
+				RelativePath="..\..\utils\ConvertUTF.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\utils\ConvertUTF.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\utils\path_parser.cpp"
 				>
