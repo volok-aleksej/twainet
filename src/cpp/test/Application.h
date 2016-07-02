@@ -11,7 +11,8 @@ public:
 	ApplicationTest();
 	~ApplicationTest();
 	
-public:
+protected:
+    friend class IApplication<ApplicationTest>;
 	void OnModuleCreationFailed(Twainet::Module module);
 	void OnServerCreationFailed(Twainet::Module module);
 	void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId);

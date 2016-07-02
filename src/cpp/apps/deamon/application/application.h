@@ -18,7 +18,8 @@ public:
 	
 	static std::string GetAppName();
 	static std::string GetDescription();
-public:
+protected:
+    friend class IApplication<DeamonApplication>;
 	virtual void OnModuleCreationFailed(Twainet::Module module);
 	virtual void OnServerCreationFailed(Twainet::Module module);
 	virtual void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId);
