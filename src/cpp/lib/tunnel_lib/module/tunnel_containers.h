@@ -63,4 +63,16 @@ public:
 	time_t m_creationTime;
 };
 
+class AvailableTypes : public AvailablePearTypes
+{
+public:
+    AvailableTypes();
+    AvailableTypes(const AvailablePearTypes& types);
+    virtual ~AvailableTypes();
+    
+    bool operator == (const AvailableTypes& types) const;
+    bool operator != (const AvailableTypes& types) const;
+    bool operator < (const AvailableTypes& types) const;
+};
+
 #endif/*TUNNEL_CONTAINERS_H*/

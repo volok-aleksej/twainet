@@ -22,7 +22,7 @@ ServerSignalHandler::~ServerSignalHandler()
 	
 void ServerSignalHandler::onPeerData(const PeerDataSignal& msg)
 {
-	LOG_INFO("Set tunnel Type: between %s %s type %d\n", const_cast<PeerDataSignal&>(msg).one_session_id().c_str(),
+	LOG_INFO("Set tunnel type: between %s %s type %d\n", const_cast<PeerDataSignal&>(msg).one_session_id().c_str(),
 							     const_cast<PeerDataSignal&>(msg).two_session_id().c_str(),
 							     const_cast<PeerDataSignal&>(msg).type());
 	PeerType peerData(msg);
@@ -30,6 +30,16 @@ void ServerSignalHandler::onPeerData(const PeerDataSignal& msg)
 	{
 		m_module->m_typePeers.UpdateObject(peerData);
 	}
+}
+
+void ServerSignalHandler::onAvailablePearTypes(const AvailablePearTypesSignal& msg)
+{
+    LOG_INFO("Set avalable tunnel types: with %s\n", const_cast<AvailablePearTypesSignal&>(msg).session_id().c_str());
+    AvailablePearTypes types(msg);
+    if(!m_module->m_avalablePeerTypes.AddObject(types))
+    {
+        m_module->m_avalablePeerTypes.UpdateObject(types);
+    }
 }
 
 void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
@@ -61,7 +71,10 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 	m_module->onSignal(itrSig);
 
 	//--------local connection---------------------
-	if(type == TUNNEL_LOCAL_TCP || type == TUNNEL_ALL)
+	if (type == TUNNEL_LOCAL_TCP ||
+        (type == TUNNEL_ALL &&
+         m_module->CheckTunnelAvailableType(msg.ext_session_id(), TUNNEL_LOCAL_TCP) &&
+         m_module->CheckTunnelAvailableType(msg.own_session_id(), TUNNEL_LOCAL_TCP)))
 	{
 		LOG_INFO("Send InitTunnel message: from %s to %s, type %d\n", msg.own_session_id().c_str(), msg.ext_session_id().c_str(), TUNNEL_LOCAL_TCP);
 		InitTunnelSignal itMsg(msg);
@@ -84,7 +97,10 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 	}
 	
 	//----------------external connection-----------
-	if(type == TUNNEL_EXTERNAL || type == TUNNEL_ALL)
+	if (type == TUNNEL_EXTERNAL ||
+        (type == TUNNEL_ALL && 
+         m_module->CheckTunnelAvailableType(msg.ext_session_id(), TUNNEL_EXTERNAL) &&
+         m_module->CheckTunnelAvailableType(msg.own_session_id(), TUNNEL_EXTERNAL)))
 	{
 		TunnelServerListenAddress address;
 		address.m_localIP = msg.has_address() ? msg.address().ip() : "";
@@ -105,7 +121,10 @@ void ServerSignalHandler::onInitTunnel(const InitTunnelSignal& msg)
 	}
 	
 	//-----------relay connection-------------------
-	if(type == TUNNEL_RELAY_TCP || type == TUNNEL_ALL)
+	if (type == TUNNEL_RELAY_TCP ||
+        (type == TUNNEL_ALL &&
+         m_module->CheckTunnelAvailableType(msg.ext_session_id(), TUNNEL_RELAY_TCP) &&
+         m_module->CheckTunnelAvailableType(msg.own_session_id(), TUNNEL_RELAY_TCP)))
 	{
 		TunnelServerListenAddress address;
 		address.m_localIP = msg.has_address() ? msg.address().ip() : "";

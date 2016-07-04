@@ -69,6 +69,29 @@ bool PeerType::operator != (const PeerType& peerType) const
 }
 bool PeerType::operator < (const PeerType& peerType) const
 {
+    std::string oneSessionId, twoSessionId;
+    if(one_session_id() < two_session_id()) {
+        oneSessionId = one_session_id();
+        twoSessionId = two_session_id();
+    } else {
+        twoSessionId = one_session_id();
+        oneSessionId = two_session_id();
+    }
+    
+    std::string otherOneSessionId, otherTwoSessionId;
+    if(peerType.one_session_id() < peerType.two_session_id()) {
+        otherOneSessionId = peerType.one_session_id();
+        otherTwoSessionId = peerType.two_session_id();
+    } else {
+        otherTwoSessionId = peerType.one_session_id();
+        otherOneSessionId = peerType.two_session_id();
+    }
+    
+    if(oneSessionId == otherOneSessionId)
+        return twoSessionId < otherTwoSessionId;
+    else
+        return oneSessionId < otherOneSessionId;
+    /*
 	for(size_t i = 0; ; i++)
 	{
 		if(one_session_id().size() <= i || two_session_id().size() <= i ||
@@ -99,7 +122,7 @@ bool PeerType::operator < (const PeerType& peerType) const
 			return ((resVal != otherResVal) ? (resVal < otherResVal) : (countMore < countLess));
 	}
 	
-	return false;
+	return false;*/
 }
 
 TunnelStep::TunnelStep()
@@ -120,4 +143,26 @@ void TunnelStep::operator = (const TunnelStep& step)
 {
 	PeerData::operator=(step);
 	m_creationTime = step.m_creationTime;
+}
+
+AvailableTypes::AvailableTypes(){}
+AvailableTypes::AvailableTypes(const AvailablePearTypes& types)
+{
+    AvailablePearTypes::operator = (types);
+}
+AvailableTypes::~AvailableTypes(){}
+
+bool AvailableTypes::operator == (const AvailableTypes& types) const
+{
+    return session_id() == types.session_id();
+}
+
+bool AvailableTypes::operator != (const AvailableTypes& types) const
+{
+    return !(operator == (types));
+}
+
+bool AvailableTypes::operator < (const AvailableTypes& types) const
+{
+    return session_id() < types.session_id();
 }

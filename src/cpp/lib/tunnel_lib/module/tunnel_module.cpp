@@ -117,6 +117,35 @@ void TunnelModule::SetTypeTunnel(const std::string& oneSessionId, const std::str
 	bUpdate ? m_typePeers.UpdateObject(peerData) : m_typePeers.AddObject(peerData);
 };
 
+void TunnelModule::SetTunnelAvailableType(const std::vector<TunnelType>& type)
+{
+    AvailableTypes types;
+    types.set_session_id(m_ownSessionId);
+    for(std::vector<TunnelType>::const_iterator it = type.begin(); it != type.end(); it++)
+    {
+        types.add_types(*it);
+    }
+    
+    AvailablePearTypesSignal aptSig(types);
+    onSignal(aptSig);
+}
+    
+bool TunnelModule::CheckTunnelAvailableType(const std::string& session_id, TunnelType type)
+{
+    AvailableTypes types;
+    types.set_session_id(session_id);
+    if(m_avalablePeerTypes.GetObject(types, &types)) {
+        for(int i = 0; i < types.types_size(); i++)
+        {
+            if(types.types(i) == type)
+                return true;
+        }        
+        return false;
+    }
+    
+    return true;
+}
+
 void TunnelModule::OnNewConnector(Connector* connector)
 {
 	ClientServerConnector* clientServerConn = dynamic_cast<ClientServerConnector*>(const_cast<Connector*>(connector));
@@ -125,6 +154,7 @@ void TunnelModule::OnNewConnector(Connector* connector)
 		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelMessage, onInitTunnel)); //for client
 		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelSignal, onInitTunnel)); //for server
 		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, PeerDataSignal, onPeerData)); //for server
+        ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, AvailablePearTypesSignal, onAvailablePearTypes)); //for server
 		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, TryConnectToMessage, onTryConnectTo)); //for client
 		ipcSubscribe(clientServerConn, &m_clientSignalHandler, SIGNAL_FUNC(&m_clientSignalHandler, ClientSignalHandler, InitTunnelStartedMessage, onInitTunnelStarted)); //for client
 		ipcSubscribe(clientServerConn, &m_serverSignalHandler, SIGNAL_FUNC(&m_serverSignalHandler, ServerSignalHandler, InitTunnelCompleteMessage, onInitTunnelComplete)); //for server

@@ -16,6 +16,7 @@ public:
 	
 	void onInitTunnel(const InitTunnelSignal& msg);
 	void onPeerData(const PeerDataSignal& msg);
+    void onAvailablePearTypes(const AvailablePearTypesSignal& msg);
 	void onInitTunnelComplete(const InitTunnelCompleteMessage& msg);
 
 	void onCreatedExternalListener(const CreatedServerListenerMessage& msg);

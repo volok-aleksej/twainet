@@ -42,6 +42,7 @@ ClientServerConnector::ClientServerConnector(AnySocket* socket, const IPCObjectN
 	addMessage(new InitTunnelStartedMessage(this));
 	addMessage(new InitTunnelCompleteMessage(this));
 	addMessage(new PeerDataMessage(this));
+    addMessage(new AvailablePearTypesMessage(this));
 	addMessage(new ProtoMessage<ModuleName, ClientServerConnector>(this));
 }
 
@@ -74,6 +75,7 @@ void ClientServerConnector::SubscribeModule(::SignalOwner* owner)
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, InitTunnelCompleteSignal, onInitTunnelCompleteSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, TryConnectToSignal, onTryConnectToSignal));
 	owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, PeerDataSignal, onPeerDataSignal));
+    owner->addSubscriber(this, SIGNAL_FUNC(this, ClientServerConnector, AvailablePearTypesSignal, onAvailablePearTypesSignal));
 	IPCConnector::SubscribeModule(owner);
 }
 
@@ -209,6 +211,17 @@ void ClientServerConnector::onPeerDataSignal(const PeerDataSignal& msg)
 	}
 }
 
+void ClientServerConnector::onAvailablePearTypesSignal(const AvailablePearTypesSignal& msg)
+{
+    IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
+    if(idName.module_name() == ClientServerModule::m_serverIPCName
+        && msg.session_id() == m_ownSessionId)
+    {
+        AvailablePearTypesMessage pdMsg(this, msg);
+        toMessage(pdMsg);
+    }   
+}
+
 void ClientServerConnector::onIPCObjectListMessage(const IPCObjectListMessage& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);
@@ -317,12 +330,18 @@ void ClientServerConnector::onMessage(const PeerData& msg)
 	onSignal(pdSig);
 }
 
+void ClientServerConnector::onMessage(const AvailablePearTypes& msg)
+{
+    AvailablePearTypesSignal aptSig(msg);
+    onSignal(aptSig);
+}
+    
 void ClientServerConnector::onMessage(const InitTunnelComplete& msg)
 {
 	InitTunnelCompleteMessage itcMsg(this, msg);
 	onSignal(itcMsg);
 }
-	
+
 void ClientServerConnector::onMessage(const InitTunnel& msg)
 {
 	IPCObjectName idName = IPCObjectName::GetIPCName(m_id);

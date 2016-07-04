@@ -171,6 +171,9 @@ extern "C"
 
 		// Set tunnel's type that have to create between two clients
 		TWAINET_FUNC void SetTunnelType(const Module module, const char* oneSessionId, const char* twoSessionId, TypeConnection type);
+        
+        // Set tunnel types that available for creating with client
+        TWAINET_FUNC void SetAvailableTunnelTypes(const Module module, TypeConnection* types, int sizeTypes);
 
 		// Set user list for login operation on server
 		TWAINET_FUNC void SetUsersList(const Module module, const UserPassword* users, int sizeUsers);

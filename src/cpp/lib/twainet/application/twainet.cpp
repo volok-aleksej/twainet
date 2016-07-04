@@ -218,6 +218,17 @@ extern "C" void Twainet::SetTunnelType(const Twainet::Module module, const char*
 	twainetModule->SetTypeTunnel(oneSessionId, twoSessionId, (TunnelConnector::TypeConnection)type);
 }
 
+extern "C" void Twainet::SetAvailableTunnelTypes(const Module module, TypeConnection* types, int sizeTypes)
+{
+    TwainetModule* twainetModule = (TwainetModule*)module;
+    std::vector<TunnelType> tunnelTypes;
+    for(int i = 0; i < sizeTypes; i++)
+    {
+        tunnelTypes.push_back((TunnelType)types[i]);
+    }
+    twainetModule->SetTunnelAvailableType(tunnelTypes);
+}
+
 extern "C" void Twainet::SetUsersList(const Twainet::Module module, const Twainet::UserPassword* users, int sizeUsers)
 {
 	if(!module)
