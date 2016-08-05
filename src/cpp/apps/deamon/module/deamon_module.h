@@ -30,6 +30,7 @@ private:
 private:
 	Twainet::UserPassword m_userPassword;
 	std::vector<std::string> m_trustedModules;
+    std::vector<std::string> m_pluginPaths;
 };
 
 #endif/*DEAMON_MODULE_H*/

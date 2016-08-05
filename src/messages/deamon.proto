@@ -20,8 +20,9 @@ message ClientNameList
 
 message Plugin
 {
-	repeated string name_modules		= 1;
-	required string path			= 2;
+    required string description     = 1;
+	repeated string name_modules	= 2;
+	required string path			= 3;
 }
 
 message InstallPlugin
@@ -32,7 +33,7 @@ message InstallPlugin
 message SetConfig
 {
 	required int32 local_port		= 1;
-	required string trusted_file_name	= 2;
+	repeated string trusted_modules	= 2;
 	repeated Plugin plugins			= 3;
 }
 

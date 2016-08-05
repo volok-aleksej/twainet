@@ -60,4 +60,9 @@ message PeerData {
 	optional TunnelType type				= 3;
 }
 
+message AvailablePearTypes {
+    required string session_id              = 1;
+    repeated TunnelType types               = 2;
+}
+
 option optimize_for = LITE_RUNTIME;

@@ -33,6 +33,7 @@ set (SRC_${PROJECT_NAME}
 	application/application.cpp 
 	application/main.cpp 
 	application/config.cpp
+    application/configs.cpp
 	module/deamon_module.cpp 
     )
 
