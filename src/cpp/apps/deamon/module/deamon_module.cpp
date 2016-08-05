@@ -12,7 +12,7 @@ DeamonModule::DeamonModule()
     for(std::vector<std::string>::iterator it = m_trustedModules.begin();
         it != m_trustedModules.end(); it++)
     {
-        m_config.set_trusted_modules(it - m_trustedModules.begin(), *it);
+        m_config.add_trusted_modules(*it);
     }
     
     for(std::vector<std::string>::iterator it = m_pluginPaths.begin();
