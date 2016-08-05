@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include "include/module.h"
-#include "include/appinterface.h"
+#include "include/default_app.h"
 
-class DeamonApplication : public IApplication<DeamonApplication>
+class DeamonApplication : public DefaultApplication<DeamonApplication>
 {
 	friend class Singleton<DeamonApplication>;
 	DeamonApplication();
@@ -14,7 +14,6 @@ public:
 	virtual ~DeamonApplication();
 	
 	virtual void InitializeApplication();
-    virtual void ShutdownApplication();
 	
 	static std::string GetAppName();
 	static std::string GetDescription();
@@ -22,24 +21,6 @@ protected:
     friend class IApplication<DeamonApplication>;
 	virtual void OnModuleCreationFailed(Twainet::Module module);
 	virtual void OnServerCreationFailed(Twainet::Module module);
-	virtual void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId);
-	virtual void OnServerConnected(Twainet::Module module, const char* sessionId);
-	virtual void OnClientConnected(Twainet::Module module, const char* sessionId);
-	virtual void OnClientDisconnected(Twainet::Module module, const char* sessionId);
-	virtual void OnClientConnectionFailed(Twainet::Module module);
-	virtual void OnClientAuthFailed(Twainet::Module module);
-	virtual void OnServerDisconnected(Twainet::Module module);
-	virtual void OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	virtual void OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	virtual void OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId);
-	virtual void OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type);
-	virtual void OnTunnelDisconnected(Twainet::Module module, const char* sessionId);
-	virtual void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg);
-	virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port);
-	virtual void OnModuleListChanged(Twainet::Module module);
-private:
-	CriticalSection m_cs;
-	std::vector<Module*> m_modules;
 };
 
 #endif/*APPLICATION_H*/
