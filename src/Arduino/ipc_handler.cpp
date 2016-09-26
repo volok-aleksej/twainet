@@ -106,17 +106,22 @@ void IPCHandler::onMessage(const _Ipc__ModuleState& msg)
 
 void IPCHandler::onMessage(const _Ipc__AddIPCObject& msg)
 {
-// 	AddIPCObjectMessage aoMsg(this, msg);
-// 	m_connector->onSignal(aoMsg);
-// 
+ 	AddIPCObjectMessage aoMsg(this, ipc__add_ipcobject__descriptor);
+	aoMsg.GetMessage()->access_id = msg.access_id;
+	aoMsg.GetMessage()->ip = msg.ip;
+	aoMsg.GetMessage()->port = msg.port;
+	aoMsg.GetMessage()->ipc_name = msg.ipc_name;
+ 	m_connector->onSignal(aoMsg);
+ 
  	IPCObjectName ipcName(*msg.ipc_name);
  	m_connector->OnAddIPCObject(ipcName.GetModuleNameString());
 }
 
 void IPCHandler::onMessage(const _Ipc__RemoveIPCObject& msg)
 {
-// 	RemoveIPCObjectMessage roMsg(this, msg);
-// 	m_connector->onSignal(roMsg);
+ 	RemoveIPCObjectMessage roMsg(this, ipc__remove_ipcobject__descriptor);
+	roMsg.GetMessage()->ipc_name = msg.ipc_name;
+ 	m_connector->onSignal(roMsg);
  }
 
 void IPCHandler::onMessage(const _Ipc__IPCMessage& msg)

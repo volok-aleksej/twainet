@@ -20,6 +20,7 @@ public:
 
 	~ProtoMessage()
     {
+	protobuf_c_message_free_unpacked((ProtobufCMessage*)message, 0);
         free(message);
     }
 

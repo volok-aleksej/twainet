@@ -7,10 +7,12 @@
 #include "ipc_checker_thread.h"
 #include "ipc_object_name.h"
 #include "ipc_handler.h"
+#include "signal_owner.h"
+#include "signal_receiver.h"
 
 class ListenThread;
 
-class IPCConnector : public Connector
+class IPCConnector : public Connector, public SignalReceiver, public SignalOwner
 {
 public:
 	IPCConnector(AnySocket* socket, const IPCObjectName& moduleName);
@@ -58,7 +60,7 @@ protected:
 private:
 	IPCObjectName m_moduleName;
 	String m_accessId;
-//	Signal* m_ipcSignal;
+	Signal* m_ipcSignal;
 	bool m_isExist;
 	String m_rand;
 };
