@@ -21,7 +21,7 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 , m_bConnected(false), m_isExist(false)
 , m_rand(CreateGUID()), m_isSendIPCObjects(false)
 , m_isCoordinator(false), m_isNotifyRemove(false)
-//, m_checker(0)
+, m_checker(0)
 {
 //	m_ipcSignal = new Signal(static_cast<SignalOwner*>(this));
 	addMessage(new ModuleNameMessage(&m_handler, ipc__module_name__descriptor));
@@ -72,8 +72,8 @@ void IPCConnector::ThreadFunc()
 
 void IPCConnector::OnStart()
 {
-//  m_checker = new IPCCheckerThread(this);
-// 
+  m_checker = new IPCCheckerThread(this);
+ 
 //  ListenerParamMessage msg(m_moduleName.GetModuleNameString());
 //  onSignal(msg);
 //  m_moduleName = IPCObjectName::GetIPCName(msg.m_moduleName);
@@ -106,11 +106,11 @@ void IPCConnector::OnStop()
  		OnDisconnected();
  	}
  
-// 	if(m_checker)
-// 	{
-// 		m_checker->Stop();
-// 		m_checker = 0;
-// 	}
+ 	if(m_checker)
+ 	{
+ 		m_checker->StopThread();
+ 		m_checker = 0;
+ 	}
 }
 
 // void IPCConnector::SubscribeModule(::SignalOwner* owner)

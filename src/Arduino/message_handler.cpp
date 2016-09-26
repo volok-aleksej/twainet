@@ -24,7 +24,7 @@ bool MessageHandler::onData(char* data, int len)
 		&& len >= headerLen)
 	{
 		char* type = (char*)malloc(typeLen + 1);
-        memset(type, 0, typeLen + 1);
+		memset(type, 0, typeLen + 1);
 		memcpy(type, data + sizeof(unsigned int), typeLen);
 		bool ret = onData(type, data + headerLen, len - headerLen);
         free(type);

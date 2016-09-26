@@ -153,6 +153,11 @@ public:
         return *m_begin;
     }
     
+    unsigned int size()
+    {
+	return m_objectsLen;
+    }
+    
 private:
     iterator* m_begin;
     iterator* m_end;

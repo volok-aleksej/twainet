@@ -1,10 +1,10 @@
 #ifndef IPC_CONNECTOR_H
 #define IPC_CONNECTOR_H
 
-#include "connector.h"
-// #include "connector_lib/message/connector_messages.h"
-// #include "../thread/ipc_checker_thread.h"
 #include <WString.h>
+// #include "connector_lib/message/connector_messages.h"
+#include "connector.h"
+#include "ipc_checker_thread.h"
 #include "ipc_object_name.h"
 #include "ipc_handler.h"
 
@@ -50,7 +50,7 @@ protected:
 	virtual IPCObjectName GetIPCName();
 protected:
 	IPCHandler m_handler;
-//	IPCCheckerThread *m_checker;
+	IPCCheckerThread *m_checker;
 	bool m_bConnected;
 	bool m_isNotifyRemove;
 	bool m_isSendIPCObjects;

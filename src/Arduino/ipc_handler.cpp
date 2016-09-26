@@ -15,11 +15,11 @@ IPCHandler::~IPCHandler()
 	
 void IPCHandler::onMessage(const _Ipc__ModuleName& msg)
 {
-// 	if(m_connector->m_checker)
-// 	{
-// 		m_connector->m_checker->Stop();
-// 		m_connector->m_checker = 0;
-// 	}
+ 	if(m_connector->m_checker)
+ 	{
+ 		m_connector->m_checker->StopThread();
+ 		m_connector->m_checker = 0;
+ 	}
 	
  	IPCObjectName ipcName(*msg.ipc_name);
  	m_connector->SetId(ipcName.GetModuleNameString());
