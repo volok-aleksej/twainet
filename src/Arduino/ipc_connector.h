@@ -14,18 +14,23 @@ class ListenThread;
 
 class IPCConnector : public Connector, public SignalReceiver, public SignalOwner
 {
+    static char *baseAccessId;
 public:
 	IPCConnector(AnySocket* socket, const IPCObjectName& moduleName);
 	virtual ~IPCConnector();
-
+    
+    virtual void onNewConnector(const Connector* connector);
+    virtual void SubscribeConnector(const IPCConnector* connector);
+    virtual void SubscribeModule(::SignalOwner* owner);
+        
 	IPCObjectName GetModuleName() const;
 	String GetAccessId();
 protected:
-// 	friend class Signal;
+ 	friend class Signal;
 // 	void onIPCMessage(const IPCProtoMessage& msg);
 // 	void onIPCMessage(const IPCMessageSignal& msg);
-// 	void onModuleNameMessage(const ModuleNameMessage& msg);
-// 	void onModuleStateMessage(const ModuleStateMessage& msg);
+ 	void onModuleNameMessage(const ModuleNameMessage& msg);
+ 	void onModuleStateMessage(const ModuleStateMessage& msg);
 // 	void onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg);
 // 	void onChangeIPCNameMessage(const ChangeIPCNameMessage& msg);
 // 	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
@@ -34,9 +39,9 @@ protected:
 // 	friend class IPCModule;
 // 	friend class PingThread;
  	friend class IPCHandler;
-// 	void onIPCSignal(const DataMessage& msg);
-// 	void addIPCSubscriber(SignalReceiver* receiver, IReceiverFunc* func);
-// 	void ipcSubscribe(IPCConnector* connector, IReceiverFunc* func);
+ 	void onIPCSignal(const DataMessage& msg);
+ 	void addIPCSubscriber(SignalReceiver* receiver, IReceiverFunc* func);
+ 	void ipcSubscribe(IPCConnector* connector, IReceiverFunc* func);
 protected:
  	virtual void ThreadFunc();
  	virtual void OnStart();

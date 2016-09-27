@@ -10,9 +10,10 @@ class IPCHandler;
 template<typename TMessage, typename THandler = IPCHandler>
 class ProtoMessage : public DataMessage
 {
+    static String messageName;
 public:
 	ProtoMessage(THandler* handler, const ProtobufCMessageDescriptor& descriptor)
-		: m_handler(handler), m_descriptor(descriptor)
+		: m_handler(handler), m_descriptor(descriptor), unpacked(false)
     {
         message = (TMessage*)malloc(descriptor.sizeof_message);
         descriptor.message_init((ProtobufCMessage*)message);
@@ -20,8 +21,14 @@ public:
 
 	~ProtoMessage()
     {
-	protobuf_c_message_free_unpacked((ProtobufCMessage*)message, 0);
-        free(message);
+        if(unpacked)
+        {
+            protobuf_c_message_free_unpacked((ProtobufCMessage*)message, 0);
+        }
+        else
+        {
+            free(message);
+        }
     }
 
 	virtual void onMessage()
@@ -32,7 +39,15 @@ public:
 	virtual bool serialize(char* data, int len)
 	{
         TMessage* msg = (TMessage*)protobuf_c_message_unpack(&m_descriptor, 0, len, (const uint8_t*)data);
-        free(message);
+        if(unpacked)
+        {
+            protobuf_c_message_free_unpacked((ProtobufCMessage*)message, 0);
+        }
+        else
+        {
+            free(message);
+        }
+        unpacked = true;
         message = msg;
 		return true;
 	}
@@ -60,9 +75,16 @@ public:
     {
         return message;
     }
+    
+    static String GetMessageName()
+    {
+        return messageName;
+    }
+    
 private:
 	THandler* m_handler;
 	TMessage* message;
+    bool unpacked;
     const ProtobufCMessageDescriptor& m_descriptor;
 };
 

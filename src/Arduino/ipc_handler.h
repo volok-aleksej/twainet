@@ -7,6 +7,7 @@
 #include "proto_message.h"
 #include "ipc.pb-c.h"
 
+typedef ProtoMessage<_Ipc__IPCName> IPCNameMessage;
 typedef ProtoMessage<_Ipc__IPCMessage> IPCProtoMessage;
 typedef ProtoMessage<_Ipc__ModuleName> ModuleNameMessage;
 typedef ProtoMessage<_Ipc__AddIPCObject> AddIPCObjectMessage;
@@ -35,6 +36,7 @@ public:
 	void onMessage(const _Ipc__ChangeIPCName& msg);
 	void onMessage(const _Ipc__UpdateIPCObject& msg);
 	void onMessage(const _Ipc__Ping& msg);
+    void onMessage(const _Ipc__IPCName& msg);
 	
 private:
 	IPCConnector* m_connector;

@@ -4,6 +4,17 @@
 //#include "include/ref.h"
 //#include "module/ipc_module.h"
 
+template<> String IPCNameMessage::messageName = ipc__ipcname__descriptor.name;
+template<> String IPCProtoMessage::messageName = ipc__ipcmessage__descriptor.name;
+template<> String ModuleNameMessage::messageName = ipc__module_name__descriptor.name;
+template<> String AddIPCObjectMessage::messageName = ipc__add_ipcobject__descriptor.name;
+template<> String UpdateIPCObjectMessage::messageName = ipc__update_ipcobject__descriptor.name;
+template<> String ChangeIPCNameMessage::messageName = ipc__change_ipcname__descriptor.name;
+template<> String RemoveIPCObjectMessage::messageName = ipc__remove_ipcobject__descriptor.name;
+template<> String IPCObjectListMessage::messageName = ipc__ipcobject_list__descriptor.name;
+template<> String ModuleStateMessage::messageName = ipc__module_state__descriptor.name;
+template<> String PingMessage::messageName = ipc__ping__descriptor.name;
+
 IPCHandler::IPCHandler(IPCConnector* connector)
 : m_connector(connector)
 {
@@ -27,21 +38,23 @@ void IPCHandler::onMessage(const _Ipc__ModuleName& msg)
 // 	LOG_INFO("ModuleName message: m_id-%s, m_module-%s\n",
 // 		 m_connector->m_id.c_str(), m_connector->m_moduleName.GetModuleNameString().c_str());
  
-// 	AddIPCObjectMessage aoMsg(this);
-// 	aoMsg.set_ip(msg.ip());
-// 	aoMsg.set_port(msg.port());
-// 	m_connector->m_isCoordinator ? aoMsg.set_access_id(msg.access_id()) : aoMsg.set_access_id(m_connector->m_accessId);
-// 	*aoMsg.mutable_ipc_name() = msg.ipc_name();
-// 	m_connector->onSignal(aoMsg);
-// 
-// 	ModuleNameMessage mnMsg(this, msg);
-// 	mnMsg.set_is_exist(false);
-// 	mnMsg.set_conn_id(m_connector->m_connectorId);
-// 	m_connector->m_isCoordinator ? mnMsg.set_access_id(msg.access_id()) : mnMsg.set_access_id(m_connector->m_accessId);
-// 	m_connector->onSignal(mnMsg);
+ 	AddIPCObjectMessage aoMsg(this, ipc__add_ipcobject__descriptor);
+    aoMsg.GetMessage()->ip = msg.ip;
+    aoMsg.GetMessage()->port = msg.port;
+    aoMsg.GetMessage()->access_id = IPCConnector::baseAccessId;
+    aoMsg.GetMessage()->ipc_name = msg.ipc_name;
+ 	m_connector->onSignal(aoMsg);
+
+ 	ModuleNameMessage mnMsg(this, ipc__module_name__descriptor);
+    mnMsg.GetMessage()->ip = msg.ip;
+    mnMsg.GetMessage()->port = msg.port;
+    mnMsg.GetMessage()->ipc_name = msg.ipc_name;
+ 	mnMsg.GetMessage()->is_exist = false;
+ 	mnMsg.GetMessage()->conn_id = (char*)m_connector->m_connectorId.c_str();
+ 	mnMsg.GetMessage()->access_id == IPCConnector::baseAccessId;
+ 	m_connector->onSignal(mnMsg);
  
  	ModuleStateMessage msMsg(this, ipc__module_state__descriptor);
- 	msMsg.GetMessage()->rndval = "";
  	msMsg.GetMessage()->exist = m_connector->m_isExist;
  	msMsg.GetMessage()->rndval = (char*)m_connector->m_rand.c_str();
  	m_connector->toMessage(msMsg);
@@ -50,7 +63,7 @@ void IPCHandler::onMessage(const _Ipc__ModuleName& msg)
  	{
  		IPCObjectListMessage ipcolMsg(this, ipc__ipcobject_list__descriptor);
  		ipcolMsg.GetMessage()->access_id = msg.access_id;
-// 		m_connector->onSignal(ipcolMsg);
+ 		m_connector->onSignal(ipcolMsg);
  		m_connector->toMessage(ipcolMsg);
  	}
  	
@@ -65,7 +78,7 @@ void IPCHandler::onMessage(const _Ipc__ModuleName& msg)
  	//	another modules cann't get correct creadentials of new module.
  	if(m_connector->m_isSendIPCObjects)
  	{
-// 		m_connector->onIPCSignal(mnMsg);
+ 		m_connector->onIPCSignal(mnMsg);
  	}
  	m_connector->OnConnected();
 }
@@ -83,7 +96,7 @@ void IPCHandler::onMessage(const _Ipc__ModuleState& msg)
  		ModuleStateMessage msMsg(this, ipc__module_state__descriptor);
  		msMsg.GetMessage()->exist = false;
  		msMsg.GetMessage()->id = (char*)m_connector->GetId().c_str();
-// 		m_connector->onIPCSignal(msMsg);
+ 		m_connector->onIPCSignal(msMsg);
  
  		if (msMsg.GetMessage()->exist && m_connector->m_rand > msMsg.GetMessage()->rndval
  			|| !msMsg.GetMessage()->exist)
@@ -168,29 +181,34 @@ void IPCHandler::onMessage(const _Ipc__IPCObjectList& msg)
 {
  	for(int i = 0; i < msg.n_ipc_object; i++)
  	{
-// 		AddIPCObjectMessage aoMsg(this, msg.ipc_object(i));
-// 		m_connector->onSignal(aoMsg);
-// 		
-// 		IPCObjectName ipcName(msg.ipc_object(i).ipc_name());
-// 		m_connector->OnAddIPCObject(ipcName.GetModuleNameString());
+ 		AddIPCObjectMessage aoMsg(this, ipc__add_ipcobject__descriptor);
+        aoMsg.GetMessage()->access_id = msg.ipc_object[i]->access_id;
+        aoMsg.GetMessage()->ip = msg.ipc_object[i]->ip;
+        aoMsg.GetMessage()->port = msg.ipc_object[i]->port;
+        aoMsg.GetMessage()->ipc_name = msg.ipc_object[i]->ipc_name;
+ 		m_connector->onSignal(aoMsg);
+ 		
+ 		IPCObjectName ipcName(*msg.ipc_object[i]->ipc_name);
+ 		m_connector->OnAddIPCObject(ipcName.GetModuleNameString());
  	}
 }
 
 void IPCHandler::onMessage(const _Ipc__ChangeIPCName& msg)
 {
-// 	UpdateIPCObjectMessage uioMsg(this);
-// 	*uioMsg.mutable_ipc_new_name() = msg.ipc_name();
-// 	*uioMsg.mutable_ipc_old_name() = IPCObjectName::GetIPCName(m_connector->m_id);
-// 	m_connector->onSignal(uioMsg);
-// 
-// 	if(m_connector->m_isCoordinator)
-// 	{
-// 		m_connector->onIPCSignal(uioMsg);
-// 	}
-// 
-// 	IPCObjectName ipcName(msg.ipc_name());
-// 	m_connector->m_id = ipcName.GetModuleNameString();
-// 	
+    IPCObjectName objectName = IPCObjectName::GetIPCName(m_connector->m_id);
+    IPCNameMessage inMsg(this, ipc__ipcname__descriptor);
+    inMsg.GetMessage()->module_name = (char*)objectName.GetModuleName().c_str();
+    inMsg.GetMessage()->host_name = (char*)objectName.GetHostName().c_str();
+    inMsg.GetMessage()->conn_id = (char*)objectName.GetConnId().c_str();
+ 	UpdateIPCObjectMessage uioMsg(this, ipc__update_ipcobject__descriptor);
+    uioMsg.GetMessage()->ipc_new_name = msg.ipc_name;
+    uioMsg.GetMessage()->ipc_old_name = inMsg.GetMessage();
+ 	m_connector->onSignal(uioMsg);
+	m_connector->onIPCSignal(uioMsg);
+ 
+ 	IPCObjectName ipcName(*msg.ipc_name);
+ 	m_connector->m_id = ipcName.GetModuleNameString();
+ 	
 // 	LOG_INFO("Change connector id: m_id-%s, m_module-%s\n", m_connector->m_id.c_str(), m_connector->m_moduleName.GetModuleNameString().c_str());
 }
 
@@ -205,5 +223,9 @@ void IPCHandler::onMessage(const _Ipc__UpdateIPCObject& msg)
 }
 
 void IPCHandler::onMessage(const _Ipc__Ping& msg)
+{
+}
+
+void IPCHandler::onMessage(const _Ipc__IPCName& msg)
 {
 }

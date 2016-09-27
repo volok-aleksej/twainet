@@ -1,7 +1,7 @@
 #ifndef DATA_MESSAGE_H
 #define DATA_MESSAGE_H
 
-#include <string>
+#include <WString.h>
 
 class Deserializer
 {
