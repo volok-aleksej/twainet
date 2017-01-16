@@ -1,7 +1,7 @@
 #ifndef SIGNAL_OWNER_H
 #define SIGNAL_OWNER_H
 
-#include "data_message.h"
+#include "include/data_message.h"
 #include "signal_receiver.h"
 
 class SignalOwner

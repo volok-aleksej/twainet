@@ -2,14 +2,10 @@
 #include <WString.h>
 
 #include "ipc_connector.h"
-#include "proto_message.h"
+#include "include/proto_message.h"
 #include "ipc.pb-c.h"
 #include "common_func.h"
 #include "connector_messages.h"
-//#include "module/ipc_module.h"
-
-//#include "utils/logger.h"
-//#include "utils/utils.h"
 
 #define MAX_DATA_LEN		1024*1024
 

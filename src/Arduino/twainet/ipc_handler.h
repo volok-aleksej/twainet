@@ -1,8 +1,8 @@
 #ifndef IPC_HANDLER_H
 #define IPC_HANDLER_H
 
-#include "signal_message.h"
-#include "proto_message.h"
+#include "include/signal_message.h"
+#include "include/proto_message.h"
 #include "ipc.pb-c.h"
 
 typedef ProtoMessage<_Ipc__IPCName> IPCNameMessage;

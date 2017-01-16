@@ -1,6 +1,5 @@
 #include "signal.h"
 #include "signal_receiver.h"
-#include "receiver_func.h"
 #include "signal_manager.h"
 
 Signal::Signal(SignalOwner* owner)

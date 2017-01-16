@@ -2,8 +2,8 @@
 #define THREAD_MANAGER_H
 
 #include "thread.h"
-#include "singleton.h"
-#include "list.hpp"
+#include "include/singleton.h"
+#include "std/list.hpp"
 
 class ThreadManager : public Singleton<ThreadManager>
 {

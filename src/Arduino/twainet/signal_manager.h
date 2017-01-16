@@ -2,8 +2,8 @@
 #define SIGNAL_MANAGER_H
 
 #include "thread.h"
-#include "singleton.h"
-#include "list.hpp"
+#include "include/singleton.h"
+#include "std/list.hpp"
 
 class Signal;
 

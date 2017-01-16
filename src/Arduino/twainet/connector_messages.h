@@ -1,7 +1,7 @@
 #ifndef CONNECTOR_MESSAGES_H
 #define CONNECTOR_MESSAGES_H
 
-#include "data_message.h"
+#include "include/data_message.h"
 
 /******************************************************************/
 

@@ -1,10 +1,10 @@
 #ifndef SIGNAL_H
 #define SIGNAL_H
 
-#include "list.hpp"
-#include "data_message.h"
+#include "std/list.hpp"
+#include "include/data_message.h"
+#include "include/receiver_func.h"
 #include "thread.h"
-#include "receiver_func.h"
 
 class SignalOwner;
 

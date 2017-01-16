@@ -2,8 +2,8 @@
 #define SIGNAL_RECEIVER_H
 
 #include "signal.h"
-#include "receiver_func.h"
-#include "list.hpp"
+#include "include/receiver_func.h"
+#include "std/list.hpp"
 
 #define SIGNAL_FUNC(ClassObject, Class, MessageName, Func)\
 	new ReceiverFunc<Class>(ClassObject, MessageName::GetMessageName(), reinterpret_cast<ReceiverFunc<Class>::SignalFunction>(\

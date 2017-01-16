@@ -2,15 +2,12 @@
 #define IPC_CONNECTOR_H
 
 #include <WString.h>
-// #include "connector_lib/message/connector_messages.h"
 #include "connector.h"
 #include "ipc_checker_thread.h"
 #include "ipc_object_name.h"
 #include "ipc_handler.h"
 #include "signal_owner.h"
 #include "signal_receiver.h"
-
-class ListenThread;
 
 class IPCConnector : public Connector, public SignalReceiver, public SignalOwner
 {
