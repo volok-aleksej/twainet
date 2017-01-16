@@ -19,6 +19,7 @@ public:
 	String GetConnectorId();
 
 	virtual void Stop();
+    virtual void onNewConnector(const Connector* connector){};
 protected:
 	virtual bool SendData(char* data, int len);
 protected:
