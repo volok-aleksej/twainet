@@ -5,12 +5,11 @@
 #include "proto_message.h"
 #include "ipc.pb-c.h"
 #include "common_func.h"
+#include "connector_messages.h"
 //#include "module/ipc_module.h"
 
 //#include "utils/logger.h"
 //#include "utils/utils.h"
-
-//#include "thread_lib/thread/thread_manager.h"
 
 #define MAX_DATA_LEN		1024*1024
 
@@ -72,12 +71,7 @@ void IPCConnector::ThreadFunc()
 
 void IPCConnector::OnStart()
 {
-  m_checker = new IPCCheckerThread(this);
- 
-//  ListenerParamMessage msg(m_moduleName.GetModuleNameString());
-//  onSignal(msg);
-//  m_moduleName = IPCObjectName::GetIPCName(msg.m_moduleName);
-//  m_isCoordinator = msg.m_isCoordinator;
+    m_checker = new IPCCheckerThread(this);
     m_isNotifyRemove = m_isCoordinator;
     m_isSendIPCObjects = m_isCoordinator;
     SetAccessId(baseAccessId);
@@ -118,18 +112,18 @@ void IPCConnector::SubscribeConnector(const IPCConnector* connector)
     IPCConnector* conn = const_cast<IPCConnector*>(connector);
     if(conn)
     {
-//                ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, IPCProtoMessage, onIPCMessage));
+        ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, IPCProtoMessage, onIPCMessage));
+        ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, UpdateIPCObjectMessage, onUpdateIPCObjectMessage));
+        ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, ModuleStateMessage, onModuleStateMessage));
         ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, ModuleNameMessage, onModuleNameMessage));
-//                 ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, UpdateIPCObjectMessage, onUpdateIPCObjectMessage));
-//                 ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, ModuleStateMessage, onModuleStateMessage));
-//                 ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
+        ipcSubscribe(conn, SIGNAL_FUNC(this, IPCConnector, RemoveIPCObjectMessage, onRemoveIPCObjectMessage));
     }
 }
 
 void IPCConnector::SubscribeModule(::SignalOwner* owner)
 {
-//	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ChangeIPCNameMessage, onChangeIPCNameMessage));
-//	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, IPCMessageSignal, onIPCMessage));
+	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, ChangeIPCNameMessage, onChangeIPCNameMessage));
+	owner->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, IPCSignalMessage, onIPCMessage));
 }
 
 IPCObjectName IPCConnector::GetModuleName() const
@@ -146,20 +140,20 @@ String IPCConnector::GetAccessId()
 {
 	return m_accessId;
 }
-/*	
+
 void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
-	if(msg.ipc_path_size() == 0)
+	if(const_cast<IPCProtoMessage&>(msg).GetMessage()->n_ipc_path == 0)
 	{
 		return;
 	}
 
-	IPCObjectName path(msg.ipc_path(0));
+	IPCObjectName path(*const_cast<IPCProtoMessage&>(msg).GetMessage()->ipc_path[0]);
 	if(path.GetModuleNameString() == m_id)
 	{
 		toMessage(msg);
 	}
-}*/
+}
 
 bool IPCConnector::SendData(char* data, int len)
 {
@@ -170,41 +164,48 @@ bool IPCConnector::SendData(char* data, int len)
     free(senddata);
     return ret;
 }
-/*
-void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)
-{
-	toMessage(msg);
-}
 
 void IPCConnector::onChangeIPCNameMessage(const ChangeIPCNameMessage& msg)
 {
-	if(SetModuleName(msg.ipc_name()))
+	if(SetModuleName(*const_cast<ChangeIPCNameMessage&>(msg).GetMessage()->ipc_name))
 	{
 		toMessage(msg);
 	}
 }
 
+void IPCConnector::onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg)
+{
+    toMessage(msg);
+}
+
 void IPCConnector::onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg)
 {
-	toMessage(msg);
+    toMessage(msg);
 }
 
-void IPCConnector::onIPCMessage(const IPCMessageSignal& msg)
+void IPCConnector::onIPCMessage(const IPCSignalMessage& msg)
 {
 	IPCObjectName ipcName("");
-	if(msg.ipc_path_size() != 0)
+	if(const_cast<IPCSignalMessage&>(msg).n_ipc_path != 0)
 	{
-		ipcName = const_cast<IPCMessageSignal&>(msg).ipc_path(0);
+		ipcName = *(const_cast<IPCSignalMessage&>(msg).ipc_path[0]);
 	}
 
-	if (msg.ipc_path_size() == 0 ||
+	if (const_cast<IPCSignalMessage&>(msg).n_ipc_path == 0 ||
 		ipcName == IPCObjectName::GetIPCName(GetId()))
 	{
-		IPCProtoMessage ipcMsg(&m_handler, static_cast<const IPCMessage&>(msg));
-		toMessage(ipcMsg);
+        IPCProtoMessage ipmMsg(&m_handler, ipc__ipcmessage__descriptor);
+        ipmMsg.GetMessage()->has_message = msg.has_message;
+        ipmMsg.GetMessage()->ipc_path = msg.ipc_path;
+        ipmMsg.GetMessage()->n_ipc_path = msg.n_ipc_path;
+        ipmMsg.GetMessage()->ipc_sender = msg.ipc_sender;
+        ipmMsg.GetMessage()->n_ipc_sender = msg.n_ipc_sender;
+        ipmMsg.GetMessage()->message_name = msg.message_name;
+        ipmMsg.GetMessage()->message = msg.message;
+		toMessage(ipmMsg);
 	}
 }
-*/
+
 void IPCConnector::onModuleNameMessage(const ModuleNameMessage& msg)
 {
 	if(m_moduleName == *const_cast<ModuleNameMessage&>(msg).GetMessage()->ipc_name)
@@ -267,8 +268,8 @@ bool IPCConnector::SetModuleName(const IPCObjectName& moduleName)
 void IPCConnector::OnConnected()
 {
  	m_bConnected = true;
-// 	ConnectedMessage msg(GetId(), !m_isCoordinator);
-// 	onSignal(msg);
+ 	ConnectedMessage msg(GetId(), !m_isCoordinator);
+ 	onSignal(msg);
 }
 
 void IPCConnector::OnDisconnected()

@@ -1,9 +1,7 @@
 #ifndef IPC_HANDLER_H
 #define IPC_HANDLER_H
 
-//#include "../messages/interconn.pb.h"
-//using namespace interconn;
-
+#include "signal_message.h"
 #include "proto_message.h"
 #include "ipc.pb-c.h"
 
@@ -17,7 +15,8 @@ typedef ProtoMessage<_Ipc__RemoveIPCObject> RemoveIPCObjectMessage;
 typedef ProtoMessage<_Ipc__IPCObjectList> IPCObjectListMessage;
 typedef ProtoMessage<_Ipc__ModuleState> ModuleStateMessage;
 typedef ProtoMessage<_Ipc__Ping> PingMessage;
-//typedef SignalMessage<IPCMessage> IPCMessageSignal;
+
+typedef SignalMessage<_Ipc__IPCMessage> IPCSignalMessage;
 
 class IPCConnector;
 

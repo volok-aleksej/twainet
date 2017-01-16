@@ -11,8 +11,12 @@ public:
 	IPCObjectName(const Ipc__IPCName& ipcName);
 	~IPCObjectName();
 
+    bool operator == (const IPCObjectName& object) const;
+    
 	bool operator == (const Ipc__IPCName& object) const;
 	bool operator < (const Ipc__IPCName& object) const;
+    
+    void operator = (const Ipc__IPCName& object);
 
 	String GetModuleNameString() const;
     String GetModuleName() const;

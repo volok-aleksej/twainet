@@ -14,11 +14,8 @@
 #define SD_BOTH SHUT_RDWR
 
 #ifndef INVALID_SOCKET
-#	define INVALID_SOCKET -1
+#	define INVALID_SOCKET 0
 #endif/*INVALID_SOCKET*/
-#ifndef SOCKET_ERROR
-#	define SOCKET_ERROR -1
-#endif/*SOCKET_ERROR*/
 
 class AnySocket
 {

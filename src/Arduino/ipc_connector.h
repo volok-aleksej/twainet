@@ -27,13 +27,13 @@ public:
 	String GetAccessId();
 protected:
  	friend class Signal;
-// 	void onIPCMessage(const IPCProtoMessage& msg);
-// 	void onIPCMessage(const IPCMessageSignal& msg);
+    void onIPCMessage(const IPCSignalMessage& msg);
+ 	void onIPCMessage(const IPCProtoMessage& msg);
  	void onModuleNameMessage(const ModuleNameMessage& msg);
  	void onModuleStateMessage(const ModuleStateMessage& msg);
-// 	void onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg);
-// 	void onChangeIPCNameMessage(const ChangeIPCNameMessage& msg);
-// 	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
+ 	void onChangeIPCNameMessage(const ChangeIPCNameMessage& msg);
+    void onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg);
+    void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
 
 // 	
 // 	friend class IPCModule;

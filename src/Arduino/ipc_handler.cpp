@@ -15,6 +15,8 @@ template<> String IPCObjectListMessage::messageName = ipc__ipcobject_list__descr
 template<> String ModuleStateMessage::messageName = ipc__module_state__descriptor.name;
 template<> String PingMessage::messageName = ipc__ping__descriptor.name;
 
+template<> String IPCSignalMessage::messageName = ipc__ipcmessage__descriptor.name;
+
 IPCHandler::IPCHandler(IPCConnector* connector)
 : m_connector(connector)
 {
@@ -144,37 +146,65 @@ void IPCHandler::onMessage(const _Ipc__IPCMessage& msg)
  		return;
  	}
  	
+ 	Ipc__IPCName **namesPath = 0, **namesSender = 0;
  	bool isTarget = (msg.n_ipc_path == 0);
  
-// 	IPCMessage newMsg(msg);
-// 	newMsg.clear_ipc_path();
+ 	IPCProtoMessage newMsg(this, ipc__ipcmessage__descriptor);
+    newMsg.GetMessage()->has_message = msg.has_message;
+    newMsg.GetMessage()->message = msg.message;
+    newMsg.GetMessage()->ipc_sender = msg.ipc_sender;
+    newMsg.GetMessage()->n_ipc_sender = msg.n_ipc_sender;
+    newMsg.GetMessage()->message_name = msg.message_name;        
  	if(!isTarget)
  	{
-// 		IPCObjectName newPath(msg.ipc_path(0));
-// 		if(newPath == m_connector->m_moduleName)
-// 		{
-// 			for(int i = 1; i < msg.ipc_path_size(); i++)
-// 			{
-// 				*newMsg.add_ipc_path() = msg.ipc_path(i);
-// 			}
-// 		}
-// 		*newMsg.add_ipc_sender() = m_connector->GetIPCName();
-// 		isTarget = (newPath == m_connector->m_moduleName && !newMsg.ipc_path_size());
+ 		IPCObjectName newPath(*msg.ipc_path[0]);
+ 		if(newPath == m_connector->m_moduleName && msg.n_ipc_path > 1)
+ 		{
+            newMsg.GetMessage()->n_ipc_path = msg.n_ipc_path - 1;
+            namesPath = (Ipc__IPCName**)malloc(sizeof(Ipc__IPCName*) * (msg.n_ipc_path - 1));
+            newMsg.GetMessage()->ipc_path = namesPath;
+ 			for(int i = 1; i < msg.n_ipc_path; i++)
+ 			{
+ 				newMsg.GetMessage()->ipc_path[i - 1] =  msg.ipc_path[i];
+ 			}
+ 		}
+        
+        newMsg.GetMessage()->n_ipc_sender = msg.n_ipc_sender + 1;
+        namesSender = (Ipc__IPCName**)malloc(sizeof(Ipc__IPCName*) * (msg.n_ipc_sender + 1));
+        newMsg.GetMessage()->ipc_sender = namesSender;
+        for(int i = 0; i < msg.n_ipc_sender; i++)
+        {
+            newMsg.GetMessage()->ipc_sender[i] =  msg.ipc_sender[i];
+        }
+        
+        IPCNameMessage name(this, ipc__ipcname__descriptor);
+        name.GetMessage()->module_name = (char*)m_connector->GetIPCName().GetModuleName().c_str();
+        name.GetMessage()->host_name = (char*)m_connector->GetIPCName().GetHostName().c_str();
+        name.GetMessage()->conn_id = (char*)m_connector->GetIPCName().GetConnId().c_str();
+        newMsg.GetMessage()->ipc_sender[msg.n_ipc_sender] = name.GetMessage();
+ 		isTarget = (newPath == m_connector->m_moduleName && !newMsg.GetMessage()->n_ipc_path);
  	}
  
  	if (isTarget &&
  	    !m_connector->onData(msg.message_name, (char*)msg.message.data, (int)msg.message.len))
  	{
-// 		IPCProtoMessage protoMsg(this, newMsg);
-// 		m_connector->onSignal(protoMsg);
+ 		m_connector->onSignal(newMsg);
  	}
-// 	else if(newMsg.ipc_path_size())
-// 	{
-// 		IPCMessageSignal sigMsg(newMsg);
-// 		m_connector->onSignal(sigMsg);
-// 		IPCProtoMessage protoMsg(this, sigMsg);
-// 		m_connector->onIPCSignal(protoMsg);
-// 	}
+ 	else if(newMsg.GetMessage()->n_ipc_path)
+ 	{
+ 		IPCSignalMessage sigMsg(*newMsg.GetMessage());
+ 		m_connector->onSignal(sigMsg);
+ 		m_connector->onIPCSignal(newMsg);
+ 	}
+ 	
+ 	if(namesPath)
+    {
+        free(namesPath);
+    }
+    if(namesSender)
+    {
+        free(namesSender);
+    }
 }
 
 void IPCHandler::onMessage(const _Ipc__IPCObjectList& msg)
@@ -214,12 +244,14 @@ void IPCHandler::onMessage(const _Ipc__ChangeIPCName& msg)
 
 void IPCHandler::onMessage(const _Ipc__UpdateIPCObject& msg)
 {
-// 	UpdateIPCObjectMessage uioMsg(this, msg);
-// 	m_connector->onSignal(uioMsg);
-// 
-// 	IPCObjectName ipcNameOld(msg.ipc_old_name());
-// 	IPCObjectName ipcNameNew(msg.ipc_new_name());
-// 	m_connector->OnUpdateIPCObject(ipcNameOld.GetModuleNameString(), ipcNameNew.GetModuleNameString());
+ 	UpdateIPCObjectMessage uioMsg(this, ipc__update_ipcobject__descriptor);
+    uioMsg.GetMessage()->ipc_new_name = msg.ipc_new_name;
+    uioMsg.GetMessage()->ipc_old_name = msg.ipc_old_name;
+ 	m_connector->onSignal(uioMsg);
+ 
+ 	IPCObjectName ipcNameOld(*msg.ipc_old_name);
+ 	IPCObjectName ipcNameNew(*msg.ipc_new_name);
+ 	m_connector->OnUpdateIPCObject(ipcNameOld.GetModuleNameString(), ipcNameNew.GetModuleNameString());
 }
 
 void IPCHandler::onMessage(const _Ipc__Ping& msg)

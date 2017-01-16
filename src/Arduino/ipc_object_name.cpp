@@ -19,6 +19,13 @@ IPCObjectName::~IPCObjectName()
 {
 }
 
+bool IPCObjectName::operator == (const IPCObjectName& object) const
+{
+    return m_moduleName == object.GetModuleName() &&
+        m_hostName == object.GetHostName() &&
+        m_connId == object.GetConnId();
+}
+    
 bool IPCObjectName::operator == (const Ipc__IPCName& ipcName) const
 {
 	return	m_moduleName == ipcName.module_name &&
@@ -34,6 +41,13 @@ bool IPCObjectName::operator < (const Ipc__IPCName& ipcName) const
 		return true;
 	else
 		return false;
+}
+
+void IPCObjectName::operator = (const Ipc__IPCName& object)
+{
+    m_moduleName = object.module_name;
+    m_hostName = object.host_name;
+    m_connId = object.conn_id;
 }
 
 String IPCObjectName::GetModuleNameString() const
