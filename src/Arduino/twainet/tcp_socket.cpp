@@ -263,11 +263,15 @@ bool TCPSocket::Close()
     if(m_listenSocket != INVALID_SOCKET)
     {
         tcp_close(m_listenSocket);
+        tcp_abort(m_listenSocket);
+        m_listenSocket = INVALID_SOCKET;
     }
     
     if(m_acceptedSocket != INVALID_SOCKET)
     {
         tcp_close(m_acceptedSocket);
+        tcp_abort(m_acceptedSocket);
+        m_acceptedSocket = INVALID_SOCKET;
     }
     
 	if(m_socket == INVALID_SOCKET)
@@ -275,7 +279,10 @@ bool TCPSocket::Close()
 		return false;
 	}
 
-	return tcp_close(m_socket) == ERR_OK;
+	err_t ret = tcp_close(m_socket);
+    tcp_abort(m_socket);
+    m_socket = INVALID_SOCKET;
+    return ret == ERR_OK;
 }
 
 void TCPSocket::GetIPPort(String& ip, int& port)
@@ -310,6 +317,7 @@ int TCPSocket::GetMaxBufferSize()
 void TCPSocket::OnError(uint8_t err)
 {
     DEBUGV("TCPSocket:error:%d\r\n", err);
+    Close();
 }
 
 int8_t TCPSocket::OnAccept(tcp_pcb* newpcb, int8_t err)
