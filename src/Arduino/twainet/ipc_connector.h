@@ -33,7 +33,7 @@ protected:
     void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
 
 // 	
-// 	friend class IPCModule;
+ 	friend class IPCModule;
 // 	friend class PingThread;
  	friend class IPCHandler;
  	void onIPCSignal(const DataMessage& msg);

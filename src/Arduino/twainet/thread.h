@@ -1,26 +1,13 @@
 #ifndef THREAD_H
 #define THREAD_H
 
-extern unsigned int g_threadCounter;
-
 class Thread
 {
 public:
-	enum ThreadState
-	{
-        THREAD_CREATED = 0,
-		THREAD_STOPPED,
-		THREAD_RUNNING,
-		THREAD_STOP_PENDING,
-		THREAD_START_PENDING
-	};
-private:
+    Thread();
+    virtual ~Thread();
+    
     friend class ThreadManager;
-	friend class ThreadImpl;
-	Thread();
-	virtual ~Thread();
-
-public:
 	bool StartThread();
 	bool IsRunning();
 	bool IsStopped() const;
@@ -37,17 +24,6 @@ protected:
 
 private:
     unsigned int m_threadId;
-    ThreadState m_state;
-};
-
-class ThreadImpl : public Thread
-{
-public:
-    ThreadImpl();
-    virtual ~ThreadImpl();
-protected:
-    virtual void OnStop();
-    virtual void OnStart();
 };
 
 #endif/*THREAD_H*/

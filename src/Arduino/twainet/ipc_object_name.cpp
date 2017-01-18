@@ -25,7 +25,17 @@ bool IPCObjectName::operator == (const IPCObjectName& object) const
         m_hostName == object.GetHostName() &&
         m_connId == object.GetConnId();
 }
-    
+
+bool IPCObjectName::operator < (const IPCObjectName& object) const
+{
+    if (m_moduleName < object.GetModuleName() ||
+        m_moduleName == object.GetModuleName() && m_hostName < object.GetHostName() ||
+        m_moduleName == object.GetModuleName() && m_hostName == object.GetHostName() && m_connId < object.GetConnId())
+        return true;
+    else
+        return false;
+}
+
 bool IPCObjectName::operator == (const Ipc__IPCName& ipcName) const
 {
 	return	m_moduleName == ipcName.module_name &&

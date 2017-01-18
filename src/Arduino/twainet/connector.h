@@ -4,14 +4,16 @@
 #include <WString.h>
 #include "include/any_socket.h"
 #include "message_handler.h"
+#include "connector_manager.h"
 #include "thread.h"
 
-class Connector : public MessageHandler, public ThreadImpl
+class Connector : public MessageHandler, public Thread
 {
 public:
 	Connector(AnySocket* socket);
 	virtual ~Connector();
 
+    void SetConnectorManager(ConnectorManager* manager);
 	void SetId(const String& id);
 	String GetId() const;
 	void SetRemoteAddr(const String& ip, int port);
@@ -23,6 +25,7 @@ public:
 protected:
 	virtual bool SendData(char* data, int len);
 protected:
+    ConnectorManager* m_manager;
 	AnySocket* m_socket;
 	String m_id;
 	String m_connectorId;

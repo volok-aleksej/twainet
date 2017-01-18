@@ -9,7 +9,6 @@ void Thread::sleep(unsigned long millisec)
 
 Thread::Thread()
 : m_threadId(0)
-, m_state(THREAD_CREATED)
 {
 }
 
@@ -19,58 +18,33 @@ Thread::~Thread()
 
 bool Thread::StartThread()
 {
-    if(m_state != THREAD_STOPPED)
-    {
-        return false;
+    ThreadManager::GetInstance().AddThread(this);
+    if(m_threadId) {
+        ets_post(m_threadId, m_threadId, 0);
     }
-    m_state = THREAD_START_PENDING;
-    m_threadId = g_threadCounter + 1;
-    g_threadCounter++;
-    OnStart();
-    m_state = Thread::THREAD_RUNNING;
-	return true;
 }
 
 bool Thread::IsStopped() const
 {
-	return m_state == THREAD_STOPPED;
+	return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::STOPPED;
 }
 
 bool Thread::IsStop()
 {
-	return m_state == THREAD_STOP_PENDING;
+    return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::STOP_PENDING;
 }
 
 bool Thread::IsRunning()
 {
-	return m_state == THREAD_RUNNING;
+    return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::RUNNING;
 }
 
 
 void Thread::StopThread()
 {
-	if(m_state != THREAD_STOPPED)
+	if(!IsStopped())
 	{
-		m_state = THREAD_STOP_PENDING;
-        Stop();
-        m_state = THREAD_STOPPED;
+		g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::STOP_PENDING;
+        ThreadManager::GetInstance().RemoveThread(this);
 	}
-}
-
-ThreadImpl::ThreadImpl()
-{
-}
-
-ThreadImpl::~ThreadImpl()
-{
-}
-
-void ThreadImpl::OnStop()
-{
-    ThreadManager::GetInstance().RemoveThread(this);
-}
-
-void ThreadImpl::OnStart()
-{
-    ThreadManager::GetInstance().AddThread(this);
 }

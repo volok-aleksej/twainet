@@ -1,5 +1,6 @@
 #include "connector_manager.h"
 #include "connector_messages.h"
+#include "connector.h"
 
 ConnectorManager::ConnectorManager()
 {
@@ -15,6 +16,7 @@ void ConnectorManager::AddConnection(Connector* conn)
         it != m_connectors.end(); ++it) {
         it->onNewConnector(conn);
     }
+    conn->SetConnectorManager(this);
 	conn->StartThread();
 	m_connectors.insert(m_connectors.begin(), conn);
 }
@@ -27,7 +29,6 @@ void ConnectorManager::StopConnection(const String& moduleName)
             it->StopThread();
             DisconnectedMessage msg(it->GetId(), it->GetConnectorId());
             onSignal(msg);
-            delete *it;
             m_connectors.erase(it);
             break;
         }

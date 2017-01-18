@@ -5,7 +5,7 @@
 
 class IPCConnector;
 
-class IPCCheckerThread : public ThreadImpl
+class IPCCheckerThread : public Thread
 {
 public:
 	IPCCheckerThread(IPCConnector* connector);
@@ -13,6 +13,8 @@ public:
 protected:
 	virtual void ThreadFunc();
 	virtual void Stop(){};
+    virtual void OnStop(){};
+    virtual void OnStart(){};
 private:
 	IPCConnector* m_connector;
 	int m_count;

@@ -4,9 +4,10 @@
 #include <WString.h>
 
 #include "std/list.hpp"
-#include "connector.h"
 #include "signal.h"
 #include "signal_owner.h"
+
+class Connector;
 
 class ConnectorManager : public SignalOwner
 {

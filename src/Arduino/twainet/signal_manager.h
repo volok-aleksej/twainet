@@ -7,7 +7,7 @@
 
 class Signal;
 
-class SignalManager : public Singleton<SignalManager>, public ThreadImpl
+class SignalManager : public Singleton<SignalManager>, public Thread
 {
 protected:
 	friend class Singleton<SignalManager>;
@@ -18,6 +18,8 @@ public:
 protected:
 	virtual void ThreadFunc();
 	virtual void Stop(){};
+    virtual void OnStop(){};
+    virtual void OnStart(){};
 private:
 	twnstd::list<Signal*> m_signals;
 };

@@ -26,13 +26,14 @@ struct ThreadDescription
     enum {
         ABSENT,
         CREATED,
-        START_PENDING,
         RUNNING,
         WAITING,
         STOPPED,
         STOP_PENDING
     } m_state;
 };
+
+extern ThreadDescription g_threadDesks[THREAD_MAX];
 
 class ThreadManager : public Singleton<ThreadManager>
 {
@@ -43,10 +44,11 @@ protected:
 public:
 	void AddThread(Thread* thread);
 	void RemoveThread(Thread* thread);
+    void CheckThreads();
+    unsigned int GetCurrentThreadId();
 protected:
     friend void thread_wrapper();
-    void StartThread(Thread* thread);
-    void CheckThreads();
+    void RunThreadFunc(Thread* thread);
 };
 
 #endif/*THREAD_MANAGER_H*/
