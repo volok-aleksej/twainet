@@ -45,10 +45,12 @@ public:
 	void AddThread(Thread* thread);
 	void RemoveThread(Thread* thread);
     void CheckThreads();
+    void SwitchThread();
     unsigned int GetCurrentThreadId();
 protected:
     friend void thread_wrapper();
     void RunThreadFunc(Thread* thread);
+    unsigned int GetNextSuspendThreadId();
 };
 
 #endif/*THREAD_MANAGER_H*/

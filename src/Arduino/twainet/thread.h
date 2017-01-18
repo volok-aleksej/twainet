@@ -9,7 +9,10 @@ public:
     
     friend class ThreadManager;
 	bool StartThread();
+    bool SuspendThread();
+    bool ResumeThread();
 	bool IsRunning();
+    bool IsSuspend();
 	bool IsStopped() const;
 	bool IsStop();
     void StopThread();

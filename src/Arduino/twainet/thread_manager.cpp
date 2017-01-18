@@ -79,10 +79,47 @@ unsigned int ThreadManager::GetCurrentThreadId()
 {
     return g_current_threadId;
 }
+
+unsigned int ThreadManager::GetNextSuspendThreadId()
+{
+    if(g_current_threadId) {
+        for(uint8_t i = g_current_threadId - THREAD_START_ID; i < THREAD_MAX; i++) {
+            if(g_threadDesks[i].m_state == ThreadDescription::WAITING) {
+                return g_threadDesks[i].m_id;
+            }
+        }
+        
+        for(uint8_t i = 0; i < g_current_threadId - THREAD_START_ID; i++) {
+            if(g_threadDesks[i].m_state == ThreadDescription::WAITING) {
+                return g_threadDesks[i].m_id;
+            }
+        }
+    } else {
+        for(uint8_t i = 0; i < THREAD_MAX; i++) {
+            if(g_threadDesks[i].m_state == ThreadDescription::WAITING) {
+                return g_threadDesks[i].m_id;
+            }
+        }
+    }
+    
+    return 0;
+}
     
 void ThreadManager::RunThreadFunc(Thread* thread)
 {
     thread->ThreadFunc();
+}
+
+extern "C" void esp_schedule();
+
+void ThreadManager::SwitchThread()
+{
+    unsigned int id = ThreadManager::GetInstance().GetNextSuspendThreadId();
+    if(id) {
+        ets_post(id, id, 0);
+    } else {
+        esp_schedule();
+    }
 }
 
 void ThreadManager::CheckThreads()

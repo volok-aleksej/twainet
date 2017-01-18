@@ -3,6 +3,7 @@
 
 SignalManager::SignalManager()
 {
+    StartThread();
 }
 
 SignalManager::~SignalManager()
@@ -24,5 +25,6 @@ void SignalManager::ThreadFunc()
 			delete *it;
 			it = m_signals.erase(it);
 		}
+		SuspendThread();
 	}
 }
