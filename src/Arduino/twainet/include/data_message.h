@@ -1,8 +1,6 @@
 #ifndef DATA_MESSAGE_H
 #define DATA_MESSAGE_H
 
-#include <WString.h>
-
 class Deserializer
 {
 public:

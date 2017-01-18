@@ -19,7 +19,7 @@ class ReceiverFunc : public IReceiverFunc
 public:
 	typedef void (TReciever::*SignalFunction)(const DataMessage& msg);
 
-	ReceiverFunc(TReciever* reciever, const String& typeSignal, SignalFunction func)
+	ReceiverFunc(TReciever* reciever, const char* typeSignal, SignalFunction func)
 		: m_receiver(reciever), m_func(func), m_typeSignal(typeSignal)
 	{
 	}
@@ -48,7 +48,7 @@ protected:
 private:
 	SignalFunction m_func;
 	TReciever* m_receiver;
-	String m_typeSignal;
+	const char* m_typeSignal;
 };
 
 #endif/*RECEIVER_FUNC_H*/

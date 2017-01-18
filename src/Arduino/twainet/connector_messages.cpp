@@ -10,10 +10,10 @@ ConnectorMessage::ConnectorMessage(Connector* conn)
 
 char* ConnectorMessage::GetName() const
 {
-    return const_cast<char*>(GetMessageName().c_str());
+    return const_cast<char*>(GetMessageName());
 }
 
-String ConnectorMessage::GetMessageName()
+const char* ConnectorMessage::GetMessageName()
 {
 	return "ConnectorMessage";
 }
@@ -28,10 +28,10 @@ ErrorMessage::ErrorMessage(const String& error, int errorCode)
 
 char* ErrorMessage::GetName() const
 {
-    return const_cast<char*>(GetMessageName().c_str());
+    return const_cast<char*>(GetMessageName());
 }
 
-String ErrorMessage::GetMessageName()
+const char* ErrorMessage::GetMessageName()
 {
 	return "ErrorMessage";
 }
@@ -46,10 +46,10 @@ DisconnectedMessage::DisconnectedMessage(const String& id, const String& connId)
 
 char* DisconnectedMessage::GetName() const
 {
-    return const_cast<char*>(GetMessageName().c_str());
+    return const_cast<char*>(GetMessageName());
 }
 
-String DisconnectedMessage::GetMessageName()
+const char* DisconnectedMessage::GetMessageName()
 {
 	return "DisconnectedMessage";
 }
@@ -65,10 +65,10 @@ ConnectedMessage::ConnectedMessage(const String& id, bool bWithCoordinator)
 
 char* ConnectedMessage::GetName() const
 {
-    return const_cast<char*>(GetMessageName().c_str());
+    return const_cast<char*>(GetMessageName());
 }
 
-String ConnectedMessage::GetMessageName()
+const char* ConnectedMessage::GetMessageName()
 {
 	return "ConnectedMessage";
 }

@@ -45,6 +45,7 @@ void ThreadManager::AddThread(Thread* thread)
     for(uint8_t i = 0; i < THREAD_MAX; i++) {
         if(g_threadDesks[i].m_state == ThreadDescription::ABSENT) {
             g_threadDesks[i].m_thread = thread;
+            g_threadDesks[i].m_thread->m_threadId = g_threadDesks[i].m_id;
             g_threadDesks[i].m_state = ThreadDescription::CREATED;
             return;
         }

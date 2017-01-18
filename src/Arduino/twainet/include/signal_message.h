@@ -6,7 +6,7 @@
 template<class TMessage>
 class SignalMessage : public DataMessage, public TMessage
 {
-    static String messageName;
+    static const char* messageName;
 public:
 	SignalMessage(const TMessage& msg)
 	{
@@ -15,10 +15,10 @@ public:
 
     virtual char* GetName()const
     {
-        return const_cast<char*>(GetMessageName().c_str());
+        return const_cast<char*>(GetMessageName());
     }
     
-	static String GetMessageName()
+	static const char* GetMessageName()
 	{
 		return messageName;
 	}

@@ -4,18 +4,18 @@
 //#include "include/ref.h"
 //#include "module/ipc_module.h"
 
-template<> String IPCNameMessage::messageName = ipc__ipcname__descriptor.name;
-template<> String IPCProtoMessage::messageName = ipc__ipcmessage__descriptor.name;
-template<> String ModuleNameMessage::messageName = ipc__module_name__descriptor.name;
-template<> String AddIPCObjectMessage::messageName = ipc__add_ipcobject__descriptor.name;
-template<> String UpdateIPCObjectMessage::messageName = ipc__update_ipcobject__descriptor.name;
-template<> String ChangeIPCNameMessage::messageName = ipc__change_ipcname__descriptor.name;
-template<> String RemoveIPCObjectMessage::messageName = ipc__remove_ipcobject__descriptor.name;
-template<> String IPCObjectListMessage::messageName = ipc__ipcobject_list__descriptor.name;
-template<> String ModuleStateMessage::messageName = ipc__module_state__descriptor.name;
-template<> String PingMessage::messageName = ipc__ping__descriptor.name;
+template<> const char* IPCNameMessage::messageName = ipc__ipcname__descriptor.name;
+template<> const char* IPCProtoMessage::messageName = ipc__ipcmessage__descriptor.name;
+template<> const char* ModuleNameMessage::messageName = ipc__module_name__descriptor.name;
+template<> const char* AddIPCObjectMessage::messageName = ipc__add_ipcobject__descriptor.name;
+template<> const char* UpdateIPCObjectMessage::messageName = ipc__update_ipcobject__descriptor.name;
+template<> const char* ChangeIPCNameMessage::messageName = ipc__change_ipcname__descriptor.name;
+template<> const char* RemoveIPCObjectMessage::messageName = ipc__remove_ipcobject__descriptor.name;
+template<> const char* IPCObjectListMessage::messageName = ipc__ipcobject_list__descriptor.name;
+template<> const char* ModuleStateMessage::messageName = ipc__module_state__descriptor.name;
+template<> const char* PingMessage::messageName = ipc__ping__descriptor.name;
 
-template<> String IPCSignalMessage::messageName = ipc__ipcmessage__descriptor.name;
+template<> const char* IPCSignalMessage::messageName = ipc__ipcmessage__descriptor.name;
 
 IPCHandler::IPCHandler(IPCConnector* connector)
 : m_connector(connector)

@@ -15,7 +15,7 @@ extern "C" {
     
 #define THREAD_START_ID 2
 #define QUEUE_SIZE      1
-#define THREAD_MAX      5
+#define THREAD_MAX      3
 
 struct ThreadDescription
 {

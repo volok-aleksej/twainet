@@ -10,7 +10,7 @@ class IPCHandler;
 template<typename TMessage, typename THandler = IPCHandler>
 class ProtoMessage : public DataMessage
 {
-    static String messageName;
+    static const char* messageName;
 public:
 	ProtoMessage(THandler* handler, const ProtobufCMessageDescriptor& descriptor)
 		: m_handler(handler), m_descriptor(descriptor), unpacked(false)
@@ -76,7 +76,7 @@ public:
         return message;
     }
     
-    static String GetMessageName()
+    static const char* GetMessageName()
     {
         return messageName;
     }
