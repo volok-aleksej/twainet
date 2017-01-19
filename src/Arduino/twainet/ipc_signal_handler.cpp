@@ -63,26 +63,30 @@ void IPCSignalHandler::onAddIPCObject(const AddIPCObjectMessage& msg)
                                 const_cast<AddIPCObjectMessage&>(msg).GetMessage()->access_id);
 // 	LOG_INFO("Add IPC Object: ipc name - %s, m_moduleName - %s\n",
 // 		 object.m_ipcName.GetModuleNameString().c_str(), m_module->m_moduleName.GetModuleNameString().c_str());
-	m_module->m_ipcObject.push_back(object);
+	m_module->m_ipcObject.insert(m_module->m_ipcObject.end(), object);
 	m_module->OnIPCObjectsChanged();
 }
 
 void IPCSignalHandler::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 {
 	IPCModule::IPCObject object(*const_cast<UpdateIPCObjectMessage&>(msg).GetMessage()->ipc_old_name);
-    for(unsigned int i = 0; i < m_module->m_ipcObject.length(); i++) {
-        if(m_module->m_ipcObject[i] == object)
+    for(twnstd::list<IPCModule::IPCObject>::iterator it = m_module->m_ipcObject.begin();
+        it != m_module->m_ipcObject.end(); ++it)
+    {
+        if(*it == object)
         {
-            m_module->m_ipcObject[i] = IPCModule::IPCObject(*const_cast<UpdateIPCObjectMessage&>(msg).GetMessage()->ipc_new_name);
+            *it = IPCModule::IPCObject(*const_cast<UpdateIPCObjectMessage&>(msg).GetMessage()->ipc_new_name);
             break;
         }
     }
     bool update = false;
-    for(unsigned int i = 0; i < m_module->m_modules.length(); i++) {
-        if(m_module->m_modules[i] == object)
+    for(twnstd::list<IPCModule::IPCObject>::iterator it = m_module->m_modules.begin();
+        it != m_module->m_modules.end(); ++it)
+    {
+        if(*it == object)
         {
             update = true;
-            m_module->m_modules[i] = IPCModule::IPCObject(*const_cast<UpdateIPCObjectMessage&>(msg).GetMessage()->ipc_new_name);
+            *it = IPCModule::IPCObject(*const_cast<UpdateIPCObjectMessage&>(msg).GetMessage()->ipc_new_name);
             break;
         }
     }
@@ -99,17 +103,39 @@ void IPCSignalHandler::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 
 void IPCSignalHandler::onRemoveIPCObject(const RemoveIPCObjectMessage& msg)
 {
-// 	IPCModule::IPCObject object(IPCObjectName::GetIPCName(msg.ipc_name()));
-// 	m_module->m_ipcObject.RemoveObject(object);
-// 	m_module->OnIPCObjectsChanged();
+    IPCObjectName ipcName = IPCObjectName::GetIPCName(const_cast<RemoveIPCObjectMessage&>(msg).GetMessage()->ipc_name);
+    for(twnstd::list<IPCModule::IPCObject>::iterator it = m_module->m_ipcObject.begin();
+        it != m_module->m_ipcObject.end(); ++it)
+    {
+        if(it->m_ipcName == ipcName)
+        {
+            m_module->m_ipcObject.erase(it);
+            break;
+        }
+    }
+    
+    m_module->OnIPCObjectsChanged();
 // 	LOG_INFO("Remove IPC Object: ipc name - %s, m_moduleName - %s\n",
 // 		 object.m_ipcName.GetModuleNameString().c_str(), m_module->m_moduleName.GetModuleNameString().c_str());
 }
 
 void IPCSignalHandler::onModuleName(const ModuleNameMessage& msg)
 {
-// 	IPCModule::IPCObject module(msg.ipc_name(), msg.ip(), msg.port(), msg.access_id());
-// 	const_cast<ModuleNameMessage&>(msg).set_is_exist(!m_module->m_modules.AddObject(module));
+ 	IPCModule::IPCObject module(IPCObjectName(*const_cast<ModuleNameMessage&>(msg).GetMessage()->ipc_name),
+                                const_cast<ModuleNameMessage&>(msg).GetMessage()->ip,
+                                const_cast<ModuleNameMessage&>(msg).GetMessage()->port,
+                                const_cast<ModuleNameMessage&>(msg).GetMessage()->access_id);
+    bool isexist = false;
+    for(twnstd::list<IPCModule::IPCObject>::iterator it = m_module->m_modules.begin();
+        it != m_module->m_modules.end(); ++it)
+    {
+        if(*it == module)
+        {
+            isexist = true;
+            break;
+        }
+    }
+ 	const_cast<ModuleNameMessage&>(msg).GetMessage()->is_exist = isexist;
 }
 
 void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
@@ -120,7 +146,16 @@ void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 	}
 
 	IPCModule::IPCObject module = IPCObjectName::GetIPCName(msg.m_id);
-// 	m_module->m_modules.RemoveObject(module);
+    for(twnstd::list<IPCModule::IPCObject>::iterator it = m_module->m_modules.begin();
+        it != m_module->m_modules.end(); ++it)
+    {
+        if(*it == module)
+        {
+            m_module->m_modules.erase(it);
+            break;
+        }
+    }
+    
 	m_module->OnFireConnector(msg.m_id);
 }
 

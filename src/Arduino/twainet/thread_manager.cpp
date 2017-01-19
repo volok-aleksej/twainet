@@ -88,12 +88,6 @@ unsigned int ThreadManager::GetNextSuspendThreadId()
                 return g_threadDesks[i].m_id;
             }
         }
-        
-        for(uint8_t i = 0; i < g_current_threadId - THREAD_START_ID; i++) {
-            if(g_threadDesks[i].m_state == ThreadDescription::WAITING) {
-                return g_threadDesks[i].m_id;
-            }
-        }
     } else {
         for(uint8_t i = 0; i < THREAD_MAX; i++) {
             if(g_threadDesks[i].m_state == ThreadDescription::WAITING) {
@@ -118,6 +112,7 @@ void ThreadManager::SwitchThread()
     if(id) {
         ets_post(id, id, 0);
     } else {
+        g_current_threadId = 0;
         esp_schedule();
     }
 }

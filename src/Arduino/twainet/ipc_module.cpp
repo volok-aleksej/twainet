@@ -190,9 +190,10 @@ void IPCModule::Exit()
 twnstd::vector<IPCObjectName> IPCModule::GetIPCObjects()
 {
     twnstd::vector<IPCObjectName> retVal;
-    for(unsigned int i = 0; i < m_ipcObject.length(); i++)
+    for(twnstd::list<IPCObject>::iterator it = m_ipcObject.begin();
+        it != m_ipcObject.end(); ++it)
     {
-        retVal.push_back(m_ipcObject[i].m_ipcName);
+        retVal.push_back(it->m_ipcName);
     }
 	return retVal;
 }
@@ -205,9 +206,10 @@ twnstd::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& targ
       return retpath;
     }
     
-    for(unsigned int i = 0; i < m_modules.length(); i++)
+    for(twnstd::list<IPCObject>::iterator it = m_modules.begin();
+        it != m_modules.end(); ++it)
     {
-        if (target == m_modules[i].m_ipcName)
+        if (target == it->m_ipcName)
         {
             retpath.push_back(target);
             return retpath;
@@ -220,9 +222,10 @@ twnstd::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& targ
 twnstd::vector<IPCObjectName> IPCModule::GetConnectedModules()
 {
     twnstd::vector<IPCObjectName> retVal;
-    for(unsigned int i = 0; i < m_modules.length(); i++)
+    for(twnstd::list<IPCObject>::iterator it = m_modules.begin();
+        it != m_modules.end(); ++it)
     {
-        retVal.push_back(m_modules[i].m_ipcName);
+        retVal.push_back(it->m_ipcName);
     }
     return retVal;
 }

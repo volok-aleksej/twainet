@@ -8,6 +8,7 @@
 // #include "connector_factory.h"
 #include "connector_manager.h"
 #include "signal_owner.h"
+#include "std/list.hpp"
 #include "std/vector.hpp"
 
 #include <string>
@@ -65,8 +66,8 @@ protected:
 	void AddConnector(Connector* connector);
 protected:
 	IPCObjectName m_moduleName;
-	twnstd::vector<IPCObject> m_ipcObject;	// available modules
-	twnstd::vector<IPCObject> m_modules;		// connected modules
+	twnstd::list<IPCObject> m_ipcObject;	// available modules
+	twnstd::list<IPCObject> m_modules;		// connected modules
 	ConnectorManager *m_manager;
 	bool m_isExit;
 	

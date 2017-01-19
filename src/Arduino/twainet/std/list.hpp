@@ -44,9 +44,9 @@ public:
             return *m_object;
         }
         
-        Object& operator -> ()
+        Object* operator -> ()
         {
-            return *m_object;
+            return m_object;
         }
         
         void operator ++ ()
