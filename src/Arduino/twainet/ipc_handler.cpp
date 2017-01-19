@@ -67,6 +67,7 @@ void IPCHandler::onMessage(const _Ipc__ModuleName& msg)
  		ipcolMsg.GetMessage()->access_id = msg.access_id;
  		m_connector->onSignal(ipcolMsg);
  		m_connector->toMessage(ipcolMsg);
+        free(ipcolMsg.GetMessage()->ipc_object);
  	}
  	
  	if(m_connector->m_isExist)
@@ -194,7 +195,6 @@ void IPCHandler::onMessage(const _Ipc__IPCMessage& msg)
  	{
  		IPCSignalMessage sigMsg(*newMsg.GetMessage());
  		m_connector->onSignal(sigMsg);
- 		m_connector->onIPCSignal(newMsg);
  	}
  	
  	if(namesPath)

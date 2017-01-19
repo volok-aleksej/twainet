@@ -57,9 +57,9 @@ protected:
 	virtual void OnFireConnector(const String& moduleName);
 	virtual void OnConnected(const String& moduleName);
 	virtual void OnConnectFailed(const String& moduleName);
-	virtual void OnMessage(const String& messageName, const twnstd::vector<String>& path, const String& data);
+	virtual void OnMessage(const String& messageName, const twnstd::vector<String>& path, const char* data, unsigned int lenData);
 	virtual bool CheckFireConnector(const String& moduleName);
-	virtual void FillIPCObjectList(twnstd::vector<IPCObject>& ipcList);
+	virtual void FillIPCObjectList(twnstd::list<IPCObject>& ipcList);
 	virtual void OnIPCObjectsChanged();
 protected:
 	void ipcSubscribe(IPCConnector* connector, SignalReceiver* receiver, IReceiverFunc* func);

@@ -26,33 +26,43 @@ void IPCSignalHandler::onConnected(const ConnectedMessage& msg)
 
 void IPCSignalHandler::onIPCMessage(const IPCProtoMessage& msg)
 {
-// 	std::vector<std::string> path;
-// 	for(int i = 0; i < msg.ipc_sender_size(); i++)
-// 	{
-// 		IPCObjectName sender(msg.ipc_sender(i));
-// 		path.push_back(sender.GetModuleNameString());
-// 	}
-// 	m_module->OnMessage(msg.message_name(), path, msg.message());
+ 	twnstd::vector<String> path;
+ 	for(int i = 0; i < const_cast<IPCProtoMessage&>(msg).GetMessage()->n_ipc_sender; i++)
+ 	{
+ 		IPCObjectName sender(*const_cast<IPCProtoMessage&>(msg).GetMessage()->ipc_sender[i]);
+ 		path.push_back(sender.GetModuleNameString());
+ 	}
+ 	
+ 	m_module->OnMessage(const_cast<IPCProtoMessage&>(msg).GetMessage()->message_name, path,
+                        (const char*)const_cast<IPCProtoMessage&>(msg).GetMessage()->message.data,
+                        const_cast<IPCProtoMessage&>(msg).GetMessage()->message.len);
 }
 
 void IPCSignalHandler::onIPCMessage(const IPCSignalMessage& msg)
-{/*
-	IPCObjectName newPath(msg.ipc_path(0));
-	std::vector<IPCObjectName> path = m_module->GetTargetPath(newPath);
-	if(path.size() > 1)
+{
+	IPCObjectName newPath(*const_cast<IPCSignalMessage&>(msg).ipc_path[0]);
+	twnstd::vector<IPCObjectName> path = m_module->GetTargetPath(newPath);
+	if(path.length() > 1)
 	{
-		const_cast<IPCMessageSignal&>(msg).clear_ipc_path();
-		for(std::vector<IPCObjectName>::iterator it = path.begin();
-		    it != path.end(); it++)
-		{
-		    *const_cast<IPCMessageSignal&>(msg).add_ipc_path() = *it;
-		}
+        IPCSignalMessage tomsg(msg);
+ 		tomsg.n_ipc_path = path.length();
+        tomsg.ipc_path = (Ipc__IPCName**)malloc(sizeof(Ipc__IPCName*) * path.length() + sizeof(Ipc__IPCName) * path.length());
+ 		for(unsigned int i = 0; i < path.length(); i++)
+ 		{
+            tomsg.ipc_path[i] = (Ipc__IPCName*)(((char*)tomsg.ipc_path) + sizeof(Ipc__IPCName*) * path.length() + sizeof(Ipc__IPCName) * i);
+ 		    tomsg.ipc_path[i]->module_name = (char*)path[i].GetModuleName().c_str();
+            tomsg.ipc_path[i]->host_name = (char*)path[i].GetHostName().c_str();
+            tomsg.ipc_path[i]->conn_id = (char*)path[i].GetConnId().c_str();
+ 		}
+ 		m_module->onSignal(msg);
+        free(tomsg.ipc_path);
 	}
-	else if(path.size() == 0 && m_module->GetModuleName() == newPath)
+	else if(path.length() == 0 && m_module->GetModuleName() == newPath)
 	{
-		IPCProtoMessage protoMsg(0, msg);
-		onIPCMessage(protoMsg);
-	}*/
+ 		IPCProtoMessage protoMsg(0, ipc__ipcmessage__descriptor);
+        *protoMsg.GetMessage() = *(Ipc__IPCMessage*)(&msg);
+ 		onIPCMessage(protoMsg);
+	}
 }
 
 void IPCSignalHandler::onAddIPCObject(const AddIPCObjectMessage& msg)
@@ -161,18 +171,29 @@ void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 
 void IPCSignalHandler::onIPCObjectList(const IPCObjectListMessage& msg)
 {
-// 	std::vector<IPCModule::IPCObject> list = m_module->m_ipcObject.GetObjectList();
-// 	m_module->FillIPCObjectList(list);
-// 	std::vector<IPCModule::IPCObject>::iterator it;
-// 	for(it = list.begin(); it != list.end(); it++)
-// 	{
-// 		if(it->m_accessId != msg.access_id())
-// 			continue;
-// 
-// 		AddIPCObject* ipcObject = const_cast<IPCObjectListMessage&>(msg).add_ipc_object();
-// 		ipcObject->set_ip(it->m_ip);
-// 		ipcObject->set_port(it->m_port);
-// 		ipcObject->set_access_id(it->m_accessId);
-// 		*ipcObject->mutable_ipc_name() = it->m_ipcName;
-// 	}
+ 	twnstd::list<IPCModule::IPCObject> list = m_module->m_ipcObject;
+ 	m_module->FillIPCObjectList(list);
+    const_cast<IPCObjectListMessage&>(msg).GetMessage()->n_ipc_object = list.size();
+    const_cast<IPCObjectListMessage&>(msg).GetMessage()->ipc_object = 
+        (Ipc__AddIPCObject**)malloc(sizeof(Ipc__AddIPCObject*) * list.size() + sizeof(Ipc__AddIPCObject) * list.size() + sizeof(Ipc__IPCName)* list.size());
+    unsigned int offsetobjects = sizeof(Ipc__AddIPCObject*) * list.size();
+    unsigned int offsetnames = offsetobjects + sizeof(Ipc__AddIPCObject) * list.size();
+    twnstd::list<IPCModule::IPCObject>::iterator it;
+    int i;
+ 	for(it = list.begin(), i = 0; it != list.end(); ++it, i++)
+ 	{
+ 		if(it->m_accessId != const_cast<IPCObjectListMessage&>(msg).GetMessage()->access_id)
+ 			continue;
+ 
+        char* dataPtr = (char*)const_cast<IPCObjectListMessage&>(msg).GetMessage()->ipc_object;
+        const_cast<IPCObjectListMessage&>(msg).GetMessage()->ipc_object[i] = (Ipc__AddIPCObject*)(dataPtr + offsetobjects + sizeof(Ipc__AddIPCObject) * i);
+        Ipc__AddIPCObject* addIPCObject = const_cast<IPCObjectListMessage&>(msg).GetMessage()->ipc_object[i];
+ 		addIPCObject->ip = (char*)it->m_ip.c_str();
+ 		addIPCObject->port = it->m_port;
+ 		addIPCObject->access_id = (char*)it->m_accessId.c_str();
+        addIPCObject->ipc_name = (Ipc__IPCName*)(dataPtr + offsetnames + sizeof(Ipc__IPCName) * i);
+        addIPCObject->ipc_name->module_name = (char*)it->m_ipcName.GetModuleName().c_str();
+        addIPCObject->ipc_name->host_name = (char*)it->m_ipcName.GetHostName().c_str();
+        addIPCObject->ipc_name->conn_id = (char*)it->m_ipcName.GetConnId().c_str();
+ 	}
 }

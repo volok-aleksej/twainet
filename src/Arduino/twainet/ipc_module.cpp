@@ -101,7 +101,7 @@ void IPCModule::OnConnectFailed(const String& moduleName)
 // 	LOG_INFO("Connection failed: moduleName - %s, m_moduleName - %s\n", moduleName.c_str(), m_moduleName.GetModuleNameString().c_str());
 }
 
-void IPCModule::OnMessage(const String& messageName, const twnstd::vector<String>& path, const String& data)
+void IPCModule::OnMessage(const String& messageName, const twnstd::vector<String>& path, const char* data, unsigned int lenData)
 {
 }
 
@@ -110,7 +110,7 @@ bool IPCModule::CheckFireConnector(const String& moduleName)
 	return false;
 }
 
-void IPCModule::FillIPCObjectList(twnstd::vector<IPCObject>& ipcList)
+void IPCModule::FillIPCObjectList(twnstd::list<IPCObject>& ipcList)
 {
 }
 
