@@ -48,8 +48,6 @@ public:
     void SwitchThread();
     unsigned int GetCurrentThreadId();
 protected:
-    friend void thread_wrapper();
-    void RunThreadFunc(Thread* thread);
     unsigned int GetNextSuspendThreadId();
 };
 

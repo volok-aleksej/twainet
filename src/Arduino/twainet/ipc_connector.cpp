@@ -39,42 +39,25 @@ IPCConnector::~IPCConnector()
 void IPCConnector::ThreadFunc()
 {
 	static int len = 0;
-    if(!len)
-    {
-        if (!m_socket->Recv((char*)&len, sizeof(int)))
-        {
-            if(m_manager) {
-                m_manager->StopConnection(GetId());
-            }
+    if(!len) {
+        if (!m_socket->Recv((char*)&len, sizeof(int))) {
             return;
         }
     }
 
-	if(len < 0 || len > MAX_DATA_LEN)
-	{
-        if(m_manager) {
-            m_manager->StopConnection(GetId());
-        }
+	if(len < 0 || len > MAX_DATA_LEN) {
 		return;
 	}
 
 	char* data = (char*)malloc(len);
-	if(!m_socket->Recv(data, len))
-	{
+	if(!m_socket->Recv(data, len)) {
         free(data);
-        if(m_manager) {
-            m_manager->StopConnection(GetId());
-        }
 		return;
 	}
 	
 	onData(data, len);
     free(data);
     len = 0;
-    
-    if(m_manager) {
-        m_manager->StopConnection(GetId());
-    }
 }
 
 void IPCConnector::OnStart()

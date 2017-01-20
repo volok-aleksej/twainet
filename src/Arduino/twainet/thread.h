@@ -4,13 +4,15 @@
 class Thread
 {
 public:
-    Thread();
+    Thread(bool destroyable);
     virtual ~Thread();
     
     friend class ThreadManager;
 	bool StartThread();
     bool SuspendThread();
     bool ResumeThread();
+    bool IsDestroyable();
+    
 	bool IsRunning();
     bool IsSuspend();
 	bool IsStopped() const;
@@ -18,6 +20,7 @@ public:
     void StopThread();
 
 	static void sleep(unsigned long millisec);
+    static void ThreadFunc(Thread*);
 
 protected:
 	virtual void ThreadFunc() = 0;
@@ -27,6 +30,7 @@ protected:
 
 private:
     unsigned int m_threadId;
+    bool m_destroyable;
 };
 
 #endif/*THREAD_H*/

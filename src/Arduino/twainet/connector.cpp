@@ -1,7 +1,7 @@
 #include "connector.h"
 
 Connector::Connector(AnySocket* socket)
-: m_socket(socket), m_manager(0)
+: Thread(false), m_socket(socket)
 {
 }
 
@@ -12,11 +12,6 @@ Connector::~Connector()
 	{
 		delete m_socket;
 	}
-}
-
-void Connector::SetConnectorManager(ConnectorManager* manager)
-{
-    m_manager = manager;
 }
 
 void Connector::SetConnectorId(const String& connectorId)

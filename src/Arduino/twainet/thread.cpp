@@ -9,11 +9,17 @@ void Thread::sleep(unsigned long millisec)
     delay(millisec);
 }
 
-Thread::Thread()
-: m_threadId(0)
+void Thread::ThreadFunc(Thread* thread)
+{
+    thread->ThreadFunc();
+}
+
+Thread::Thread(bool isDestroyable)
+: m_threadId(0), m_destroyable(isDestroyable)
 {
 }
 
+    
 Thread::~Thread()
 {
 }
@@ -29,19 +35,24 @@ bool Thread::StartThread()
 bool Thread::SuspendThread()
 {
     if(IsRunning()) {
-        g_threadDesks[m_threadId - THREAD_START_ID].m_state = ThreadDescription::WAITING;
         ThreadManager::GetInstance().SwitchThread();
-        cont_yield(&g_threadDesks[m_threadId - THREAD_START_ID].m_cont);
     }
+    return false;
 }
 
 bool Thread::ResumeThread()
 {
     if(IsSuspend()) {
         if(m_threadId) {
-            ets_post(m_threadId, m_threadId, 0);
+           return ets_post(m_threadId, m_threadId, 0);
         }
     }
+    return false;
+}
+
+bool Thread::IsDestroyable()
+{
+    return m_destroyable;
 }
     
 bool Thread::IsStopped() const

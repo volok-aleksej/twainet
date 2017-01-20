@@ -1,6 +1,7 @@
 #include "thread_manager.h"
 #include <malloc.h>
 #include <string.h>
+#include <Arduino.h>
 
 unsigned int g_threadCount = 0;
 
@@ -10,8 +11,8 @@ ThreadDescription g_threadDesks[THREAD_MAX];
 void thread_wrapper()
 {
     ThreadDescription& desk = g_threadDesks[g_current_threadId - THREAD_START_ID];
-    desk.m_state = ThreadDescription::RUNNING;
-    ThreadManager::GetInstance().RunThreadFunc(desk.m_thread);
+    Thread::ThreadFunc(desk.m_thread);
+    desk.m_state = ThreadDescription::STOPPED;
 }
 
 static void thread_func(os_event_t *events)
@@ -20,13 +21,12 @@ static void thread_func(os_event_t *events)
     g_current_threadId = events->sig;
     if(desk.m_state == ThreadDescription::CREATED ||
               desk.m_state == ThreadDescription::WAITING) {
+        desk.m_state = ThreadDescription::RUNNING;
         cont_run(&desk.m_cont, &thread_wrapper);
         if (cont_check(&desk.m_cont) != 0) {
             panic();
         }
     }
-    
-    desk.m_state = ThreadDescription::STOPPED;
 }
 
 ThreadManager::ThreadManager()
@@ -35,6 +35,7 @@ ThreadManager::ThreadManager()
         g_threadDesks[i].m_id = THREAD_START_ID + i;
         g_threadDesks[i].m_thread = 0;
         g_threadDesks[i].m_state = ThreadDescription::ABSENT;
+        cont_init(&g_threadDesks[i].m_cont);
         if(!ets_task(thread_func, g_threadDesks[i].m_id, g_threadDesks[i].m_loop_queue, QUEUE_SIZE)) {
             panic();
         }
@@ -47,6 +48,7 @@ ThreadManager::~ThreadManager()
 
 void ThreadManager::AddThread(Thread* thread)
 {
+    Serial.println("AddThread");
     for(uint8_t i = 0; i < THREAD_MAX; i++) {
         if(g_threadDesks[i].m_state == ThreadDescription::ABSENT) {
             g_threadDesks[i].m_thread = thread;
@@ -98,22 +100,27 @@ unsigned int ThreadManager::GetNextSuspendThreadId()
     
     return 0;
 }
-    
-void ThreadManager::RunThreadFunc(Thread* thread)
-{
-    thread->ThreadFunc();
-}
 
 extern "C" void esp_schedule();
+extern "C" void esp_yield();
 
 void ThreadManager::SwitchThread()
 {
     unsigned int id = ThreadManager::GetInstance().GetNextSuspendThreadId();
+    unsigned int curId = g_current_threadId;
     if(id) {
         ets_post(id, id, 0);
     } else {
         g_current_threadId = 0;
         esp_schedule();
+    }
+    
+    if(curId && g_threadDesks[curId - THREAD_START_ID].m_state == ThreadDescription::RUNNING){
+        g_threadDesks[curId - THREAD_START_ID].m_state = ThreadDescription::WAITING;
+        if(cont_can_yield(&g_threadDesks[curId - THREAD_START_ID].m_cont))
+            cont_yield(&g_threadDesks[curId - THREAD_START_ID].m_cont);
+    } else {
+        esp_yield();
     }
 }
 
@@ -121,7 +128,9 @@ void ThreadManager::CheckThreads()
 {
     for(uint8_t i = 0; i < THREAD_MAX; i++) {
         if(g_threadDesks[i].m_state == ThreadDescription::STOPPED) {
-            delete g_threadDesks[i].m_thread;
+            if(g_threadDesks[i].m_thread->IsDestroyable())
+                delete g_threadDesks[i].m_thread;
+            g_threadDesks[i].m_thread = 0;
             g_threadDesks[i].m_state = ThreadDescription::ABSENT;
         }
     }

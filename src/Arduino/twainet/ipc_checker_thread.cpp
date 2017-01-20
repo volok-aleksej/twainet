@@ -2,7 +2,7 @@
 #include "ipc_connector.h"
 
 IPCCheckerThread::IPCCheckerThread(IPCConnector* connector)
-: m_connector(connector), m_count(50)
+: Thread(true), m_connector(connector), m_count(50)
 {
 }
 
