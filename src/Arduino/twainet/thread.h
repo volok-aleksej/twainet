@@ -9,14 +9,13 @@ public:
     
     friend class ThreadManager;
 	bool StartThread();
-    bool SuspendThread();
-    bool ResumeThread();
-    bool IsDestroyable();
+    bool IsDestroyable() const;
     
-	bool IsRunning();
-    bool IsSuspend();
+	bool IsRunning() const;
+    bool IsSuspend() const;
+    bool IsWaiting() const;
 	bool IsStopped() const;
-	bool IsStop();
+	bool IsStop() const;
     void StopThread();
 
 	static void sleep(unsigned long millisec);

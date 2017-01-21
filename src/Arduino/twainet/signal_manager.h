@@ -1,13 +1,13 @@
 #ifndef SIGNAL_MANAGER_H
 #define SIGNAL_MANAGER_H
 
-#include "thread.h"
+#include "managers_container.h"
 #include "include/singleton.h"
 #include "std/list.hpp"
 
 class Signal;
 
-class SignalManager : public Singleton<SignalManager>, public Thread
+class SignalManager : public Singleton<SignalManager>, public IManager
 {
 protected:
 	friend class Singleton<SignalManager>;
@@ -16,10 +16,11 @@ protected:
 public:
 	void AddSignal(Signal* signal);
 protected:
-	virtual void ThreadFunc();
-	virtual void Stop(){};
-    virtual void OnStop(){};
-    virtual void OnStart(){};
+    virtual void ManagerFunc();
+    virtual void ManagerStart(){}
+    virtual void ManagerStop(){}
+    virtual bool IsStop() { return false; }
+    virtual bool IsDestroyable() { return false; }
 private:
 	twnstd::list<Signal*> m_signals;
 };

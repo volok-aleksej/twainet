@@ -29,6 +29,9 @@ static void thread_func(os_event_t *events)
     }
 }
 
+extern "C" void esp_schedule();
+extern "C" void esp_yield();
+
 ThreadManager::ThreadManager()
 {
     for(uint8_t i = 0; i < THREAD_MAX; i++) {
@@ -40,10 +43,13 @@ ThreadManager::ThreadManager()
             panic();
         }
     }
+    
+    ManagersContainer::GetInstance().AddManager(this);
 }
 
 ThreadManager::~ThreadManager()
 {
+    ManagersContainer::GetInstance().RemoveManager(this);
 }
 
 void ThreadManager::AddThread(Thread* thread)
@@ -77,6 +83,45 @@ void ThreadManager::RemoveThread(Thread* thread)
     }
 }
 
+void ThreadManager::SuspendThread(unsigned int id)
+{
+    g_threadDesks[id - THREAD_START_ID].m_state = ThreadDescription::SUSPENDED;
+    if(g_current_threadId == id) {
+        unsigned int nextid = ThreadManager::GetInstance().GetNextSuspendThreadId();
+        if(nextid) {
+            ets_post(nextid, nextid, 0);
+        } else {
+            g_current_threadId = 0;
+            esp_schedule();
+        }
+
+        if(id){
+            if(cont_can_yield(&g_threadDesks[id - THREAD_START_ID].m_cont))
+                cont_yield(&g_threadDesks[id - THREAD_START_ID].m_cont);
+        } else {
+            esp_yield();
+        }
+    }
+}
+
+void ThreadManager::ResumeThread(unsigned int id)
+{
+    unsigned int curId = g_current_threadId;
+    if(id) {
+        ets_post(id, id, 0);
+    } else {
+        g_current_threadId = 0;
+        esp_schedule();
+    }
+    
+    if(curId){
+        if(cont_can_yield(&g_threadDesks[curId - THREAD_START_ID].m_cont))
+            cont_yield(&g_threadDesks[curId - THREAD_START_ID].m_cont);
+    } else {
+        esp_yield();
+    }
+}
+    
 unsigned int ThreadManager::GetCurrentThreadId()
 {
     return g_current_threadId;
@@ -101,9 +146,6 @@ unsigned int ThreadManager::GetNextSuspendThreadId()
     return 0;
 }
 
-extern "C" void esp_schedule();
-extern "C" void esp_yield();
-
 void ThreadManager::SwitchThread()
 {
     unsigned int id = ThreadManager::GetInstance().GetNextSuspendThreadId();
@@ -124,7 +166,7 @@ void ThreadManager::SwitchThread()
     }
 }
 
-void ThreadManager::CheckThreads()
+void ThreadManager::ManagerFunc()
 {
     for(uint8_t i = 0; i < THREAD_MAX; i++) {
         if(g_threadDesks[i].m_state == ThreadDescription::STOPPED) {
@@ -134,4 +176,6 @@ void ThreadManager::CheckThreads()
             g_threadDesks[i].m_state = ThreadDescription::ABSENT;
         }
     }
+    
+    SwitchThread();
 }

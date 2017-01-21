@@ -32,25 +32,7 @@ bool Thread::StartThread()
     }
 }
 
-bool Thread::SuspendThread()
-{
-    if(IsRunning()) {
-        ThreadManager::GetInstance().SwitchThread();
-    }
-    return false;
-}
-
-bool Thread::ResumeThread()
-{
-    if(IsSuspend()) {
-        if(m_threadId) {
-           return ets_post(m_threadId, m_threadId, 0);
-        }
-    }
-    return false;
-}
-
-bool Thread::IsDestroyable()
+bool Thread::IsDestroyable() const
 {
     return m_destroyable;
 }
@@ -60,19 +42,24 @@ bool Thread::IsStopped() const
 	return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::STOPPED;
 }
 
-bool Thread::IsStop()
+bool Thread::IsWaiting() const
+{
+    return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::WAITING;
+}
+
+bool Thread::IsStop() const
 {
     return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::STOP_PENDING;
 }
 
-bool Thread::IsRunning()
+bool Thread::IsRunning() const
 {
     return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::RUNNING;
 }
 
-bool Thread::IsSuspend()
+bool Thread::IsSuspend() const
 {
-    return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::WAITING;
+    return g_threadDesks[m_threadId - THREAD_START_ID].m_state == ThreadDescription::SUSPENDED;
 }
 
 void Thread::StopThread()

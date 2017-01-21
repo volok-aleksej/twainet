@@ -5,7 +5,6 @@ extern "C" void twainetAppRun(void (*main)(void))
 {
     while(true) {
         main();
-        ThreadManager::GetInstance().CheckThreads();
         ThreadManager::GetInstance().SwitchThread();
     }
 }

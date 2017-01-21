@@ -2,6 +2,7 @@
 #define THREAD_MANAGER_H
 
 #include "thread.h"
+#include "managers_container.h"
 #include "include/singleton.h"
 #include "std/list.hpp"
 #include "std/vector.hpp"
@@ -27,6 +28,7 @@ struct ThreadDescription
         ABSENT,
         CREATED,
         RUNNING,
+        SUSPENDED,
         WAITING,
         STOPPED,
         STOP_PENDING
@@ -35,7 +37,7 @@ struct ThreadDescription
 
 extern ThreadDescription g_threadDesks[THREAD_MAX];
 
-class ThreadManager : public Singleton<ThreadManager>
+class ThreadManager : public Singleton<ThreadManager>, public IManager
 {
 protected:
 	friend class Singleton<ThreadManager>;
@@ -44,9 +46,17 @@ protected:
 public:
 	void AddThread(Thread* thread);
 	void RemoveThread(Thread* thread);
-    void CheckThreads();
+    void SuspendThread(unsigned int id);
+    void ResumeThread(unsigned int id);
     void SwitchThread();
     unsigned int GetCurrentThreadId();
+    
+protected:
+    virtual void ManagerFunc();
+    virtual void ManagerStart(){}
+    virtual void ManagerStop(){}
+    virtual bool IsStop() { return false; }
+    virtual bool IsDestroyable() { return false; }
 protected:
     unsigned int GetNextSuspendThreadId();
 };
