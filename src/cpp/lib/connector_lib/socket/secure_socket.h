@@ -16,7 +16,7 @@ public:
 	virtual bool Send(char* data, int len);
 	virtual bool Recv(char* data, int len);
 protected:
-	bool PerformSslVerify();
+	bool PerformSslVerify(const std::string& tlsString);
 
 	virtual bool SendData(char* data, int len) = 0;
 	virtual bool RecvData(char* data, int len) = 0;
@@ -27,8 +27,9 @@ protected:
 	unsigned char m_keyOwn[32];
 	unsigned char m_keyOther[32];
 	std::string m_recvdata;
-public:
-	static char m_ssl_header[];
+protected:
+    static std::string startTls;
+    static std::string expecTls;
 };
 
 

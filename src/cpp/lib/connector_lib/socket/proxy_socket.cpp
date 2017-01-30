@@ -576,7 +576,7 @@ bool SecureProxyTCPSocket::Connect(const std::string& ip, int port)
 		return false;
 	}
 
-	return PerformSslVerify();
+	return PerformSslVerify(expecTls);
 }
 
 bool SecureProxyTCPSocket::SendData(char* data, int len)

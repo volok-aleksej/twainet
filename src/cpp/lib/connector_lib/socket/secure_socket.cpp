@@ -20,7 +20,8 @@
 #define RSA_DATA_SIZE 2048
 #define SSL_HEADER_SIZE	8
 
-char SecureSocket::m_ssl_header[] = "STARTTLS";
+std::string SecureSocket::startTls = "STARTTLS";
+std::string SecureSocket::expecTls = "EXPECTLS";
 
 SecureSocket::SecureSocket()
 	: m_bInit(false)
@@ -31,14 +32,12 @@ SecureSocket::~SecureSocket()
 {
 }
 
-bool SecureSocket::PerformSslVerify()
+bool SecureSocket::PerformSslVerify(const std::string& tlsString)
 {
-	unsigned long bits = RSA_DATA_SIZE;
-	RSA* rsaOwn = RSA_generate_key(bits, RSA_F4, NULL, NULL);
-	RSA* rsaOther = RSA_new();
-	bool bRet = true;
-
-	try 
+    RSA *rsaKey = 0;
+    bool bRet = true;
+	bool isServer = false;
+    try 
 	{
 		//using variable
 		int len = 0;
@@ -46,56 +45,82 @@ bool SecureSocket::PerformSslVerify()
 
 		//send STARTTLS to and receive it from other side
 		unsigned char sslHeader[SSL_HEADER_SIZE] = {0};
-		if (!Send(m_ssl_header, SSL_HEADER_SIZE) ||
-			!Recv((char*)sslHeader, SSL_HEADER_SIZE) ||
-			memcmp(sslHeader, m_ssl_header, SSL_HEADER_SIZE) != 0)
+		if (!Send((char*)tlsString.c_str(), SSL_HEADER_SIZE) ||
+			!Recv((char*)sslHeader, SSL_HEADER_SIZE))
 		{
 			throw false;
 		}
 
-		//send RSA public key
-		len = i2d_RSAPublicKey(rsaOwn, (unsigned char**)&data);
-		if (!Send((char*)&len, sizeof(int)) ||
-			!Send((char*)data, len))
-		{
-			throw false;
-		}
-		delete data;
+		if(memcmp(expecTls.c_str(), sslHeader, SSL_HEADER_SIZE) == 0) {
+            isServer = true;
+            unsigned long bits = RSA_DATA_SIZE;
+            rsaKey = RSA_generate_key(bits, RSA_F4, NULL, NULL);
 
-		//receive RSA public key
-		if(!Recv((char*)&len, sizeof(int)))
-		{
-			throw false;
-		}
-		data = new unsigned char[len];
-		if (!Recv((char*)data, len) ||
-			!d2i_RSAPublicKey(&rsaOther, (const unsigned char**)&data, len))
-		{
-			throw false;
-		}
+            //send RSA public key
+            len = i2d_RSAPublicKey(rsaKey, (unsigned char**)&data);
+            if (!Send((char*)&len, sizeof(int)) ||
+                !Send((char*)data, len))
+            {
+                throw false;
+            }
+            delete data;
+        } else if(memcmp(startTls.c_str(), sslHeader, SSL_HEADER_SIZE) == 0) {
+            isServer = false;
+            rsaKey = RSA_new();
+            //receive RSA public key
+            if(!Recv((char*)&len, sizeof(int)))
+            {
+                throw false;
+            }
+            
+            data = new unsigned char[len];
+            if (!Recv((char*)data, len) ||
+                !d2i_RSAPublicKey(&rsaKey, (const unsigned char**)&data, len))
+            {
+                throw false;
+            }
+        }
+        else
+        {
+            throw false;
+        }
 
 		//Send session aes key
 		if(AESGenerateKey(m_keyOwn, sizeof(m_keyOwn)) <= 0)
 		{
 			throw false;
 		}
-		len = RSA_size(rsaOther);
-		data = new unsigned char[len];
-		len = RSA_public_encrypt(sizeof(m_keyOwn), m_keyOwn, data, rsaOther, RSA_PKCS1_PADDING);
+		
+        len = RSA_size(rsaKey);
+        data = new unsigned char[len];
+        if(isServer) {
+            len = RSA_private_encrypt(sizeof(m_keyOwn), m_keyOwn, data, rsaKey, RSA_PKCS1_PADDING);
+        } else {
+            len = RSA_public_encrypt(sizeof(m_keyOwn), m_keyOwn, data, rsaKey, RSA_PKCS1_PADDING);
+        }
 		if(!Send((char*)data, len))
 		{
 			throw false;
 		}
 		delete data;
 
-		len = RSA_size(rsaOwn);
 		data = new unsigned char[len];
-		if (!Recv((char*)data, len) ||
-			RSA_private_decrypt(len, data, m_keyOther, rsaOwn, RSA_PKCS1_PADDING) <= 0)
+		if (!Recv((char*)data, len))
 		{
 			throw false;
 		}
+		
+        if(isServer) {
+            len = RSA_private_decrypt(len, data, m_keyOther, rsaKey, RSA_PKCS1_PADDING);
+        } else {
+            len = RSA_public_decrypt(len, data, m_keyOther, rsaKey, RSA_PKCS1_PADDING);
+        }
 		delete data;
+        
+        if (len <= 0)
+        {
+            throw false;
+        }
 	}
 	catch(bool& ret)
 	{
@@ -107,9 +132,10 @@ bool SecureSocket::PerformSslVerify()
 		m_bInit = true;
 	}
 
-	RSA_free(rsaOwn);
-	RSA_free(rsaOther);
-	return true;
+	if(rsaKey)
+        RSA_free(rsaKey);
+    
+	return bRet;
 }
 
 bool SecureSocket::Recv(char* data, int len)
@@ -208,14 +234,14 @@ SecureUDTSocket::SecureUDTSocket(int socket, IPVersion ipv, bool isUdp)
 {
 	if(!isUdp)
 	{
-		PerformSslVerify();
+		PerformSslVerify(startTls);
 	}
 }
 
 SecureUDTSocket::SecureUDTSocket(int udpSocket, int socket)
 	: UDTSocket(udpSocket, socket)
 {
-	PerformSslVerify();
+	PerformSslVerify(startTls);
 }
 
 bool SecureUDTSocket::Send(char* data, int len)
@@ -249,7 +275,7 @@ bool SecureUDTSocket::Connect(const std::string& host, int port)
 		return false;
 	}
 
-	return PerformSslVerify();
+	return PerformSslVerify(expecTls);
 }
 
 bool SecureUDTSocket::SendData(char* data, int len)
@@ -274,7 +300,7 @@ SecureTCPSocket::SecureTCPSocket(IPVersion ipv)
 SecureTCPSocket::SecureTCPSocket(int socket)
 : TCPSocket(socket)
 {
-	PerformSslVerify();
+	PerformSslVerify(startTls);
 }
 
 bool SecureTCPSocket::Connect(const std::string& host, int port)
@@ -284,7 +310,7 @@ bool SecureTCPSocket::Connect(const std::string& host, int port)
 		return false;
 	}
 	
-	return PerformSslVerify();
+	return PerformSslVerify(expecTls);
 }
 
 bool SecureTCPSocket::Send(char* data, int len)
