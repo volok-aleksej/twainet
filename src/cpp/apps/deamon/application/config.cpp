@@ -61,9 +61,9 @@ std::vector<std::string> FileConfig::Read()
         
         std::vector<std::string> lines = CommonUtils::DelimitString(data, "\n");
         int pos = 0;
-        for(int i = 0; i < (int)lines.size() - 1; i++)
+        for(int i = 0; i < (int)lines.size(); i++)
         {
-            pos += lines[i].size() + 1;
+            pos += lines[i].size();
             std::string line = lines[i];
             if(line[line.size() - 1] == '\r')
                 line.erase(line.size() - 1, 1);
@@ -72,19 +72,8 @@ std::vector<std::string> FileConfig::Read()
             
             dataContainer.push_back(line);
         }
-        
-        int templen = filepos - pos;
-        char* tempData = new char[templen];
-        memcpy(tempData, data + pos, templen);
-        memcpy(data, tempData, templen);
-        delete tempData;
-        dataPos = data + templen;
     }
     
-    if(dataPos - data)
-    {
-        dataContainer.push_back(std::string(data, dataPos - data));
-    }
     delete data;
     return dataContainer;
 }
