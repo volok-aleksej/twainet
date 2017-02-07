@@ -1,11 +1,14 @@
 #include "test_module.h"
 #include "common/common_func.h"
 #include <stdio.h>
+#include <netinet/in.h>
 
 TestModule::TestModule()
 : Module("twntest", Twainet::IPV4, false)
 {
-  AddMessage(new DeamonMessage<Test, TestModule>(this));
+    Twainet::CreateServer(m_module, 5200, Twainet::IPV4);
+        
+    AddMessage(new DeamonMessage<Test, TestModule>(this));
 }
 
 TestModule::~TestModule()

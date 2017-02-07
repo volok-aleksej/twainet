@@ -31,73 +31,85 @@ void ApplicationTest::OnServerCreationFailed(Twainet::Module module)
 void ApplicationTest::OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
 {
 	printf("tunnel creation failed - %s\n", sessionId);
-	m_module->OnTunnelCreationFailed(sessionId);
+    if(m_module)
+        m_module->OnTunnelCreationFailed(sessionId);
 }
 
 void ApplicationTest::OnServerConnected(Twainet::Module module, const char* sessionId)
 {
 	printf("server connected - %s\n", sessionId);
-	m_module->OnServerConnected(sessionId);
+	if(m_module)
+        m_module->OnServerConnected(sessionId);
 }
 
 void ApplicationTest::OnClientConnected(Twainet::Module module, const char* sessionId)
 {
 	printf("client connected - %s\n", sessionId);
-	m_module->OnClientConnected(sessionId);
+	if(m_module)
+        m_module->OnClientConnected(sessionId);
 }
 
 void ApplicationTest::OnClientDisconnected(Twainet::Module module, const char* sessionId)
 {
 	printf("client disconnected - %s\n", sessionId);
-	m_module->OnClientDisconnected(sessionId);
+	if(m_module)
+        m_module->OnClientDisconnected(sessionId);
 }
 
 void ApplicationTest::OnClientConnectionFailed(Twainet::Module module)
 {
 	printf("client connection failed\n");
-	m_module->OnClientConnectionFailed();
+	if(m_module)
+        m_module->OnClientConnectionFailed();
 }
 
 void ApplicationTest::OnClientAuthFailed(Twainet::Module module)
 {
 	printf("client authorization failed\n");
-	m_module->OnClientAuthFailed();
+	if(m_module)
+        m_module->OnClientAuthFailed();
 }
 
 void ApplicationTest::OnServerDisconnected(Twainet::Module module)
 {
 	printf("server disconnected\n");
-	m_module->OnServerDisconnected();
+	if(m_module)
+        m_module->OnServerDisconnected();
 }
 
 void ApplicationTest::OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	printf("module connected - %s.%s\n", moduleId.m_name, moduleId.m_host);
-	m_module->OnModuleConnected(moduleId);
+	if(m_module)
+        m_module->OnModuleConnected(moduleId);
 }
 
 void ApplicationTest::OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	printf("module disconnected - %s\n", moduleId.m_name);
-	m_module->OnModuleDisconnected(moduleId);
+	if(m_module)
+        m_module->OnModuleDisconnected(moduleId);
 }
 
 void ApplicationTest::OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
 {
 	printf("module connection failed - %s\n", moduleId.m_name);
-	m_module->OnModuleConnectionFailed(moduleId);
+	if(m_module)
+        m_module->OnModuleConnectionFailed(moduleId);
 }
 
 void ApplicationTest::OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
 {
 	printf("tunnel connection - %s type - %d\n", sessionId, type);
-	m_module->OnTunnelConnected(sessionId, type);
+	if(m_module)
+        m_module->OnTunnelConnected(sessionId, type);
 }
 
 void ApplicationTest::OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
 {
 	printf("tunnel disconnected - %s\n", sessionId);
-	m_module->OnTunnelDisconnected(sessionId);
+	if(m_module)
+        m_module->OnTunnelDisconnected(sessionId);
 }
 
 void ApplicationTest::OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
@@ -105,7 +117,8 @@ void ApplicationTest::OnMessageRecv(Twainet::Module module, const Twainet::Messa
 	char name[255] = {0};
 	int size = 255;
 	Twainet::GetModuleNameString(msg.m_target, name, size);
-	m_module->OnMessageRecv(msg);
+	if(m_module)
+        m_module->OnMessageRecv(msg);
 }
 
 void ApplicationTest::OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
@@ -113,12 +126,14 @@ void ApplicationTest::OnInternalConnectionStatusChanged(Twainet::Module module, 
 	printf("internal connection (id - %s) status changed - %d\n", status);
 	if(status == Twainet::OPEN)
 		printf("external port available - %d\n", port);
-	m_module->OnInternalConnectionStatusChanged(moduleName, status, port);
+	if(m_module)
+        m_module->OnInternalConnectionStatusChanged(moduleName, status, port);
 }
 
 void ApplicationTest::OnModuleListChanged(Twainet::Module module)
 {
-	m_module->OnModuleListChanged();
+    if(m_module)
+        m_module->OnModuleListChanged();
 }
 
 void ApplicationTest::InitializeApplication()
@@ -128,5 +143,6 @@ void ApplicationTest::InitializeApplication()
 
 void ApplicationTest::ShutdownApplication()
 {
-    delete m_module;
+    if(m_module)    
+        delete m_module;
 }

@@ -35,10 +35,13 @@ bool TCPSocket::Bind(const std::string& host, int port)
 	si.ss_family = m_ipv;
 	if(host.empty())
 	{
-		if(m_ipv == IPV4)
+		if(m_ipv == IPV4) {
 			((sockaddr_in&)si).sin_addr.s_addr = INADDR_ANY;
-		else
+            ((sockaddr_in&)si).sin_port = htons(port);
+        } else {
 			((sockaddr_in6&)si).sin6_addr = in6addr_any;
+            ((sockaddr_in6&)si).sin6_port = htons(port);
+        }
 	}
 	else
 	{
