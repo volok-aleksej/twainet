@@ -6,8 +6,12 @@
 TestModule::TestModule()
 : Module("twntest", Twainet::IPV4, false)
 {
+    Twainet::UserPassword usr_pwd;
+    strcpy(usr_pwd.m_user, "test");
+    strcpy(usr_pwd.m_pass, "test");
+    Twainet::SetUsersList(m_module, &usr_pwd, 1);
     Twainet::CreateServer(m_module, 5200, Twainet::IPV4);
-        
+
     AddMessage(new DeamonMessage<Test, TestModule>(this));
 }
 

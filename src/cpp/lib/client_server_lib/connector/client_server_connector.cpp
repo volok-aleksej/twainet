@@ -91,7 +91,7 @@ void ClientServerConnector::SetPassword(const std::string& password)
 
 void ClientServerConnector::OnStart()
 {
-	m_checker = new IPCCheckerThread(this);
+//	m_checker = new IPCCheckerThread(this);
 	if(m_id == ClientServerModule::m_serverIPCName)
 	{
 		ProtoMessage<Login, ClientServerConnector> loginMsg(this);

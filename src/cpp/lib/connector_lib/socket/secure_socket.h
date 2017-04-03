@@ -24,8 +24,7 @@ protected:
 	bool GetData(char* data, int len);
 protected:
 	bool m_bInit;
-	unsigned char m_keyOwn[32];
-	unsigned char m_keyOther[32];
+	unsigned char m_key[32];
 	std::string m_recvdata;
 protected:
     static std::string startTls;
