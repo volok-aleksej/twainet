@@ -16,7 +16,12 @@ MessageHandler::~MessageHandler(void)
 
 void MessageHandler::addMessage(DataMessage* msg)
 {
-	m_messages[msg->GetName()] = msg;
+	std::map<std::string, DataMessage*>::iterator it = m_messages.find(msg->GetName());
+    if(it != m_messages.end()) {
+        it->second = msg;
+    } else {
+        m_messages.insert(std::make_pair(msg->GetName(), msg));
+    }
 }
 
 bool MessageHandler::onData(char* data, int len)
@@ -41,7 +46,7 @@ bool MessageHandler::toMessage(const DataMessage& msg)
 	deserialize(msg, data, len);
 	data = new char[len];
 	bool res = deserialize(msg, data, len) && SendData(data, len);
-	delete data;
+	delete[] data;
 	return res;
 }
 

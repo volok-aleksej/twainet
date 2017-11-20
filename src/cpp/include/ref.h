@@ -37,7 +37,7 @@ private:
 	const TObject& m_obj;
 };
 
-template<typename TFunc, typename TReturn = bool>
+template<typename TFunc, typename TReturn>
 class OwnReference
 {
 public:
@@ -47,7 +47,28 @@ public:
 	template<typename TObject>
 	TReturn operator ()(const TObject& obj)
 	{
-		return (const_cast<TObject&>(obj).*m_func)();
+        TReturn ret={0};
+        if(m_func)
+            return (const_cast<TObject&>(obj).*m_func)();
+        return ret;
+	}
+
+private:
+	TFunc m_func;
+};
+
+template<typename TFunc>
+class OwnReference<TFunc, void>
+{
+public:
+	OwnReference<TFunc, void>(TFunc f)
+		: m_func(f){}
+
+	template<typename TObject>
+	void operator ()(const TObject& obj)
+	{
+        if(m_func)
+            (const_cast<TObject&>(obj).*m_func)();
 	}
 
 private:
@@ -66,10 +87,16 @@ ReferenceObject<TClass, TFunc, TObject> Ref(TClass* ref, TFunc func, const TObje
 	return ReferenceObject<TClass, TFunc, TObject>(ref, func, obj);
 }
 
-template<typename TFunc>
-OwnReference<TFunc> Ref(TFunc func)
+template<typename TFunc, typename TReturn>
+OwnReference<TFunc, TReturn> Ref(TFunc func, TReturn ret)
 {
-	return OwnReference<TFunc>(func);
+	return OwnReference<TFunc, TReturn>(func);
+}
+
+template<typename TFunc>
+OwnReference<TFunc, void> Ref(TFunc func)
+{
+	return OwnReference<TFunc, void>(func);
 }
 
 #endif/*REF_H*/

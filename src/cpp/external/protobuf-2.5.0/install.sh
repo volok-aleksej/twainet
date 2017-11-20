@@ -23,7 +23,6 @@ C=/usr/bin/gcc ./configure -disable-shared CXXFLAGS="-g3 -ggdb3 -fPIC"
 make
 cp src/.libs/libprotobuf.a ../../../../../output/lib/Debug
 cd ..
-exit
 rm -rf v2.5.0
 
 #checkout src

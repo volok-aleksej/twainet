@@ -31,7 +31,7 @@ protected:
     virtual void ShutdownApplication()
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             (*it)->Free();
@@ -51,7 +51,7 @@ protected:
     virtual void OnTunnelCreationFailed(Twainet::Module module, const char* sessionId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -65,7 +65,7 @@ protected:
     virtual void OnServerConnected(Twainet::Module module, const char* sessionId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -79,7 +79,7 @@ protected:
     virtual void OnClientConnected(Twainet::Module module, const char* sessionId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -93,7 +93,7 @@ protected:
     virtual void OnClientDisconnected(Twainet::Module module, const char* sessionId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -107,7 +107,7 @@ protected:
     virtual void OnClientConnectionFailed(Twainet::Module module)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -121,7 +121,7 @@ protected:
     virtual void OnClientAuthFailed(Twainet::Module module)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -135,7 +135,7 @@ protected:
     virtual void OnServerDisconnected(Twainet::Module module)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -149,7 +149,7 @@ protected:
     virtual void OnModuleConnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -163,7 +163,7 @@ protected:
     virtual void OnModuleDisconnected(Twainet::Module module, const Twainet::ModuleName& moduleId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -177,7 +177,7 @@ protected:
     virtual void OnModuleConnectionFailed(Twainet::Module module, const Twainet::ModuleName& moduleId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -191,7 +191,7 @@ protected:
     virtual void OnTunnelConnected(Twainet::Module module, const char* sessionId, Twainet::TypeConnection type)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -205,7 +205,7 @@ protected:
     virtual void OnTunnelDisconnected(Twainet::Module module, const char* sessionId)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -219,7 +219,7 @@ protected:
     virtual void OnMessageRecv(Twainet::Module module, const Twainet::Message& msg)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -233,7 +233,7 @@ protected:
     virtual void OnInternalConnectionStatusChanged(Twainet::Module module, const char* moduleName, Twainet::InternalConnectionStatus status, int port)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -247,7 +247,7 @@ protected:
     virtual void OnModuleListChanged(Twainet::Module module)
     {
         CSLocker locker(&m_cs);
-        for(std::vector<Module*>::iterator it = m_modules.begin();
+        for(std::vector<IModule*>::iterator it = m_modules.begin();
             it != m_modules.end(); it++)
         {
             if(module == (*it)->GetModule())
@@ -260,7 +260,7 @@ protected:
     
 private:
     CriticalSection m_cs;
-    std::vector<Module*> m_modules;
+    std::vector<IModule*> m_modules;
 };
 
 #endif/*DEFAULT_APP_H*/

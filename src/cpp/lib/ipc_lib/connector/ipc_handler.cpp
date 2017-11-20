@@ -145,6 +145,7 @@ void IPCHandler::onMessage(const IPCMessage& msg)
 
 	IPCMessage newMsg(msg);
 	newMsg.clear_ipc_path();
+    	*newMsg.add_ipc_sender() = m_connector->GetIPCName();
 	if(!isTarget)
 	{
 		IPCObjectName newPath(msg.ipc_path(0));
@@ -155,7 +156,6 @@ void IPCHandler::onMessage(const IPCMessage& msg)
 				*newMsg.add_ipc_path() = msg.ipc_path(i);
 			}
 		}
-		*newMsg.add_ipc_sender() = m_connector->GetIPCName();
 		isTarget = (newPath == m_connector->m_moduleName && !newMsg.ipc_path_size());
 	}
 

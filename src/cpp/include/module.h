@@ -25,11 +25,31 @@ typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
 class IModule
 {
 public:
+    virtual ~IModule(){}
     virtual void AddMessage(DataMessage* msg) = 0;
     virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path) = 0;
+    virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path, DataMessage& resp) = 0;
+    virtual const Twainet::Module GetModule() = 0;
+    virtual void Free() = 0;
+    
+	virtual void OnServerConnected(const char* sessionId) = 0;
+	virtual void OnServerDisconnected() = 0;
+	virtual void OnClientConnected(const char* sessionId) = 0;	
+	virtual void OnClientDisconnected(const char* sessionId) = 0;
+	virtual void OnClientConnectionFailed() = 0;
+	virtual void OnClientAuthFailed() = 0;
+    virtual void OnModuleConnected(const Twainet::ModuleName& moduleId) = 0;	
+    virtual void OnModuleDisconnected(const Twainet::ModuleName& moduleId) = 0;
+    virtual void OnModuleConnectionFailed(const Twainet::ModuleName& moduleId) = 0;
+    virtual void OnMessageRecv(const Twainet::Message& msg) = 0;
+    virtual void OnModuleListChanged() = 0;
+	virtual void OnTunnelCreationFailed(const char* sessionId) = 0;
+	virtual void OnTunnelConnected(const char* sessionId, Twainet::TypeConnection type) = 0;
+	virtual void OnTunnelDisconnected(const char* sessionId) = 0;
+	virtual void OnInternalConnectionStatusChanged(const char* moduleName, Twainet::InternalConnectionStatus status, int port) = 0;
 };
 
-class Module : protected IModule
+class Module : public IModule
 {
 public:
 	Module(const std::string& moduleName, Twainet::IPVersion ipv = Twainet::IPV4, bool isCoord = false)
@@ -165,24 +185,18 @@ public:
 		
 		delete names;
 	}
-	
-public:
-	const Twainet::Module GetModule()
-	{
-		return m_module;
-	}
-	
-	void Free()
-	{
-		delete this;
-	}
-	
+		
 protected:
 	virtual void AddMessage(DataMessage* msg)
 	{
-		m_messages[msg->GetName()] = msg;
+		std::map<std::string, DataMessage*>::iterator it = m_messages.find(msg->GetName());
+		if(it != m_messages.end()) {
+			it->second = msg;
+		} else {
+			m_messages.insert(std::make_pair(msg->GetName(), msg));
+		}
 	}
-	
+
 	virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path)
 	{
 		bool ret = false;
@@ -202,10 +216,51 @@ protected:
 		      ret = true;
 		}
 		
-		delete data;
+		delete[] data;
+		return ret;
+	}
+
+	virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path, DataMessage& resp)
+	{
+		bool ret = false;
+		char* data = 0;
+		int datalen = 0;
+		const_cast<DataMessage&>(msg).deserialize(data, datalen);
+		data = new char[datalen];
+		if(const_cast<DataMessage&>(msg).deserialize(data, datalen))
+		{
+			Twainet::Message message = {0};
+			message.m_data = data;
+			message.m_dataLen = datalen;
+			memcpy((void*)&message.m_target, (void*)&path, sizeof(path));
+			message.m_typeMessage = msg.GetName().c_str();
+
+			Twainet::Message respmessage = {0};
+			memcpy((void*)&respmessage.m_target, (void*)&path, sizeof(path));
+			respmessage.m_typeMessage = resp.GetName().c_str();
+
+			if(Twainet::SendSyncMessage(m_module, message, respmessage)) {
+				ret = resp.serialize(const_cast<char*>(respmessage.m_data), respmessage.m_dataLen);
+				Twainet::FreeMessage(respmessage);
+			} else {
+				ret = false;
+			}
+		}
+
+		delete[] data;
 		return ret;
 	}
 	
+	virtual const Twainet::Module GetModule()
+	{
+		return m_module;
+	}
+
+	virtual void Free()
+	{
+		delete this;
+	}
+
 	bool onData(const std::string& type, const Twainet::ModuleName& path, char* data, int len)
 	{
 		std::map<std::string, DataMessage*>::iterator it = m_messages.find(type);

@@ -9,28 +9,40 @@ template<class Application>
 class IApplication : public Singleton<Application>
 {
 public:
-	IApplication(){}
+	IApplication() : m_bInited(Twainet::IsLibraryInited()), m_bInit(false){}
 	virtual ~IApplication(){}
 
+	Twainet::TwainetCallback* Init()
+    {
+        if(!m_bInit) {
+            if(!m_bInited) {
+                Twainet::InitLibrary(tc);
+            }
+            InitializeApplication();
+            m_bInit = true;
+        }
+        return &tc;
+    }
+    
 	int Run()
 	{
-		Twainet::TwainetCallback tc = {&IApplication::OnServerConnected, &IApplication::OnServerDisconnected, &IApplication::OnServerCreationFailed,
-                                       &IApplication::OnClientConnected, &IApplication::OnClientDisconnected, &IApplication::OnClientConnectionFailed,
-                                       &IApplication::OnClientAuthFailed, &IApplication::OnModuleConnected, &IApplication::OnModuleDisconnected,
-                                       &IApplication::OnModuleConnectionFailed, &IApplication::OnModuleCreationFailed, &IApplication::OnTunnelConnected,
-                                       &IApplication::OnTunnelDisconnected, &IApplication::OnTunnelCreationFailed, &IApplication::OnMessageRecv,
-                                       &IApplication::OnInternalConnectionStatusChanged, &IApplication::OnModuleListChanged};
-		Twainet::InitLibrary(tc);
-		InitializeApplication();
-        
+        Init();
         m_semafor.Wait(INFINITE);
-        
-        ShutdownApplication();
-		Twainet::CloseLibrary();
+        DeInit();
 		return true;
 	}
 	
-	
+	void DeInit()
+    {
+        if(m_bInit) {
+            ShutdownApplication();
+            if(!m_bInited) {
+                Twainet::CloseLibrary();
+            }
+            m_bInit = false;
+        }
+    }
+    
 	int Stop()
 	{
 		m_semafor.Set();
@@ -144,8 +156,18 @@ public:
 		app.OnModuleListChanged(module);
 	}
 	
+    static Twainet::TwainetCallback tc;
 private:
     Semaphore m_semafor;
+    bool m_bInited;
+    bool m_bInit;
 };
 
+template<class Application>
+Twainet::TwainetCallback IApplication<Application>::tc = {&IApplication::OnServerConnected, &IApplication::OnServerDisconnected, &IApplication::OnServerCreationFailed,
+                                       &IApplication::OnClientConnected, &IApplication::OnClientDisconnected, &IApplication::OnClientConnectionFailed,
+                                       &IApplication::OnClientAuthFailed, &IApplication::OnModuleConnected, &IApplication::OnModuleDisconnected,
+                                       &IApplication::OnModuleConnectionFailed, &IApplication::OnModuleCreationFailed, &IApplication::OnTunnelConnected,
+                                       &IApplication::OnTunnelDisconnected, &IApplication::OnTunnelCreationFailed, &IApplication::OnMessageRecv,
+                                       &IApplication::OnInternalConnectionStatusChanged, &IApplication::OnModuleListChanged};
 #endif/*APP_INTERFACE_H*/

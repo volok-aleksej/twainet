@@ -69,13 +69,8 @@ public:
 	{
 		if(!object)
 			object = new Object;
-		ManagerCreator<Object>& object_ = Singleton<ManagerCreator<Object> >::GetInstance();
+		Singleton<ManagerCreator<Object> >::GetInstance();
 		return *object;
-	}
-
-	virtual bool IsDelete()	
-	{
-		return true;
 	}
 
 	virtual bool IsStop()

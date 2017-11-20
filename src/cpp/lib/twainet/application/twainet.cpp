@@ -18,17 +18,33 @@
 
 extern "C" void Twainet::InitLibrary(const Twainet::TwainetCallback& twainet)
 {
+    if(!Application::GetInstance().IsInited()) {
+        LOG_INFO("Init twainet library\n");
 	UDT::startup();
-	Application::GetInstance().Init(twainet);
+        Application::GetInstance().Init(twainet);
+        ManagersContainer::GetInstance().Start();
+    }
 #ifndef WIN32
-	signal(SIGPIPE, SIG_IGN);
+	struct sigaction new_action;
+    new_action.sa_handler = SIG_IGN;
+    sigemptyset (&new_action.sa_mask);
+    new_action.sa_flags = 0;
+	sigaction(SIGPIPE, &new_action, NULL);
 #endif/*WIN32*/
+}
+
+extern "C" bool Twainet::IsLibraryInited()
+{
+    return Application::GetInstance().IsInited();
 }
 
 extern "C" void Twainet::CloseLibrary()
 {
+    if(Application::GetInstance().IsInited()) {
+        Application::GetInstance().Deinit();
 	ManagersContainer::GetInstance().Join();
 	UDT::cleanup();
+    }
 }
 
 extern "C" Twainet::Module Twainet::CreateModule(const char* moduleName, IPVersion ipv, bool isCoordinator)
@@ -139,6 +155,42 @@ extern "C" void Twainet::SendMessage(const Twainet::Module module, const Twainet
 	
 	IPCMessageSignal msgSignal(message);
 	twainetModule->SendMsg(msgSignal);
+}
+
+extern "C" bool Twainet::SendSyncMessage(const Twainet::Module module, const Twainet::Message& msg, Twainet::Message& resp)
+{
+    if(!module)
+		return false;
+    
+    TwainetModule* twainetModule = (TwainetModule*)module;
+	IPCMessage message;
+	message.set_message_name(msg.m_typeMessage);
+	message.set_message(msg.m_data, msg.m_dataLen);
+	std::vector<IPCObjectName> path = twainetModule->GetTargetPath(IPCObjectName(msg.m_target.m_name, msg.m_target.m_host, msg.m_target.m_connId));
+	for(std::vector<IPCObjectName>::iterator it = path.begin();
+	    it != path.end(); it++)
+	{
+		*message.add_ipc_path() = *it;
+	}
+	
+	IPCMessageSignal msgSignal(message);
+    std::string data;
+	if (twainetModule->SendSyncMsg(msgSignal, resp.m_typeMessage, IPCObjectName(resp.m_target.m_name, resp.m_target.m_host, resp.m_target.m_connId), data) && 
+        !data.empty()) {
+        resp.m_data = new char[data.size()];
+        resp.m_dataLen = data.size();
+        memcpy((void*)resp.m_data, data.c_str(), data.size());
+        return true;
+    }
+    
+    return false;
+}
+
+extern "C" void FreeMessage(Twainet::Message& msg)
+{
+    if(msg.m_data){
+        delete[] msg.m_data;
+    }
 }
 
 extern "C" Twainet::ModuleName Twainet::GetModuleName(const Twainet::Module module)

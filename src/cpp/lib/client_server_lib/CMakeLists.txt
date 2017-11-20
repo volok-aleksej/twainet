@@ -8,8 +8,8 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 if(NOT USE_SYSTEM_PROTOBUF)
     set(PROTOC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../messages/protoc)
-    execute_process(COMMAND
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+#    execute_process(COMMAND 
+#                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                         ${CMAKE_CURRENT_SOURCE_DIR}/..
                         ${CMAKE_CURRENT_SOURCE_DIR}/../..

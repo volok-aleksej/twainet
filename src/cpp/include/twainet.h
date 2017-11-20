@@ -109,6 +109,9 @@ extern "C"
 
 		// Initialize library
 		TWAINET_FUNC void InitLibrary(const TwainetCallback& twainet);
+        
+        // Check is library inited
+        TWAINET_FUNC bool IsLibraryInited();
 
 		//Free Library
 		TWAINET_FUNC void CloseLibrary();
@@ -156,6 +159,13 @@ extern "C"
 		// message has path. Path is a chain of modules through which will pass a message.
 		// recomended data len 8192
 		TWAINET_FUNC void SendMessage(const Module module, const Message& msg);
+        
+        // Send message to other module with waiting responce
+		// msg - message
+        // resp - responce message
+		// after calling SendSyncMessage need to be call FreeMessage
+		TWAINET_FUNC bool SendSyncMessage(const Module module, const Message& msg, Message& resp);
+		TWAINET_FUNC void FreeMessage(Message& msg);
 		
 		//Get module name
 		TWAINET_FUNC ModuleName GetModuleName(const Module module);

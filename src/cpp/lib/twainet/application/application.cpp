@@ -14,31 +14,37 @@ extern "C" void __libtwainet_main()
 #endif/*WIN32*/
 
 Application::Application()
+: m_bInit(false)
 {
 	memset(&m_callbacks, 0, sizeof(m_callbacks));
+    	Start();
 }
 
 Application::~Application()
 {
 }
 
-void Application::ManagerFunc()
+void Application::ThreadFunc()
 {
-	std::vector<NotificationMessage*> messages;
-	{
-		CSLocker locker(&m_csMessages);
-		messages = m_messages;
-		m_messages.clear();
-	}
-	for(std::vector<NotificationMessage*>::iterator it = messages.begin();
-		it != messages.end(); it++)
-	{
-		(*it)->HandleMessage(m_callbacks);
-		delete *it;
-	}
+    while(!IsStop()) {
+        std::vector<NotificationMessage*> messages;
+        if(m_semaphore.Wait(200) == Semaphore::SUCCESS) {
+            CSLocker locker(&m_csMessages);
+            messages = m_messages;
+            m_messages.clear();
+            m_semaphore.Release();
+        }
+        
+        for(std::vector<NotificationMessage*>::iterator it = messages.begin();
+            it != messages.end(); it++)
+        {
+            (*it)->HandleMessage(m_callbacks);
+            delete *it;
+        }
+    }
 }
 
-void Application::ManagerStop()
+void Application::OnStop()
 {
 	{
 		CSLocker locker(&m_csModules);
@@ -58,9 +64,30 @@ void Application::ManagerStop()
 	}
 }
 
+void Application::OnStart()
+{
+}
+
+void Application::Stop()
+{
+    m_semaphore.Set();
+}
+
 void Application::Init(const Twainet::TwainetCallback& callback)
 {
 	memcpy(&m_callbacks, &callback, sizeof(m_callbacks));
+    	m_bInit = true;
+}
+
+bool Application::IsInited()
+{
+    return m_bInit;
+}
+
+void Application::Deinit()
+{
+    Join();
+    m_bInit = false;
 }
 
 TwainetModule* Application::CreateModule(const char* moduleName, int ipv)

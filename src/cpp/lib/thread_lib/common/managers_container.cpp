@@ -29,7 +29,6 @@ bool DynamicManager::IsStop()
 ManagersContainer::ManagersContainer()
 : m_isExit(false)
 {
-	Start();
 }
 
 ManagersContainer::~ManagersContainer()

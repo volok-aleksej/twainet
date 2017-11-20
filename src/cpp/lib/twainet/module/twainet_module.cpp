@@ -3,6 +3,11 @@
 #include "application/application.h"
 #include "utils/logger.h"
 
+bool operator == (TwainetModule::WaitData* one,  const TwainetModule::WaitData& two)
+{
+    return two == *one;
+}
+
 TwainetModule::TwainetModule(const IPCObjectName& ipcName, int ipv)
 	: TunnelModule(ipcName, new IPCConnectorFactory<IPCConnector>(ipcName), ipv)
 {
@@ -54,7 +59,35 @@ std::vector<IPCObjectName> TwainetModule::GetTargetPath(const IPCObjectName& tar
 		
 	return retpath;
 }
-	
+
+bool TwainetModule::SendSyncMsg(const IPCMessageSignal& msg, const std::string& messageName, const IPCObjectName& from, std::string& data)
+{
+    WaitData waitdata(messageName, from);
+    {
+        CSLocker lock(&m_cs);
+        std::vector<WaitData*>::iterator it = std::find(m_waitingList.begin(), m_waitingList.end(), waitdata);
+        if(it != m_waitingList.end()) {
+            return false;
+        }
+        m_waitingList.push_back(&waitdata);
+    }
+    SendMsg(msg);
+    waitdata.m_semaphore.Wait(INFINITE);
+    {
+        CSLocker lock(&m_cs);
+        std::vector<WaitData*>::iterator it = std::find(m_waitingList.begin(), m_waitingList.end(), waitdata);
+        if(it != m_waitingList.end()) {
+            m_waitingList.erase(it);
+        }
+    }
+
+    if(!waitdata.m_data.empty()) {
+        data.resize(waitdata.m_data.size());
+        memcpy((void*)data.c_str(), (void*)waitdata.m_data.c_str(), data.size());
+    }
+    return true;
+}
+
 void TwainetModule::OnTunnelConnectFailed(const std::string& sessionId)
 {
 	LOG_INFO("Tunnel connection failed: sessionId - %s\n", sessionId.c_str());
@@ -106,7 +139,18 @@ void TwainetModule::OnConnected(const std::string& moduleName)
 
 void TwainetModule::OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data)
 {
-	Application::GetInstance().AddNotifycationMessage(new GettingMessage(this, messageName, path, data));
+    CSLocker lock(&m_cs);
+    WaitData waitdata(messageName, IPCObjectName::GetIPCName(path[0]));
+    std::vector<WaitData*>::iterator it = std::find(m_waitingList.begin(), m_waitingList.end(), waitdata);
+    if(it != m_waitingList.end()) {
+        if(!data.empty()) {
+            (*it)->m_data.resize(data.size());
+            memcpy((void*)(*it)->m_data.c_str(), (void*)data.c_str(), data.size());
+        }
+        (*it)->m_semaphore.Set();
+    } else {
+        Application::GetInstance().AddNotifycationMessage(new GettingMessage(this, messageName, path, data));
+    }
 }
 
 void TwainetModule::ModuleCreationFialed()
@@ -133,4 +177,24 @@ void TwainetModule::OnIPCObjectsChanged()
 	LOG_INFO("ipc objects list was changed: moduleName - %s\n",
 		 const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str());
 	Application::GetInstance().AddNotifycationMessage(new ModuleListChanged(this));
+}
+
+void TwainetModule::ManagerStop()
+{
+    {
+        CSLocker lock(&m_cs);
+        for(std::vector<WaitData*>::iterator it = m_waitingList.begin();
+            it != m_waitingList.end(); it++) {
+            (*it)->m_semaphore.Set();
+        }
+    }
+    while(true) {
+        Thread::sleep(100);
+        CSLocker lock(&m_cs);
+        if(m_waitingList.empty()) {
+            break;
+        }
+    }
+    
+    IPCModule::ManagerStop();
 }

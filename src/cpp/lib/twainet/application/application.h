@@ -6,17 +6,21 @@
 #include "twainet/message/NotificationMessages.h"
 #include "thread_lib/common/managers_container.h"
 
-class Application : public ManagerCreator<Application>
+class Application : public ThreadSingleton<Application>
 {
 protected:
-	friend class ManagerCreator<Application>;
+	friend class Singleton<Application>;
 	Application();
 	~Application();
-	virtual void ManagerFunc();
-	virtual void ManagerStop();
+	virtual void ThreadFunc();
+	virtual void OnStop();
+	virtual void OnStart();
+	virtual void Stop();
 public:
 
 	void Init(const Twainet::TwainetCallback& callback);
+    	bool IsInited();
+    	void Deinit();
 	TwainetModule* CreateModule(const char* moduleName, int ipv);
 	void DeleteModule(TwainetModule* module);
 protected:
@@ -27,7 +31,9 @@ private:
 	std::vector<TwainetModule*> m_modules;
 	CriticalSection m_csMessages;
 	std::vector<NotificationMessage*> m_messages;
+    	Semaphore m_semaphore;
 	Twainet::TwainetCallback m_callbacks;
+    	bool m_bInit;
 };
 
 #endif/*APPLICATION_H*/
