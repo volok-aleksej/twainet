@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 #endif/*WIN32*/
 {
 	printf("begin\n");
-//	Twainet::UseLog("/home/avolokitin/twainet.log");
+	Twainet::UseLog("/home/alexey/twainet.log");
 	ApplicationTest::GetInstance().Run();
 	return 0;
 }				
