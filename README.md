@@ -1,11 +1,13 @@
 ![twainet logotype](/logo.png)
 # twainet - IPC and RPC library
 ## **Interprocess Communication(IPC) Functionality**
+![ipc arhitecture](/doc/ipc_arch.png)
 * Daemon — Coordinator monitors all running processes involved in the ipc, Local server allow you to communicate the processes belonging to different users.
 * Direct communication between modules (processes) and single user connection through a secure tunnel between the modules(processes) of different users.
 * Providing lists of modules (processes) available to connect list and modules (processes) that are already connected.
 * Sending a message to another module(processes), both directly and through the co-ordinator or the server.
 ## **Remote Process Communication(RPC) Functionality**
+![rpc arhitecture](/doc/rpc_arch.png)
 * Server — Module that allows clients to communicate with each other.
 * The ability to create 3 different types of tunnel: \
 &nbsp;&nbsp;&nbsp;&nbsp;local — local tcp or udp connection between clients which are located on a single network \
