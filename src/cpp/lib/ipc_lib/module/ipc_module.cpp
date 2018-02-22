@@ -104,6 +104,7 @@ IPCModule::IPCModule(const IPCObjectName& moduleName, ConnectorFactory* factory,
 : m_moduleName(moduleName), m_factory(factory), m_ipcSignalHandler(this)
 , m_isCoordinator(false), m_isExit(false), m_listenThread(0), m_ipv(ipv)
 , m_countListener(0), m_countConnect(0), m_bConnectToCoordinatorRequest(false)
+, m_requestCreated(0)
 {
 	ManagersContainer::GetInstance().AddManager(static_cast<IManager*>(this));
 	m_manager = new ConnectorManager;
@@ -245,7 +246,7 @@ void IPCModule::OnInternalConnection(const std::string& moduleName, ConnectionSt
 void IPCModule::OnIPCObjectsChanged()
 {
 }
-	
+
 void IPCModule::ManagerFunc()
 {
 	CSLocker locker(&m_csRequest);
@@ -266,7 +267,7 @@ void IPCModule::ManagerStop()
 {
 	m_manager->Stop();
 }
-	
+
 void IPCModule::ConnectToCoordinator()
 {
 	LOG_INFO("Try Connect with coordinator: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
@@ -313,9 +314,9 @@ void IPCModule::AddConnector(Connector* conn)
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, ConnectedMessage, onConnected));
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCProtoMessage, onIPCMessage));
         connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, IPCMessageSignal, onIPCMessage));
-		
+
 		connector->addSubscriber(&m_ipcSignalHandler, SIGNAL_FUNC(&m_ipcSignalHandler, IPCSignalHandler, InternalConnectionStatusMessage, onInternalConnectionStatusMessage));
-		
+
 		connector->SubscribeModule(dynamic_cast<SignalOwner*>(this));
 		m_manager->AddConnection(conn);
 	}
@@ -324,7 +325,7 @@ void IPCModule::AddConnector(Connector* conn)
 		delete conn;
 	}
 }
-	
+
 void IPCModule::UpdateModuleName(const IPCObjectName& moduleName)
 {
 	UpdateIPCObjectMessage uioMsg(0);
@@ -382,7 +383,7 @@ std::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& target)
     {
       return retpath;
     }
-    
+
     std::vector<IPCObject> moduleList = m_modules.GetObjectList();
     for(std::vector<IPCObject>::iterator it = moduleList.begin();
         it != moduleList.end(); it++)
@@ -393,7 +394,7 @@ std::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& target)
             return retpath;
         }
     }
-    
+
     bool throughtCoordinator = target.host_name().empty();
     std::vector<IPCObject> ipcList = m_ipcObject.GetObjectList();
     for(std::vector<IPCObject>::iterator it = ipcList.begin();
@@ -409,7 +410,7 @@ std::vector<IPCObjectName> IPCModule::GetTargetPath(const IPCObjectName& target)
             retpath.push_back(target);
         }
     }
-        
+
     return retpath;
 }
 
@@ -425,7 +426,7 @@ std::vector<IPCObjectName> IPCModule::GetConnectedModules()
 
 	return retList;
 }
-	
+
 std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 {
 	std::vector<IPCObjectName> retList;
@@ -441,9 +442,9 @@ std::vector<IPCObjectName> IPCModule::GetInternalConnections()
 
 	return retList;
 }
-    
+
 void IPCModule::CreateInternalConnection(const IPCObjectName& moduleName, const std::string& ip, int port)
-{	
+{
 	IPCObject object(moduleName);
 	if(!m_modules.GetObject(object, &object))
 	{
