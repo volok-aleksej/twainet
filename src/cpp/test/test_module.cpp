@@ -1,22 +1,29 @@
 #include "test_module.h"
 #include "common/common_func.h"
+#include "apps/deamon/module/deamon_module.h"
 #include <stdio.h>
 #include <netinet/in.h>
 
 TestModule::TestModule()
 : Module("twntest", Twainet::IPV4, false)
 {
-    Twainet::UserPassword usr_pwd;
-    strcpy(usr_pwd.m_user, "test");
-    strcpy(usr_pwd.m_pass, "test");
-    Twainet::SetUsersList(m_module, &usr_pwd, 1);
-    Twainet::CreateServer(m_module, 5200, Twainet::IPV4);
-
     AddMessage(new DeamonMessage<Test, TestModule>(this));
 }
 
 TestModule::~TestModule()
 {
+}
+
+void TestModule::OnModuleConnected(const Twainet::ModuleName& moduleId)
+{
+    printf("%s\n", moduleId.m_name);
+    if(strcmp(moduleId.m_name, COORDINATOR_NAME) == 0) {
+        Twainet::UserPassword usr_pwd;
+        strcpy(usr_pwd.m_user, "test");
+        strcpy(usr_pwd.m_pass, "test");
+        Twainet::SetUsersList(m_module, &usr_pwd, 1);
+        Twainet::CreateServer(m_module, 5200, Twainet::IPV4);
+    }
 }
 
 void TestModule::OnModuleListChanged()

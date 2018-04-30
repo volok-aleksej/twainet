@@ -116,5 +116,6 @@ void Application::AddNotifycationMessage(NotificationMessage* message)
 {
 	CSLocker locker(&m_csMessages);
 	m_messages.push_back(message);
+    m_semaphore.Set();
 }
 

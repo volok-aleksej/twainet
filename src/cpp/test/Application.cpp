@@ -139,6 +139,7 @@ void ApplicationTest::OnModuleListChanged(Twainet::Module module)
 void ApplicationTest::InitializeApplication()
 {
 	m_module = new TestModule;
+    m_module->Create();
 }
 
 void ApplicationTest::ShutdownApplication()

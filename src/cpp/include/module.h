@@ -2,6 +2,7 @@
 #define MODULE_H
 
 #include <map>
+#include <stdio.h>
 #include <string.h>
 #include "twainet.h"
 #include "client_module_name.h"
@@ -25,38 +26,36 @@ typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
 class IModule
 {
 public:
-    virtual ~IModule(){}
-    virtual void AddMessage(DataMessage* msg) = 0;
-    virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path) = 0;
-    virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path, DataMessage& resp) = 0;
-    virtual const Twainet::Module GetModule() = 0;
-    virtual void Free() = 0;
-    
-	virtual void OnServerConnected(const char* sessionId) = 0;
-	virtual void OnServerDisconnected() = 0;
-	virtual void OnClientConnected(const char* sessionId) = 0;	
-	virtual void OnClientDisconnected(const char* sessionId) = 0;
-	virtual void OnClientConnectionFailed() = 0;
-	virtual void OnClientAuthFailed() = 0;
-    virtual void OnModuleConnected(const Twainet::ModuleName& moduleId) = 0;	
-    virtual void OnModuleDisconnected(const Twainet::ModuleName& moduleId) = 0;
-    virtual void OnModuleConnectionFailed(const Twainet::ModuleName& moduleId) = 0;
-    virtual void OnMessageRecv(const Twainet::Message& msg) = 0;
-    virtual void OnModuleListChanged() = 0;
-	virtual void OnTunnelCreationFailed(const char* sessionId) = 0;
-	virtual void OnTunnelConnected(const char* sessionId, Twainet::TypeConnection type) = 0;
-	virtual void OnTunnelDisconnected(const char* sessionId) = 0;
-	virtual void OnInternalConnectionStatusChanged(const char* moduleName, Twainet::InternalConnectionStatus status, int port) = 0;
+      virtual ~IModule(){}
+      virtual void Create() = 0;
+      virtual void AddMessage(DataMessage* msg) = 0;
+      virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path) = 0;
+      virtual bool toMessage(const DataMessage& msg, const Twainet::ModuleName& path, DataMessage& resp) = 0;
+      virtual const Twainet::Module GetModule() = 0;
+      virtual void Free() = 0;
+      virtual void OnServerConnected(const char* sessionId) = 0;
+      virtual void OnServerDisconnected() = 0;
+      virtual void OnClientConnected(const char* sessionId) = 0;	
+      virtual void OnClientDisconnected(const char* sessionId) = 0;
+      virtual void OnClientConnectionFailed() = 0;
+      virtual void OnClientAuthFailed() = 0;
+      virtual void OnModuleConnected(const Twainet::ModuleName& moduleId) = 0;	
+      virtual void OnModuleDisconnected(const Twainet::ModuleName& moduleId) = 0;
+      virtual void OnModuleConnectionFailed(const Twainet::ModuleName& moduleId) = 0;
+      virtual void OnMessageRecv(const Twainet::Message& msg) = 0;
+      virtual void OnModuleListChanged() = 0;
+      virtual void OnTunnelCreationFailed(const char* sessionId) = 0;
+      virtual void OnTunnelConnected(const char* sessionId, Twainet::TypeConnection type) = 0;
+      virtual void OnTunnelDisconnected(const char* sessionId) = 0;
+      virtual void OnInternalConnectionStatusChanged(const char* moduleName, Twainet::InternalConnectionStatus status, int port) = 0;
 };
 
 class Module : public IModule
 {
 public:
 	Module(const std::string& moduleName, Twainet::IPVersion ipv = Twainet::IPV4, bool isCoord = false)
-	  : m_module(0)
-	{
-		m_module = Twainet::CreateModule(moduleName.c_str(), ipv, isCoord);
-		
+	  : m_module(0), m_moduleName(moduleName), m_isCoord(isCoord), m_ipv(ipv)
+	{		
 		AddMessage(new LocalServerAttributesMessage(this));
 		AddMessage(new ClientNameListMessage(this));
 		AddMessage(new ClientNameMessage(this));
@@ -127,6 +126,7 @@ public:
 	
 	virtual void OnMessageRecv(const Twainet::Message& msg)
 	{
+        printf("message %s recv\n", msg.m_typeMessage);
 		onData(msg.m_typeMessage, msg.m_target, (char*)msg.m_data, msg.m_dataLen);
 	}
 	
@@ -187,6 +187,11 @@ public:
 	}
 		
 protected:
+	virtual void Create()
+	{
+	    m_module = Twainet::CreateModule(m_moduleName.c_str(), m_ipv, m_isCoord);
+	}
+
 	virtual void AddMessage(DataMessage* msg)
 	{
 		std::map<std::string, DataMessage*>::iterator it = m_messages.find(msg->GetName());
@@ -398,6 +403,9 @@ protected:
 	SetConfig m_config;
 private:
 	std::map<std::string, DataMessage*> m_messages;
+	std::string m_moduleName;
+	bool m_isCoord;
+	Twainet::IPVersion m_ipv;
 };
 
 #endif/*MODULE_H*/

@@ -37,7 +37,7 @@ protected:
     virtual void ShutdownApplication();
 	
 private:
-	TestModule* m_module;	
+	IModule* m_module;	
 };
 
 extern Twainet::TwainetCallback tc;

@@ -18,10 +18,11 @@ public:
     {
     }
     
-    void AddModule(Module* module)
+    void AddModule(IModule* module)
     {
         CSLocker locker(&m_cs);
         m_modules.push_back(module);
+        module->Create();
     }
 protected:
     virtual void InitializeApplication()

@@ -18,11 +18,6 @@ Logger::~Logger()
 void Logger::Log(TypeLog type, const char* prototype, ...)
 {
 	CSLocker locker(&m_cs);
-	if(!m_logFile)
-	{
-		return;
-	}
-
 	char printdata[1024] = {0};
 	va_list argptr;
 	va_start(argptr, prototype);
@@ -32,6 +27,13 @@ void Logger::Log(TypeLog type, const char* prototype, ...)
 	time_t t;
 	time(&t);
 	std::string time_ = CommonUtils::FormatTime(t);
+    
+//    printf("%s %s %s", time_.c_str(), strtype.c_str(), printdata);
+    
+    if(!m_logFile)
+    {
+        return;
+    }
 	m_logFile->Write(time_.c_str(), time_.size());
 	m_logFile->Write(strtype.c_str(), strtype.size());
 	m_logFile->Write(printdata, strlen(printdata));

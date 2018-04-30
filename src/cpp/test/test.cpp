@@ -20,8 +20,8 @@ int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 #endif/*WIN32*/
 {
-	printf("begin\n");
-	Twainet::UseLog("/home/alexey/twainet.log");
+//	printf("begin\n");
+	Twainet::UseLog("/home/avolokitin/twainet.log");
 	ApplicationTest::GetInstance().Run();
 	return 0;
 }				

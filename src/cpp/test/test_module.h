@@ -10,6 +10,7 @@ public:
 	virtual ~TestModule();
 	
 public:
+    virtual void OnModuleConnected(const Twainet::ModuleName& moduleId);
 	virtual void OnModuleListChanged();
 	virtual void OnServerConnected(const char* sessionId);
 private:

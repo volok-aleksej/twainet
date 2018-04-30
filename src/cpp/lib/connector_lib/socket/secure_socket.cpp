@@ -108,9 +108,7 @@ bool SecureSocket::PerformSslVerify(const std::string& tlsString)
                 throw false;
             }
             
-            if(isServer) {
-                len = RSA_private_decrypt(len, data, m_key, rsaKey, RSA_PKCS1_PADDING);
-            }
+            len = RSA_private_decrypt(len, data, m_key, rsaKey, RSA_PKCS1_PADDING);
             delete data;
         
             if (len <= 0)
