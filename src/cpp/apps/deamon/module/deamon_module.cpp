@@ -6,9 +6,18 @@
 DeamonModule::DeamonModule()
 : Module(COORDINATOR_NAME, Twainet::IPV4, true)
 {
-	ReadConfig();
-	
-	m_config.set_local_port(Config::GetInstance().GetLocalServerPort());
+	AddMessage(new TestMessage(this));
+}
+
+DeamonModule::~DeamonModule()
+{
+}
+
+void DeamonModule::Init()
+{
+    ReadConfig();
+    
+    m_config.set_local_port(Config::GetInstance().GetLocalServerPort());
     for(std::vector<std::string>::iterator it = m_trustedModules.begin();
         it != m_trustedModules.end(); it++)
     {
@@ -21,20 +30,13 @@ DeamonModule::DeamonModule()
         Plugin* plugin = m_config.add_plugins();
         plugin->set_path(*it);
     }
-	
-	strcpy(m_userPassword.m_user, CreateGUID().c_str());
-	strcpy(m_userPassword.m_pass, CreateGUID().c_str());
-	Twainet::SetUsersList(m_module, &m_userPassword, 1);
-	int port = Config::GetInstance().GetLocalServerPort();
-	Twainet::CreateServer(m_module, port, Twainet::IPV4, true);
-	
-	AddMessage(new TestMessage(this));
+    
+    strcpy(m_userPassword.m_user, CreateGUID().c_str());
+    strcpy(m_userPassword.m_pass, CreateGUID().c_str());
+    Twainet::SetUsersList(m_module, &m_userPassword, 1);
+    int port = Config::GetInstance().GetLocalServerPort();
+    Twainet::CreateServer(m_module, port, Twainet::IPV4, true);
 }
-
-DeamonModule::~DeamonModule()
-{
-}
-
 
 void DeamonModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 {

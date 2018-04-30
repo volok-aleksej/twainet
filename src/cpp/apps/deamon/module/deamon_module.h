@@ -14,6 +14,8 @@ class DeamonModule : public Module
 public:
 	DeamonModule();
 	virtual ~DeamonModule();
+    
+    void Init();
 	
 protected:
 	virtual void OnModuleConnected(const Twainet::ModuleName& moduleName);

@@ -33,6 +33,7 @@ void IPCSignalHandler::onCreatedListener(const CreatedListenerMessage& msg)
 
 void IPCSignalHandler::onErrorListener(const ListenErrorMessage& msg)
 {
+    LOG_INFO("%s %d\n", msg.m_error.c_str(), msg.m_errorCode);
 	if(m_module->m_isCoordinator && m_module->m_countListener + 1 < g_ipcCoordinatorPortCount)
 	{
 		m_module->m_countListener++;

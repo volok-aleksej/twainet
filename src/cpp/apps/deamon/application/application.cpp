@@ -30,7 +30,10 @@ void DeamonApplication::OnServerCreationFailed(Twainet::Module module)
 
 void DeamonApplication::InitializeApplication()
 {
-    AddModule(new DeamonModule);
+    DeamonModule* module = new DeamonModule;
+    module->Create();
+    module->Init();
+    AddModule(module);
 }
 
 std::string DeamonApplication::GetAppName()

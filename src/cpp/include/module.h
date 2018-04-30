@@ -68,6 +68,11 @@ public:
 		Twainet::DeleteModule(m_module);
 	}
 	
+    virtual void Create()
+    {
+        m_module = Twainet::CreateModule(m_moduleName.c_str(), m_ipv, m_isCoord);
+    }
+	
 public:
 	virtual void OnTunnelCreationFailed(const char* sessionId)
 	{
@@ -187,11 +192,6 @@ public:
 	}
 		
 protected:
-	virtual void Create()
-	{
-	    m_module = Twainet::CreateModule(m_moduleName.c_str(), m_ipv, m_isCoord);
-	}
-
 	virtual void AddMessage(DataMessage* msg)
 	{
 		std::map<std::string, DataMessage*>::iterator it = m_messages.find(msg->GetName());

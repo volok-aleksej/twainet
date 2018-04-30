@@ -16,7 +16,6 @@ TestModule::~TestModule()
 
 void TestModule::OnModuleConnected(const Twainet::ModuleName& moduleId)
 {
-    printf("%s\n", moduleId.m_name);
     if(strcmp(moduleId.m_name, COORDINATOR_NAME) == 0) {
         Twainet::UserPassword usr_pwd;
         strcpy(usr_pwd.m_user, "test");

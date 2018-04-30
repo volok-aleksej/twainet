@@ -28,7 +28,9 @@ void ListenThread::ThreadFunc()
 	if(!m_socket->Bind(m_address.m_localIP, m_address.m_localPort) ||
 		!m_socket->Listen(SOMAXCONN))
 	{
-		ListenErrorMessage errMsg(m_address.m_id, "", GetError());
+        char printdata[100] = {0};
+        sprintf(printdata, "listen on %s:%d finished with error", m_address.m_localIP.c_str(), m_address.m_localPort);
+		ListenErrorMessage errMsg(m_address.m_id, printdata, GetError());
 		onSignal(errMsg);
 		delete m_socket;
 		m_socket = 0;
