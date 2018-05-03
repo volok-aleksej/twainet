@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(twntest)
+project(twntest1)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -41,7 +41,7 @@ add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../../messages/deamon.pb.
                     ARGS --proto_path=. --cpp_out=. deamon.proto
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../messages
                     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../../messages/deamon.proto)
-                    
+
 add_executable (${PROJECT_NAME} ${SRC_${PROJECT_NAME}})
 set(CMAKE_LIBRARY_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/${PROJECT_NAME})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../output/work/${CMAKE_BUILD_TYPE})

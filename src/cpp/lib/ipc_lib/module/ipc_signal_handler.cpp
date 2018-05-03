@@ -200,7 +200,7 @@ void IPCSignalHandler::onUpdateIPCObject(const UpdateIPCObjectMessage& msg)
 	{
 		m_module->m_modules.AddObject(object);
 	}
-	
+
 	m_module->OnIPCObjectsChanged();
 
 	IPCObjectName ipcNameNew(msg.ipc_new_name());
@@ -228,9 +228,14 @@ void IPCSignalHandler::onModuleName(const ModuleNameMessage& msg)
 	m_module->m_csConnectors.Enter();
 	m_module->m_connectors[module.m_ipcName.GetModuleNameString()].push_back(msg.conn_id());
 	m_module->m_csConnectors.Leave();
-	
+
 	IPCModule::TryConnectCounter counter(module.m_ipcName.GetModuleNameString());
 	m_module->m_tryConnectCounters.RemoveObject(counter);
+}
+
+static bool CheckIPCObject(const IPCModule::IPCObject& object)
+{
+    return object.m_ipcName.host_name().empty();
 }
 
 void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
@@ -263,9 +268,9 @@ void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 	m_module->m_modules.RemoveObject(module);
 
 	if (msg.m_id == m_module->m_coordinatorIPCName ||
-	   !m_module->m_coordinatorName.empty() && msg.m_id == m_module->m_coordinatorName)
+        (!m_module->m_coordinatorName.empty() && msg.m_id == m_module->m_coordinatorName))
 	{
-		m_module->m_ipcObject.Clear();
+        m_module->m_ipcObject.CheckObjects(&CheckIPCObject);
 		m_module->OnIPCObjectsChanged();
 		if(m_module->m_countConnect + 1 == g_ipcCoordinatorPortCount)
 		{
@@ -280,7 +285,7 @@ void IPCSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 		m_module->m_bConnectToCoordinatorRequest = true;
 		time(&m_module->m_requestCreated);
 	}
-	
+
 	if(msg.m_id != m_module->m_coordinatorIPCName)
 	{
 		m_module->OnFireConnector(msg.m_id);
@@ -319,3 +324,4 @@ void IPCSignalHandler::onIPCObjectList(const IPCObjectListMessage& msg)
 		*ipcObject->mutable_ipc_name() = it->m_ipcName;
 	}
 }
+

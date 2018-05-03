@@ -26,7 +26,7 @@ std::string Config::GetPluginsFileName()
 {
     return m_file.getString("common", "pluginsFileName", "twainet.plugins");
 }
-    
+
 int Config::GetLocalServerPort()
 {
 	return m_file.getLong("common", "localPort", g_localServerPort);
@@ -58,7 +58,7 @@ std::vector<std::string> FileConfig::Read()
             break;
         }
         filepos += size;
-        
+
         std::vector<std::string> lines = CommonUtils::DelimitString(data, "\n");
         int pos = 0;
         for(int i = 0; i < (int)lines.size(); i++)
@@ -69,11 +69,11 @@ std::vector<std::string> FileConfig::Read()
                 line.erase(line.size() - 1, 1);
             if(line[0] == '#' || line.empty())
                 continue;
-            
+
             dataContainer.push_back(line);
         }
     }
-    
+
     delete data;
     return dataContainer;
 }
@@ -84,11 +84,11 @@ void FileConfig::Write(const std::string& description, const std::vector<std::st
     configFile.Open("wt");
     configFile.Write("# ", 2);
     configFile.Write(description.c_str(), description.size());
-    configFile.Write("\r\n", 2);
+    configFile.Write("\n", 2);
     for(std::vector<std::string>::const_iterator it = data.begin();
         it != data.end(); it++)
     {
         configFile.Write(it->c_str(), it->size());
-        configFile.Write("\r\n", 1);
+        configFile.Write("\n", 1);
     }
 }

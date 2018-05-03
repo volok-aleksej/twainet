@@ -15,6 +15,7 @@ ClientServerModule::ClientServerModule(const IPCObjectName& ipcName, ConnectorFa
 , m_isStopConnect(true), m_serverThread(0), m_signalHandler(this)
 , m_isUseProxy(false), m_bConnectToServerRequest(false)
 {
+	m_manager->addSubscriber(&m_signalHandler, SIGNAL_FUNC(&m_signalHandler, ClientServerSignalHandler, DisconnectedMessage, onDisconnected));
 }
 
 ClientServerModule::~ClientServerModule()
@@ -35,7 +36,7 @@ void ClientServerModule::Connect(const std::string& ip, int port)
 	{
 		return;
 	}
-	
+
 	m_isStopConnect = false;
 	m_ip = ip;
 	m_port = port;
@@ -112,7 +113,7 @@ void ClientServerModule::FillIPCObjectList(std::vector<IPCObject>& ipcList)
 			ipcList.erase(it++);
 		}
 	}
-	
+
 	IPCModule::FillIPCObjectList(ipcList);
 }
 
@@ -128,7 +129,7 @@ void ClientServerModule::ManagerFunc()
 		m_bConnectToServerRequest = false;
 	}
 }
-	
+
 void ClientServerModule::Disconnect()
 {
 	LOG_INFO("Try client disconnect. sessionId %s\n", m_ownSessionId.c_str());

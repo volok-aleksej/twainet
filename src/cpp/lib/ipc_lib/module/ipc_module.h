@@ -34,8 +34,7 @@ public:
 	static const std::string m_internalAccessId;
 	static const int m_maxTryConnectCount;
 	static const int m_connectTimeout;
-protected:
-	friend class IPCSignalHandler;
+
 	class IPCObject
 	{
 	public:
@@ -54,7 +53,8 @@ protected:
 		int m_port;
 		std::string m_accessId;
 	};
-
+protected:
+	friend class IPCSignalHandler;
 	class TryConnectCounter
 	{
 	public:
@@ -121,7 +121,7 @@ protected:
 	int m_countConnect;
 	int m_ipv;
 	ObjectManager<TryConnectCounter> m_tryConnectCounters;
-	
+
 	CriticalSection m_csConnectors;
 	std::map<std::string, std::vector<std::string> > m_connectors;
 private:

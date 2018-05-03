@@ -95,3 +95,18 @@ void ClientServerSignalHandler::onConnected(const ClientServerConnectedMessage& 
 		m_module->OnClientConnector(idName.host_name());
 	}
 }
+
+static bool CheckIPCObject(const IPCModule::IPCObject& object)
+{
+    return object.m_ipcName.module_name() == ClientServerModule::m_clientIPCName;
+}
+
+void ClientServerSignalHandler::onDisconnected(const DisconnectedMessage& msg)
+{
+    IPCObjectName id = IPCObjectName::GetIPCName(msg.m_id);
+    if (id.module_name() == ClientServerModule::m_serverIPCName)
+	{
+        m_module->m_ipcObject.CheckObjects(&CheckIPCObject);
+		m_module->OnIPCObjectsChanged();
+	}
+}

@@ -12,12 +12,13 @@ class ClientServerSignalHandler : public SignalReceiver
 public:
 	ClientServerSignalHandler(ClientServerModule* module);
 	~ClientServerSignalHandler();
-	
+
 	void onAddClientServerConnector(const ConnectorMessage& msg);
 	void onErrorConnect(const ConnectErrorMessage& msg);
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);
 	void onConnected(const ClientServerConnectedMessage& msg);
+	void onDisconnected(const DisconnectedMessage& msg);
 
 	void onLogin(const LoginMessage& msg);
 	void onLoginResult(const LoginResultMessage& msg);

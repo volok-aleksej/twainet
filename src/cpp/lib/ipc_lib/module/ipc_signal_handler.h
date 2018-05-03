@@ -11,7 +11,7 @@ class IPCSignalHandler : public SignalReceiver
 public:
 	IPCSignalHandler(IPCModule* module);
 	~IPCSignalHandler();
-	
+
 	void getListenPort(const ListenerParamMessage& msg);
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);

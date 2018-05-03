@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 
 TestModule::TestModule()
-: Module("twntest", Twainet::IPV4, false)
+: Module("twntest1", Twainet::IPV4, false)
 {
     AddMessage(new DeamonMessage<Test, TestModule>(this));
 }
@@ -20,35 +20,36 @@ void TestModule::OnModuleConnected(const Twainet::ModuleName& moduleId)
         Twainet::UserPassword usr_pwd;
         strcpy(usr_pwd.m_user, "test");
         strcpy(usr_pwd.m_pass, "test");
-        Twainet::SetUsersList(m_module, &usr_pwd, 1);
-        Twainet::CreateServer(m_module, 5200, Twainet::IPV4);
+//        Twainet::SetUsersList(m_module, &usr_pwd, 1);
+        Twainet::ConnectToServer(m_module, "localhost", 5200, usr_pwd);
+//        Twainet::CreateServer(m_module, 5200, Twainet::IPV4, true);
     }
 }
 
 void TestModule::OnModuleListChanged()
 {
 	Module::OnModuleListChanged();
-	
+
 	Twainet::ModuleName* names = 0;
 	int sizeNames = 0;
 	Twainet::GetExistingModules(GetModule(), names, sizeNames);
 	names = new Twainet::ModuleName[sizeNames];
 	sizeNames = Twainet::GetExistingModules(GetModule(), names, sizeNames);
-	
+
 	printf("moduleNames changed:\n");
 	for(int i = 0; i < sizeNames; i++)
 	{
 		printf("%d:%s.%s.%s\n", i, names[i].m_name, names[i].m_host, names[i].m_connId);
 	}
 	printf("\n");
-	
+
 	delete names;
 }
 
 void TestModule::OnServerConnected(const char* sessionId)
 {
 	Module::OnServerConnected(sessionId);
-	
+
 	Twainet::ModuleName moduleName = {0};
 	strcpy(moduleName.m_name, "twntest");
 	strcpy(moduleName.m_host, sessionId);
