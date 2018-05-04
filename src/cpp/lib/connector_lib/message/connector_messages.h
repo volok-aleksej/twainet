@@ -48,11 +48,12 @@ public:
 class DisconnectedMessage : public DataMessage
 {
 public:
-	DisconnectedMessage(const std::string& id, const std::string& connId);
+	DisconnectedMessage(const std::string& id, const std::string& connId, const std::string& accessId);
 	static std::string GetMessageName();
 public:
 	std::string m_id;
 	std::string m_connId;
+	std::string m_accessId;
 };
 
 /******************************************************************/

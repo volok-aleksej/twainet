@@ -96,17 +96,26 @@ void ClientServerSignalHandler::onConnected(const ClientServerConnectedMessage& 
 	}
 }
 
-static bool CheckIPCObject(const IPCModule::IPCObject& object)
+class ipcChecker
 {
-    return object.m_ipcName.module_name() == ClientServerModule::m_clientIPCName;
-}
+public:
+    ipcChecker(const std::string& accessId) : m_accessId(accessId){}
+    bool CheckIPCObject(const IPCModule::IPCObject& object)
+    {
+        return m_accessId == object.m_accessId && object.m_ipcName.module_name() == ClientServerModule::m_clientIPCName;
+    }
+
+    std::string m_accessId;
+};
+
 
 void ClientServerSignalHandler::onDisconnected(const DisconnectedMessage& msg)
 {
     IPCObjectName id = IPCObjectName::GetIPCName(msg.m_id);
     if (id.module_name() == ClientServerModule::m_serverIPCName)
 	{
-        m_module->m_ipcObject.CheckObjects(&CheckIPCObject);
+        ipcChecker checker(msg.m_accessId);
+        m_module->m_ipcObject.CheckObjects(Ref(&checker, &ipcChecker::CheckIPCObject));
 		m_module->OnIPCObjectsChanged();
 	}
 }

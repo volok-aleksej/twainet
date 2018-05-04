@@ -20,26 +20,26 @@ void ConnectorManager::ManagerStart()
 
 void ConnectorManager::ManagerStop()
 {
-	std::map<std::string, std::string> disconnectedModules;
+	std::vector<ModuleInfo> disconnectedModules;
 	m_connectors.CheckObjects(Ref(this, &ConnectorManager::StopConnector, disconnectedModules));
 
-	for(std::map<std::string, std::string>::iterator it = disconnectedModules.begin();
+	for(std::vector<ModuleInfo>::iterator it = disconnectedModules.begin();
 		it != disconnectedModules.end(); it++)
 	{
-		DisconnectedMessage msg(it->second, it->first);
+		DisconnectedMessage msg(it->m_id, it->m_connid, it->m_accessid);
 		onSignal(msg);
 	}
 }
 
 void ConnectorManager::ManagerFunc()
 {
-	std::map<std::string, std::string> disconnectedModules;
+	std::vector<ModuleInfo> disconnectedModules;
 	m_connectors.CheckObjects(Ref(this, &ConnectorManager::CheckConnection, disconnectedModules));
 
-	for(std::map<std::string, std::string>::iterator it = disconnectedModules.begin();
+	for(std::vector<ModuleInfo>::iterator it = disconnectedModules.begin();
 		it != disconnectedModules.end(); it++)
 	{
-		DisconnectedMessage msg(it->second, it->first);
+		DisconnectedMessage msg(it->m_id, it->m_connid, it->m_accessid);
 		onSignal(msg);
 	}
 }
@@ -77,12 +77,12 @@ bool ConnectorManager::StopConnectionByName(const std::string& moduleName, const
 	return true;
 }
 
-bool ConnectorManager::CheckConnection(const std::map<std::string, std::string>& discModules, const Connector* connector)
+bool ConnectorManager::CheckConnection(const std::vector<ModuleInfo>& discModules, const Connector* connector)
 {
 	Connector* conn = const_cast<Connector*>(connector);
 	if(conn->IsStopped())
 	{
-		const_cast<std::map<std::string, std::string>&>(discModules).insert(std::make_pair(conn->GetConnectorId(), conn->GetId()));
+		const_cast<std::vector<ModuleInfo>&>(discModules).push_back(ModuleInfo(conn->GetId(), conn->GetConnectorId(), conn->GetAccessId()));
 		ThreadManager::GetInstance().AddThread(conn);
 		return true;
 	}
@@ -96,11 +96,11 @@ bool ConnectorManager::StopConnectors(const Connector* connector)
 	return true;
 }
 
-bool ConnectorManager::StopConnector(const std::map<std::string, std::string>& discModules, const Connector* connector)
+bool ConnectorManager::StopConnector(const std::vector<ModuleInfo>& discModules, const Connector* connector)
 {
 	Connector* conn = const_cast<Connector*>(connector);
 	conn->Stop();
-	const_cast<std::map<std::string, std::string>&>(discModules).insert(std::make_pair(conn->GetConnectorId(), conn->GetId()));
+	const_cast<std::vector<ModuleInfo>&>(discModules).push_back(ModuleInfo(conn->GetId(), conn->GetConnectorId(), conn->GetAccessId()));
 	ThreadManager::GetInstance().AddThread(conn);
 	return true;
 }

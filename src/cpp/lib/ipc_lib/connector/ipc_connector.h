@@ -23,7 +23,7 @@ class IPCConnector : public Connector, public SignalReceiver, protected SignalOw
 	public:
 		InternalConnection(const std::string& id)
 			: m_id(id), m_thread(0), m_status(CONN_INIT){}
-		
+
 		InternalConnection(const InternalConnection& conn)
 		{
 			operator = (conn);
@@ -65,7 +65,6 @@ public:
 	virtual void SubscribeModule(::SignalOwner* owner);
 
 	IPCObjectName GetModuleName() const;
-	std::string GetAccessId();
 protected:
 	friend class Signal;
 	void onIPCMessage(const IPCProtoMessage& msg);
@@ -75,7 +74,7 @@ protected:
 	void onUpdateIPCObjectMessage(const UpdateIPCObjectMessage& msg);
 	void onChangeIPCNameMessage(const ChangeIPCNameMessage& msg);
 	void onRemoveIPCObjectMessage(const RemoveIPCObjectMessage& msg);
-	
+
 	void onDisconnected(const DisconnectedMessage& msg);
 	void onCreatedListener(const CreatedListenerMessage& msg);
 	void onErrorListener(const ListenErrorMessage& msg);
@@ -86,7 +85,7 @@ protected:
 
 	template<typename TClass, typename TFunc> class Reference;
 	bool InternalDestroyNotify(const InternalConnection& connId);
-	
+
 	friend class IPCModule;
 	friend class PingThread;
 	friend class IPCHandler;
@@ -100,7 +99,6 @@ protected:
 	virtual bool SendData(char* data, int len);
 
 	virtual bool SetModuleName(const IPCObjectName& moduleName);
-	virtual void SetAccessId(const std::string& accessId);
 	virtual void OnConnected();
 	virtual void OnDisconnected();
 	virtual void OnAddIPCObject(const std::string& moduleName);
@@ -115,11 +113,10 @@ protected:
 	bool m_isCoordinator;
 private:
 	IPCObjectName m_moduleName;
-	std::string m_accessId;
 	Signal* m_ipcSignal;
 	bool m_isExist;
 	std::string m_rand;
-	
+
 	//for internal connections
 	ConnectorManager *m_manager;
 	ObjectManager<InternalConnection> m_internalConnections;

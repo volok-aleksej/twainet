@@ -24,6 +24,16 @@ std::string Connector::GetConnectorId()
 	return m_connectorId;
 }
 
+void Connector::SetAccessId(const std::string& accessId)
+{
+	m_accessId = accessId;
+}
+
+std::string Connector::GetAccessId()
+{
+	return m_accessId;
+}
+
 void Connector::Stop()
 {
 	if(m_socket)

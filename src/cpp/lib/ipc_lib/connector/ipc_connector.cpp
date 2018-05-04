@@ -34,7 +34,7 @@ IPCConnector::IPCConnector(AnySocket* socket, const IPCObjectName& moduleName)
 	addMessage(new ProtoMessage<UpdateIPCObject>(&m_handler));
 	addMessage(new ProtoMessage<ModuleState>(&m_handler));
 	addMessage(new ProtoMessage<Ping>(&m_handler));
-		
+
 	addMessage(new ProtoMessage<InitInternalConnection>(&m_handler));
 	addMessage(new ProtoMessage<InternalConnectionStatus>(&m_handler));
 	addMessage(new ProtoMessage<InternalConnectionData>(&m_handler));
@@ -98,7 +98,7 @@ void IPCConnector::OnStop()
 	{
 		OnDisconnected();
 	}
-	
+
 	if(m_isNotifyRemove)
 	{
 		RemoveIPCObjectMessage msg(&m_handler);
@@ -112,8 +112,8 @@ void IPCConnector::OnStop()
 		m_checker->Stop();
 		m_checker = 0;
 	}
-	
-	m_internalConnections.CheckObjects(Ref(this, &IPCConnector::InternalDestroyNotify));	
+
+	m_internalConnections.CheckObjects(Ref(this, &IPCConnector::InternalDestroyNotify));
 	m_manager->Stop();
 	m_manager = 0;
 }
@@ -143,16 +143,6 @@ IPCObjectName IPCConnector::GetModuleName() const
 	return m_moduleName;
 }
 
-void IPCConnector::SetAccessId(const std::string& accessId)
-{
-	m_accessId = accessId;
-}
-
-std::string IPCConnector::GetAccessId()
-{
-	return m_accessId;
-}
-	
 void IPCConnector::onIPCMessage(const IPCProtoMessage& msg)
 {
 	if(msg.ipc_path_size() == 0)
@@ -348,7 +338,7 @@ void IPCConnector::onErrorConnect(const ConnectErrorMessage& msg)
 	InternalConnection conn(msg.m_moduleName);
 	m_internalConnections.DestroyObject(conn, Ref(this, &IPCConnector::InternalDestroyNotify));
 }
-	
+
 void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 {
 	InternalConnection conn(msg.m_conn->GetId());
@@ -373,11 +363,11 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 		conn.m_status = CONN_OPEN;
 	}
 	m_internalConnections.UpdateObject(conn);
-		
+
 	InternalConnector* connector = dynamic_cast<InternalConnector*>(msg.m_conn);
 	if(connector)
 	{
-			
+
 		connector->addSubscriber(this, SIGNAL_FUNC(this, IPCConnector, InternalConnectionDataSignal, onInternalConnectionDataSignal));
 		connector->SubscribeConnector(dynamic_cast<SignalOwner*>(this));
 		if(m_manager)
@@ -388,7 +378,7 @@ void IPCConnector::onAddConnector(const ConnectorMessage& msg)
 		delete msg.m_conn;
 	}
 }
-	
+
 void IPCConnector::onInitInternalConnectionMessage(const InitInternalConnectionMessage& msg)
 {
 	IPCObjectName target(msg.target());

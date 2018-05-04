@@ -55,8 +55,8 @@ std::string ErrorMessage::GetMessageName()
 /************************************************************************/
 /*                       DisconnectedMessage                            */
 /************************************************************************/
-DisconnectedMessage::DisconnectedMessage(const std::string& id, const std::string& connId)
-: m_id(id), m_connId(connId)
+DisconnectedMessage::DisconnectedMessage(const std::string& id, const std::string& connId, const std::string& accessId)
+: m_id(id), m_connId(connId), m_accessId(accessId)
 {
 }
 

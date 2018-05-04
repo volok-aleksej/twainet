@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 
 TestModule::TestModule()
-: Module("twntest1", Twainet::IPV4, false)
+: Module("twntest2", Twainet::IPV4, false)
 {
     AddMessage(new DeamonMessage<Test, TestModule>(this));
 }

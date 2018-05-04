@@ -18,6 +18,8 @@ public:
 	void SetRemoteAddr(const std::string& ip, int port);
 	void SetConnectorId(const std::string& connectorId);
 	std::string GetConnectorId();
+	void SetAccessId(const std::string& accessId);
+	std::string GetAccessId();
 
 	virtual void Stop();
 	virtual void onNewConnector(const Connector* connector){};
@@ -27,6 +29,7 @@ protected:
 	AnySocket* m_socket;
 	std::string m_id;
 	std::string m_connectorId;
+	std::string m_accessId;
 
 	std::string m_remoteIp;
 	int m_remotePort;
