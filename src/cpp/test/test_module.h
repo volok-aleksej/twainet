@@ -14,7 +14,7 @@ public:
 	virtual void OnModuleListChanged();
 	virtual void OnServerConnected(const char* sessionId);
 private:
-	template<class TMessage, class THandler> friend class DeamonMessage;
+	template<class TMessage, class THandler> friend class UserMessage;
 	void onMessage(const Test& test, Twainet::ModuleName path);
 };
 

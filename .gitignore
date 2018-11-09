@@ -1,0 +1,4 @@
+/output
+/src/cpp/build
+/src/messages/*.pb.*
+/src/cpp/apps/remote_terminal/messages/*.pb.*

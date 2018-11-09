@@ -7,7 +7,7 @@
 
 class DeamonModule;
 
-typedef DeamonMessage<Test, DeamonModule> TestMessage;
+typedef UserMessage<Test, DeamonModule> TestMessage;
 
 class DeamonModule : public Module
 {
@@ -24,7 +24,7 @@ protected:
 	virtual void OnConfigChanged(const SetConfig& msg);
 	
 private:
-	template<class TMessage, class THandler> friend class DeamonMessage;
+	template<class TMessage, class THandler> friend class UserMessage;
 	void onMessage(const Test& test, Twainet::ModuleName path);
 private:
 	void ReadConfig();

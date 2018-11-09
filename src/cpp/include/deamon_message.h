@@ -23,12 +23,12 @@ private:
 };
 
 template<class TMessage, class THandler>
-class DeamonMessage : public DataMessage, public MessageAttr, public TMessage
+class UserMessage : public DataMessage, public MessageAttr, public TMessage
 {
 public:
-  	DeamonMessage(THandler* handler)
+  	UserMessage(THandler* handler)
 		: m_handler(handler){}
-	DeamonMessage(THandler* handler, const TMessage& msg)
+	UserMessage(THandler* handler, const TMessage& msg)
 		: m_handler(handler)
 	{
 		TMessage::operator = (msg);

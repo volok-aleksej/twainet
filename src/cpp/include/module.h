@@ -9,6 +9,7 @@
 #include "deamon_message.h"
 #include "object_manager.h"
 
+#ifndef LIGTH_VERSION
 #pragma warning(disable:4244 4267)
 #include "messages/deamon.pb.h"
 using namespace deamon;
@@ -16,12 +17,13 @@ using namespace deamon;
 
 class Module;
 
-typedef DeamonMessage<LocalServerAttributes, Module> LocalServerAttributesMessage;
-typedef DeamonMessage<ClientName, Module> ClientNameMessage;
-typedef DeamonMessage<ClientNameList, Module> ClientNameListMessage;
-typedef DeamonMessage<SetConfig, Module> SetConfigMessage;
-typedef DeamonMessage<GetConfig, Module> GetConfigMessage;
-typedef DeamonMessage<InstallPlugin, Module> InstallPluginMessage;
+typedef UserMessage<LocalServerAttributes, Module> LocalServerAttributesMessage;
+typedef UserMessage<ClientName, Module> ClientNameMessage;
+typedef UserMessage<ClientNameList, Module> ClientNameListMessage;
+typedef UserMessage<SetConfig, Module> SetConfigMessage;
+typedef UserMessage<GetConfig, Module> GetConfigMessage;
+typedef UserMessage<InstallPlugin, Module> InstallPluginMessage;
+#endif/*LIGTH_VERSION*/
 
 class IModule
 {
@@ -56,12 +58,14 @@ public:
 	Module(const std::string& moduleName, Twainet::IPVersion ipv = Twainet::IPV4, bool isCoord = false)
 	  : m_module(0), m_moduleName(moduleName), m_isCoord(isCoord), m_ipv(ipv)
 	{
+#ifndef LIGTH_VERSION
 		AddMessage(new LocalServerAttributesMessage(this));
 		AddMessage(new ClientNameListMessage(this));
 		AddMessage(new ClientNameMessage(this));
 		AddMessage(new SetConfigMessage(this));
 		AddMessage(new GetConfigMessage(this));
 		AddMessage(new InstallPluginMessage(this));
+#endif/*LIGTH_VERSION*/
 	}
 	virtual ~Module()
 	{
@@ -80,6 +84,7 @@ public:
 
 	virtual void OnServerConnected(const char* sessionId)
 	{
+#ifndef LIGTH_VERSION
 		Twainet::ModuleName moduleName = {0};
 		strcpy(moduleName.m_name, Twainet::ServerModuleName);
 		strcpy(moduleName.m_host, sessionId);
@@ -87,6 +92,7 @@ public:
 		cnMsg.set_ipc_name(Twainet::GetModuleName(m_module).m_name);
 		cnMsg.set_host_name(sessionId);
 		toMessage(cnMsg, moduleName);
+#endif/*LIGTH_VERSION*/
 	}
 
 	virtual void OnClientConnected(const char* sessionId)
@@ -142,6 +148,7 @@ public:
 
 	virtual void OnModuleListChanged()
 	{
+#ifndef LIGTH_VERSION
 		Twainet::ModuleName* names = 0;
 		int sizeNames = 0;
 		Twainet::GetExistingModules(GetModule(), names, sizeNames);
@@ -189,6 +196,7 @@ public:
 		}
 
 		delete names;
+#endif/*LIGTH_VERSION*/
 	}
 
 protected:
@@ -287,6 +295,7 @@ protected:
 	}
 
 protected:
+#ifndef LIGTH_VERSION
 	virtual void OnInstallPluginRequest(const InstallPlugin& msg)
 	{
 	}
@@ -306,7 +315,7 @@ protected:
 	}
 
 private:
-	template<class TMessage, class THandler> friend class DeamonMessage;
+	template<class TMessage, class THandler> friend class UserMessage;
 
 	/*******************************************************************************************/
 	/*                                    messages for all                                     */
@@ -395,12 +404,15 @@ private:
 		}
 		delete names;
 	}
+#endif/*LIGTH_VERSION*/
 
 protected:
+#ifndef LIGTH_VERSION
 	ObjectManager<ClientModuleName> m_clientsNameOnServer;
 	ObjectManager<ClientModuleName> m_clientsNameOnClient;
-	Twainet::Module m_module;
 	SetConfig m_config;
+#endif/*LIGTH_VERSION*/
+	Twainet::Module m_module;
 private:
 	std::map<std::string, DataMessage*> m_messages;
 	std::string m_moduleName;

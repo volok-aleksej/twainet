@@ -1,0 +1,17 @@
+package terminal;
+
+message term_name
+{
+    required string name  = 1;
+}
+
+message log
+{
+    required uint64 time = 1;
+    required string data = 2;
+}
+
+message command
+{
+    required string cmd  = 1;
+}

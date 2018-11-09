@@ -7,7 +7,7 @@
 TestModule::TestModule()
 : Module("twntest2", Twainet::IPV4, false)
 {
-    AddMessage(new DeamonMessage<Test, TestModule>(this));
+    AddMessage(new UserMessage<Test, TestModule>(this));
 }
 
 TestModule::~TestModule()
@@ -53,7 +53,7 @@ void TestModule::OnServerConnected(const char* sessionId)
 	Twainet::ModuleName moduleName = {0};
 	strcpy(moduleName.m_name, "twntest");
 	strcpy(moduleName.m_host, sessionId);
-	DeamonMessage<Test, TestModule> cnMsg(this);
+	UserMessage<Test, TestModule> cnMsg(this);
 	toMessage(cnMsg, moduleName);
 }
 
