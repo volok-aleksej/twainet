@@ -137,7 +137,7 @@ public:
 
 	virtual void OnMessageRecv(const Twainet::Message& msg)
 	{
-        printf("message %s recv\n", msg.m_typeMessage);
+//        printf("message %s recv\n", msg.m_typeMessage);
 		onData(msg.m_typeMessage, msg.m_target, (char*)msg.m_data, msg.m_dataLen);
 	}
 

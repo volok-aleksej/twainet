@@ -10,6 +10,8 @@ set (SRC_${PROJECT_NAME}
 	application/application.cpp
 	application/main.cpp
 	module/terminal_module.cpp
+    terminal/terminal.cpp
+    terminal/console.cpp
 )
 
 set (SRC_GEN_${PROJECT_NAME}

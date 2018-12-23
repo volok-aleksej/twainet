@@ -14,6 +14,21 @@ typedef UserMessage<term_name, TerminalModule> TermNameMessage;
 typedef UserMessage<log, TerminalModule> LogMessage;
 typedef UserMessage<command, TerminalModule> CommandMessage;
 
+struct ModuleNameCmp
+{
+    bool operator()(const Twainet::ModuleName& module1, const Twainet::ModuleName& module2)
+    {
+        int ret = strcmp(module1.m_name, module2.m_name);
+        if(ret == 0) {
+            ret = strcmp(module1.m_host, module2.m_host);
+            if(ret == 0) {
+                ret = strcmp(module1.m_connId, module2.m_connId);
+            }
+        }
+        return ret < 0;
+    }
+};
+
 class TerminalModule : public Module
 {
 public:
@@ -35,6 +50,7 @@ private:
 
 private:
 	Twainet::UserPassword m_userPassword;
+    std::map<Twainet::ModuleName, std::string, ModuleNameCmp> m_terminalMap;
 };
 
 #endif/*TERMINAL_MODULE_H*/

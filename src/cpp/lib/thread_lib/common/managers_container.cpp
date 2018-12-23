@@ -81,7 +81,7 @@ void ManagersContainer::ThreadFunc()
 			(*it)->ManagerStop();
 			delete (*it);
 		}
-		sleep(200);
+		sleep(500);
 	}
 	
 	std::vector<IManager*> managers;

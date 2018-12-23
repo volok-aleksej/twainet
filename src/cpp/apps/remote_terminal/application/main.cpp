@@ -9,6 +9,7 @@
 #include <iostream>
 #include "include/twainet.h"
 #include "application.h"
+#include "terminal/terminal.h"
 #include "common/common_func.h"
 
 #ifdef WIN32
@@ -18,6 +19,7 @@ int main(int argc, char* argv[])
 #endif/*WIN32*/
 {
 //	printf("begin\n");
+    Terminal::GetInstance();
 	ApplicationTerminal::GetInstance().Run();
 	return 0;
 }
