@@ -37,8 +37,11 @@ public:
 
     void Init();
 
+    std::vector<std::string> getTerminalNames();
+
 protected:
 	virtual void OnModuleConnected(const Twainet::ModuleName& moduleName);
+	virtual void OnModuleDisconnected(const Twainet::ModuleName & moduleName);
 
 private:
 	template<class TMessage, class THandler> friend class UserMessage;
@@ -50,6 +53,7 @@ private:
 
 private:
 	Twainet::UserPassword m_userPassword;
+    CriticalSection m_cs;
     std::map<Twainet::ModuleName, std::string, ModuleNameCmp> m_terminalMap;
 };
 

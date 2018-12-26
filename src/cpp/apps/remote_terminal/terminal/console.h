@@ -13,6 +13,7 @@ public:
     void DeInit();
     bool Write(const std::string& log);
     bool Read(std::string& buf);
+    void SetTermName(const std::string& termName);
 protected:
     void printName();
     void ClearLine();

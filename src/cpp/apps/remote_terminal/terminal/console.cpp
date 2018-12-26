@@ -85,6 +85,14 @@ bool Console::Read(std::string& buf)
     return false;
 }
 
+void Console::SetTermName(const std::string& termName)
+{
+    m_termName = termName;
+    ClearLine();
+    printName();
+    fflush(m_stream);
+}
+
 void Console::printName()
 {
     fprintf(m_stream, "#%s:", m_termName.c_str());

@@ -1,5 +1,6 @@
 #include "utils.h"
 #include <stdio.h>
+#include <sys/time.h>
 
 std::vector<std::string> CommonUtils::DelimitString(const std::string& src, const std::string& delimit)
 {
@@ -7,6 +8,31 @@ std::vector<std::string> CommonUtils::DelimitString(const std::string& src, cons
 	size_t begin = 0, pos = 0;
 	while (pos != -1)
 	{
+		pos = src.find(delimit.c_str(), begin);
+		if(pos != -1)
+		{
+			dest.push_back(std::string(src.begin() + begin, src.begin() + pos));
+			begin = pos + delimit.size();
+		}
+	}
+
+	dest.push_back(std::string(src.begin() + begin, src.end()));
+	return dest;
+}
+
+std::vector<std::string> CommonUtils::DelimitQString(const std::string& src, const std::string& delimit)
+{
+	std::vector<std::string> dest;
+	size_t begin = 0, pos = 0;
+	while (pos != -1)
+	{
+        if(src[begin] == '\'' || src[begin] == '\"') {
+            pos = src.find(src[begin], begin + 1);
+            if(pos != -1 && delimit == std::string(src.begin() + pos + 1, src.begin() + pos + 1 + delimit.size())) {
+                dest.push_back(std::string(src.begin() + begin + 1, src.begin() + pos));
+                begin = pos + 1 + delimit.size();
+            }
+        }
 		pos = src.find(delimit.c_str(), begin);
 		if(pos != -1)
 		{
@@ -54,4 +80,11 @@ std::string CommonUtils::FormatTime(time_t time)
 	res = data;
 
 	return res;
+}
+
+time_t CommonUtils::GetCurrentTime()
+{
+    struct timeval tm;
+    gettimeofday(&tm, NULL);
+    return tm.tv_sec*1000000 + tm.tv_usec;
 }
