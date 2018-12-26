@@ -39,6 +39,8 @@ public:
 
     std::vector<std::string> getTerminalNames();
 
+    bool toMessage(const DataMessage& msg, const std::string& termName);
+
 protected:
 	virtual void OnModuleConnected(const Twainet::ModuleName& moduleName);
 	virtual void OnModuleDisconnected(const Twainet::ModuleName & moduleName);

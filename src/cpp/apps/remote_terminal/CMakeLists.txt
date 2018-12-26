@@ -13,6 +13,7 @@ set (SRC_${PROJECT_NAME}
     terminal/terminal.cpp
     terminal/console.cpp
     terminal/commands.cpp
+    terminal/terminal_state.cpp
 )
 
 set (SRC_GEN_${PROJECT_NAME}

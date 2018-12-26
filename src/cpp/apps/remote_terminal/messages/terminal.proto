@@ -11,6 +11,11 @@ message log
     required string data = 2;
 }
 
+message command_list
+{
+    repeated string cmd = 1;
+}
+
 message command
 {
     required string cmd  = 1;

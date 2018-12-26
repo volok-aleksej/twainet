@@ -87,8 +87,8 @@ bool Console::Read(std::string& buf)
 
 void Console::SetTermName(const std::string& termName)
 {
-    m_termName = termName;
     ClearLine();
+    m_termName = termName;
     printName();
     fflush(m_stream);
 }

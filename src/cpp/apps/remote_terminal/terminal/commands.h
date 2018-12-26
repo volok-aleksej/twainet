@@ -1,11 +1,12 @@
+class TermState;
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
 #include <string>
 #include <vector>
+#include "terminal_state.h"
 
 class Terminal;
-class TerminalCommand;
 
 class Command
 {
@@ -15,9 +16,7 @@ public:
     virtual ~Command(){}
 
     virtual void Execute(const std::vector<std::string>& args) = 0;
-    virtual bool Check(const std::string& command, const std::vector<std::string>& args) = 0;
-    virtual std::string GetCurrentTerminalName() = 0;
-    virtual void Exit() = 0;
+    virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
 
     bool operator == (const std::string& command) const {
         return m_command == command;
@@ -36,26 +35,31 @@ public:
     virtual ~UseCommand();
 
     virtual void Execute(const std::vector<std::string>& args);
-    virtual bool Check(const std::string& command, const std::vector<std::string>& args);
-    virtual std::string GetCurrentTerminalName();
-    virtual void Exit();
-private:
-    TerminalCommand* m_termCommand;
+    virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
 };
 
 class TerminalCommand : public Command
 {
 public:
-    TerminalCommand(const std::string& terminalName, Command* parent);
+    TerminalCommand(const std::string& command, TerminalState* state);
     virtual ~TerminalCommand();
 
     virtual void Execute(const std::vector<std::string>& args);
-    virtual bool Check(const std::string& command, const std::vector<std::string>& args);
-    virtual std::string GetCurrentTerminalName();
-    virtual void Exit();
+    virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
 private:
-    Command* m_parentCommand;
-//    std::vector<Command*> m_childCommand;
+    TerminalState* m_state;
+};
+
+class ExitCommand : public Command
+{
+public:
+    ExitCommand(TerminalState* state);
+    virtual ~ExitCommand();
+
+    virtual void Execute(const std::vector<std::string>& args);
+    virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
+private:
+    TerminalState* m_state;
 };
 
 #endif/*COMMANDS_H*/

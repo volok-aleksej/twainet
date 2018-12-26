@@ -37,6 +37,12 @@ std::vector<std::string> TerminalModule::getTerminalNames()
     return names;
 }
 
+bool TerminalModule::toMessage(const DataMessage& msg, const std::string& termName)
+{
+
+    return true;
+}
+
 void TerminalModule::OnModuleConnected(const Twainet::ModuleName& moduleName)
 {
 }

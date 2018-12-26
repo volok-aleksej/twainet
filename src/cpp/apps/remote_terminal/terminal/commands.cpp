@@ -1,36 +1,32 @@
 #include "commands.h"
 #include "terminal.h"
-#include <utils/utils.h>
+#include "utils/utils.h"
+#include "module/terminal_module.h"
 
 UseCommand::UseCommand()
-: Command("use"), m_termCommand(0){}
+: Command("use"){}
 UseCommand::~UseCommand()
 {
-    if(m_termCommand) {
-        delete m_termCommand;
-    }
 }
 
+bool Command::Check(const std::string& command, const std::vector<std::string>& args) const
+{
+    return *this == command;
+}
 void UseCommand::Execute(const std::vector<std::string>& args)
 {
     if(args.empty()) {
         return;
     }
 
-    m_termCommand = new TerminalCommand(args[0], this);
-    Terminal::GetInstance().setCurrentTerminal(m_termCommand);
+    Terminal::GetInstance().setCurrentState(new TerminalCommands(args[0], Terminal::GetInstance().getCurrentState()));
 }
 
-bool UseCommand::Check(const std::string& command, const std::vector<std::string>& args)
+bool UseCommand::Check(const std::string& command, const std::vector<std::string>& args) const
 {
-    if(*this != command) {
-        std::string msg("invalid command '");
-        msg += command;
-        msg += "'";
-        Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
+    if(!Command::Check(command, args)){
         return false;
     }
-
     if(args.empty()) {
         std::string msg("invalid terminal name - name is absent");
         Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
@@ -53,19 +49,8 @@ bool UseCommand::Check(const std::string& command, const std::vector<std::string
     return true;
 }
 
-std::string UseCommand::GetCurrentTerminalName()
-{
-    return "";
-}
-
-void UseCommand::Exit()
-{
-    Terminal::GetInstance().setCurrentTerminal(this);
-    delete m_termCommand;
-}
-
-TerminalCommand::TerminalCommand(const std::string& terminalName, Command* parent)
-: Command(terminalName), m_parentCommand(parent)
+TerminalCommand::TerminalCommand(const std::string& command, TerminalState* state)
+: Command(command), m_state(state)
 {
 }
 
@@ -75,19 +60,36 @@ TerminalCommand::~TerminalCommand()
 
 void TerminalCommand::Execute(const std::vector<std::string>& args)
 {
+    std::string command(m_command);
+    for(auto arg : args) {
+        command += " ";
+        command += arg;
+    }
+    CommandMessage cmdMsg(Terminal::GetInstance().getTerminalModule());
+    cmdMsg.set_cmd(command);
+    Terminal::GetInstance().getTerminalModule()->toMessage(cmdMsg, m_state->GetTerminalName());
 }
 
-bool TerminalCommand::Check(const std::string& command, const std::vector<std::string>& args)
+bool TerminalCommand::Check(const std::string& command, const std::vector<std::string>& args) const
 {
-    return false;
+    return Command::Check(command, args);
 }
 
-std::string TerminalCommand::GetCurrentTerminalName()
+ExitCommand::ExitCommand(TerminalState* state)
+: Command("exit"), m_state(state)
 {
-    return m_command;
 }
 
-void TerminalCommand::Exit()
+ExitCommand::~ExitCommand()
 {
-    m_parentCommand->Exit();
+}
+
+void ExitCommand::Execute(const std::vector<std::string>& args)
+{
+    m_state->Exit();
+}
+
+bool ExitCommand::Check(const std::string& command, const std::vector<std::string>& args) const
+{
+    return Command::Check(command, args);
 }

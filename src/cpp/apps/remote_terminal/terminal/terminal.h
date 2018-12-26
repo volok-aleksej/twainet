@@ -4,7 +4,7 @@
 #include <string>
 #include <stdint.h>
 #include "console.h"
-#include "commands.h"
+#include "terminal_state.h"
 #include "include/module.h"
 #include "thread_lib/common/thread_singleton.h"
 
@@ -26,15 +26,16 @@ public:
 
     void onTerminalDisconnected(const std::string& terminalName);
 
-    void setCurrentTerminal(Command* term);
-    Command* getCurrentTerminal();
+    void setCurrentState(TerminalState* state);
+    TerminalState* getCurrentState();
 
     void addTerminalModule(TerminalModule* module);
+    TerminalModule* getTerminalModule();
     std::vector<std::string> getTerminalNames();
 private:
     Console m_console;
-    UseCommand m_rootCommand;
-    Command* m_currentTerminal;
+    UseTerminal m_rootState;
+    TerminalState* m_currentState;
     TerminalModule* m_terminalModule;
 };
 

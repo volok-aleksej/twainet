@@ -5,7 +5,7 @@
 #include "module/terminal_module.h"
 
 Terminal::Terminal()
-: m_currentTerminal(&m_rootCommand)
+: m_currentState(&m_rootState)
 , m_terminalModule()
 {
     Start();
@@ -28,10 +28,10 @@ void Terminal::ThreadFunc()
         }
         command = args[0];
         args.erase(args.begin());
-        if(m_currentTerminal->Check(command, args)){
-            m_currentTerminal->Execute(args);
+        if(m_currentState->Check(command, args)) {
+            m_currentState->Execute(command, args);
         }
-    };
+    }
     m_console.DeInit();
 }
 
@@ -57,25 +57,30 @@ void Terminal::log(const std::string& termName, uint64_t time, const std::string
 
 void Terminal::onTerminalDisconnected(const std::string& terminalName)
 {
-    if(m_currentTerminal != &m_rootCommand && *m_currentTerminal == terminalName) {
-        m_currentTerminal->Exit();
+    if(m_currentState && m_currentState->GetTerminalName() == terminalName) {
+        m_currentState->Exit();
     }
 }
 
-void Terminal::setCurrentTerminal(Command* term)
+void Terminal::setCurrentState(TerminalState* state)
 {
-    m_currentTerminal = term;
-    m_console.SetTermName(m_currentTerminal->GetCurrentTerminalName());
+    m_currentState = state;
+    m_console.SetTermName(state->GetTerminalName());
 }
 
-Command* Terminal::getCurrentTerminal()
+TerminalState* Terminal::getCurrentState()
 {
-    return m_currentTerminal;
+    return m_currentState;
 }
 
 void Terminal::addTerminalModule(TerminalModule* module)
 {
     m_terminalModule = module;
+}
+
+TerminalModule* Terminal::getTerminalModule()
+{
+    return m_terminalModule;
 }
 
 std::vector<std::string> Terminal::getTerminalNames()
