@@ -21,7 +21,8 @@ void Terminal::ThreadFunc()
     m_console.Init();
     while(!IsStop()) {
         std::string command;
-        if(!m_console.Read(command)) break;
+        Thread::sleep(100);
+        if(!m_console.Read(command)) continue;
         std::vector<std::string> args = CommonUtils::DelimitQString(command, " ");
         if(args.empty()) {
             continue;
