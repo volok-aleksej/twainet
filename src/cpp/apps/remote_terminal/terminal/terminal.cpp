@@ -73,7 +73,7 @@ void Terminal::autoComplete(std::string& command)
     }
 
     std::vector<std::string> usewords;
-    if(cmd.empty() && args.empty()) {
+    if(command.empty() || (args.empty() && command.back() != ' ')) {
         std::vector<std::string> commands = m_currentState->GetCommands();
         usewords = autoCompleteHelper(cmd, commands);
         if(usewords.size() == 1) {
