@@ -49,6 +49,20 @@ bool UseCommand::Check(const std::string& command, const std::vector<std::string
     return true;
 }
 
+std::vector<std::string> UseCommand::GetArgs(const std::vector<std::string>& args)
+{
+    std::vector<std::string> args_;
+    std::string param;
+    if(args.size() > 1) {
+        return args_;
+    } else if(!args.empty()) {
+        param = args[0];
+    }
+
+    std::vector<std::string> terminals =  Terminal::GetInstance().getTerminalNames();
+    return autoCompleteHelper(param, terminals);
+}
+
 TerminalCommand::TerminalCommand(const std::string& command, TerminalState* state)
 : Command(command), m_state(state)
 {

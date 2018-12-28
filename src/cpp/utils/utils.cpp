@@ -11,12 +11,16 @@ std::vector<std::string> CommonUtils::DelimitString(const std::string& src, cons
 		pos = src.find(delimit.c_str(), begin);
 		if(pos != -1)
 		{
-			dest.push_back(std::string(src.begin() + begin, src.begin() + pos));
+            if(begin != pos) {
+                dest.push_back(std::string(src.begin() + begin, src.begin() + pos));
+            }
 			begin = pos + delimit.size();
 		}
 	}
 
-	dest.push_back(std::string(src.begin() + begin, src.end()));
+    if(begin != src.size() - 1) {
+        dest.push_back(std::string(src.begin() + begin, src.end()));
+    }
 	return dest;
 }
 
@@ -36,12 +40,16 @@ std::vector<std::string> CommonUtils::DelimitQString(const std::string& src, con
 		pos = src.find(delimit.c_str(), begin);
 		if(pos != -1)
 		{
-			dest.push_back(std::string(src.begin() + begin, src.begin() + pos));
+            if(begin != pos) {
+                dest.push_back(std::string(src.begin() + begin, src.begin() + pos));
+            }
 			begin = pos + delimit.size();
 		}
 	}
 
-	dest.push_back(std::string(src.begin() + begin, src.end()));
+    if(src.begin() + begin != src.end()) {
+        dest.push_back(std::string(src.begin() + begin, src.end()));
+    }
 	return dest;
 }
 

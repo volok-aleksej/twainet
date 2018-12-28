@@ -1,7 +1,7 @@
 #include "terminal_state.h"
 #include "terminal.h"
 #include "commands.h"
-#include <utils/utils.h>
+#include "utils/utils.h"
 
 TerminalState::TerminalState()
 {
@@ -23,7 +23,7 @@ bool TerminalState::CheckCommand(const CommandChecker& cmd, const Command* comma
 {
     if(command->Check(cmd.cmd, cmd.args))
     {
-        const_cast<CommandChecker&>(cmd).command = const_cast<Command*>(command);
+        const_cast<CommandChecker&>(cmd).find = true;
     }
     return true;
 }
@@ -44,6 +44,15 @@ bool TerminalState::GetCommand(const std::vector<std::string>& cmd, const Comman
     return true;
 }
 
+bool TerminalState::GetArgsCommand(const TerminalState::CommandChecker& cmd, const Command* command)
+{
+    if(*command == cmd.cmd)
+    {
+        const_cast<CommandChecker&>(cmd).avail_args = const_cast<Command*>(command)->GetArgs(cmd.args);
+    }
+    return true;
+}
+
 void TerminalState::AddCommand(Command* command)
 {
     m_commands.AddObject(command);
@@ -51,9 +60,10 @@ void TerminalState::AddCommand(Command* command)
 
 bool TerminalState::Check(const std::string& command, const std::vector<std::string>& args)
 {
-    CommandChecker commandChecker{command, args, 0};
+    std::vector<std::string> args_;
+    CommandChecker commandChecker{command, args, false, args_};
     m_commands.ProcessingObjects(Ref(this, &TerminalState::CheckCommand, commandChecker));
-    if(commandChecker.command == 0) {
+    if(!commandChecker.find) {
         std::string msg("invalid command '");
         msg += command;
         msg += "'";
@@ -65,7 +75,8 @@ bool TerminalState::Check(const std::string& command, const std::vector<std::str
 
 void TerminalState::Execute(const std::string& command, const std::vector<std::string>& args)
 {
-    CommandChecker commandChecker{command, args, 0};
+    std::vector<std::string> args_;
+    CommandChecker commandChecker{command, args, false, args_};
     m_commands.ProcessingObjects(Ref(this, &TerminalState::ExecuteCommand, commandChecker));
 }
 
@@ -79,6 +90,8 @@ std::vector<std::string> TerminalState::GetCommands()
 std::vector<std::string> TerminalState::GetArgs(const std::string& command, const std::vector<std::string>& args)
 {
     std::vector<std::string> args_;
+    CommandChecker commandChecker{command, args, false, args_};
+    m_commands.ProcessingObjects(Ref(this, &TerminalState::GetArgsCommand, commandChecker));
     return args_;
 }
 

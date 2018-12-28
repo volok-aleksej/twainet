@@ -9,6 +9,8 @@ Console::Console()
 {
     m_templates.insert(std::make_pair(ARROW_UP, std::vector<char>{27, '[', 'A'}));
     m_templates.insert(std::make_pair(ARROW_DOWN, std::vector<char>{27, '[', 'B'}));
+    m_templates.insert(std::make_pair(ARROW_LEFT, std::vector<char>{27, '[', 'D'}));
+    m_templates.insert(std::make_pair(ARROW_RIGHT, std::vector<char>{27, '[', 'C'}));
 }
 
 void Console::Init()
@@ -24,8 +26,7 @@ void Console::Init()
     if (tcsetattr(stdin->_fileno, TCSANOW, &old) < 0)
             perror("tcsetattr ICANON");
     
-    printName();fprintf(m_stream, "%s", m_command.c_str());
-            fflush(m_stream);
+    printName();
     fflush(m_stream);
     Start();
 }
@@ -105,6 +106,8 @@ bool Console::Read(std::string& buf)
                 fflush(m_stream);
             }
             return false;
+        } else {
+            m_accumchars.erase(m_accumchars.begin(), m_accumchars.begin() + m_templates[ac_char].size());
         }
     } while(!m_accumchars.empty());
     m_accumchars.clear();

@@ -12,7 +12,8 @@ class TerminalState
     {
         std::string cmd;
         const std::vector<std::string>& args;
-        Command* command;
+        bool find;
+        std::vector<std::string>& avail_args;
     };
 public:
     TerminalState();
@@ -33,6 +34,7 @@ protected:
     bool CheckCommand(const CommandChecker& cmd, const Command* command);
     bool ExecuteCommand(const CommandChecker& cmd, const Command* command);
     bool GetCommand(const std::vector<std::string>& commands, const Command* command);
+    bool GetArgsCommand(const CommandChecker& cmd, const Command* command);
 private:
     ObjectManager<Command*> m_commands;
 };

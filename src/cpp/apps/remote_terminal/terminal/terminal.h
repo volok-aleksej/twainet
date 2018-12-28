@@ -5,12 +5,13 @@
 #include <stdint.h>
 #include "console.h"
 #include "terminal_state.h"
+#include "auto_complete_helper.h"
 #include "include/module.h"
 #include "thread_lib/common/thread_singleton.h"
 
 class TerminalModule;
 
-class Terminal : public ThreadSingleton<Terminal>
+class Terminal : public ThreadSingleton<Terminal>, public AutoCompleteHelper
 {
     friend class Singleton<Terminal>;
     Terminal();
@@ -34,8 +35,6 @@ public:
     void addTerminalModule(TerminalModule* module);
     TerminalModule* getTerminalModule();
     std::vector<std::string> getTerminalNames();
-protected:
-    void autoCompleteHelper(std::string& fillWord, const std::string& word, const std::vector<std::string>& words);
 private:
     Console m_console;
     UseTerminal m_rootState;

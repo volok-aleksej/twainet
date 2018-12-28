@@ -5,6 +5,7 @@ class TermState;
 #include <string>
 #include <vector>
 #include "terminal_state.h"
+#include "auto_complete_helper.h"
 
 class Terminal;
 
@@ -18,6 +19,7 @@ public:
     virtual void Execute(const std::vector<std::string>& args) = 0;
     virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
     virtual std::string GetCommand() const { return m_command; }
+    virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args) = 0;
 
     bool operator == (const std::string& command) const {
         return m_command == command;
@@ -29,7 +31,7 @@ protected:
     std::string m_command;
 };
 
-class UseCommand : public Command
+class UseCommand : public Command, public AutoCompleteHelper
 {
 public:
     UseCommand();
@@ -37,6 +39,7 @@ public:
 
     virtual void Execute(const std::vector<std::string>& args);
     virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
+    virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args);
 };
 
 class TerminalCommand : public Command
@@ -47,6 +50,7 @@ public:
 
     virtual void Execute(const std::vector<std::string>& args);
     virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
+    virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args){}
 private:
     TerminalState* m_state;
 };
@@ -59,6 +63,7 @@ public:
 
     virtual void Execute(const std::vector<std::string>& args);
     virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
+    virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args){}
 private:
     TerminalState* m_state;
 };
