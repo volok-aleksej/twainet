@@ -26,12 +26,16 @@ public:
 
     void onTerminalDisconnected(const std::string& terminalName);
 
+    void autoComplete(std::string& command);
+
     void setCurrentState(TerminalState* state);
     TerminalState* getCurrentState();
 
     void addTerminalModule(TerminalModule* module);
     TerminalModule* getTerminalModule();
     std::vector<std::string> getTerminalNames();
+protected:
+    void autoCompleteHelper(std::string& fillWord, const std::string& word, const std::vector<std::string>& words);
 private:
     Console m_console;
     UseTerminal m_rootState;

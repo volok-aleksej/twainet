@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "console.h"
 #include <string.h>
+#include "console.h"
+#include "terminal.h"
 
 Console::Console()
-: m_stream(0), old{0}, m_historyCounter(0)
+: m_stream(0), old{0}, m_historyCounter(0), m_tab(false)
 {
     m_templates.insert(std::make_pair(ARROW_UP, std::vector<char>{27, '[', 'A'}));
     m_templates.insert(std::make_pair(ARROW_DOWN, std::vector<char>{27, '[', 'B'}));
@@ -112,8 +113,23 @@ bool Console::Read(std::string& buf)
 
 bool Console::useChar(char ch, std::string& buf)
 {
-    if(ch == '\n')
-    {
+    if(ch == '\t' && !m_tab) {
+        m_tab = true;
+        return false;
+    } else if(ch == '\t' && m_tab) {
+        m_tab = false;
+        std::string command = m_command;
+        Terminal::GetInstance().autoComplete(command);
+        clearLine();
+        printName();
+        m_command = command;
+        fprintf(m_stream, "%s", m_command.c_str());
+        fflush(m_stream);
+        return false;
+    }
+
+    m_tab = false;
+    if(ch == '\n') {
         buf = m_command;
         m_command = "";
         fprintf(m_stream, "\n");
@@ -122,14 +138,13 @@ bool Console::useChar(char ch, std::string& buf)
         m_historyCounter = 0;
         m_history.push_back(buf);
         return true;
-    } else if(ch == 27){                        // escape
+    } else if(ch == 27) {                        // escape
         clearLine();
         printName();
         fflush(m_stream);
         m_command = "";
-    } else if(ch == '\t'){
-    } else if(ch == '\r'){
-    } else if(ch == 127 && m_command.length()){ // '\b'
+    } else if(ch == '\r') {
+    } else if(ch == 127 && m_command.length()) { // '\b'
         m_command.erase(m_command.end() - 1);
         fprintf(m_stream, "\b \b");
         fflush(m_stream);

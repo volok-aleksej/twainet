@@ -25,6 +25,7 @@ bool TerminalState::CheckCommand(const CommandChecker& cmd, const Command* comma
     {
         const_cast<CommandChecker&>(cmd).command = const_cast<Command*>(command);
     }
+    return true;
 }
 
 bool TerminalState::ExecuteCommand(const CommandChecker& cmd, const Command* command)
@@ -34,6 +35,12 @@ bool TerminalState::ExecuteCommand(const CommandChecker& cmd, const Command* com
         const_cast<Command*>(command)->Execute(cmd.args);
     }
 
+    return true;
+}
+
+bool TerminalState::GetCommand(const std::vector<std::string>& cmd, const Command* command)
+{
+    const_cast<std::vector<std::string>&>(cmd).push_back(command->GetCommand());
     return true;
 }
 
@@ -60,6 +67,19 @@ void TerminalState::Execute(const std::string& command, const std::vector<std::s
 {
     CommandChecker commandChecker{command, args, 0};
     m_commands.ProcessingObjects(Ref(this, &TerminalState::ExecuteCommand, commandChecker));
+}
+
+std::vector<std::string> TerminalState::GetCommands()
+{
+    std::vector<std::string> commands;
+    m_commands.ProcessingObjects(Ref(this, &TerminalState::GetCommand, commands));
+    return commands;
+}
+
+std::vector<std::string> TerminalState::GetArgs(const std::string& command, const std::vector<std::string>& args)
+{
+    std::vector<std::string> args_;
+    return args_;
 }
 
 UseTerminal::UseTerminal()

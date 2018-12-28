@@ -17,6 +17,7 @@ public:
 
     virtual void Execute(const std::vector<std::string>& args) = 0;
     virtual bool Check(const std::string& command, const std::vector<std::string>& args) const;
+    virtual std::string GetCommand() const { return m_command; }
 
     bool operator == (const std::string& command) const {
         return m_command == command;

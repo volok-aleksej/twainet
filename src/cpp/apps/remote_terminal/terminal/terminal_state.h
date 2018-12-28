@@ -22,6 +22,8 @@ public:
 
     virtual bool Check(const std::string& command, const std::vector<std::string>& args);
     virtual void Execute(const std::string& command, const std::vector<std::string>& args);
+    virtual std::vector<std::string> GetCommands();
+    virtual std::vector<std::string> GetArgs(const std::string& command, const std::vector<std::string>& args);
     virtual std::string GetTerminalName() = 0;
     virtual void Exit() = 0;
 protected:
@@ -30,6 +32,7 @@ protected:
     bool DeleteCommand(const Command* command);
     bool CheckCommand(const CommandChecker& cmd, const Command* command);
     bool ExecuteCommand(const CommandChecker& cmd, const Command* command);
+    bool GetCommand(const std::vector<std::string>& commands, const Command* command);
 private:
     ObjectManager<Command*> m_commands;
 };

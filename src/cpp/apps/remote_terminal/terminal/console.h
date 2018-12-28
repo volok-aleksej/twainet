@@ -40,6 +40,7 @@ private:
     std::vector<char> m_accumchars;
     std::vector<std::string> m_history;
     int m_historyCounter;
+    bool m_tab;
     struct termios old;
     std::map<AccumTypeChar, std::vector<char> > m_templates;
 };
