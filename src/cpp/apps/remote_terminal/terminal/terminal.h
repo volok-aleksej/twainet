@@ -27,7 +27,7 @@ public:
 
     void onTerminalDisconnected(const std::string& terminalName);
 
-    void autoComplete(std::string& command);
+    bool autoComplete(std::string& command);
 
     void setCurrentState(TerminalState* state);
     TerminalState* getCurrentState();

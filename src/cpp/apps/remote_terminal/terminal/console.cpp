@@ -90,6 +90,7 @@ bool Console::Read(std::string& buf)
                 printName();
                 m_historyCounter++;
                 m_command = *(m_history.end() - m_historyCounter);
+                m_carpos = m_command.size();
                 fprintf(m_stream, "%s", m_command.c_str());
                 fflush(m_stream);
             }
@@ -101,6 +102,7 @@ bool Console::Read(std::string& buf)
                 clearLine();
                 printName();
                 m_command = *(m_history.end() - m_historyCounter);
+                m_carpos = m_command.size();
                 fprintf(m_stream, "%s", m_command.c_str());
                 fflush(m_stream);
             }
@@ -134,13 +136,15 @@ bool Console::useChar(char ch, std::string& buf)
         return false;
     } else if(ch == '\t' && m_tab) {
         m_tab = false;
-        std::string command = m_command;
-        Terminal::GetInstance().autoComplete(command);
-        clearLine();
-        printName();
-        m_command = command;
-        fprintf(m_stream, "%s", m_command.c_str());
-        fflush(m_stream);
+        std::string command(m_command.begin(), m_command.begin() + m_carpos);
+        if(Terminal::GetInstance().autoComplete(command)) {
+            clearLine();
+            printName();
+            m_command = command;
+            m_carpos = m_command.size();
+            fprintf(m_stream, "%s", m_command.c_str());
+            fflush(m_stream);
+        }
         return false;
     }
 
@@ -163,8 +167,13 @@ bool Console::useChar(char ch, std::string& buf)
         m_carpos = 0;
     } else if(ch == '\r') {
     } else if(ch == 127 && m_command.length()) { // '\b'
-        m_command.erase(m_command.end() - 1);
+        m_command.erase(m_command.begin() + m_carpos - 1);
+        m_carpos--;
         fprintf(m_stream, "\b \b");
+        fprintf(m_stream, "%s", m_command.c_str() + m_carpos);
+        for(int i = m_carpos; i < m_command.size(); i++) {
+            fprintf(m_stream, "\b");
+        }
         fflush(m_stream);
     } else if(ch > 31 && ch < 127) {
         fprintf(m_stream, "%c", ch);

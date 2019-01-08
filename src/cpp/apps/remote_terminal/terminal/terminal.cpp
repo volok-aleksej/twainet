@@ -63,7 +63,7 @@ void Terminal::onTerminalDisconnected(const std::string& terminalName)
     }
 }
 
-void Terminal::autoComplete(std::string& command)
+bool Terminal::autoComplete(std::string& command)
 {
     std::string cmd;
     std::vector<std::string> args = CommonUtils::DelimitQString(command, " ");
@@ -78,6 +78,7 @@ void Terminal::autoComplete(std::string& command)
         usewords = autoCompleteHelper(cmd, commands);
         if(usewords.size() == 1) {
             command = usewords[0] + " ";
+            return true;
         } else {
             std::string msg;
             for(auto word_ : usewords) {
@@ -96,6 +97,7 @@ void Terminal::autoComplete(std::string& command)
             for(auto arg : args) {
                 command += arg + " ";
             }
+            return true;
         } else {
             std::string msg;
             for(auto word_ : usewords) {
@@ -107,7 +109,7 @@ void Terminal::autoComplete(std::string& command)
             }
         }
     }
-
+    return false;
 }
 
 void Terminal::setCurrentState(TerminalState* state)
