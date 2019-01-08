@@ -15,7 +15,13 @@ public:
         ARROW_UP,
         ARROW_DOWN,
         ARROW_LEFT,
-        ARROW_RIGHT
+        ARROW_RIGHT,
+        DELETE,
+        END,
+        HOME,
+        PAGEUP,
+        PAGEDOWN,
+        INSERT
     };
     Console();
     virtual ~Console();
