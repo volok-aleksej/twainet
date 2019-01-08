@@ -43,6 +43,7 @@ private:
     std::vector<std::string> m_history;
     int m_historyCounter;
     bool m_tab;
+    int m_carpos;
     struct termios old;
     std::map<AccumTypeChar, std::vector<char> > m_templates;
 };

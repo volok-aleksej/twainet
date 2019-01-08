@@ -5,7 +5,7 @@
 #include "terminal.h"
 
 Console::Console()
-: m_stream(0), old{0}, m_historyCounter(0), m_tab(false)
+: m_stream(0), old{0}, m_historyCounter(0), m_tab(false), m_carpos(0)
 {
     m_templates.insert(std::make_pair(ARROW_UP, std::vector<char>{27, '[', 'A'}));
     m_templates.insert(std::make_pair(ARROW_DOWN, std::vector<char>{27, '[', 'B'}));
@@ -78,12 +78,11 @@ bool Console::Read(std::string& buf)
     do {
         int ret = checkAccumeChars(&ac_char);
         if(ret != 0) {
-            for(std::vector<char>::iterator it = m_accumchars.begin();
-                it != m_accumchars.end();) {
-                char ch_ = *it;
-                it = m_accumchars.erase(it);
-                if(useChar(ch_, buf)) return true;
-            }
+                if(m_accumchars.size() > 0) {
+                    char ch_ = m_accumchars[0];
+                    m_accumchars.erase(m_accumchars.begin());
+                    if(useChar(ch_, buf)) return true;
+                }
         } else if(ac_char == ARROW_UP){
             m_accumchars.erase(m_accumchars.begin(), m_accumchars.begin() + m_templates[ARROW_UP].size());
             if(!m_history.empty() && m_historyCounter < m_history.size()) {
@@ -106,6 +105,20 @@ bool Console::Read(std::string& buf)
                 fflush(m_stream);
             }
             return false;
+        } else if(ac_char == ARROW_LEFT) {
+            m_accumchars.erase(m_accumchars.begin(), m_accumchars.begin() + m_templates[ac_char].size());
+            if(m_carpos != 0) {
+                m_carpos--;
+                fprintf(m_stream, "\b");
+                fflush(m_stream);
+            }
+        } else if(ac_char == ARROW_RIGHT) {
+            m_accumchars.erase(m_accumchars.begin(), m_accumchars.begin() + m_templates[ac_char].size());
+            if(m_carpos < m_command.size()) {
+                fprintf(m_stream, "%c", *(m_command.c_str() + m_carpos));
+                m_carpos++;
+                fflush(m_stream);
+            }
         } else {
             m_accumchars.erase(m_accumchars.begin(), m_accumchars.begin() + m_templates[ac_char].size());
         }
@@ -135,6 +148,7 @@ bool Console::useChar(char ch, std::string& buf)
     if(ch == '\n') {
         buf = m_command;
         m_command = "";
+        m_carpos = 0;
         fprintf(m_stream, "\n");
         printName();
         fflush(m_stream);
@@ -146,15 +160,21 @@ bool Console::useChar(char ch, std::string& buf)
         printName();
         fflush(m_stream);
         m_command = "";
+        m_carpos = 0;
     } else if(ch == '\r') {
     } else if(ch == 127 && m_command.length()) { // '\b'
         m_command.erase(m_command.end() - 1);
         fprintf(m_stream, "\b \b");
         fflush(m_stream);
-    } else if(ch > 31 && ch < 127){
+    } else if(ch > 31 && ch < 127) {
         fprintf(m_stream, "%c", ch);
+        fprintf(m_stream, "%s", m_command.c_str() + m_carpos);
+        m_command.insert(m_command.begin() + m_carpos, ch);
+        m_carpos++;
+        for(int i = m_carpos; i < m_command.size(); i++) {
+            fprintf(m_stream, "\b");
+        }
         fflush(m_stream);
-        m_command.push_back(ch);
     }
     return false;
 }
