@@ -2,6 +2,7 @@
 #include "terminal.h"
 #include "commands.h"
 #include "utils/utils.h"
+#include <module/terminal_module.h>
 
 TerminalState::TerminalState()
 {
@@ -104,6 +105,8 @@ TerminalCommands::TerminalCommands(const std::string& termName, TerminalState* p
 : m_terminalName(termName), m_parent(parent)
 {
     AddCommand(new ExitCommand(this));
+    GetCommandListMessage gclMsg(Terminal::GetInstance().getTerminalModule());
+    Terminal::GetInstance().getTerminalModule()->toMessage(gclMsg, m_terminalName);
 }
 
 TerminalCommands::~TerminalCommands()

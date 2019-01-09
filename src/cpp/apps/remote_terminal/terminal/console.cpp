@@ -68,6 +68,9 @@ bool Console::Write(const std::string& log)
         fprintf(m_stream, "%s\n", log.c_str());
         printName();
         fprintf(m_stream, "%s", m_command.c_str());
+        for(int i = m_command.size(); i > m_carpos; i--) {
+            fprintf(m_stream, "\b");
+        }
         fflush(m_stream);
     }
     return true;
@@ -217,6 +220,7 @@ void Console::SetTermName(const std::string& termName)
     clearLine();
     m_termName = termName;
     printName();
+    m_carpos = 0;
     fflush(m_stream);
 }
 

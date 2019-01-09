@@ -63,8 +63,8 @@ std::vector<std::string> UseCommand::GetArgs(const std::vector<std::string>& arg
     return autoCompleteHelper(param, terminals);
 }
 
-TerminalCommand::TerminalCommand(const std::string& command, TerminalState* state)
-: Command(command), m_state(state)
+TerminalCommand::TerminalCommand(const std::string& command, const std::vector<std::string>& args, TerminalState* state)
+: Command(command), m_args(args), m_state(state)
 {
 }
 
@@ -74,19 +74,25 @@ TerminalCommand::~TerminalCommand()
 
 void TerminalCommand::Execute(const std::vector<std::string>& args)
 {
-    std::string command(m_command);
-    for(auto arg : args) {
-        command += " ";
-        command += arg;
-    }
     CommandMessage cmdMsg(Terminal::GetInstance().getTerminalModule());
-    cmdMsg.set_cmd(command);
-    Terminal::GetInstance().getTerminalModule()->toMessage(cmdMsg, m_state->GetTerminalName());
+    cmdMsg.set_cmd(m_command);
+    for(auto arg : args) {
+        cmdMsg.add_args(arg);
+    }
+    if(!Terminal::GetInstance().getTerminalModule()->toMessage(cmdMsg, m_state->GetTerminalName())) {
+        std::string log("cannot send command to terminal ");
+        Terminal::GetInstance().log(m_state->GetTerminalName(), 0, log + m_state->GetTerminalName());
+    }
 }
 
 bool TerminalCommand::Check(const std::string& command, const std::vector<std::string>& args) const
 {
-    return Command::Check(command, args);
+    if(!Command::Check(command, args)) {
+        return false;
+    }
+
+
+    return true;
 }
 
 ExitCommand::ExitCommand(TerminalState* state)

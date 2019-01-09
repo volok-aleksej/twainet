@@ -13,6 +13,8 @@ class TerminalModule;
 typedef UserMessage<term_name, TerminalModule> TermNameMessage;
 typedef UserMessage<log, TerminalModule> LogMessage;
 typedef UserMessage<command, TerminalModule> CommandMessage;
+typedef UserMessage<get_command_list, TerminalModule> GetCommandListMessage;
+typedef UserMessage<command_list, TerminalModule> CommandListMessage;
 
 struct ModuleNameCmp
 {
@@ -49,9 +51,11 @@ private:
 	template<class TMessage, class THandler> friend class UserMessage;
 	void onMessage(const term_name& msg, Twainet::ModuleName path);
 	void onMessage(const log& msg, Twainet::ModuleName path);
+	void onMessage(const command_list& msg, Twainet::ModuleName path);
 
     //stubs
 	void onMessage(const command& msg, Twainet::ModuleName path){}
+	void onMessage(const get_command_list& msg, Twainet::ModuleName path){}
 
 private:
 	Twainet::UserPassword m_userPassword;
