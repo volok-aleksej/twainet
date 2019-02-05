@@ -9,32 +9,16 @@ UseCommand::~UseCommand()
 {
 }
 
-bool Command::Check(const std::string& command, const std::vector<std::string>& args) const
-{
-    return *this == command;
-}
 void UseCommand::Execute(const std::vector<std::string>& args)
 {
     if(args.empty()) {
-        return;
-    }
-
-    Terminal::GetInstance().setCurrentState(new TerminalCommands(args[0], Terminal::GetInstance().getCurrentState()));
-}
-
-bool UseCommand::Check(const std::string& command, const std::vector<std::string>& args) const
-{
-    if(!Command::Check(command, args)){
-        return false;
-    }
-    if(args.empty()) {
         std::string msg("invalid terminal name - name is absent");
         Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
-        return false;
+        return;
     } else if(args.size() > 1) {
         std::string msg("invalid attributes - terminal name must be single");
         Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
-        return false;
+        return;
     }
 
     std::vector<std::string> names = Terminal::GetInstance().getTerminalNames();
@@ -44,23 +28,20 @@ bool UseCommand::Check(const std::string& command, const std::vector<std::string
         msg += args[0];
         msg += "' is absent";
         Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
-        return false;
+        return;
     }
-    return true;
+
+    Terminal::GetInstance().setCurrentState(new TerminalCommands(args[0], Terminal::GetInstance().getCurrentState()));
 }
 
 std::vector<std::string> UseCommand::GetArgs(const std::vector<std::string>& args)
 {
     std::vector<std::string> args_;
-    std::string param;
-    if(args.size() > 1) {
-        return args_;
-    } else if(!args.empty()) {
-        param = args[0];
+    std::string param = args.empty() ? "" : args.back();
+    if(args.size() <= 1) {
+        args_ =  Terminal::GetInstance().getTerminalNames();
     }
-
-    std::vector<std::string> terminals =  Terminal::GetInstance().getTerminalNames();
-    return autoCompleteHelper(param, terminals);
+    return autoCompleteHelper(param, args_);
 }
 
 TerminalCommand::TerminalCommand(const std::string& command, const std::vector<std::string>& args, TerminalState* state)
@@ -79,20 +60,10 @@ void TerminalCommand::Execute(const std::vector<std::string>& args)
     for(auto arg : args) {
         cmdMsg.add_args(arg);
     }
-    if(!Terminal::GetInstance().getTerminalModule()->toMessage(cmdMsg, m_state->GetTerminalName())) {
+    if(!Terminal::GetInstance().getTerminalModule()->toTermMessage(cmdMsg, m_state->GetTerminalName())) {
         std::string log("cannot send command to terminal ");
         Terminal::GetInstance().log(m_state->GetTerminalName(), 0, log + m_state->GetTerminalName());
     }
-}
-
-bool TerminalCommand::Check(const std::string& command, const std::vector<std::string>& args) const
-{
-    if(!Command::Check(command, args)) {
-        return false;
-    }
-
-
-    return true;
 }
 
 ExitCommand::ExitCommand(TerminalState* state)
@@ -106,10 +77,11 @@ ExitCommand::~ExitCommand()
 
 void ExitCommand::Execute(const std::vector<std::string>& args)
 {
+    if(args.size() > 1) {
+        std::string msg("invalid attributes: exit is command without arguments");
+        Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
+        return;
+    }
     m_state->Exit();
 }
 
-bool ExitCommand::Check(const std::string& command, const std::vector<std::string>& args) const
-{
-    return Command::Check(command, args);
-}

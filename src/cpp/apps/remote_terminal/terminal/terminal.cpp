@@ -29,9 +29,7 @@ void Terminal::ThreadFunc()
         }
         command = args[0];
         args.erase(args.begin());
-        if(m_currentState->Check(command, args)) {
-            m_currentState->Execute(command, args);
-        }
+        m_currentState->Execute(command, args);
     }
     m_console.DeInit();
 }
@@ -65,50 +63,32 @@ void Terminal::onTerminalDisconnected(const std::string& terminalName)
 
 bool Terminal::autoComplete(std::string& command)
 {
-    std::string cmd;
     std::vector<std::string> args = CommonUtils::DelimitQString(command, " ");
-    if(!args.empty()) {
-        cmd = args[0];
-        args.erase(args.begin());
+    std::vector<std::string> usewords = m_currentState->GetArgs(args);
+    if(usewords.size() == 1) {
+        if(args.empty())
+            args.push_back(usewords[0]);
+        else {
+            if(usewords[0].substr(0, args.back().size()) != args.back()) {
+                args.push_back("");
+            }
+            args.back() = usewords[0];
+        }
+        command.clear();
+        for(auto& arg : args)
+            command += arg + " ";
+        return true;
+    } else {
+        std::string msg;
+        for(auto word_ : usewords) {
+            msg += word_;
+            msg += " ";
+        }
+        if(!msg.empty()) {
+            log("", CommonUtils::GetCurrentTime(), msg);
+        }
     }
 
-    std::vector<std::string> usewords;
-    if(command.empty() || (args.empty() && command.back() != ' ')) {
-        std::vector<std::string> commands = m_currentState->GetCommands();
-        usewords = autoCompleteHelper(cmd, commands);
-        if(usewords.size() == 1) {
-            command = usewords[0] + " ";
-            return true;
-        } else {
-            std::string msg;
-            for(auto word_ : usewords) {
-                msg += word_;
-                msg += " ";
-            }
-            if(!msg.empty()) {
-                log("", CommonUtils::GetCurrentTime(), msg);
-            }
-        }
-    } else {
-        usewords = m_currentState->GetArgs(cmd, args);
-        if(usewords.size() == 1) {
-            args.back() = usewords[0];
-            command = cmd + " ";
-            for(auto arg : args) {
-                command += arg + " ";
-            }
-            return true;
-        } else {
-            std::string msg;
-            for(auto word_ : usewords) {
-                msg += word_;
-                msg += " ";
-            }
-            if(!msg.empty()) {
-                log("", CommonUtils::GetCurrentTime(), msg);
-            }
-        }
-    }
     return false;
 }
 

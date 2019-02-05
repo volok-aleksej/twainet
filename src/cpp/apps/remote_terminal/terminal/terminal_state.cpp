@@ -10,90 +10,49 @@ TerminalState::TerminalState()
 
 TerminalState::~TerminalState()
 {
-    m_commands.ProcessingObjects(Ref(this, &TerminalState::DeleteCommand));
-}
-
-bool TerminalState::DeleteCommand(const Command* command)
-{
-    delete const_cast<Command*>(command);
-    return true;
-}
-
-
-bool TerminalState::CheckCommand(const CommandChecker& cmd, const Command* command)
-{
-    if(command->Check(cmd.cmd, cmd.args))
-    {
-        const_cast<CommandChecker&>(cmd).find = true;
-    }
-    return true;
-}
-
-bool TerminalState::ExecuteCommand(const CommandChecker& cmd, const Command* command)
-{
-    if(*command == cmd.cmd)
-    {
-        const_cast<Command*>(command)->Execute(cmd.args);
-    }
-
-    return true;
-}
-
-bool TerminalState::GetCommand(const std::vector<std::string>& cmd, const Command* command)
-{
-    const_cast<std::vector<std::string>&>(cmd).push_back(command->GetCommand());
-    return true;
-}
-
-bool TerminalState::GetArgsCommand(const TerminalState::CommandChecker& cmd, const Command* command)
-{
-    if(*command == cmd.cmd)
-    {
-        const_cast<CommandChecker&>(cmd).avail_args = const_cast<Command*>(command)->GetArgs(cmd.args);
-    }
-    return true;
+    for(auto& cmd : m_commands)
+        delete cmd;
 }
 
 void TerminalState::AddCommand(Command* command)
 {
-    m_commands.AddObject(command);
+    m_commands.push_back(command);
 }
 
-bool TerminalState::Check(const std::string& command, const std::vector<std::string>& args)
+
+bool TerminalState::Execute(const std::string& command, const std::vector<std::string>& args)
 {
     std::vector<std::string> args_;
-    CommandChecker commandChecker{command, args, false, args_};
-    m_commands.ProcessingObjects(Ref(this, &TerminalState::CheckCommand, commandChecker));
-    if(!commandChecker.find) {
-        std::string msg("invalid command '");
-        msg += command;
-        msg += "'";
-        Terminal::GetInstance().log("", CommonUtils::GetCurrentTime(), msg);
-        return false;
+    for(auto& cmd : m_commands) {
+        if(command == cmd->GetCommand())
+        {
+            cmd->Execute(args);
+            return true;
+        }
     }
-    return true;
+
+    return false;
 }
 
-void TerminalState::Execute(const std::string& command, const std::vector<std::string>& args)
+std::vector<std::string> TerminalState::GetArgs(const std::vector<std::string>& args)
 {
-    std::vector<std::string> args_;
-    CommandChecker commandChecker{command, args, false, args_};
-    m_commands.ProcessingObjects(Ref(this, &TerminalState::ExecuteCommand, commandChecker));
-}
-
-std::vector<std::string> TerminalState::GetCommands()
-{
+    std::string command = args.empty() ? "" : args[0];
     std::vector<std::string> commands;
-    m_commands.ProcessingObjects(Ref(this, &TerminalState::GetCommand, commands));
-    return commands;
-}
+    for(auto& cmd : m_commands) {
+        if(command == cmd->GetCommand())
+        {
+            std::vector<std::string> args_(args.begin() + 1, args.end());
+            return cmd->GetArgs(args_);
+        }
 
-std::vector<std::string> TerminalState::GetArgs(const std::string& command, const std::vector<std::string>& args)
-{
-    std::vector<std::string> args_;
-    CommandChecker commandChecker{command, args, false, args_};
-    m_commands.ProcessingObjects(Ref(this, &TerminalState::GetArgsCommand, commandChecker));
-    return args_;
+        commands.push_back(cmd->GetCommand());
+    }
+
+    if(args.size() <= 1) {
+        return autoCompleteHelper(command, commands);
+    }
+
+    return std::vector<std::string>();
 }
 
 UseTerminal::UseTerminal()
@@ -105,12 +64,36 @@ TerminalCommands::TerminalCommands(const std::string& termName, TerminalState* p
 : m_terminalName(termName), m_parent(parent)
 {
     AddCommand(new ExitCommand(this));
-    GetCommandListMessage gclMsg(Terminal::GetInstance().getTerminalModule());
-    Terminal::GetInstance().getTerminalModule()->toMessage(gclMsg, m_terminalName);
 }
 
 TerminalCommands::~TerminalCommands()
 {
+}
+
+std::vector<std::string> TerminalCommands::GetArgs(const std::vector<std::string>& args)
+{
+    std::vector<std::string> out_args = TerminalState::GetArgs(args);
+    GetNextCommandArgsMessage msg(Terminal::GetInstance().getTerminalModule());
+    NextCommandArgsMessage resp(Terminal::GetInstance().getTerminalModule());
+    for(auto& arg : args) {
+        msg.add_args(arg);
+    }
+    if(Terminal::GetInstance().getTerminalModule()->toTermMessage(msg, m_terminalName, resp))
+    {
+        for(int i = 0; i < resp.args_size(); i++) {
+            out_args.push_back(resp.args(i));
+        }
+    }
+    return out_args;
+}
+
+bool TerminalCommands::Execute(const std::string& command, const std::vector<std::string>& args)
+{
+    if(TerminalState::Execute(command, args)) {
+        return true;
+    }
+
+
 }
 
 void TerminalCommands::Exit()

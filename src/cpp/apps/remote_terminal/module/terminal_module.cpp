@@ -11,7 +11,6 @@ TerminalModule::TerminalModule()
     Terminal::GetInstance().addTerminalModule(this);
     AddMessage(new TermNameMessage(this));
     AddMessage(new LogMessage(this));
-    AddMessage(new CommandListMessage(this));
 }
 
 TerminalModule::~TerminalModule()
@@ -38,18 +37,30 @@ std::vector<std::string> TerminalModule::getTerminalNames()
 //     }
 //    for tests
     names.push_back("test");
-    names.push_back("test1");
-    names.push_back("tet");
+//    names.push_back("test1");
+//    names.push_back("tet");
     return names;
 }
 
-bool TerminalModule::toMessage(const DataMessage& msg, const std::string& termName)
+bool TerminalModule::toTermMessage(const DataMessage& msg, const std::string& termName)
 {
     CSLocker lock(&m_cs);
     for(std::map<Twainet::ModuleName, std::string>::iterator it = m_terminalMap.begin();
         it != m_terminalMap.end(); it++) {
         if(it->second == termName) {
-            return Module::toMessage(msg, it->first);
+            return toMessage(msg, it->first);
+        }
+    }
+    return false;
+}
+
+bool TerminalModule::toTermMessage(const DataMessage& msg, const std::string& termName, DataMessage& respmsg)
+{
+    CSLocker lock(&m_cs);
+    for(std::map<Twainet::ModuleName, std::string>::iterator it = m_terminalMap.begin();
+        it != m_terminalMap.end(); it++) {
+        if(it->second == termName) {
+            return toMessage(msg, it->first, respmsg);
         }
     }
     return false;
@@ -91,23 +102,3 @@ void TerminalModule::onMessage(const log& msg, Twainet::ModuleName path)
     Terminal::GetInstance().log(terminalName, msg.time(), msg.data());
 }
 
-void TerminalModule::onMessage(const command_list& msg, Twainet::ModuleName path)
-{
-    std::string terminalName;
-    {
-        CSLocker lock(&m_cs);
-        std::map<Twainet::ModuleName, std::string>::iterator it = m_terminalMap.find(path);
-        if(it != m_terminalMap.end()) {
-            terminalName = it->second;
-        }
-    }
-    if(Terminal::GetInstance().getCurrentState()->GetTerminalName() == terminalName) {
-        for(int i = 0; i < msg.cmd_size(); i++) {
-            std::vector<std::string> args;
-            for(int j = 0; j < msg.cmd(i).args_size(); j++) {
-                args.push_back(msg.cmd(i).args(j));
-            }
-            Terminal::GetInstance().getCurrentState()->AddCommand(new TerminalCommand(msg.cmd(i).cmd(), args, Terminal::GetInstance().getCurrentState()));
-        }
-    }
-}

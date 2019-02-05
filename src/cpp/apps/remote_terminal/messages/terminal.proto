@@ -11,13 +11,14 @@ message log
     required string data = 2;
 }
 
-message get_command_list
+message get_next_command_args
 {
+    repeated string args  = 1;
 }
 
-message command_list
+message next_command_args
 {
-    repeated command cmd = 1;
+    repeated string args = 1;
 }
 
 message command

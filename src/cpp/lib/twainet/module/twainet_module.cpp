@@ -72,13 +72,15 @@ bool TwainetModule::SendSyncMsg(const IPCMessageSignal& msg, const std::string& 
         m_waitingList.push_back(&waitdata);
     }
     SendMsg(msg);
-    waitdata.m_semaphore.Wait(INFINITE);
+    if(waitdata.m_semaphore.Wait(2) == Semaphore::SUCCESS)
     {
         CSLocker lock(&m_cs);
         std::vector<WaitData*>::iterator it = std::find(m_waitingList.begin(), m_waitingList.end(), waitdata);
         if(it != m_waitingList.end()) {
             m_waitingList.erase(it);
         }
+    } else {
+        return false;
     }
 
     if(!waitdata.m_data.empty()) {
