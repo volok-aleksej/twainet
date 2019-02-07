@@ -34,19 +34,6 @@ public:
     virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args);
 };
 
-class TerminalCommand : public Command
-{
-public:
-    TerminalCommand(const std::string& command, const std::vector<std::string>& args, TerminalState* state);
-    virtual ~TerminalCommand();
-
-    virtual void Execute(const std::vector<std::string>& args);
-    virtual std::vector<std::string> GetArgs(const std::vector<std::string>& args){ return std::vector<std::string>(); }
-private:
-    std::vector<std::string> m_args;
-    TerminalState* m_state;
-};
-
 class ExitCommand : public Command
 {
 public:

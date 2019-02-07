@@ -44,28 +44,6 @@ std::vector<std::string> UseCommand::GetArgs(const std::vector<std::string>& arg
     return autoCompleteHelper(param, args_);
 }
 
-TerminalCommand::TerminalCommand(const std::string& command, const std::vector<std::string>& args, TerminalState* state)
-: Command(command), m_args(args), m_state(state)
-{
-}
-
-TerminalCommand::~TerminalCommand()
-{
-}
-
-void TerminalCommand::Execute(const std::vector<std::string>& args)
-{
-    CommandMessage cmdMsg(Terminal::GetInstance().getTerminalModule());
-    cmdMsg.set_cmd(m_command);
-    for(auto arg : args) {
-        cmdMsg.add_args(arg);
-    }
-    if(!Terminal::GetInstance().getTerminalModule()->toTermMessage(cmdMsg, m_state->GetTerminalName())) {
-        std::string log("cannot send command to terminal ");
-        Terminal::GetInstance().log(m_state->GetTerminalName(), 0, log + m_state->GetTerminalName());
-    }
-}
-
 ExitCommand::ExitCommand(TerminalState* state)
 : Command("exit"), m_state(state)
 {

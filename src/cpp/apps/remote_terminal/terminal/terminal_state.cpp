@@ -84,7 +84,9 @@ std::vector<std::string> TerminalCommands::GetArgs(const std::vector<std::string
             out_args.push_back(resp.args(i));
         }
     }
-    return out_args;
+
+    std::string arg = args.empty() ? "" : args.back();
+    return autoCompleteHelper(arg, out_args);
 }
 
 bool TerminalCommands::Execute(const std::string& command, const std::vector<std::string>& args)
@@ -93,7 +95,14 @@ bool TerminalCommands::Execute(const std::string& command, const std::vector<std
         return true;
     }
 
+    CommandMessage msg(Terminal::GetInstance().getTerminalModule());
+    msg.set_cmd(command);
+    for(auto& arg : args) {
+        msg.add_args(arg);
+    }
 
+    Terminal::GetInstance().getTerminalModule()->toTermMessage(msg, m_terminalName);
+    return true;
 }
 
 void TerminalCommands::Exit()
