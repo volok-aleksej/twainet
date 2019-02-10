@@ -242,15 +242,17 @@ protected:
 		data = new char[datalen];
 		if(const_cast<DataMessage&>(msg).deserialize(data, datalen))
 		{
+            std::string typeMessage = msg.GetName();
 			Twainet::Message message = {0};
 			message.m_data = data;
 			message.m_dataLen = datalen;
 			memcpy((void*)&message.m_target, (void*)&path, sizeof(path));
-			message.m_typeMessage = msg.GetName().c_str();
+			message.m_typeMessage = typeMessage.c_str();
 
+            std::string respTypeMessage = resp.GetName();
 			Twainet::Message respmessage = {0};
 			memcpy((void*)&respmessage.m_target, (void*)&path, sizeof(path));
-			respmessage.m_typeMessage = resp.GetName().c_str();
+			respmessage.m_typeMessage = respTypeMessage.c_str();
 
 			if(Twainet::SendSyncMessage(m_module, message, respmessage)) {
 				ret = resp.serialize(const_cast<char*>(respmessage.m_data), respmessage.m_dataLen);

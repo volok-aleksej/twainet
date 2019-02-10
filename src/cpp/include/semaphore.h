@@ -80,8 +80,15 @@ public:
         }
         else
         {
-            struct timespec tm = {timeout, timeout*1000000};
-            ret = sem_timedwait(&m_semafor, &tm);
+            struct timespec ts;
+            if (clock_gettime(CLOCK_REALTIME, &ts) == -1)
+            {
+                /* handle error */
+                return FAILED;
+            }
+
+            ts.tv_sec += timeout;
+            ret = sem_timedwait(&m_semafor, &ts);
         }
         if(ret && errno == ETIMEDOUT)
         {

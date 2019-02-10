@@ -19,6 +19,7 @@ message get_next_command_args
 message next_command_args
 {
     repeated string args = 1;
+    required bool new_word = 2;
 }
 
 message command

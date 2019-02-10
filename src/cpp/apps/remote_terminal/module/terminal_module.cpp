@@ -30,13 +30,13 @@ void TerminalModule::Init()
 std::vector<std::string> TerminalModule::getTerminalNames()
 {
     std::vector<std::string> names;
-//     CSLocker lock(&m_cs);
-//     for(std::map<Twainet::ModuleName, std::string>::iterator it = m_terminalMap.begin();
-//         it != m_terminalMap.end(); it++) {
-//         names.push_back(it->second);
-//     }
+    CSLocker lock(&m_cs);
+    for(std::map<Twainet::ModuleName, std::string>::iterator it = m_terminalMap.begin();
+        it != m_terminalMap.end(); it++) {
+        names.push_back(it->second);
+    }
 //    for tests
-    names.push_back("test");
+//    names.push_back("test");
 //    names.push_back("test1");
 //    names.push_back("tet");
     return names;

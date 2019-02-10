@@ -85,7 +85,12 @@ std::vector<std::string> TerminalCommands::GetArgs(const std::vector<std::string
         }
     }
 
-    std::string arg = args.empty() ? "" : args.back();
+    std::string arg;
+    if(resp.new_word()) {
+        arg = "";
+    } else {
+        arg = args.empty() ? "" : args.back();
+    }
     return autoCompleteHelper(arg, out_args);
 }
 
