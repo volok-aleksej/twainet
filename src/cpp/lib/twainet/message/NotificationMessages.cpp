@@ -86,7 +86,7 @@ void ModuleConnected::HandleMessage(Twainet::TwainetCallback callbacks)
 /*                                ModuleDisconnected                                       */
 /*******************************************************************************************/
 ModuleDisconnected::ModuleDisconnected(Twainet::Module module, const std::string& id)
-	: NotificationMessage(m_module, MODULE_DISCONNECTED), m_id(id)
+	: NotificationMessage(module, MODULE_DISCONNECTED), m_id(id)
 {
 }
 
