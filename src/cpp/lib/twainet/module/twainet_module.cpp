@@ -153,13 +153,13 @@ void TwainetModule::OnMessage(const std::string& messageName, const std::vector<
     }
 }
 
-void TwainetModule::ModuleCreationFialed()
+void TwainetModule::ModuleCreationFailed()
 {
 	LOG_INFO("Module creation failed: moduleName - %s\n", const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str());
 	Application::GetInstance().AddNotifycationMessage(new CreationFailed(this, CreationFailed::MODULE));
 }
 
-void TwainetModule::ServerCreationFialed()
+void TwainetModule::ServerCreationFailed()
 {
 	LOG_INFO("Server creation failed: moduleName - %s\n", const_cast<IPCObjectName&>(GetModuleName()).GetModuleNameString().c_str());
 	Application::GetInstance().AddNotifycationMessage(new CreationFailed(this, CreationFailed::SERVER));

@@ -7,7 +7,6 @@
 TestModule::TestModule()
 : Module("twntest2", Twainet::IPV4, false)
 {
-    AddMessage(new UserMessage<Test, TestModule>(this));
 }
 
 TestModule::~TestModule()
@@ -20,7 +19,6 @@ void TestModule::OnModuleConnected(const Twainet::ModuleName& moduleId)
         Twainet::UserPassword usr_pwd;
         strcpy(usr_pwd.m_user, "test");
         strcpy(usr_pwd.m_pass, "test");
-//        Twainet::SetUsersList(m_module, &usr_pwd, 1);
         Twainet::ConnectToServer(m_module, "localhost", 5200, usr_pwd);
 //        Twainet::CreateServer(m_module, 5200, Twainet::IPV4, true);
     }
@@ -51,14 +49,10 @@ void TestModule::OnServerConnected(const char* sessionId)
 	Module::OnServerConnected(sessionId);
 
 	Twainet::ModuleName moduleName = {0};
-	strcpy(moduleName.m_name, "twntest");
+	strcpy(moduleName.m_name, Twainet::ServerModuleName);
 	strcpy(moduleName.m_host, sessionId);
-	UserMessage<Test, TestModule> cnMsg(this);
+	TermNameMessage cnMsg(this);
+    cnMsg.set_name("test");
 	toMessage(cnMsg, moduleName);
 }
 
-
-void TestModule::onMessage(const Test& test, Twainet::ModuleName path)
-{
-  printf("test message\n");
-}

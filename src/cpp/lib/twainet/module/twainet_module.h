@@ -67,10 +67,10 @@ protected:
     
 
 	// Module has not created
-	virtual void ModuleCreationFialed();
+	virtual void ModuleCreationFailed();
 	
 	// Server has not created
-	virtual void ServerCreationFialed();
+	virtual void ServerCreationFailed();
 
 	// Changed internal connection status
 	virtual void OnInternalConnection(const std::string& moduleName, ConnectionStatus status, int port);

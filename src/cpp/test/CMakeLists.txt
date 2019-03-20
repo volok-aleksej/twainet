@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(twntest2)
+project(twntest)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
@@ -11,6 +11,7 @@ set (SRC_${PROJECT_NAME}
 	test.cpp
 	test_module.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/../../messages/deamon.pb.cc
+	${CMAKE_CURRENT_SOURCE_DIR}/../apps/remote_terminal/messages/terminal.pb.cc
 )
 
 
