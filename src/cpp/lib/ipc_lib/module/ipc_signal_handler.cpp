@@ -44,7 +44,7 @@ void IPCSignalHandler::onErrorListener(const ListenErrorMessage& msg)
 		ThreadManager::GetInstance().AddThread(m_module->m_listenThread);
 		m_module->m_listenThread = 0;
 		m_module->m_isExit = true;
-		m_module->ModuleCreationFialed();
+		m_module->ModuleCreationFailed();
 	}
 }
 

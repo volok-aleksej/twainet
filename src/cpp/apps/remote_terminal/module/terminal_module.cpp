@@ -35,10 +35,6 @@ std::vector<std::string> TerminalModule::getTerminalNames()
         it != m_terminalMap.end(); it++) {
         names.push_back(it->second);
     }
-//    for tests
-//    names.push_back("test");
-//    names.push_back("test1");
-//    names.push_back("tet");
     return names;
 }
 

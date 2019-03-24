@@ -44,6 +44,7 @@ void Console::DeInit()
     old.c_lflag |= ECHO;
     if (tcsetattr(stdin->_fileno, TCSADRAIN, &old) < 0)
             perror ("tcsetattr ~ICANON");
+    close(m_stream->_fileno);
 }
 
 Console::~Console()

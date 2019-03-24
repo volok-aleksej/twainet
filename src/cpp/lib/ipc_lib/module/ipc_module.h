@@ -94,7 +94,7 @@ protected:
 	virtual void OnConnectFailed(const std::string& moduleName);
 	virtual void OnMessage(const std::string& messageName, const std::vector<std::string>& path, const std::string& data);
 	virtual bool CheckFireConnector(const std::string& moduleName);
-	virtual void ModuleCreationFialed();
+	virtual void ModuleCreationFailed();
 	virtual void FillIPCObjectList(std::vector<IPCObject>& ipcList);
 	virtual void OnInternalConnection(const std::string& moduleName, ConnectionStatus status, int port);
 	virtual void OnIPCObjectsChanged();

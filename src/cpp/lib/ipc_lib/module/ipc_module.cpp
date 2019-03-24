@@ -230,7 +230,7 @@ bool IPCModule::CheckFireConnector(const std::string& moduleName)
 	return false;
 }
 
-void IPCModule::ModuleCreationFialed()
+void IPCModule::ModuleCreationFailed()
 {
 	LOG_INFO("Module Creation Failed: m_moduleName - %s\n", m_moduleName.GetModuleNameString().c_str());
 }
